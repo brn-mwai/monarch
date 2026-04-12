@@ -1,0 +1,46 @@
+{
+  "mesh": "fsaverage5",
+  "verticesPerHemisphere": 10242,
+  "totalVertices": 20484,
+  "facesPerHemisphere": 20480,
+  "hemispheres": [
+    "left",
+    "right"
+  ],
+  "surfaceTypes": [
+    "pial",
+    "inflated"
+  ],
+  "coordinateSpace": "fsaverage5 (FreeSurfer surface coords, mm)",
+  "source": "nilearn.datasets.fetch_surf_fsaverage('fsaverage5')",
+  "sulcalDepthRange": {
+    "min": -1.4937248229980469,
+    "max": 1.8412240743637085
+  },
+  "boundingBox": {
+    "left": {
+      "min": [
+        -70.01036834716797,
+        -104.69203186035156,
+        -48.324432373046875
+      ],
+      "max": [
+        0.0,
+        68.94737243652344,
+        78.12399291992188
+      ]
+    },
+    "right": {
+      "min": [
+        0.0,
+        -104.43106842041016,
+        -48.39225387573242
+      ],
+      "max": [
+        69.97103881835938,
+        69.1561050415039,
+        79.21095275878906
+      ]
+    }
+  }
+}

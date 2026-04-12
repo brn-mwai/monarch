@@ -1,0 +1,86 @@
+{
+  "dtype_bytes": {
+    "float32": 4,
+    "int32": 4
+  },
+  "sections": [
+    {
+      "name": "left_pial.coords",
+      "offset": 0,
+      "length": 122904,
+      "dtype": "float32",
+      "shape": [
+        10242,
+        3
+      ]
+    },
+    {
+      "name": "left_pial.faces",
+      "offset": 122904,
+      "length": 245760,
+      "dtype": "int32",
+      "shape": [
+        20480,
+        3
+      ]
+    },
+    {
+      "name": "left_pial.sulc",
+      "offset": 368664,
+      "length": 40968,
+      "dtype": "float32",
+      "shape": [
+        10242
+      ]
+    },
+    {
+      "name": "right_pial.coords",
+      "offset": 409632,
+      "length": 122904,
+      "dtype": "float32",
+      "shape": [
+        10242,
+        3
+      ]
+    },
+    {
+      "name": "right_pial.faces",
+      "offset": 532536,
+      "length": 245760,
+      "dtype": "int32",
+      "shape": [
+        20480,
+        3
+      ]
+    },
+    {
+      "name": "right_pial.sulc",
+      "offset": 778296,
+      "length": 40968,
+      "dtype": "float32",
+      "shape": [
+        10242
+      ]
+    },
+    {
+      "name": "left_inflated.coords",
+      "offset": 819264,
+      "length": 122904,
+      "dtype": "float32",
+      "shape": [
+        10242,
+        3
+      ]
+    },
+    {
+      "name": "right_inflated.coords",
+      "offset": 942168,
+      "length": 122904,
+      "dtype": "float32",
+      "shape": [
+        10242,
+        3
+      ]
+    }
+  ]
+}
