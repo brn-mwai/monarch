@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { LandauCurve } from '@/components/charts/LandauCurve';
 import { NAAGauge } from '@/components/charts/NAAGauge';
@@ -8,18 +8,8 @@ import { ROIBreakdown } from '@/components/charts/ROIBreakdown';
 import { SusceptibilityChart } from '@/components/charts/SusceptibilityChart';
 import { NAAExplainer } from '@/components/explainers/NAAExplainer';
 import { ScientificDisclaimer } from '@/components/explainers/ScientificDisclaimer';
-import {
-  DEMO_BLOBS,
-  generateSpatialActivation,
-  loadBrainCoords,
-  type BrainCoords,
-} from '@/lib/brain-data';
-import {
-  EXAMPLE_CONTENTS,
-  buildSyntheticScan,
-  buildSyntheticTimeSeries,
-  type ExampleContent,
-} from '@/lib/mock-data';
+import { scanText } from '@/lib/inference-client';
+import { EXAMPLE_CONTENTS, type ExampleContent } from '@/lib/mock-data';
 import { getActiveResult, useScanState } from '@/lib/scan-store';
 
 const NAA_LABEL: Record<'LOW' | 'MOD' | 'HIGH', string> = {
@@ -35,42 +25,25 @@ const NAA_LABEL: Record<'LOW' | 'MOD' | 'HIGH', string> = {
  */
 export function ScanTab() {
   const { state, dispatch } = useScanState();
-  const [coords, setCoords] = useState<BrainCoords | null>(null);
+  const [scanning, setScanning] = useState(false);
   const active = getActiveResult(state);
 
-  useEffect(() => {
-    let cancelled = false;
-    loadBrainCoords()
-      .then((c) => {
-        if (!cancelled) setCoords(c);
-      })
-      .catch((err: unknown) => {
-        console.error('ScanTab: failed to load brain coords', err);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const runScan = async (text: string) => {
+    setScanning(true);
+    dispatch({ type: 'START_SCAN' });
+    try {
+      const result = await scanText(text);
+      dispatch({ type: 'SCAN_COMPLETE_A', result });
+      dispatch({ type: 'SET_COLOR_MODE', mode: 'activation' });
+    } catch (err) {
+      dispatch({ type: 'ERROR', message: String(err) });
+    } finally {
+      setScanning(false);
+    }
+  };
 
   const loadExample = (ex: ExampleContent) => {
-    if (!coords) return;
-    const activation = generateSpatialActivation(coords, DEMO_BLOBS);
-    // Generate a 24-frame (24-second) synthetic time series so the
-    // brain can pulse via the AnimationController. The static
-    // activationVector is what the gauges/charts read; the timeSeries
-    // is what the brain animates through TR-by-TR.
-    const timeSeries = buildSyntheticTimeSeries(activation, 24);
-    const base = buildSyntheticScan(
-      `scan-${ex.id}`,
-      ex.text,
-      ex.expectedNAA,
-      activation,
-    );
-    dispatch({
-      type: 'SCAN_COMPLETE_A',
-      result: { ...base, timeSeries, nTrs: 24 },
-    });
-    dispatch({ type: 'SET_COLOR_MODE', mode: 'activation' });
+    void runScan(ex.text);
   };
 
   return (
@@ -96,7 +69,7 @@ export function ScanTab() {
           <button
             key={ex.id}
             type="button"
-            disabled={!coords}
+            disabled={scanning}
             onClick={() => loadExample(ex)}
             className="group flex flex-col overflow-hidden rounded-lg border border-white/10 text-left transition-all duration-200 hover:border-white/25 hover:bg-white/[0.02] disabled:cursor-not-allowed disabled:opacity-40"
           >

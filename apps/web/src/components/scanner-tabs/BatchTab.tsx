@@ -1,16 +1,11 @@
 'use client';
 
 import { UploadSimple } from '@phosphor-icons/react/dist/ssr';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { BatchScatter, type BatchItem } from '@/components/charts/BatchScatter';
-import {
-  DEMO_BLOBS,
-  generateSpatialActivation,
-  loadBrainCoords,
-  type BrainCoords,
-} from '@/lib/brain-data';
-import { buildSyntheticScan } from '@/lib/mock-data';
+import { ScientificDisclaimer } from '@/components/explainers/ScientificDisclaimer';
+import { scanText } from '@/lib/inference-client';
 import { useScanState } from '@/lib/scan-store';
 
 const CATEGORIES: BatchItem['category'][] = [
@@ -57,32 +52,17 @@ function buildSyntheticBatch(): BatchItem[] {
  */
 export function BatchTab() {
   const { dispatch } = useScanState();
-  const [coords, setCoords] = useState<BrainCoords | null>(null);
   const items = useMemo(() => buildSyntheticBatch(), []);
   const ranked = useMemo(() => [...items].sort((a, b) => b.naa - a.naa), [items]);
 
-  useEffect(() => {
-    let cancelled = false;
-    loadBrainCoords()
-      .then((c) => {
-        if (!cancelled) setCoords(c);
-      })
-      .catch((err: unknown) => {
-        console.error('BatchTab: failed to load brain coords', err);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const handleItemClick = (item: BatchItem) => {
-    if (!coords) return;
-    const activation = generateSpatialActivation(coords, DEMO_BLOBS);
-    dispatch({
-      type: 'SCAN_COMPLETE_A',
-      result: buildSyntheticScan(item.id, item.label, item.naa, activation),
-    });
-    dispatch({ type: 'SET_COLOR_MODE', mode: 'activation' });
+  const handleItemClick = async (item: BatchItem) => {
+    try {
+      const result = await scanText(`Corpus item: ${item.label} (NAA ${item.naa.toFixed(2)})`);
+      dispatch({ type: 'SCAN_COMPLETE_A', result });
+      dispatch({ type: 'SET_COLOR_MODE', mode: 'activation' });
+    } catch (err) {
+      dispatch({ type: 'ERROR', message: String(err) });
+    }
   };
 
   return (
@@ -145,6 +125,8 @@ export function BatchTab() {
           </table>
         </div>
       </section>
+
+      <ScientificDisclaimer />
     </div>
   );
 }

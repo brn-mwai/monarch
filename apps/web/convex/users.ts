@@ -7,7 +7,7 @@ export const getCredits = query({
     if (!args.clerkId) return { remaining: 0, max: 0 };
     const user = await ctx.db
       .query("users")
-      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
+      .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId!))
       .unique();
     if (!user) return { remaining: 0, max: 0 };
     return {

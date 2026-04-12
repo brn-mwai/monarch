@@ -469,7 +469,6 @@ export default function HomePage() {
             <Link href="/scanner" className="hover:text-white">Scanner</Link>
             <Link href="/report" className="hover:text-white">Report</Link>
             <Link href="/batch" className="hover:text-white">Batch</Link>
-            <Link href="/demo/brain" className="hover:text-white">Brain demo</Link>
           </nav>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">
             (c) 2026 Brian Mwai / CUEA Department of Physics
