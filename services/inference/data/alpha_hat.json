@@ -1,0 +1,7 @@
+{
+  "alpha_hat": 0.5,
+  "ci_low": null,
+  "ci_high": null,
+  "source": "fallback",
+  "note": "Default fallback. Run scripts/calibrate_alpha.py on NELA-GT-2021 to replace with the OLS-fitted estimate."
+}

@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.39.1",
     "@phosphor-icons/react": "^2.1.10",
     "@types/three": "^0.181.0",
+    "convex": "^1.35.1",
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.6",
     "katex": "^0.16.45",

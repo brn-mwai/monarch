@@ -1,5 +1,10 @@
 'use client';
 
+import {
+  Show,
+  SignInButton,
+  UserButton,
+} from '@clerk/nextjs';
 import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -57,8 +62,9 @@ export function Header() {
         />
       </Link>
 
-      {/* Right: Nav */}
-      <nav className="ml-auto flex items-center gap-6">
+      {/* Right: Nav + Auth */}
+      <div className="ml-auto flex items-center gap-6">
+      <nav className="flex items-center gap-6">
         {NAV_ITEMS.map((item) => {
           const isActive =
             !item.external &&
@@ -87,6 +93,25 @@ export function Header() {
           );
         })}
       </nav>
+
+      <Show when="signed-in">
+        <UserButton
+          appearance={{
+            elements: { avatarBox: 'h-7 w-7' },
+          }}
+        />
+      </Show>
+      <Show when="signed-out">
+        <SignInButton mode="modal">
+          <button
+            type="button"
+            className="rounded-full border border-white/20 px-4 py-1.5 text-xs text-white/70 transition-colors hover:border-white/50 hover:text-white"
+          >
+            Sign In
+          </button>
+        </SignInButton>
+      </Show>
+      </div>
     </header>
   );
 }

@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  monarch-backend:
+    build:
+      context: ./monarch-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./cache:/app/cache
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+    environment:
+      - MONARCH_TRIBE_DEVICE=auto
+      - MONARCH_CACHE_FOLDER=/app/cache
+      - HF_TOKEN=${HF_TOKEN}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: amd
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  monarch-frontend:
+    build:
+      context: ./monarch
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://monarch-backend:8000
+    depends_on:
+      - monarch-backend
+    restart: unless-stopped

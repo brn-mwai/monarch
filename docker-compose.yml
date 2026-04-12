@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  inference:
+    build:
+      context: ./services/inference
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./cache:/app/cache
+      - ./data:/app/data
+    environment:
+      - MONARCH_TRIBE_DEVICE=auto
+      - HF_TOKEN=${HF_TOKEN}
+      - INFERENCE_API_KEY=${INFERENCE_API_KEY}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: amd
+              capabilities: [gpu]
+    restart: unless-stopped

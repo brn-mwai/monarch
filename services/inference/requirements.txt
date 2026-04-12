@@ -1,0 +1,35 @@
+# Core
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.6
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# TRIBE v2 inference (installed separately as editable: pip install -e ../tribev2)
+torch>=2.5.1,<2.7
+numpy==2.2.6
+neuralset==0.0.2
+neuraltrain==0.0.2
+nilearn>=0.10.0
+mne>=1.6.0
+
+# Audio processing (TRIBE v2 text->audio pipeline)
+gTTS>=2.5.0
+langdetect>=1.0.9
+
+# Science / math
+scipy>=1.12.0
+scikit-learn>=1.4.0
+
+# Report generation
+reportlab>=4.1.0
+
+# Utilities
+pyyaml>=6.0
+huggingface-hub>=0.20.0
+tqdm>=4.66.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+httpx>=0.27.0
