@@ -6,6 +6,8 @@ import { LandauCurve } from '@/components/charts/LandauCurve';
 import { NAAGauge } from '@/components/charts/NAAGauge';
 import { ROIBreakdown } from '@/components/charts/ROIBreakdown';
 import { SusceptibilityChart } from '@/components/charts/SusceptibilityChart';
+import { NAAExplainer } from '@/components/explainers/NAAExplainer';
+import { ScientificDisclaimer } from '@/components/explainers/ScientificDisclaimer';
 import {
   DEMO_BLOBS,
   generateSpatialActivation,
@@ -133,9 +135,19 @@ export function ScanTab() {
           <div className="rounded-lg border border-white/10 p-4">
             <LandauCurve data={active.landau} />
           </div>
+          {/* NAA Explainer - plain-language interpretation */}
+          <NAAExplainer
+            naa={active.naa.naa}
+            classification={active.naa.classification}
+            aAff={active.naa.a_aff}
+            aDel={active.naa.a_del}
+          />
+
           <div className="rounded-lg border border-white/10 p-4">
             <ROIBreakdown roiData={active.roiBreakdown} />
           </div>
+
+          <ScientificDisclaimer />
         </div>
       )}
     </div>

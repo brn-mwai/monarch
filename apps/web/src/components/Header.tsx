@@ -1,7 +1,8 @@
 'use client';
 
 import {
-  Show,
+  SignedIn,
+  SignedOut,
   SignInButton,
   UserButton,
 } from '@clerk/nextjs';
@@ -14,27 +15,57 @@ interface NavItem {
   label: string;
   href: string;
   external?: boolean;
+  /** When true, only visible to authenticated users. */
+  protected?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Scanner', href: '/scanner' },
-  { label: 'Report', href: '/report' },
-  { label: 'Batch', href: '/batch' },
+  { label: 'Scanner', href: '/scanner', protected: true },
+  { label: 'Report', href: '/report', protected: true },
+  { label: 'Batch', href: '/batch', protected: true },
   { label: 'Research', href: 'https://cuea.edu', external: true },
   { label: 'AMD', href: 'https://www.amd.com/en/developer.html', external: true },
 ];
 
 /**
- * Fixed top header bar shared by every page.
+ * Fixed top header bar on every page.
  *
- * 48px tall, full width, pure black background, 1px subtle bottom
- * border. Mirrors the TRIBE v2 demo header layout: brand block on the
- * left, primary nav + external research links on the right.
- *
- * Active page link is rendered in pure white; others sit at white/60.
+ * Public visitors see: logo + Research + AMD + Sign In.
+ * Authenticated users see: logo + Scanner + Report + Batch + Research + AMD + UserButton.
  */
 export function Header() {
   const pathname = usePathname() ?? '/';
+
+  const renderNavItem = (item: NavItem) => {
+    const isActive =
+      !item.external &&
+      (pathname === item.href || pathname.startsWith(`${item.href}/`));
+    const cls = `inline-flex items-center gap-1 text-sm transition-colors ${
+      isActive ? 'text-white' : 'text-white/60 hover:text-white'
+    }`;
+    if (item.external) {
+      return (
+        <a
+          key={item.label}
+          href={item.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cls}
+        >
+          {item.label}
+          <ArrowUpRight size={11} weight="bold" className="opacity-60" />
+        </a>
+      );
+    }
+    return (
+      <Link key={item.label} href={item.href} className={cls}>
+        {item.label}
+      </Link>
+    );
+  };
+
+  const publicLinks = NAV_ITEMS.filter((i) => !i.protected);
+  const protectedLinks = NAV_ITEMS.filter((i) => i.protected);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center border-b border-white/10 bg-black px-10">
@@ -46,8 +77,7 @@ export function Header() {
         M-V1
       </Link>
 
-      {/* Center: logo (absolutely centered so the left/right widths
-          do not affect its alignment) */}
+      {/* Center: logo */}
       <Link
         href="/"
         className="group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -64,53 +94,33 @@ export function Header() {
 
       {/* Right: Nav + Auth */}
       <div className="ml-auto flex items-center gap-6">
-      <nav className="flex items-center gap-6">
-        {NAV_ITEMS.map((item) => {
-          const isActive =
-            !item.external &&
-            (pathname === item.href || pathname.startsWith(`${item.href}/`));
-          const className = `inline-flex items-center gap-1 text-sm transition-colors ${
-            isActive ? 'text-white' : 'text-white/60 hover:text-white'
-          }`;
-          if (item.external) {
-            return (
-              <a
-                key={item.label}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={className}
-              >
-                {item.label}
-                <ArrowUpRight size={11} weight="bold" className="opacity-60" />
-              </a>
-            );
-          }
-          return (
-            <Link key={item.label} href={item.href} className={className}>
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+        <nav className="flex items-center gap-6">
+          {/* Protected routes: only visible when signed in */}
+          <SignedIn>
+            {protectedLinks.map(renderNavItem)}
+          </SignedIn>
 
-      <Show when="signed-in">
-        <UserButton
-          appearance={{
-            elements: { avatarBox: 'h-7 w-7' },
-          }}
-        />
-      </Show>
-      <Show when="signed-out">
-        <SignInButton mode="modal">
-          <button
-            type="button"
-            className="rounded-full border border-white/20 px-4 py-1.5 text-xs text-white/70 transition-colors hover:border-white/50 hover:text-white"
-          >
-            Sign In
-          </button>
-        </SignInButton>
-      </Show>
+          {/* Public links: always visible */}
+          {publicLinks.map(renderNavItem)}
+        </nav>
+
+        <SignedIn>
+          <UserButton
+            appearance={{
+              elements: { avatarBox: 'h-7 w-7' },
+            }}
+          />
+        </SignedIn>
+        <SignedOut>
+          <SignInButton mode="modal">
+            <button
+              type="button"
+              className="rounded-full border border-white/20 px-4 py-1.5 text-xs text-white/70 transition-colors hover:border-white/50 hover:text-white"
+            >
+              Sign In
+            </button>
+          </SignInButton>
+        </SignedOut>
       </div>
     </header>
   );
