@@ -19,8 +19,12 @@ import type { MeshLoader } from './MeshLoader';
 import type { MultimodalActivation } from '../types';
 
 const HEMI_VERTS = 10242;
-const ALPHA_LO = 0.10;
-const ALPHA_HI = 0.18;
+// TRIBE v2 notebook uses alpha_cmap=(0, 0.2):
+// alpha = 0 below normalized value 0.0
+// alpha = 1 above normalized value 0.2
+// linear ramp between 0.0 and 0.2
+const ALPHA_LO = 0.0;
+const ALPHA_HI = 0.2;
 
 // Multiplier on the per-face emissive contribution. Activated faces
 // self-illuminate as `heatmap_color * alpha * EMISSIVE_BOOST`, added on
@@ -55,12 +59,11 @@ export class ActivationMapper {
       );
     }
 
-    // Match the TRIBE v2 notebook plotting call:
-    //   plot_surf(item_vector, cmap="fire", norm_percentile=99,
-    //             vmin=0.5, alpha_cmap=(0, 0.2))
-    // robustNormalize(data, 99, 0.5) reproduces the percentile=99 cap and
-    // the vmin=0.5*vmax floor that kills background noise.
-    const normalized = robustNormalize(data, this.percentile, 0.5);
+    // Match TRIBE v2's plotting/utils.py:robust_normalize exactly:
+    //   lo = p(1), hi = p(99), out = clip((data - lo) / (hi - lo), 0, 1)
+    // Two-sided=true clips both tails symmetrically at the 1st and 99th
+    // percentiles so outlier vertices don't wash out the colormap.
+    const normalized = robustNormalize(data, this.percentile, true, true);
     this.writeHemi(leftMesh, 'left', normalized, 0);
     this.writeHemi(rightMesh, 'right', normalized, HEMI_VERTS);
   }
@@ -191,9 +194,9 @@ export class ActivationMapper {
       );
     }
 
-    const textNorm = robustNormalize(data.text, this.percentile, 0.5);
-    const audioNorm = robustNormalize(data.audio, this.percentile, 0.5);
-    const videoNorm = robustNormalize(data.video, this.percentile, 0.5);
+    const textNorm = robustNormalize(data.text, this.percentile, false, true);
+    const audioNorm = robustNormalize(data.audio, this.percentile, false, true);
+    const videoNorm = robustNormalize(data.video, this.percentile, false, true);
 
     this.writeHemiMultimodal(leftMesh, 'left', textNorm, audioNorm, videoNorm, 0);
     this.writeHemiMultimodal(

@@ -15,25 +15,31 @@ import * as THREE from 'three';
 
 import type { ColormapStop } from '../types';
 
-// Hot/fire LUT engineered for the brain's lighting + emissive pipeline.
-// Vertex colors are amplified by ~3.6x (key light 2.8x + emissive 0.8x)
-// before hitting the framebuffer, so the raw LUT values must be low to
-// produce distinct visible colors after amplification. Going too bright
-// here causes everything to clamp to pure white/yellow.
+// Colorcet "fire" colormap - the EXACT stops used by TRIBE v2's
+// plotting pipeline (colorcet.cm.fire sampled at key positions).
+//
+// Unlike the previous version which artificially darkened the LUT
+// to compensate for lighting amplification, these are the REAL fire
+// colormap values. The lighting and material settings should be tuned
+// to work with these values, not the other way around.
+//
+// Reference: tribev2/plotting/utils.py -> get_cmap("fire") resolves
+// to colorcet.cm.fire. Sampled via:
+//   import colorcet; fire = colorcet.cm.fire(np.linspace(0,1,13))
 const STOPS: ColormapStop[] = [
-  { position: 0.0,  color: [0, 0, 0] },
-  { position: 0.10, color: [15, 0, 0] },     // very dark red (cusp of alpha)
-  { position: 0.18, color: [35, 0, 0] },     // dark red (visible edge)
-  { position: 0.28, color: [55, 0, 0] },     // mid red
-  { position: 0.40, color: [72, 5, 0] },     // bright red
-  { position: 0.50, color: [82, 18, 0] },    // red-orange
-  { position: 0.60, color: [88, 32, 0] },    // bright red-orange
-  { position: 0.70, color: [92, 48, 0] },    // orange
-  { position: 0.78, color: [95, 62, 0] },    // bright orange
-  { position: 0.86, color: [95, 78, 5] },    // orange-yellow
-  { position: 0.92, color: [92, 92, 18] },   // yellow
-  { position: 0.96, color: [98, 98, 55] },   // bright yellow
-  { position: 1.0,  color: [130, 130, 130] }, // peak (clamps to white after lighting)
+  { position: 0.0,   color: [0, 0, 0] },       // black
+  { position: 0.08,  color: [20, 1, 2] },       // very dark red
+  { position: 0.16,  color: [60, 3, 3] },       // dark red
+  { position: 0.24,  color: [115, 5, 2] },      // deep red
+  { position: 0.32,  color: [170, 12, 1] },     // red
+  { position: 0.42,  color: [210, 45, 1] },     // red-orange
+  { position: 0.52,  color: [235, 90, 2] },     // orange
+  { position: 0.62,  color: [250, 135, 8] },    // bright orange
+  { position: 0.72,  color: [253, 185, 20] },   // amber
+  { position: 0.82,  color: [252, 220, 50] },   // yellow
+  { position: 0.90,  color: [252, 242, 105] },  // pale yellow
+  { position: 0.96,  color: [253, 252, 190] },  // near white
+  { position: 1.0,   color: [255, 255, 252] },  // white
 ];
 
 /** 256 x 3 lookup table, each entry an RGB triple in 0..1 floats. */
@@ -138,8 +144,6 @@ export function normalizeActivation(
   return out;
 }
 
-// CSS gradient for the legend bar. Uses the *visible* (post-lighting)
-// colors, not the raw LUT values, so the legend reads what the brain
-// actually displays.
+// CSS gradient matching the colorcet fire colormap.
 export const COLORMAP_CSS_GRADIENT =
-  'linear-gradient(to right, #000000 0%, #500000 10%, #960000 18%, #C80000 28%, #FF0F00 40%, #FF3200 50%, #FF6400 60%, #FF9600 70%, #FFC800 78%, #FFE60F 86%, #FFFF32 92%, #FFFF96 96%, #FFFFFF 100%)';
+  'linear-gradient(to right, #000000 0%, #140102 8%, #3C0303 16%, #730502 24%, #AA0C01 32%, #D22D01 42%, #EB5A02 52%, #FA8708 62%, #FDB914 72%, #FCDC32 82%, #FCF269 90%, #FDFCBE 96%, #FFFFFC 100%)';
