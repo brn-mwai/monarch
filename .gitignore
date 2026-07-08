@@ -43,3 +43,6 @@ next-env.d.ts
 /out
 /coverage
 /uploads
+
+# Vendored Meta TRIBE v2 repo (has its own .git; installed via pip install -e .)
+services/inference/tribev2/
