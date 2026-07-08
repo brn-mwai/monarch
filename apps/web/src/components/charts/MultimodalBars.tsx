@@ -20,10 +20,10 @@ interface MultimodalBarsProps {
 /**
  * Per-modality NAA contribution bar chart.
  *
- * Bars colored to match the brain's RGB multimodal pipeline:
- *   R = video
- *   G = text
- *   B = audio
+ * Bars colored to match the brain's RGB multimodal pipeline (paper Fig 7):
+ *   R = text
+ *   G = audio
+ *   B = video
  *   white = combined
  *
  * Only meaningful when the scan was run with multimodal data; the demo

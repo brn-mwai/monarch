@@ -69,6 +69,25 @@ export const LOOKUP: Float32Array = (() => {
   return lut;
 })();
 
+// TRIBE v2 renders with vmin=0.5: only the top half of the robust-normalized
+// range is mapped onto the colormap, and the bottom half is the "off" base.
+// (tribev2 plotting: get_scalar_mappable(..., vmin=0.5)). Both the colour LUT
+// and the alpha ramp must key on this remapped stop, not the raw normalized
+// value, or the brain lights up across the whole lower range.
+export const COLOR_VMIN = 0.5;
+
+/**
+ * Remap a robust-normalized value in [0, 1] onto the colormap stop in [0, 1]
+ * using vmin=0.5. Returns 0 for non-finite input so a bad vertex renders as
+ * inactive rather than poisoning the geometry.
+ */
+export function normalizedToColorStop(normalized: number): number {
+  const t = (normalized - COLOR_VMIN) / (1 - COLOR_VMIN);
+  if (!Number.isFinite(t) || t < 0) return 0;
+  if (t > 1) return 1;
+  return t;
+}
+
 /**
  * Map a scalar value to an RGB triple in 0..1 using the hot/fire colormap.
  * Values outside [vmin, vmax] are clamped.

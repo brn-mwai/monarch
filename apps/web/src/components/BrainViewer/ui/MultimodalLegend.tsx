@@ -7,8 +7,8 @@
  * RGB color triangle: pure R/G/B at the corners, secondary colors
  * (cyan, magenta, yellow) where two circles overlap, white in the
  * center where all three meet. Matches the channel mapping used by
- * ActivationMapper.applyMultimodalActivation:
- *   R = Video, G = Text, B = Audio
+ * ActivationMapper.applyMultimodalActivation and the TRIBE v2 paper
+ * (Fig 7): R = Text, G = Audio, B = Video.
  */
 export function MultimodalLegend() {
   return (
@@ -49,7 +49,7 @@ export function MultimodalLegend() {
           fontSize="9"
           fontFamily="ui-monospace, SFMono-Regular, monospace"
         >
-          VIDEO
+          TEXT
         </text>
         <text
           x="10"
@@ -59,7 +59,7 @@ export function MultimodalLegend() {
           fontSize="9"
           fontFamily="ui-monospace, SFMono-Regular, monospace"
         >
-          TEXT
+          AUDIO
         </text>
         <text
           x="86"
@@ -69,7 +69,7 @@ export function MultimodalLegend() {
           fontSize="9"
           fontFamily="ui-monospace, SFMono-Regular, monospace"
         >
-          AUDIO
+          VIDEO
         </text>
       </svg>
       <span className="text-[10px] uppercase tracking-wider text-white/60">

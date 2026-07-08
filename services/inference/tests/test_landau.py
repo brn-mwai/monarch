@@ -90,6 +90,51 @@ def test_compute_landau_analysis_returns_all_keys():
     assert len(out["free_energy"]["F"]) == 200
 
 
+def test_free_energy_minimum_coincides_with_equilibrium_near_critical():
+    """Corrected coefficients: the F(m) minimum sits at m* near criticality."""
+    beta_j, alpha_hat, naa = 0.7, 0.5, 0.2  # small field -> small m*, quartic valid
+    m_star = find_equilibrium_m(beta_j=beta_j, alpha_hat=alpha_hat, naa=naa)
+    m = np.linspace(-1, 1, 4001)
+    F = landau_free_energy(m, beta_j=beta_j, alpha_hat=alpha_hat, naa=naa)
+    m_argmin = m[np.argmin(F)]
+    assert m_argmin == pytest.approx(m_star, abs=0.02)
+
+
+def test_free_energy_is_even_with_zero_field():
+    """No external field -> F(m) symmetric in m."""
+    m = np.linspace(-1, 1, 101)
+    F = landau_free_energy(m, beta_j=0.7, alpha_hat=0.5, naa=0.0)
+    assert F == pytest.approx(F[::-1], abs=1e-12)
+
+
+def test_ferromagnetic_zero_field_returns_stable_nonzero_root():
+    """beta_J > 1, no field: must return a stable +/- root, NOT the unstable m=0."""
+    beta_j = 1.5
+    m_star = find_equilibrium_m(beta_j=beta_j, alpha_hat=0.5, naa=0.0)
+    assert abs(m_star) > 0.1
+    assert m_star == pytest.approx(np.tanh(beta_j * m_star), abs=1e-8)
+
+
+def test_ferromagnetic_with_positive_field_returns_positive_root():
+    m_star = find_equilibrium_m(beta_j=1.5, alpha_hat=0.5, naa=1.0)
+    assert m_star > 0.0
+
+
+def test_susceptibility_none_at_supercritical_unstable_point():
+    """Evaluated at the unstable m=0 root with beta_J > 1 the denominator is
+    negative; must return None rather than a negative (unphysical) chi."""
+    chi = susceptibility(m_star=0.0, beta_j=1.5, alpha_hat=0.5, naa=0.0)
+    assert chi is None
+
+
+def test_susceptibility_positive_at_ferromagnetic_stable_root():
+    beta_j = 1.5
+    m_star = find_equilibrium_m(beta_j=beta_j, alpha_hat=0.5, naa=0.5)
+    chi = susceptibility(m_star=m_star, beta_j=beta_j, alpha_hat=0.5, naa=0.5)
+    assert chi is not None
+    assert chi > 0.0
+
+
 def test_susceptibility_curve_monotonic_in_naa_for_paramagnetic():
     """For beta_J = 0.5 (paramagnetic), chi should be a smooth function
     of NAA. We just check that the curve has the right length."""

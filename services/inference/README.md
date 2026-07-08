@@ -18,8 +18,10 @@ The frontend brain renderer (`../monarch`) fetches activation vectors from
 | Pure-numpy services (NAA, Landau, ROI, pooling) | ✓ implemented + unit-tested |
 | Pydantic schemas + enums | ✓ |
 | FastAPI app + `/health` + `/api/scan` | ✓ |
-| Inference singleton (`TribeInferenceService`) | ✓ wired (GPU verified on AMD box, not on Windows dev) |
+| Inference singleton (`TribeInferenceService`) | ✓ wired (GPU verified on AMD box, not on Windows dev); runs off the event loop via `run_in_threadpool` |
 | Multimodal predictor | ✓ |
+| API-key auth + token-bucket rate limit | ✓ wired (registered, timing-safe, proxy-aware); auth disabled when `INFERENCE_API_KEY` unset |
+| Activation + time-series store | ✓ `BlobStore` interface; in-memory (TTL+LRU) default, Redis via `MONARCH_REDIS_URL` |
 | Compare / batch / report routers | stubbed (501) |
 | `alpha_hat` calibration script | stubbed (uses fallback 0.5) |
 | PDF report generator | stubbed |
@@ -110,16 +112,25 @@ monarch-backend/
 POST /api/scan
   body: { "text": "...", "modality": "text" }
   returns: ScanResponse {
-    scan_id, naa, landau, roi_breakdown, modality, n_trs, activation_url
+    scan_id, naa, landau, roi_breakdown, modality, n_trs,
+    activation_url, timeseries_url
   }
 
 GET /api/scan/{scan_id}/activation
-  returns: 81,936 bytes (20484 * 4) raw Float32 binary
+  returns: 81,936 bytes (20484 * 4) raw Float32 binary  (static mean-pooled map)
   headers: X-Vertex-Count: 20484, X-Dtype: float32
+
+GET /api/scan/{scan_id}/timeseries
+  returns: n_trs * 81,936 bytes raw Float32 binary, frame-major  (per-TR playback)
+  headers: X-Frame-Count: <T>, X-Vertex-Count: 20484, X-Dtype: float32, X-TR: 1.0
 ```
 
 The Next.js frontend fetches the activation as `await response.arrayBuffer()`
-and passes `new Float32Array(buffer)` directly to `BrainEngine.setActivation`.
+and passes `new Float32Array(buffer)` to `BrainEngine.setActivation` for the
+static map. It fetches the time series the same way and passes it to
+`BrainEngine.setTimeSeries(buffer, n_trs, tr)`; the brain then plays frame N
+from byte offset `N * 20484 * 4`. Normalization is computed once across the
+whole series so playback does not flicker.
 
 ## Licensing notes
 

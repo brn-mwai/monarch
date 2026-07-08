@@ -85,9 +85,9 @@ export const NAA_COLORS = {
 
 /** RGB modality channel colors -- match ActivationMapper R=video G=text B=audio. */
 export const MULTIMODAL_COLORS = {
-  video: '#FF4444',
-  text: '#44FF66',
-  audio: '#4488FF',
+  text: '#FF4444',
+  audio: '#44FF66',
+  video: '#4488FF',
 } as const;
 
 /** Standard chart container className for consistent spacing. */

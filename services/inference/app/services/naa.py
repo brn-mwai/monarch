@@ -21,6 +21,7 @@ from typing import Optional
 import numpy as np
 
 from ..config import settings
+from ..models.enums import NAAClassification
 from .roi import (
     AFFECTIVE_SALIENCE_ROIS,
     DELIBERATIVE_CONTROL_ROIS,
@@ -42,11 +43,18 @@ def compute_naa(
     Returns
     -------
     dict
-        ``naa``: the NAA index value
+        ``naa``: the NAA index value, or ``None`` when undefined
         ``a_aff``: mean affective-salience activation
         ``a_del``: mean deliberative-control activation
         ``classification``: ``"LOW"`` (< 1.0), ``"MOD"`` ([1.0, 2.0]),
-            or ``"HIGH"`` (> 2.0)
+            ``"HIGH"`` (> 2.0), or ``"UNDEFINED"``
+        ``valid``: ``True`` when the ratio is a meaningful index
+
+    The ratio is a meaningful magnitude-asymmetry only when both network
+    means sit at or above baseline. TRIBE outputs are unconstrained, so a
+    negative mean would make ``a_aff / (a_del + delta)`` sign-flip or
+    explode; in that regime the function returns ``UNDEFINED`` rather than
+    a misleading verdict.
     """
     if item_vector.shape != (VERTICES,):
         raise ValueError(f"Expected ({VERTICES},) vector, got {item_vector.shape}")
@@ -57,21 +65,34 @@ def compute_naa(
     a_aff = float(item_vector[aff_indices].mean())
     a_del = float(item_vector[del_indices].mean())
 
+    if not (np.isfinite(a_aff) and np.isfinite(a_del)):
+        raise ValueError("ROI mean activation is non-finite (NaN/inf in input)")
+
+    if a_aff < 0.0 or a_del < 0.0:
+        return {
+            "naa": None,
+            "a_aff": a_aff,
+            "a_del": a_del,
+            "classification": NAAClassification.UNDEFINED.value,
+            "valid": False,
+        }
+
     d = settings.naa_delta if delta is None else delta
     naa = a_aff / (a_del + d)
 
     if naa < 1.0:
-        classification = "LOW"
+        classification = NAAClassification.LOW
     elif naa <= 2.0:
-        classification = "MOD"
+        classification = NAAClassification.MOD
     else:
-        classification = "HIGH"
+        classification = NAAClassification.HIGH
 
     return {
         "naa": float(naa),
         "a_aff": a_aff,
         "a_del": a_del,
-        "classification": classification,
+        "classification": classification.value,
+        "valid": True,
     }
 
 

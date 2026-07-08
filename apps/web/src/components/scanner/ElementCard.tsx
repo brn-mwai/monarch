@@ -1,32 +1,29 @@
 'use client';
 
-import { useRef, useState } from 'react';
-
-import { BrainViewer } from '@/components/BrainViewer';
 import type { ScanResult } from '@/lib/scan-store';
 
 interface ElementCardProps {
-  label: 'A' | 'B';
+  label: string;
   scanResult: ScanResult | null;
   isLoading?: boolean;
+  /** Audience-niched plain-language takeaway, shown under the excerpt. */
+  takeaway?: string;
 }
 
 /**
- * Self-contained scan result card matching the dual-brain compare layout.
- *
- * Each card has:
- * - Header with label badge + NAA classification pill
- * - Left: text excerpt or media preview
- * - Right: independent BrainViewer (its own WebGL context)
- * - Bottom: playback controls when a time series is available
- *
- * Two of these stacked vertically produce the A/B compare view.
+ * One side of a compare (A/B content, or True/Predicted), data-only: label,
+ * NAA pill and the content excerpt. The two brains themselves live in the
+ * split layout's left panel, so the cards stay compact with no redundant brain.
  */
-export function ElementCard({ label, scanResult, isLoading }: ElementCardProps) {
-  const [hemisphere, setHemisphere] = useState<'both' | 'left' | 'right'>('both');
-  const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
-
+export function ElementCard({
+  label,
+  scanResult,
+  isLoading,
+  takeaway,
+}: ElementCardProps) {
   const naa = scanResult?.naa;
+  const isRedAccent = label === 'B' || label === 'Predicted';
+  const title = label === 'A' || label === 'B' ? `Element ${label}` : label;
   const clsColor =
     naa?.classification === 'HIGH'
       ? 'bg-red-500/10 text-red-400 border-red-500/30'
@@ -41,14 +38,14 @@ export function ElementCard({ label, scanResult, isLoading }: ElementCardProps) 
         <div className="flex items-center gap-2">
           <span
             className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
-              label === 'A'
-                ? 'border border-white/30 bg-white/10 text-white'
-                : 'border border-red-500/30 bg-red-500/10 text-red-400'
+              isRedAccent
+                ? 'border border-red-500/30 bg-red-500/10 text-red-400'
+                : 'border border-white/30 bg-white/10 text-white'
             }`}
           >
-            {label}
+            {label.charAt(0)}
           </span>
-          <span className="text-sm font-medium text-white">Element {label}</span>
+          <span className="text-sm font-medium text-white">{title}</span>
         </div>
 
         {naa && (
@@ -60,86 +57,38 @@ export function ElementCard({ label, scanResult, isLoading }: ElementCardProps) 
         )}
       </div>
 
-      {/* Content area: text/media + brain side-by-side */}
-      <div className="flex gap-0">
-        {/* Left: content preview */}
-        <div className="w-[40%] p-4">
-          {scanResult ? (
-            <div className="max-h-48 overflow-y-auto rounded-lg bg-white/[0.03] p-3">
-              <p className="font-mono text-[11px] leading-relaxed text-white/60">
-                {scanResult.inputContent}
-              </p>
-            </div>
-          ) : isLoading ? (
-            <div className="flex h-32 items-center justify-center rounded-lg bg-white/[0.02]">
-              <span className="animate-pulse text-xs text-white/30">
-                Scanning...
-              </span>
-            </div>
-          ) : (
-            <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-white/10">
-              <span className="text-xs text-white/25">
-                Paste content to scan
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Right: independent brain renderer */}
-        <div className="relative h-64 w-[60%] bg-[#060606]">
-          {/* Hemisphere toggle */}
-          <div className="absolute left-1/2 top-3 z-10 flex -translate-x-1/2 gap-1">
-            {(['both', 'left', 'right'] as const).map((h) => (
-              <button
-                key={h}
-                type="button"
-                onClick={() => setHemisphere(h)}
-                className={`rounded-full px-3 py-1 font-mono text-xs uppercase ${
-                  hemisphere === h
-                    ? 'border border-white/30 bg-white/15 text-white'
-                    : 'text-white/40 hover:text-white/60'
-                }`}
-              >
-                {h === 'both' ? 'BOTH' : h === 'left' ? 'L' : 'R'}
-              </button>
-            ))}
+      {/* Content excerpt */}
+      <div className="p-4">
+        {scanResult ? (
+          <div className="max-h-40 overflow-y-auto rounded-lg bg-white/[0.03] p-3">
+            <p className="font-mono text-[11px] leading-relaxed text-white/60">
+              {scanResult.inputContent}
+            </p>
           </div>
+        ) : isLoading ? (
+          <div className="flex h-20 items-center justify-center rounded-lg bg-white/[0.02]">
+            <span className="animate-pulse text-xs text-white/30">
+              Scanning...
+            </span>
+          </div>
+        ) : (
+          <div className="flex h-20 items-center justify-center rounded-lg border border-dashed border-white/10">
+            <span className="text-xs text-white/25">Paste content to scan</span>
+          </div>
+        )}
 
-          <BrainViewer
-            activation={scanResult?.activationVector ?? null}
-            colorMode="activation"
-            showOverlays={false}
-            className="absolute inset-0"
-          />
-        </div>
+        {scanResult && takeaway && (
+          <p className="mt-3 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-[12px] leading-relaxed text-white/70">
+            {takeaway}
+          </p>
+        )}
+
+        {scanResult?.timeSeries && (
+          <p className="mt-3 font-mono text-[10px] uppercase tracking-wider text-white/35">
+            {scanResult.nTrs} TRs - playback on the brain panel
+          </p>
+        )}
       </div>
-
-      {/* Time series playback controls (when available) */}
-      {scanResult?.timeSeries && (
-        <div className="flex items-center gap-3 border-t border-white/10 px-4 py-2">
-          <button
-            type="button"
-            className="text-xs text-white/50 hover:text-white"
-          >
-            -10s
-          </button>
-          <button
-            type="button"
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
-          >
-            <span className="ml-0.5 text-xs text-white">&#9654;</span>
-          </button>
-          <button
-            type="button"
-            className="text-xs text-white/50 hover:text-white"
-          >
-            +10s
-          </button>
-          <span className="font-mono text-xs text-white/40">
-            {scanResult.nTrs} TRs
-          </span>
-        </div>
-      )}
     </div>
   );
 }

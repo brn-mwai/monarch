@@ -13,3 +13,4 @@ class NAAClassification(str, Enum):
     LOW = "LOW"
     MOD = "MOD"
     HIGH = "HIGH"
+    UNDEFINED = "UNDEFINED"

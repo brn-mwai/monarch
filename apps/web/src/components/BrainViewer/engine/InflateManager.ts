@@ -93,8 +93,8 @@ export class InflateManager {
     const geom = mesh.geometry as THREE.BufferGeometry;
     const posAttr = geom.getAttribute('position') as THREE.BufferAttribute;
     const target = posAttr.array as Float32Array;
-    const pial = this.loader.getPialFacePositions(hemi);
-    const infl = this.loader.getInflatedFacePositions(hemi);
+    const pial = this.loader.getPialPositions(hemi);
+    const infl = this.loader.getInflatedPositions(hemi);
 
     for (let i = 0; i < target.length; i++) {
       target[i] = pial[i] + (infl[i] - pial[i]) * t;

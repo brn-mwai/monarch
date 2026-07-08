@@ -45,13 +45,19 @@ def find_equilibrium_m(
 
     The iteration ``m_{k+1} = tanh(beta_J * m_k + h)`` converges
     monotonically when beta_J < 1 (paramagnetic regime) and bistably
-    when beta_J > 1 (ferromagnetic regime, two stable roots). Starting
-    from m_0 = 0 with no external field selects the m=0 root for
-    paramagnetic systems and the m > 0 root for ferromagnetic systems
-    with positive h.
+    when beta_J > 1 (ferromagnetic regime, two stable roots).
+
+    In the ferromagnetic regime m = 0 is an UNSTABLE fixed point, so a
+    seed of exactly 0 would return the unstable root. We seed away from
+    zero to land on the stable +/- root; with no external field the two
+    roots are symmetric and the tie is broken toward +m* by convention.
     """
     h = beta * alpha_hat * naa
-    m = 0.0
+    if beta_j > 1.0:
+        seed = float(np.copysign(0.9, h)) if h != 0.0 else 0.9
+    else:
+        seed = 0.0
+    m = seed
     for _ in range(max_iter):
         m_new = float(np.tanh(beta_j * m + h))
         if abs(m_new - m) < tol:
@@ -67,16 +73,27 @@ def landau_free_energy(
     naa: float,
     beta: float = 1.0,
 ) -> np.ndarray:
-    """Landau free energy F(m) from eq. (10).
+    """Landau free energy F(m), the quartic expansion of the mean-field
+    free energy whose minimisation reproduces the self-consistency.
 
-    F(m) = a(T) * m^2 + b * m^4 - h * m
+    F(m) = a * m^2 + b * m^4 - h * m
 
-    with a(T) = 1 - beta_J, b = (beta_J)^3 / 3, h = beta * alpha_hat * NAA.
+    with a = (1 - beta_J) / 2, b = 1 / 12, h = beta * alpha_hat * NAA.
 
-    The double-well structure appears when a(T) < 0, i.e. beta_J > 1.
+    These coefficients are fixed by requiring dF/dm = 0 to match the
+    cubic-order expansion of m = tanh(beta_J*m + h): artanh(m) ~= m + m^3/3
+    gives (1 - beta_J)*m + m^3/3 - h = 0, i.e. 2a = 1 - beta_J and 4b = 1/3.
+    With these the curve's minimum coincides with find_equilibrium_m near
+    criticality (small m). The double-well structure appears when a < 0,
+    i.e. beta_J > 1.
+
+    NOTE (paper divergence): the product paper, eq. (5), writes
+    a = 1 - beta_J and b = (beta_J)^3 / 3, which do not derive from its own
+    self-consistency eq. (4) and leave the plotted minimum off the marked
+    m*. The coefficients here supersede the paper; update eq. (5) to match.
     """
-    a = 1.0 - beta_j
-    b = (beta_j ** 3) / 3.0
+    a = (1.0 - beta_j) / 2.0
+    b = 1.0 / 12.0
     h = beta * alpha_hat * naa
     return a * m ** 2 + b * m ** 4 - h * m
 
@@ -93,15 +110,17 @@ def susceptibility(
     chi = beta * sech^2(beta_J*m* + beta*alpha_hat*NAA)
           / (1 - beta_J * sech^2(beta_J*m* + beta*alpha_hat*NAA))
 
-    Returns ``None`` when the denominator is within machine epsilon of
-    zero (the susceptibility diverges at the critical point and there
-    is no finite numerical answer to report).
+    Returns ``None`` when the denominator is non-positive: it vanishes at
+    the critical point (susceptibility diverges) and goes negative on the
+    supercritical branch when evaluated off the stable root, where a
+    finite negative chi would be unphysical. At a stable equilibrium the
+    denominator is positive and chi is finite.
     """
     arg = beta_j * m_star + beta * alpha_hat * naa
     sech2 = 1.0 / (np.cosh(arg) ** 2)
     numerator = beta * sech2
     denominator = 1.0 - beta_j * sech2
-    if abs(denominator) < 1e-12:
+    if denominator <= 1e-12:
         return None
     return float(numerator / denominator)
 

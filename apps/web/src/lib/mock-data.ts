@@ -10,9 +10,6 @@
 
 import type { ScanResult } from './scan-store';
 
-const HEMI_VERTS = 10242;
-const TOTAL_VERTS = 2 * HEMI_VERTS;
-
 export type ContentCategory =
   | 'neutral'
   | 'high-outrage'
@@ -93,8 +90,8 @@ export function buildSyntheticScan(
 
   const beta_j = 0.7;
   const alpha_hat = 0.5;
-  const a_lan = 1 - beta_j;
-  const b_lan = (beta_j ** 3) / 3;
+  const a_lan = (1 - beta_j) / 2;
+  const b_lan = 1 / 12;
   const h = alpha_hat * naaValue;
 
   const free_energy_m: number[] = [];
@@ -144,9 +141,9 @@ export function buildSyntheticScan(
       { name: 'TGd', activation: 0.81 * naaValue * 0.5, system: 'affective', vertexCount: 167 },
       { name: 'TE1a', activation: 0.69 * naaValue * 0.5, system: 'affective', vertexCount: 203 },
       { name: '46', activation: 0.42, system: 'deliberative', vertexCount: 289 },
-      { name: '9-46v', activation: 0.38, system: 'deliberative', vertexCount: 234 },
+      { name: 'a9-46v', activation: 0.38, system: 'deliberative', vertexCount: 234 },
       { name: 'd32', activation: 0.45, system: 'deliberative', vertexCount: 178 },
-      { name: '10p', activation: 0.35, system: 'deliberative', vertexCount: 156 },
+      { name: 'a10p', activation: 0.35, system: 'deliberative', vertexCount: 156 },
       { name: '13l', activation: 0.41, system: 'deliberative', vertexCount: 201 },
     ],
   };
@@ -184,39 +181,4 @@ export function buildSyntheticTimeSeries(
   }
 
   return out;
-}
-
-/**
- * Build a synthetic per-modality activation triple for the multimodal
- * RGB visualisation. Each channel lights a different cortical region.
- */
-export function buildSyntheticMultimodal(): {
-  text: Float32Array;
-  audio: Float32Array;
-  video: Float32Array;
-} {
-  const text = new Float32Array(TOTAL_VERTS);
-  const audio = new Float32Array(TOTAL_VERTS);
-  const video = new Float32Array(TOTAL_VERTS);
-  for (let i = 0; i < TOTAL_VERTS; i++) {
-    if (i < 3000 || (i >= HEMI_VERTS && i < HEMI_VERTS + 3000)) {
-      text[i] = 0.5 + Math.random() * 0.5;
-    } else {
-      text[i] = Math.random() * 0.15;
-    }
-    if (
-      (i >= 3000 && i < 5500) ||
-      (i >= HEMI_VERTS + 3000 && i < HEMI_VERTS + 5500)
-    ) {
-      audio[i] = 0.5 + Math.random() * 0.5;
-    } else {
-      audio[i] = Math.random() * 0.15;
-    }
-    if ((i >= 7000 && i < HEMI_VERTS) || (i >= HEMI_VERTS + 7000 && i < TOTAL_VERTS)) {
-      video[i] = 0.5 + Math.random() * 0.5;
-    } else {
-      video[i] = Math.random() * 0.15;
-    }
-  }
-  return { text, audio, video };
 }

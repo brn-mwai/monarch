@@ -1,0 +1,13 @@
+{
+  "dtype": "uint8",
+  "length": 20484,
+  "order": "left[0:10242] then right[10242:20484]",
+  "values": {
+    "1": "cortex (paintable)",
+    "0": "medial wall (grey)"
+  },
+  "source": "mne fsaverage aparc 'unknown', grade_to_vertices -> fsaverage5",
+  "geometry_check": "masked.x=-14.6 cortex.x=-32.3",
+  "cortex_vertices": 18742,
+  "medial_vertices": 1742
+}

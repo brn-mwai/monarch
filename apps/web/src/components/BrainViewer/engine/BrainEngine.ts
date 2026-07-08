@@ -9,6 +9,7 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 import { ActivationMapper } from './ActivationMapper';
 import { AnimationController } from './AnimationController';
@@ -33,6 +34,7 @@ export class BrainEngine {
   private camera: THREE.PerspectiveCamera;
   private controls: OrbitControls;
   private clock = new THREE.Clock();
+  private environmentMap: THREE.Texture | null = null;
 
   private meshLoader: MeshLoader;
   private activationMapper: ActivationMapper | null = null;
@@ -52,7 +54,6 @@ export class BrainEngine {
   private activationData: Float32Array | null = null;
   private multimodalData: MultimodalActivation | null = null;
   private currentColorMode: ColorMode = 'activation';
-  private wasMorphAnimating = false;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -71,10 +72,12 @@ export class BrainEngine {
     this.renderer.setSize(width, height, false);
     // ACES tone mapping was crushing the sulcal contrast and washing the
     // brain to near-white when ambient + key lights summed above 1.0.
-    // Linear/no tone mapping with reduced light intensities preserves the
-    // grey range we set on the vertex colors.
+    // Linear/no tone mapping preserves the grey range we set on the vertex
+    // colors; the small exposure lift recovers the soft highlight the Meta
+    // TRIBE v2 demo gets from its env map without blowing out the base grey.
     this.renderer.toneMapping = THREE.NoToneMapping;
-    this.renderer.toneMappingExposure = 1.0;
+    this.renderer.toneMappingExposure = 1.15;
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.setClearColor(0x000000, 0);
     // The HeadShell uses a per-material clipping plane to hide the
     // LeePerrySmith model's neck stub below chin level.
@@ -86,6 +89,16 @@ export class BrainEngine {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     this.scene = new THREE.Scene();
+
+    // Image-based lighting from a neutral room, the same technique the Meta
+    // TRIBE v2 demo uses to give the white cortical surface a soft, realistic
+    // sheen instead of a flat matte look. Prefiltered into a PMREM once at
+    // construction; the texture is held on the scene so every
+    // MeshStandardMaterial picks it up as its environment.
+    const pmrem = new THREE.PMREMGenerator(this.renderer);
+    this.environmentMap = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    this.scene.environment = this.environmentMap;
+    pmrem.dispose();
 
     this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 2000);
     // fsaverage5 uses Z = superior, so the camera's "up" reference must be
@@ -107,7 +120,7 @@ export class BrainEngine {
 
     this.addLights();
 
-    this.meshLoader = new MeshLoader('/mesh');
+    this.meshLoader = new MeshLoader();
     this.cameraPresets = new CameraPresets(this.camera, this.controls);
     this.roiLabels = new ROILabelManager(this.scene, this.camera, container);
 
@@ -123,18 +136,17 @@ export class BrainEngine {
   }
 
   private addLights(): void {
-    // Harsh lighting: very low ambient + minimal hemisphere fill so the
-    // camera-tracking key light dominates entirely. Per-face flat
-    // normals on the non-indexed brain mesh produce dramatic polygon
-    // shadow contrast under this setup.
-    const ambient = new THREE.AmbientLight(0xffffff, 0.015);
-    const hemi = new THREE.HemisphereLight(0xffffff, 0x000000, 0.01);
+    // White brain with smooth per-vertex normals. The scene env map now
+    // supplies the ambient fill, so the ambient term is trimmed to keep the
+    // bright grey base from clipping; the hemisphere + camera-tracking key
+    // still carve the gyri/sulci as the viewer orbits.
+    const ambient = new THREE.AmbientLight(0xffffff, 0.32);
+    const hemi = new THREE.HemisphereLight(0xffffff, 0x6a6a6a, 0.4);
     hemi.position.set(0, 0, 1);
 
-    // Very strong camera-tracking key light. Whichever side of the
-    // brain faces the viewer is lit; the away-side polygons drop into
-    // near-black shadow. Bumped up to 3.6 to widen the contrast gap.
-    this.cameraLight = new THREE.DirectionalLight(0xffffff, 3.6);
+    // Soft camera-tracking key light. Whichever side faces the viewer is
+    // lit; the away side falls into soft shadow that reveals the folds.
+    this.cameraLight = new THREE.DirectionalLight(0xffffff, 0.85);
     this.cameraLight.position.set(-220, 0, 15);
     this.cameraLight.target.position.set(0, 0, 15);
 
@@ -180,62 +192,48 @@ export class BrainEngine {
     this.inflateManager = new InflateManager(left, right, this.meshLoader);
     this.activationMapper = new ActivationMapper(this.meshLoader);
 
+    // Load the fsaverage5 medial-wall mask so non-cortex stays grey instead
+    // of showing painted (meaningless) activation. Optional: if the asset is
+    // missing, painting falls back to the previous behaviour.
+    void fetch('/mesh/medial_mask.bin')
+      .then((r) => (r.ok ? r.arrayBuffer() : null))
+      .then((buf) => {
+        if (buf) this.activationMapper?.setMedialMask(new Uint8Array(buf));
+      })
+      .catch(() => {});
+
     // Hook the animation controller's per-frame callback so that
     // every interpolated time-series frame lights up the brain via
     // the same path a static activation does.
     this.animationController.onUpdate((frame) => {
-      this.activationMapper?.applyActivation(left, right, frame);
+      this.activationMapper?.applyNormalized(left, right, frame);
     });
 
-    // Measure the actual brain bbox from the loaded meshes (no hardcoded
-    // dimensions) and use it to fit the head silhouette around the brain.
-    const brainBbox = new THREE.Box3().setFromObject(left);
-    brainBbox.expandByObject(right);
-    const brainSize = brainBbox.getSize(new THREE.Vector3());
-    const brainCenter = brainBbox.getCenter(new THREE.Vector3());
-    // eslint-disable-next-line no-console
-    console.log('[BrainEngine] === BRAIN BBOX (init) ===');
-    // eslint-disable-next-line no-console
-    console.log('  min:', brainBbox.min.toArray().map((v) => v.toFixed(1)));
-    // eslint-disable-next-line no-console
-    console.log('  max:', brainBbox.max.toArray().map((v) => v.toFixed(1)));
-    // eslint-disable-next-line no-console
-    console.log('  size:', brainSize.toArray().map((v) => v.toFixed(1)));
-    // eslint-disable-next-line no-console
-    console.log('  center:', brainCenter.toArray().map((v) => v.toFixed(1)));
-
-    this.headShell.fitToActualBrain(brainBbox);
-
-    // Tilt both brain meshes ~10 degrees around the X axis so the
-    // frontal lobe sits slightly higher than the occipital lobe,
-    // matching the natural angle the brain takes inside the cranium.
-    // The rotation happens around each mesh's own origin (fs (0,0,0),
-    // near the brain center). The head silhouette and the camera are
-    // unaffected.
-    const brainTilt = new THREE.Euler(
-      THREE.MathUtils.degToRad(22),
-      0,
-      0,
-      'XYZ',
-    );
+    // Pose the brain FIRST (tilt + lift), THEN fit the head around the
+    // posed brain, so the silhouette wraps the brain wherever it ends up.
+    // The ~22 deg X tilt sets the frontal lobe slightly above the
+    // occipital lobe, matching the natural angle inside the cranium.
+    const brainTilt = new THREE.Euler(THREE.MathUtils.degToRad(22), 0, 0, 'XYZ');
     left.rotation.copy(brainTilt);
     right.rotation.copy(brainTilt);
 
-    // Lift the brain slightly upward inside the cranium so the crown
-    // sits closer to the inside of the skull top, shift it forward so
-    // the frontal lobe sits closer to the inside of the forehead, and
-    // nudge it laterally so it appears centered when viewed from the
-    // anterior camera. (Anterior camera maps world +X to screen left.)
-    const brainLift = 12;
-    const brainForward = 9;
+    // Lift slightly so the crown sits near the inside of the skull top,
+    // and nudge laterally so it reads centered from the anterior camera.
+    const brainLift = 10;
     const brainSideShift = 3;
-    left.position.set(brainSideShift, brainForward, brainLift);
-    right.position.set(brainSideShift, brainForward, brainLift);
+    left.position.set(brainSideShift, 0, brainLift);
+    right.position.set(brainSideShift, 0, brainLift);
 
-    // Construct HemisphereManager AFTER the brain pose is set so its
-    // constructor snapshots this pose as the "closed rest" state.
-    // Otherwise toggling open/close would zero out the side / forward
-    // shift on the next close animation.
+    left.updateMatrixWorld(true);
+    right.updateMatrixWorld(true);
+
+    // Measure the posed brain bbox and fit the head silhouette to it.
+    const brainBbox = new THREE.Box3().setFromObject(left);
+    brainBbox.expandByObject(right);
+    this.headShell.fitToActualBrain(brainBbox);
+
+    // Construct HemisphereManager AFTER the pose so its constructor
+    // snapshots this pose as the "closed rest" state.
     this.hemisphereManager = new HemisphereManager(left, right);
 
     // Camera presets are framed on the FITTED head bbox so the head
@@ -268,45 +266,11 @@ export class BrainEngine {
       this.cameraLight.target.updateMatrixWorld();
     }
 
-    // While the inflate morph is running the current sulcal palette needs
-    // to track the morph parameter, and whatever activation is displayed
-    // must be re-blended against the new palette. We do this whenever the
-    // morph is actively animating, plus one extra frame at the end so the
-    // final state settles correctly.
-    if (this.inflateManager) {
-      const nowAnimating = this.inflateManager.isAnimating();
-      if (nowAnimating || this.wasMorphAnimating) {
-        const t = this.inflateManager.getCurrentT();
-        this.refreshColorsForMorph(t);
-      }
-      this.wasMorphAnimating = nowAnimating;
-    }
-
     this.renderer.render(this.scene, this.camera);
     this.roiLabels.render();
 
     this.animationHandle = requestAnimationFrame(this.animate);
   };
-
-  private refreshColorsForMorph(t: number): void {
-    if (!this.activationMapper) return;
-    this.meshLoader.updateMorphSulcal(t);
-    const left = this.meshLoader.getLeftMesh();
-    const right = this.meshLoader.getRightMesh();
-    if (!this.activationActive) {
-      this.activationMapper.clearActivation(left, right);
-      return;
-    }
-    if (this.currentColorMode === 'multimodal' && this.multimodalData) {
-      this.activationMapper.applyMultimodalActivation(
-        left,
-        right,
-        this.multimodalData,
-      );
-    } else if (this.activationData) {
-      this.activationMapper.applyActivation(left, right, this.activationData);
-    }
-  }
 
   // ------------------------------------------------------------------
   // Public API
@@ -470,6 +434,19 @@ export class BrainEngine {
     this.animationController.pauseManual();
   }
 
+  hasTimeline(): boolean {
+    return this.animationController.hasTimeSeries();
+  }
+  getTimelineDuration(): number {
+    return this.animationController.getDuration();
+  }
+  getTimelineTime(): number {
+    return this.animationController.getCurrentTime();
+  }
+  isTimelinePlaying(): boolean {
+    return this.animationController.isPlaying();
+  }
+
   resize(width: number, height: number): void {
     const w = Math.max(1, width);
     const h = Math.max(1, height);
@@ -492,6 +469,10 @@ export class BrainEngine {
     if (this.cameraLight?.target) this.scene.remove(this.cameraLight.target);
     this.lights = [];
     this.cameraLight = null;
+
+    this.environmentMap?.dispose();
+    this.environmentMap = null;
+    this.scene.environment = null;
 
     this.roiLabels.dispose();
     this.headShell.dispose();

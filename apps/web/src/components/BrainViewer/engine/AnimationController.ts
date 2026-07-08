@@ -16,6 +16,8 @@
 // drive the time series with an internal timer.
 // ============================================================
 
+import { robustNormalize } from '@/lib/normalize';
+
 const VERTS = 20484;
 
 export class AnimationController {
@@ -50,7 +52,12 @@ export class AnimationController {
         `AnimationController: expected ${nTrs * VERTS} values, got ${data.length}`,
       );
     }
-    this.timeSeries = data;
+    // Normalize ONCE across the entire (T, V) series so every frame shares
+    // one colour scale. Per-frame normalization would flicker the brain to
+    // full brightness on every TR and erase the relative changes over time
+    // that the playback is meant to show. Frames emitted downstream are
+    // already in [0, 1] and go through ActivationMapper.applyNormalized.
+    this.timeSeries = robustNormalize(data, 99, true, true);
     this.nTrs = nTrs;
     this.tr = tr;
     this.lastEmittedFrame = -1;
@@ -66,6 +73,21 @@ export class AnimationController {
 
   hasTimeSeries(): boolean {
     return this.timeSeries !== null && this.nTrs > 0;
+  }
+
+  /** Total playback length in seconds. */
+  getDuration(): number {
+    return this.nTrs * this.tr;
+  }
+
+  /** Current playback position in seconds (media-synced or manual). */
+  getCurrentTime(): number {
+    if (this.mediaElement) return this.mediaElement.currentTime;
+    return this.manualTime;
+  }
+
+  isPlaying(): boolean {
+    return this.manualPlaying || this.mediaPlaying;
   }
 
   /**
@@ -108,7 +130,8 @@ export class AnimationController {
    */
   playManual(): void {
     this.manualPlaying = true;
-    this.manualTime = 0;
+    // Resume from the current position; only rewind if we're at the end.
+    if (this.manualTime >= this.getDuration()) this.manualTime = 0;
   }
   pauseManual(): void {
     this.manualPlaying = false;
@@ -142,6 +165,12 @@ export class AnimationController {
   /** External seek (e.g. timeline scrubber). */
   seekTo(timeSeconds: number): void {
     if (!this.timeSeries || this.nTrs === 0) return;
+    // Keep the manual timer in sync so a subsequent play resumes from the
+    // scrubbed position rather than jumping back to the old time.
+    if (!this.mediaElement) {
+      const clamped = Math.max(0, Math.min(timeSeconds, this.getDuration()));
+      this.manualTime = clamped;
+    }
     this.applyTime(timeSeconds);
   }
 

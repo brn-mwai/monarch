@@ -8,6 +8,7 @@ construction so the singleton can be safely shared across requests.
 from pathlib import Path
 from typing import Tuple
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -41,8 +42,40 @@ class Settings(BaseSettings):
     # === Calibration ===
     alpha_hat_file: Path = Path("./data/alpha_hat.json")
 
+    # === Gemma report (via Fireworks AI on AMD hardware) ===
+    # Read from FIREWORKS_API_KEY (no MONARCH_ prefix) to match the
+    # Fireworks-issued env name. Empty disables the LLM call and the
+    # report service falls back to a deterministic template.
+    fireworks_api_key: str = Field(default="", validation_alias="FIREWORKS_API_KEY")
+    fireworks_base_url: str = "https://api.fireworks.ai/inference/v1"
+    # Fireworks model slug for Gemma. Verify against the live Fireworks
+    # catalogue before the demo -- slugs change between model generations.
+    gemma_model: str = "accounts/fireworks/models/gemma-2-9b-it"
+    report_max_tokens: int = 600
+    report_temperature: float = 0.4
+    report_timeout_seconds: float = 30.0
+
     # === Batch ===
     max_batch_size: int = 1500
+
+    # === Auth ===
+    # Bearer token the gateway (Convex) sends. Read from INFERENCE_API_KEY
+    # (no MONARCH_ prefix) to match the deployment env name. Empty disables
+    # auth and the app logs a loud warning at startup.
+    inference_api_key: str = Field(default="", validation_alias="INFERENCE_API_KEY")
+
+    # === Rate limiting ===
+    rate_limit_max_tokens: int = 20
+    rate_limit_refill_rate: float = 0.5  # tokens per second
+    # Behind a load balancer the socket peer is the LB; trust the first
+    # X-Forwarded-For hop for per-client buckets. Disable if not proxied.
+    trust_proxy: bool = True
+
+    # === Blob store (activation + time-series cache) ===
+    # Empty redis_url falls back to the in-memory store (single-process dev).
+    redis_url: str = ""
+    blob_ttl_seconds: int = 3600
+    blob_max_entries: int = 256
 
     # === Server ===
     host: str = "0.0.0.0"

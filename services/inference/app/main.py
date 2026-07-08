@@ -13,6 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import __version__
 from .config import settings
+from .middleware.api_key import APIKeyMiddleware
+from .middleware.rate_limit import RateLimitMiddleware
 from .models.schemas import HealthResponse
 from .routers import batch, compare, report, scan
 from .services.inference import inference_service
@@ -52,13 +54,33 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS for the Next.js frontend(s).
+# Middleware runs outermost-first in reverse registration order, so the
+# request flow is: CORS -> rate limit -> auth -> route. Auth and rate limit
+# are added before CORS here so CORS ends up outermost (preflight + headers
+# are handled before any rejection).
+if settings.inference_api_key:
+    app.add_middleware(APIKeyMiddleware, api_key=settings.inference_api_key)
+else:
+    print(
+        "[Monarch] WARNING: INFERENCE_API_KEY is not set; API authentication "
+        "is DISABLED. Set it before exposing this service publicly."
+    )
+
+app.add_middleware(
+    RateLimitMiddleware,
+    max_tokens=settings.rate_limit_max_tokens,
+    refill_rate=settings.rate_limit_refill_rate,
+    trust_proxy=settings.trust_proxy,
+)
+
+# CORS for the Next.js frontend(s). Explicit methods/headers rather than
+# wildcards since credentials are allowed.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # Register routers.

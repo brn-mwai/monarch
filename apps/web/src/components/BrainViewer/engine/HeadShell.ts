@@ -40,9 +40,9 @@ const HEAD_URL = '/models/head.glb';
 // cranium proportions. Per-axis scaling distorts the head into an
 // inhuman shape. At 13% opacity an oversized silhouette is invisible;
 // a distorted head is immediately obvious.
-const NEEDED_X = 1.55; // brain width * 1.55 must fit head native width  (temples)
-const NEEDED_Y = 1.55; // brain depth * 1.55 must fit head native depth  (occipital)
-const NEEDED_Z = 1.70; // brain height * 1.70 must fit head native height (face/jaw below)
+const NEEDED_X = 1.32; // brain width * 1.32 must fit head native width  (temples)
+const NEEDED_Y = 1.32; // brain depth * 1.32 must fit head native depth  (occipital)
+const NEEDED_Z = 1.46; // brain height * 1.46 must fit head native height (face/jaw below)
 
 // Cranium top sits CRANIUM_GAP mm above the brain top (max.z).
 const CRANIUM_GAP = 18;

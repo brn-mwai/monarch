@@ -17,12 +17,7 @@ import { useEffect, useState } from 'react';
 import { BrainViewer } from '@/components/BrainViewer';
 import { NAADistributionMini } from '@/components/charts/NAADistributionMini';
 import { Equation } from '@/components/Equation';
-import {
-  DEMO_BLOBS,
-  generateSpatialActivation,
-  loadBrainCoords,
-  type BrainCoords,
-} from '@/lib/brain-data';
+import { buildDenseActivation } from '@/lib/roi-activation';
 
 const FEATURES = [
   {
@@ -57,16 +52,48 @@ const FEATURES = [
   },
 ];
 
-// "Neutral" content lights a tight orbital + lateral-temporal blob;
-// "Reactive" content lights a wider, brighter set covering anterior
-// insula, anterior cingulate proxies, and ventral OFC. Same anatomy,
-// different intensities.
-const NEUTRAL_BLOBS = [
-  { hemi: 'left' as const,  center: [-50, -18, -8] as [number, number, number], sigma: 14, peak: 0.55 },
-  { hemi: 'right' as const, center: [50, -18, -8]  as [number, number, number], sigma: 14, peak: 0.55 },
+// Both brains light the same real ROIs the NAA index is computed over;
+// only the affective/deliberative balance differs. Neutral content (low
+// NAA) lights the deliberative-control network; reactive content (high
+// NAA) lights the affective-salience network.
+const WHO_ITS_FOR = [
+  {
+    title: 'Researchers',
+    value:
+      'A measuring stick for "is this built to provoke?" - run it across thousands of items and study the pattern at a scale no one could read by hand.',
+    Icon: ChartLineUp,
+  },
+  {
+    title: 'Educators',
+    value:
+      'Show students the same story written two ways and watch the score and the brain view diverge. Manipulation becomes something they can see, not just be told about.',
+    Icon: Brain,
+  },
+  {
+    title: 'Journalists & editors',
+    value:
+      'A gut-check before you publish: are we informing people, or fear-baiting them? Answered honestly about your own headline.',
+    Icon: Waveform,
+  },
+  {
+    title: 'Parents & EdTech',
+    value:
+      "A sugar-label for children's media - rate a clip and see whether it is calm or built to over-excite. It checks the content, never the child.",
+    Icon: CubeFocus,
+  },
+  {
+    title: 'Safety & fact-check teams',
+    value:
+      'Flag emotionally manipulative content at scale - scam messages and outrage feeds ranked by their emotional fingerprint, ready for human review.',
+    Icon: Stack,
+  },
+  {
+    title: 'Students',
+    value:
+      'A real, working example that connects brain-AI with the physics of crowds - far more memorable than a textbook.',
+    Icon: Atom,
+  },
 ];
-
-const REACTIVE_BLOBS = DEMO_BLOBS;
 
 export default function HomePage() {
   const [neutralAct, setNeutralAct] = useState<Float32Array | null>(null);
@@ -74,14 +101,14 @@ export default function HomePage() {
 
   useEffect(() => {
     let cancelled = false;
-    loadBrainCoords()
-      .then((c: BrainCoords) => {
+    Promise.all([buildDenseActivation(0.84), buildDenseActivation(3.71)])
+      .then(([neutral, reactive]) => {
         if (cancelled) return;
-        setNeutralAct(generateSpatialActivation(c, NEUTRAL_BLOBS, 0.002));
-        setReactiveAct(generateSpatialActivation(c, REACTIVE_BLOBS, 0.005));
+        setNeutralAct(neutral);
+        setReactiveAct(reactive);
       })
       .catch((err: unknown) => {
-        console.error('home: failed to load brain coords', err);
+        console.error('home: failed to build hero activation', err);
       });
     return () => {
       cancelled = true;
@@ -91,14 +118,14 @@ export default function HomePage() {
   return (
     <div className="bg-black text-white">
       {/* === Section 1 - Hero ================================================ */}
-      <section className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 py-10">
+      <section className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 py-8">
         <div className="grid w-full max-w-[1600px] grid-cols-1 items-center gap-10 md:grid-cols-[1fr_minmax(320px,500px)_1fr]">
           {/* LEFT brain - Neutral framing */}
           <figure className="flex flex-col items-center">
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-white/50">
               Neutral framing
             </p>
-            <div className="relative h-[560px] w-full max-w-[540px]">
+            <div className="relative h-[480px] w-full max-w-[540px]">
               <BrainViewer
                 activation={neutralAct}
                 colorMode="activation"
@@ -175,7 +202,7 @@ export default function HomePage() {
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-white/50">
               Reactive framing
             </p>
-            <div className="relative h-[560px] w-full max-w-[540px]">
+            <div className="relative h-[480px] w-full max-w-[540px]">
               <BrainViewer
                 activation={reactiveAct}
                 colorMode="activation"
@@ -189,6 +216,45 @@ export default function HomePage() {
               NAA 3.71 / HIGH
             </p>
           </figure>
+        </div>
+      </section>
+
+      {/* === Section 1.5 - What it does + who it's for ====================== */}
+      <section className="border-t border-white/10 px-6 py-24">
+        <div className="mx-auto max-w-5xl">
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-white/45">
+            What it does
+          </p>
+          <h2 className="mt-4 max-w-3xl text-balance text-3xl font-semibold leading-tight text-white sm:text-4xl">
+            It rates a piece of content for how strongly it is built to hit your
+            emotions versus make you think.
+          </h2>
+          <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/65">
+            Give it text, audio, or video. You get back a clear score - Calm,
+            Mixed, or Charged - a view of where the content tends to land in the
+            brain, and a preview of how it could ripple through a crowd. It rates
+            the content, not any real person.
+          </p>
+
+          <p className="mt-14 font-mono text-[11px] uppercase tracking-[0.3em] text-white/45">
+            Who it&rsquo;s for
+          </p>
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {WHO_ITS_FOR.map(({ title, value, Icon }) => (
+              <article
+                key={title}
+                className="rounded-lg border border-white/10 p-6 transition-colors hover:border-white/25"
+              >
+                <Icon size={22} weight="duotone" className="mb-4 text-white/85" />
+                <h3 className="mb-2 text-base font-semibold text-white">
+                  {title}
+                </h3>
+                <p className="text-[13px] leading-relaxed text-white/60">
+                  {value}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -392,7 +458,7 @@ export default function HomePage() {
           </p>
           <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.03] px-6 py-5">
             <Equation
-              tex={String.raw`F(m) \;=\; (1 - \beta J)\,m^{2} \;+\; \tfrac{(\beta J)^{3}}{3}\,m^{4} \;-\; h\,m`}
+              tex={String.raw`F(m) \;=\; \tfrac{1 - \beta J}{2}\,m^{2} \;+\; \tfrac{1}{12}\,m^{4} \;-\; h\,m`}
             />
           </div>
 

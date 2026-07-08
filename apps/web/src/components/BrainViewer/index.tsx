@@ -15,6 +15,7 @@ import type {
 import { ActivityLegend } from './ui/ActivityLegend';
 import { ControlToggles } from './ui/ControlToggles';
 import { MultimodalLegend } from './ui/MultimodalLegend';
+import { PlaybackControls } from './ui/PlaybackControls';
 import { ROIDescriptionPanel } from './ui/ROIDescriptionPanel';
 
 export { BrainEngine } from './engine/BrainEngine';
@@ -56,6 +57,8 @@ export function BrainViewer({
   const [dataMode, setDataMode] = useState<DataMode>(dataModeProp ?? 'predicted');
   const [labelsVisible, setLabelsVisible] = useState(false);
   const [selectedROI, setSelectedROI] = useState<ROIDescription | null>(null);
+  const [playbackPlaying, setPlaybackPlaying] = useState(false);
+  const [playbackTime, setPlaybackTime] = useState(0);
 
   // --- Mount / unmount ----------------------------------------------
   useEffect(() => {
@@ -153,7 +156,43 @@ export function BrainViewer({
     } else {
       engine.clearTimeSeries();
     }
+    setPlaybackPlaying(false);
+    setPlaybackTime(0);
   }, [timeSeries, nTrs, tr, isLoaded]);
+
+  // Track playback position while playing so the scrubber follows the brain.
+  useEffect(() => {
+    if (!playbackPlaying) return;
+    let raf = 0;
+    const tick = () => {
+      const engine = engineRef.current;
+      if (engine) setPlaybackTime(engine.getTimelineTime());
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [playbackPlaying]);
+
+  const handlePlayPause = () => {
+    const engine = engineRef.current;
+    if (!engine) return;
+    if (playbackPlaying) {
+      engine.pauseManualTimeline();
+      setPlaybackPlaying(false);
+    } else {
+      engine.playManualTimeline();
+      setPlaybackPlaying(true);
+    }
+  };
+
+  const handleSeek = (seconds: number) => {
+    const engine = engineRef.current;
+    if (!engine) return;
+    engine.pauseManualTimeline();
+    engine.seekTimeSeries(seconds);
+    setPlaybackPlaying(false);
+    setPlaybackTime(seconds);
+  };
 
   // Bind / unbind the media element separately so a parent can swap
   // the player without re-uploading the time series.
@@ -267,6 +306,15 @@ export function BrainViewer({
             <ROIDescriptionPanel
               roi={selectedROI}
               onClose={() => setSelectedROI(null)}
+            />
+          )}
+          {timeSeries && nTrs > 0 && !mediaElement && (
+            <PlaybackControls
+              playing={playbackPlaying}
+              time={playbackTime}
+              duration={nTrs * tr}
+              onPlayPause={handlePlayPause}
+              onSeek={handleSeek}
             />
           )}
         </>

@@ -3,13 +3,12 @@
 import { useEffect, useState } from 'react';
 
 import { MultimodalBars } from '@/components/charts/MultimodalBars';
+import { buildSyntheticScan } from '@/lib/mock-data';
 import {
-  DEMO_BLOBS,
-  generateSpatialActivation,
-  loadBrainCoords,
-  type BrainCoords,
-} from '@/lib/brain-data';
-import { buildSyntheticMultimodal, buildSyntheticScan } from '@/lib/mock-data';
+  buildModalityActivation,
+  loadModalityVertices,
+  type ModalityVertices,
+} from '@/lib/roi-activation';
 import { getActiveResult, useScanState } from '@/lib/scan-store';
 
 type Variant = 'combined' | 'text' | 'audio' | 'video';
@@ -35,18 +34,18 @@ const VARIANT_NOTE: Record<Variant, string> = {
  */
 export function MultimodalTab() {
   const { state, dispatch } = useScanState();
-  const [coords, setCoords] = useState<BrainCoords | null>(null);
+  const [modality, setModality] = useState<ModalityVertices | null>(null);
   const [activeVariant, setActiveVariant] = useState<Variant>('combined');
   const active = getActiveResult(state);
 
   useEffect(() => {
     let cancelled = false;
-    loadBrainCoords()
-      .then((c) => {
-        if (!cancelled) setCoords(c);
+    loadModalityVertices()
+      .then((m) => {
+        if (!cancelled) setModality(m);
       })
       .catch((err: unknown) => {
-        console.error('MultimodalTab: failed to load brain coords', err);
+        console.error('MultimodalTab: failed to load modality vertices', err);
       });
     return () => {
       cancelled = true;
@@ -54,7 +53,7 @@ export function MultimodalTab() {
   }, []);
 
   const loadVariant = (variant: Variant) => {
-    if (!coords) return;
+    if (!modality) return;
     setActiveVariant(variant);
     const naa = 1.8;
     const base = buildSyntheticScan(
@@ -63,9 +62,9 @@ export function MultimodalTab() {
       naa,
       null,
     );
+    const mm = buildModalityActivation(modality);
 
     if (variant === 'combined') {
-      const mm = buildSyntheticMultimodal();
       dispatch({
         type: 'SCAN_COMPLETE_A',
         result: { ...base, multimodal: mm },
@@ -74,7 +73,6 @@ export function MultimodalTab() {
       return;
     }
 
-    const mm = buildSyntheticMultimodal();
     const single =
       variant === 'text' ? mm.text : variant === 'audio' ? mm.audio : mm.video;
     dispatch({
@@ -103,7 +101,7 @@ export function MultimodalTab() {
             Channel mapping
           </p>
           <p>
-            Red = video, Green = text, Blue = audio. Pure colours show single-
+            Red = text, Green = audio, Blue = video. Pure colours show single-
             modality regions; blends mark areas integrating multiple senses.
           </p>
         </div>
@@ -117,7 +115,7 @@ export function MultimodalTab() {
             <button
               key={v}
               type="button"
-              disabled={!coords}
+              disabled={!modality}
               onClick={() => loadVariant(v)}
               className={`flex h-32 flex-col items-center justify-center rounded-lg border p-4 text-center transition-all ${
                 isActive

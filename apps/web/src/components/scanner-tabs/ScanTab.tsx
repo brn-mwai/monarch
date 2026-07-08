@@ -8,6 +8,7 @@ import { ROIBreakdown } from '@/components/charts/ROIBreakdown';
 import { SusceptibilityChart } from '@/components/charts/SusceptibilityChart';
 import { NAAExplainer } from '@/components/explainers/NAAExplainer';
 import { ScientificDisclaimer } from '@/components/explainers/ScientificDisclaimer';
+import { demographicLabel, demographicTakeaway } from '@/lib/demographics';
 import { scanText } from '@/lib/inference-client';
 import { EXAMPLE_CONTENTS, type ExampleContent } from '@/lib/mock-data';
 import { getActiveResult, useScanState } from '@/lib/scan-store';
@@ -93,6 +94,14 @@ export function ScanTab() {
       {/* Results -- visible only when an active scan exists */}
       {active && (
         <div className="mt-8 space-y-6">
+          <div className="rounded-lg border border-white/10 bg-white/[0.02] p-4">
+            <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-white/40">
+              {demographicLabel(state.demographic)} takeaway
+            </p>
+            <p className="text-[15px] leading-relaxed text-white/80">
+              {demographicTakeaway(state.demographic, active.naa)}
+            </p>
+          </div>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <div className="rounded-lg border border-white/10 p-4">
               <NAAGauge

@@ -4,10 +4,12 @@ import uuid
 
 import numpy as np
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response
 
 from ..config import settings
 from ..dependencies import require_loaded_model
+from ..middleware.input_validation import validate_text_input
 from ..models.schemas import (
     LandauResult,
     NAAResult,
@@ -18,13 +20,18 @@ from ..models.schemas import (
 from ..services.alpha_calibration import load_alpha_hat
 from ..services.inference import TribeInferenceService
 from ..services.landau import compute_landau_analysis
-from ..services.naa import compute_naa, compute_roi_breakdown
+from ..services.naa import VERTICES, compute_naa, compute_roi_breakdown
+from ..services.stores import blob_store
 
 router = APIRouter(prefix="/api", tags=["scan"])
 
-# In-memory store for activation vectors. Replace with Redis or a small
-# SQLite cache when the API moves out of single-process mode.
-_activation_store: dict[str, np.ndarray] = {}
+
+def activation_key(scan_id: str) -> str:
+    return f"act:{scan_id}"
+
+
+def timeseries_key(scan_id: str) -> str:
+    return f"ts:{scan_id}"
 
 
 @router.post("/scan", response_model=ScanResponse)
@@ -41,7 +48,11 @@ async def scan_content(
     if request.modality.value == "text":
         if not request.text:
             raise HTTPException(400, "Text content required for text modality")
-        result = model.predict_text(request.text)
+        # Server-side validation + sanitization (the frontend's pass is
+        # bypassable). Then run the blocking model off the event loop so one
+        # scan does not stall every other request on the single worker.
+        clean_text = validate_text_input(request.text)
+        result = await run_in_threadpool(model.predict_text, clean_text)
     else:
         raise HTTPException(
             501,
@@ -52,6 +63,13 @@ async def scan_content(
 
     # NAA
     naa_dict = compute_naa(item_vector)
+    if not naa_dict["valid"]:
+        raise HTTPException(
+            422,
+            "NAA is undefined for this content: one or both ROI networks show "
+            "below-baseline mean activation, so the affective/deliberative ratio "
+            "is not a meaningful index. No processing-bias verdict is emitted.",
+        )
 
     # Calibrated alpha_hat (or fallback)
     cal = load_alpha_hat(settings.alpha_hat_file)
@@ -75,9 +93,13 @@ async def scan_content(
         ROIBreakdown(name=name, **values) for name, values in breakdown.items()
     ]
 
-    # Cache activation for the brain renderer
+    # Cache the static map and the per-TR series for the brain renderer.
     scan_id = str(uuid.uuid4())
-    _activation_store[scan_id] = item_vector
+    blob_store.put(activation_key(scan_id), item_vector)
+    blob_store.put(
+        timeseries_key(scan_id),
+        np.ascontiguousarray(result["raw_preds"], dtype=np.float32),
+    )
 
     return ScanResponse(
         scan_id=scan_id,
@@ -95,6 +117,7 @@ async def scan_content(
         modality=request.modality,
         n_trs=int(result["n_trs"]),
         activation_url=f"/api/scan/{scan_id}/activation",
+        timeseries_url=f"/api/scan/{scan_id}/timeseries",
     )
 
 
@@ -106,10 +129,10 @@ async def get_activation(scan_id: str) -> Response:
     wraps it in a ``Float32Array``. Total payload size is ``20484 * 4 =
     81,936`` bytes regardless of the input modality.
     """
-    if scan_id not in _activation_store:
+    vector = blob_store.get(activation_key(scan_id))
+    if vector is None:
         raise HTTPException(404, "Scan not found")
 
-    vector = _activation_store[scan_id]
     return Response(
         content=vector.astype(np.float32).tobytes(),
         media_type="application/octet-stream",
@@ -117,5 +140,37 @@ async def get_activation(scan_id: str) -> Response:
             "Content-Disposition": f"attachment; filename={scan_id}.bin",
             "X-Vertex-Count": "20484",
             "X-Dtype": "float32",
+        },
+    )
+
+
+@router.get("/scan/{scan_id}/timeseries")
+async def get_timeseries(scan_id: str) -> Response:
+    """Return the (T, 20484) per-TR activation as raw frame-major float32.
+
+    Frame ``f`` occupies bytes ``[f * 20484 * 4, (f + 1) * 20484 * 4)``. The
+    frontend fetches this as an ``ArrayBuffer``, wraps it in a
+    ``Float32Array``, and drives the brain playback at one frame per TR.
+    """
+    frames = blob_store.get(timeseries_key(scan_id))
+    if frames is None:
+        raise HTTPException(404, "Scan time series not found")
+
+    if frames.ndim != 2 or frames.shape[1] != VERTICES:
+        raise HTTPException(
+            500,
+            f"Unexpected time-series shape {frames.shape}; expected (T, {VERTICES})",
+        )
+
+    n_frames = int(frames.shape[0])
+    return Response(
+        content=frames.tobytes(),
+        media_type="application/octet-stream",
+        headers={
+            "Content-Disposition": f"attachment; filename={scan_id}.timeseries.bin",
+            "X-Frame-Count": str(n_frames),
+            "X-Vertex-Count": str(VERTICES),
+            "X-Dtype": "float32",
+            "X-TR": "1.0",
         },
     )

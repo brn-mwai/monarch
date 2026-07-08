@@ -29,6 +29,7 @@ class NAAResult(BaseModel):
     a_aff: float
     a_del: float
     classification: NAAClassification
+    valid: bool = True
 
 
 class LandauResult(BaseModel):
@@ -55,13 +56,25 @@ class ScanResponse(BaseModel):
     roi_breakdown: list[ROIBreakdown]
     modality: Modality
     n_trs: int
-    activation_url: str  # URL for the (20484,) Float32 binary blob
+    activation_url: str  # URL for the predicted (20484,) Float32 binary blob
+    timeseries_url: Optional[str] = None  # URL for the (T, 20484) Float32 playback blob
+    # URL for a recorded ground-truth (20484,) Float32 blob, present only for
+    # benchmark stimuli that ship with real fMRI. None for arbitrary content,
+    # which has no recorded reference -- the client renders an honest
+    # "reference unavailable" state rather than inventing one.
+    true_activation_url: Optional[str] = None
 
 
 class CompareResponse(BaseModel):
     content_a: ScanResponse
     content_b: ScanResponse
     naa_difference: float
+
+
+class ReportResponse(BaseModel):
+    summary: str
+    source: str  # "gemma" (Fireworks) or "fallback" (deterministic template)
+    model: str
 
 
 class HealthResponse(BaseModel):

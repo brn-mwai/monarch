@@ -11,8 +11,10 @@ IMPORTANT CORRECTIONS from the audit (see monarch-audit/AUDIT_REPORT.md):
   - "MI" (mid-insula) -> use "AAIC" (agranular insular complex). Mid-
     insula is a subdivision of insular cortex; AAIC is the closest
     cortical proxy in HCP MMP1.0.
-  - "Fp1" / "Fp2" are EEG labels -> use "10p" and "10pp" (frontopolar
-    cortex). EEG electrode names do not exist as parcels.
+  - "Fp1" / "Fp2" are EEG labels -> use the frontopolar parcels "a10p",
+    "p10p", "10pp". EEG electrode names do not exist as parcels.
+  - "9-46v" and "10p" are not standalone HCP parcels; the real names are
+    "a9-46v"/"p9-46v" and "a10p"/"p10p" (anterior/posterior splits).
   - Nucleus accumbens / ventral striatum are SUBCORTICAL -- not
     available in the released cortical-only TRIBE v2 checkpoint. The
     audit notes this. They are intentionally omitted from NAA.
@@ -60,14 +62,16 @@ AFFECTIVE_SALIENCE_ROIS: list[str] = [
 ]
 
 DELIBERATIVE_CONTROL_ROIS: list[str] = [
-    "46",     # mid-DLPFC
-    "9-46v",  # ventral area 9-46
-    "11l",    # lateral area 11
-    "13l",    # lateral area 13
-    "d32",    # dorsal area 32
-    "p32",    # pregenual area 32
-    "10p",    # frontopolar area 10p
-    "10pp",   # frontopolar area 10pp
+    "46",       # mid-DLPFC
+    "a9-46v",   # anterior ventral area 9-46
+    "p9-46v",   # posterior ventral area 9-46
+    "11l",      # lateral area 11
+    "13l",      # lateral area 13
+    "d32",      # dorsal area 32
+    "p32",      # pregenual area 32
+    "a10p",     # anterior frontopolar area 10p
+    "p10p",     # posterior frontopolar area 10p
+    "10pp",     # frontopolar area 10pp
 ]
 
 

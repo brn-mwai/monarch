@@ -1,20 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { LandauCurve } from '@/components/charts/LandauCurve';
 import { MultimodalBars } from '@/components/charts/MultimodalBars';
 import { NAAGauge } from '@/components/charts/NAAGauge';
 import { ROIBreakdown } from '@/components/charts/ROIBreakdown';
 import { SusceptibilityChart } from '@/components/charts/SusceptibilityChart';
-import {
-  DEMO_BLOBS,
-  generateSpatialActivation,
-  loadBrainCoords,
-  type BrainCoords,
-} from '@/lib/brain-data';
 import { buildSyntheticScan } from '@/lib/mock-data';
+import { buildDenseActivation } from '@/lib/roi-activation';
 import { getActiveResult, useScanState } from '@/lib/scan-store';
 
 const DISCLAIMER =
@@ -22,33 +17,32 @@ const DISCLAIMER =
 
 export default function ReportPage() {
   const { state, dispatch } = useScanState();
-  const [coords, setCoords] = useState<BrainCoords | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    loadBrainCoords()
-      .then((c) => {
-        if (!cancelled) setCoords(c);
-      })
-      .catch((err: unknown) => {
-        console.error('report: failed to load brain coords', err);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   // If the user lands here cold, seed a synthetic scan so the page is
   // never empty -- the report is meant to be the post-scan view.
   useEffect(() => {
-    if (!coords) return;
     if (state.contentA) return;
-    const activation = generateSpatialActivation(coords, DEMO_BLOBS);
-    dispatch({
-      type: 'SCAN_COMPLETE_A',
-      result: buildSyntheticScan('report-demo', 'Demo content', 2.4, activation),
-    });
-  }, [coords, state.contentA, dispatch]);
+    let cancelled = false;
+    buildDenseActivation(2.4)
+      .then((activation) => {
+        if (cancelled) return;
+        dispatch({
+          type: 'SCAN_COMPLETE_A',
+          result: buildSyntheticScan(
+            'report-demo',
+            'Demo content',
+            2.4,
+            activation,
+          ),
+        });
+      })
+      .catch((err: unknown) => {
+        console.error('report: failed to build demo activation', err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [state.contentA, dispatch]);
 
   const active = getActiveResult(state);
 

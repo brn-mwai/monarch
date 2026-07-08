@@ -34,13 +34,19 @@ export function robustNormalize(
   const out = new Float32Array(n);
   if (n === 0) return out;
 
-  // Sort a copy to compute percentiles
+  // Sort a copy to compute percentiles. Non-finite values (NaN/inf) sort to
+  // the end; count the finite prefix so the percentiles ignore them and a
+  // corrupt vertex never sets the colour scale or poisons the geometry.
   const sorted = new Float32Array(n);
   for (let i = 0; i < n; i++) sorted[i] = data[i];
   sorted.sort();
 
+  let nFinite = n;
+  while (nFinite > 0 && !Number.isFinite(sorted[nFinite - 1])) nFinite--;
+  if (nFinite === 0) return out;
+
   const pct = (q: number) =>
-    sorted[Math.min(n - 1, Math.max(0, Math.floor((q / 100) * (n - 1))))];
+    sorted[Math.min(nFinite - 1, Math.max(0, Math.floor((q / 100) * (nFinite - 1))))];
 
   const hi = pct(percentile);
   const lo = twoSided ? pct(100 - percentile) : sorted[0];
@@ -49,7 +55,12 @@ export function robustNormalize(
   if (range <= 0) return out;
 
   for (let i = 0; i < n; i++) {
-    let t = (data[i] - lo) / range;
+    const x = data[i];
+    if (!Number.isFinite(x)) {
+      out[i] = 0;
+      continue;
+    }
+    let t = (x - lo) / range;
     if (clip) {
       if (t < 0) t = 0;
       if (t > 1) t = 1;

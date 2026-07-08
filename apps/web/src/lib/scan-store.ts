@@ -17,6 +17,8 @@
 
 import { createContext, useContext, type Dispatch } from 'react';
 
+import type { DemographicId } from './demographics';
+
 // === Domain types ===
 
 export interface ROIData {
@@ -56,8 +58,15 @@ export interface ScanResult {
   roiBreakdown: ROIData[];
   modality: 'text' | 'audio' | 'video';
   nTrs: number;
-  /** (20484,) cortical activation vector for the brain renderer. */
+  /** (20484,) model-PREDICTED cortical activation for the brain renderer. */
   activationVector: Float32Array | null;
+  /**
+   * (20484,) recorded ground-truth activation, present only for benchmark
+   * stimuli that ship with real fMRI. Null for arbitrary content -- the
+   * true-vs-predicted compare then shows an honest "no reference" state
+   * instead of a fabricated brain.
+   */
+  trueActivation?: Float32Array | null;
   /**
    * Optional flat (T * 20484) Float32 time series. When present, the
    * scanner / report pages can hand it to BrainEngine.setTimeSeries()
@@ -75,6 +84,12 @@ export interface ScanResult {
 export type ScanMode = 'idle' | 'scanning' | 'result' | 'compare';
 export type ActiveContent = 'A' | 'B';
 export type ColorMode = 'activation' | 'multimodal';
+/**
+ * Which pairing the Compare tab's two brains represent:
+ *   - 'ab':    Content A vs Content B (two different inputs, both predicted).
+ *   - 'truth': Recorded true vs model predicted for a single input.
+ */
+export type CompareView = 'ab' | 'truth';
 
 export interface ScanState {
   mode: ScanMode;
@@ -82,6 +97,12 @@ export interface ScanState {
   contentB: ScanResult | null;
   activeContent: ActiveContent;
   colorMode: ColorMode;
+  /** Active scanner tab id; drives whether the brain panel splits (compare). */
+  activeTab: string;
+  /** Which pairing the Compare tab's two brains represent. */
+  compareView: CompareView;
+  /** Audience lens for niched interpretation; does not alter measured values. */
+  demographic: DemographicId;
   /** Optional ROI name to highlight on the brain (driven by chart hover). */
   highlightROI: string | null;
   error: string | null;
@@ -94,6 +115,9 @@ export type ScanAction =
   | { type: 'SCAN_COMPLETE_A'; result: ScanResult }
   | { type: 'SCAN_COMPLETE_B'; result: ScanResult }
   | { type: 'SET_ACTIVE'; active: ActiveContent }
+  | { type: 'SET_TAB'; tab: string }
+  | { type: 'SET_COMPARE_VIEW'; view: CompareView }
+  | { type: 'SET_DEMOGRAPHIC'; demographic: DemographicId }
   | { type: 'SET_COLOR_MODE'; mode: ColorMode }
   | { type: 'SET_HIGHLIGHT_ROI'; roi: string | null }
   | { type: 'CLEAR' }
@@ -120,6 +144,12 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
       };
     case 'SET_ACTIVE':
       return { ...state, activeContent: action.active };
+    case 'SET_TAB':
+      return { ...state, activeTab: action.tab };
+    case 'SET_COMPARE_VIEW':
+      return { ...state, compareView: action.view };
+    case 'SET_DEMOGRAPHIC':
+      return { ...state, demographic: action.demographic };
     case 'SET_COLOR_MODE':
       return { ...state, colorMode: action.mode };
     case 'SET_HIGHLIGHT_ROI':
@@ -139,6 +169,9 @@ export const initialScanState: ScanState = {
   contentB: null,
   activeContent: 'A',
   colorMode: 'activation',
+  activeTab: 'scan',
+  compareView: 'ab',
+  demographic: 'general',
   highlightROI: null,
   error: null,
 };

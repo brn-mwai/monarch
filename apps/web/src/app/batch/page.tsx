@@ -1,15 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { BatchScatter, type BatchItem } from '@/components/charts/BatchScatter';
-import {
-  DEMO_BLOBS,
-  generateSpatialActivation,
-  loadBrainCoords,
-  type BrainCoords,
-} from '@/lib/brain-data';
 import { buildSyntheticScan } from '@/lib/mock-data';
+import { buildDenseActivation } from '@/lib/roi-activation';
 import { useScanState } from '@/lib/scan-store';
 
 const CATEGORIES: BatchItem['category'][] = [
@@ -52,31 +47,16 @@ function buildSyntheticBatch(): BatchItem[] {
 
 export default function BatchPage() {
   const { dispatch } = useScanState();
-  const [coords, setCoords] = useState<BrainCoords | null>(null);
   const items = useMemo(() => buildSyntheticBatch(), []);
 
-  useEffect(() => {
-    let cancelled = false;
-    loadBrainCoords()
-      .then((c) => {
-        if (!cancelled) setCoords(c);
-      })
-      .catch((err: unknown) => {
-        console.error('batch: failed to load brain coords', err);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   const handleItemClick = (item: BatchItem) => {
-    if (!coords) return;
-    const activation = generateSpatialActivation(coords, DEMO_BLOBS);
-    dispatch({
-      type: 'SCAN_COMPLETE_A',
-      result: buildSyntheticScan(item.id, item.label, item.naa, activation),
+    void buildDenseActivation(item.naa).then((activation) => {
+      dispatch({
+        type: 'SCAN_COMPLETE_A',
+        result: buildSyntheticScan(item.id, item.label, item.naa, activation),
+      });
+      dispatch({ type: 'SET_COLOR_MODE', mode: 'activation' });
     });
-    dispatch({ type: 'SET_COLOR_MODE', mode: 'activation' });
   };
 
   // Sorted ranked table view

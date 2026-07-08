@@ -9,11 +9,7 @@
 
 import type { ScanResult } from './scan-store';
 import { buildSyntheticScan, buildSyntheticTimeSeries } from './mock-data';
-import {
-  DEMO_BLOBS,
-  generateSpatialActivation,
-  loadBrainCoords,
-} from './brain-data';
+import { buildDenseActivation } from './roi-activation';
 
 const INFERENCE_URL = process.env.NEXT_PUBLIC_INFERENCE_URL ?? '';
 
@@ -47,6 +43,7 @@ interface RawScanResponse {
   modality: 'text' | 'audio' | 'video';
   activation_url: string;
   timeseries_url?: string;
+  true_activation_url?: string;
 }
 
 /**
@@ -71,45 +68,7 @@ export async function scanText(text: string): Promise<ScanResult> {
     }
 
     const data: RawScanResponse = await res.json();
-
-    // Fetch the activation binary
-    const actRes = await fetch(`${INFERENCE_URL}${data.activation_url}`);
-    const actBuf = await actRes.arrayBuffer();
-    const activationVector = new Float32Array(actBuf);
-
-    // Fetch time series if available
-    let timeSeries: Float32Array | undefined;
-    let nTrs = data.n_trs;
-    if (data.timeseries_url) {
-      const tsRes = await fetch(`${INFERENCE_URL}${data.timeseries_url}`);
-      const tsBuf = await tsRes.arrayBuffer();
-      timeSeries = new Float32Array(tsBuf);
-    }
-
-    return {
-      scanId: data.scan_id,
-      inputContent: text.slice(0, 120),
-      modality: data.modality,
-      nTrs,
-      activationVector,
-      timeSeries,
-      naa: data.naa,
-      landau: {
-        free_energy_m: data.landau.free_energy_m,
-        free_energy_F: data.landau.free_energy_F,
-        equilibrium_m: data.landau.equilibrium_m,
-        susceptibility: data.landau.susceptibility,
-        external_field_h: data.landau.external_field_h,
-        beta_j: data.landau.beta_j,
-        alpha_hat: data.landau.alpha_hat,
-      },
-      roiBreakdown: data.roi_breakdown.map((r) => ({
-        name: r.name,
-        activation: r.activation,
-        system: r.system as 'affective' | 'deliberative',
-        vertexCount: r.vertex_count,
-      })),
-    };
+    return buildResultFromResponse(data, text.slice(0, 120));
   } catch (err) {
     console.warn('Inference server unreachable, falling back to synthetic:', err);
     return fallbackSynthetic(text);
@@ -117,30 +76,123 @@ export async function scanText(text: string): Promise<ScanResult> {
 }
 
 /**
+ * Scan an uploaded media file (video or audio) via the live inference
+ * server. Falls back to synthetic data keyed on the filename when the
+ * server is offline or unconfigured, so the Compare flow stays usable
+ * for demos without a model deployment.
+ */
+export async function scanMedia(
+  file: File,
+  modality: 'audio' | 'video',
+): Promise<ScanResult> {
+  if (!INFERENCE_URL) {
+    return fallbackSynthetic(file.name, modality);
+  }
+
+  try {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('modality', modality);
+
+    const res = await fetch(`${INFERENCE_URL}/api/scan/upload`, {
+      method: 'POST',
+      body: form,
+    });
+
+    if (!res.ok) {
+      console.warn(`Inference server returned ${res.status}, falling back to synthetic`);
+      return fallbackSynthetic(file.name, modality);
+    }
+
+    const data: RawScanResponse = await res.json();
+    return buildResultFromResponse(data, file.name);
+  } catch (err) {
+    console.warn('Inference server unreachable, falling back to synthetic:', err);
+    return fallbackSynthetic(file.name, modality);
+  }
+}
+
+/**
+ * Assemble a ScanResult from a server response: fetches the predicted
+ * activation blob, the optional playback time series, and the optional
+ * recorded ground-truth reference. Shared by text and media scans.
+ */
+async function buildResultFromResponse(
+  data: RawScanResponse,
+  inputContent: string,
+): Promise<ScanResult> {
+  const actRes = await fetch(`${INFERENCE_URL}${data.activation_url}`);
+  const activationVector = new Float32Array(await actRes.arrayBuffer());
+
+  let timeSeries: Float32Array | undefined;
+  if (data.timeseries_url) {
+    const tsRes = await fetch(`${INFERENCE_URL}${data.timeseries_url}`);
+    timeSeries = new Float32Array(await tsRes.arrayBuffer());
+  }
+
+  let trueActivation: Float32Array | null = null;
+  if (data.true_activation_url) {
+    const trueRes = await fetch(`${INFERENCE_URL}${data.true_activation_url}`);
+    trueActivation = new Float32Array(await trueRes.arrayBuffer());
+  }
+
+  return {
+    scanId: data.scan_id,
+    inputContent,
+    modality: data.modality,
+    nTrs: data.n_trs,
+    activationVector,
+    trueActivation,
+    timeSeries,
+    naa: data.naa,
+    landau: {
+      free_energy_m: data.landau.free_energy_m,
+      free_energy_F: data.landau.free_energy_F,
+      equilibrium_m: data.landau.equilibrium_m,
+      susceptibility: data.landau.susceptibility,
+      external_field_h: data.landau.external_field_h,
+      beta_j: data.landau.beta_j,
+      alpha_hat: data.landau.alpha_hat,
+    },
+    roiBreakdown: data.roi_breakdown.map((r) => ({
+      name: r.name,
+      activation: r.activation,
+      system: r.system as 'affective' | 'deliberative',
+      vertexCount: r.vertex_count,
+    })),
+  };
+}
+
+/**
  * Synthetic fallback when the inference server is not available.
  * Uses a simple heuristic (caps + exclamation density) to produce
  * a plausible NAA value for demonstration purposes.
  */
-async function fallbackSynthetic(text: string): Promise<ScanResult> {
-  const coords = await loadBrainCoords();
-  const activation = generateSpatialActivation(coords, DEMO_BLOBS);
-  const ts = buildSyntheticTimeSeries(activation, 24);
-
-  // Heuristic NAA: more ALL-CAPS and exclamation marks = higher NAA
+async function fallbackSynthetic(
+  content: string,
+  modality: 'text' | 'audio' | 'video' = 'text',
+): Promise<ScanResult> {
+  // Heuristic NAA: more ALL-CAPS and exclamation marks = higher NAA. For
+  // uploaded media the only client-side signal is the filename, so the
+  // heuristic runs over that until the real model is connected.
   const upperRatio =
-    (text.match(/[A-Z]/g)?.length ?? 0) / Math.max(1, text.length);
-  const exclam = (text.match(/!/g)?.length ?? 0) / Math.max(1, text.length / 50);
+    (content.match(/[A-Z]/g)?.length ?? 0) / Math.max(1, content.length);
+  const exclam =
+    (content.match(/!/g)?.length ?? 0) / Math.max(1, content.length / 50);
   const heuristicNAA = Math.max(
     0.3,
     Math.min(4.5, 0.6 + upperRatio * 8 + exclam),
   );
 
+  const activation = await buildDenseActivation(heuristicNAA);
+  const ts = buildSyntheticTimeSeries(activation, 24);
+
   const result = buildSyntheticScan(
     `synth-${Date.now()}`,
-    text.slice(0, 120),
+    content.slice(0, 120),
     heuristicNAA,
     activation,
   );
 
-  return { ...result, timeSeries: ts, nTrs: 24 };
+  return { ...result, modality, timeSeries: ts, nTrs: 24 };
 }
