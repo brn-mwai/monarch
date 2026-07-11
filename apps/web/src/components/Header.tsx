@@ -1,11 +1,5 @@
 'use client';
 
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from '@clerk/nextjs';
 import { ArrowUpRight } from '@phosphor-icons/react/dist/ssr';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -64,9 +58,6 @@ export function Header() {
     );
   };
 
-  const publicLinks = NAV_ITEMS.filter((i) => !i.protected);
-  const protectedLinks = NAV_ITEMS.filter((i) => i.protected);
-
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center border-b border-white/10 bg-black px-10">
       {/* Left: build tag */}
@@ -92,35 +83,11 @@ export function Header() {
         />
       </Link>
 
-      {/* Right: Nav + Auth */}
+      {/* Right: Nav */}
       <div className="ml-auto flex items-center gap-6">
         <nav className="flex items-center gap-6">
-          {/* Protected routes: only visible when signed in */}
-          <SignedIn>
-            {protectedLinks.map(renderNavItem)}
-          </SignedIn>
-
-          {/* Public links: always visible */}
-          {publicLinks.map(renderNavItem)}
+          {NAV_ITEMS.map(renderNavItem)}
         </nav>
-
-        <SignedIn>
-          <UserButton
-            appearance={{
-              elements: { avatarBox: 'h-7 w-7' },
-            }}
-          />
-        </SignedIn>
-        <SignedOut>
-          <SignInButton mode="modal">
-            <button
-              type="button"
-              className="rounded-full border border-white/20 px-4 py-1.5 text-xs text-white/70 transition-colors hover:border-white/50 hover:text-white"
-            >
-              Sign In
-            </button>
-          </SignInButton>
-        </SignedOut>
       </div>
     </header>
   );
