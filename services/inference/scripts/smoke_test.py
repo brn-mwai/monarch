@@ -97,7 +97,9 @@ def main() -> int:
         print(f"\n[FAIL] TRIBE v2 model load failed: {e}")
         return 1
 
-    device = next(model.parameters()).device
+    torch_module = getattr(model, "_model", None)
+    if torch_module is not None:
+        device = str(next(torch_module.parameters()).device)
     print(f"[OK] Model loaded on device: {device}")
 
     # --- Single text prediction ---
