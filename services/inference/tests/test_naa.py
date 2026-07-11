@@ -6,7 +6,7 @@ Uses the ``stub_roi_cache`` fixture so the test runs without tribev2.
 import numpy as np
 import pytest
 
-from app.services.naa import compute_naa
+from app.services.naa import compute_naa, compute_signed_naa
 
 
 def test_compute_naa_basic(stub_roi_cache, synthetic_item_vector):
@@ -180,3 +180,38 @@ def test_compute_naa_just_above_two_is_high(stub_roi_cache):
     result = compute_naa(v, delta=0.0)
     assert result["naa"] == pytest.approx(2.5)
     assert result["classification"] == "HIGH"
+
+
+def test_compute_signed_naa_positive_when_affective_dominates(stub_roi_cache):
+    v = np.zeros(20484, dtype=np.float32)
+    v[0:200] = 0.4
+    v[200:400] = 0.1
+
+    result = compute_signed_naa(v)
+    assert result["valid"] is True
+    assert result["naa"] == pytest.approx(0.3, abs=1e-6)
+
+
+def test_compute_signed_naa_defined_where_ratio_is_undefined(stub_roi_cache):
+    """The case that killed the ratio: a below-baseline deliberative mean."""
+    v = np.zeros(20484, dtype=np.float32)
+    v[0:200] = -0.2
+    v[200:400] = -0.5
+
+    assert compute_naa(v)["valid"] is False
+    signed = compute_signed_naa(v)
+    assert signed["valid"] is True
+    assert signed["naa"] == pytest.approx(0.3, abs=1e-6)
+
+
+def test_compute_signed_naa_negative_when_deliberative_dominates(stub_roi_cache):
+    v = np.zeros(20484, dtype=np.float32)
+    v[0:200] = -0.3
+    v[200:400] = 0.2
+
+    assert compute_signed_naa(v)["naa"] == pytest.approx(-0.5, abs=1e-6)
+
+
+def test_compute_signed_naa_rejects_wrong_shape(stub_roi_cache):
+    with pytest.raises(ValueError):
+        compute_signed_naa(np.zeros(100, dtype=np.float32))

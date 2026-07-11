@@ -96,6 +96,42 @@ def compute_naa(
     }
 
 
+def compute_signed_naa(item_vector: np.ndarray) -> dict:
+    """Signed affective-minus-deliberative asymmetry.
+
+    TRIBE predicts standardized activation, so an ROI mean is centered near
+    zero and is negative about as often as positive. The ratio form of NAA is
+    therefore undefined for most real content (see ``compute_naa``): on a
+    40-item EmoBank scan the ratio was undefined for every item. The Landau /
+    Ising field ``H = alpha_hat * NAA`` only needs a signed scalar, not a
+    dimensionless ratio, so the asymmetry is taken as a difference::
+
+        NAA_signed = A_aff - A_del
+
+    Positive means the affective-salience system is predicted to dominate,
+    negative means deliberative control dominates. Units are those of the
+    standardized TRIBE output, which is what ``alpha_hat`` is then fitted in.
+
+    No LOW/MOD/HIGH banding is returned: thresholds must come from the
+    empirical corpus distribution, not from constants invented here.
+    """
+    if item_vector.shape != (VERTICES,):
+        raise ValueError(f"Expected ({VERTICES},) vector, got {item_vector.shape}")
+
+    a_aff = float(item_vector[get_affective_indices()].mean())
+    a_del = float(item_vector[get_deliberative_indices()].mean())
+
+    if not (np.isfinite(a_aff) and np.isfinite(a_del)):
+        raise ValueError("ROI mean activation is non-finite (NaN/inf in input)")
+
+    return {
+        "naa": a_aff - a_del,
+        "a_aff": a_aff,
+        "a_del": a_del,
+        "valid": True,
+    }
+
+
 def compute_roi_breakdown(item_vector: np.ndarray) -> dict:
     """Per-ROI mean activation for the report page breakdown chart.
 
