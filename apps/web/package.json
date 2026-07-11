@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "pages:build": "npx @cloudflare/next-on-pages@1"
+    "pages:build": "BUILD_STATIC=1 next build"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.39.1",
