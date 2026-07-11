@@ -4,8 +4,8 @@
   "edges": 122,
   "clusters": [
     {
-      "label": "Cluster 1",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Content Inference API",
+      "summary": "FastAPI app scores content via TRIBE v2 model, computes NAA + opinion dynamics, generates PDF audit reports.",
       "files": [
         "services\\inference\\app\\config.py",
         "services\\inference\\app\\dependencies.py",
@@ -32,8 +32,8 @@
       ]
     },
     {
-      "label": "Cluster 2",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "3D Brain Renderer",
+      "summary": "Three.js-powered visualization system that renders fMRI activation onto high-resolution cortical surfaces with synchronized animation and interactive controls.",
       "files": [
         "apps\\web\\src\\components\\BrainViewer\\engine\\ActivationMapper.ts",
         "apps\\web\\src\\components\\BrainViewer\\engine\\AnimationController.ts",
@@ -56,8 +56,8 @@
       ]
     },
     {
-      "label": "Cluster 3",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "TRIBE Neuroscience Engine",
+      "summary": "Experiment framework for training neural encoding models on fMRI datasets across multiple neuroimaging studies (Algonauts, BOLD, language stimuli).",
       "files": [
         "services\\inference\\tribev2\\tribev2\\eventstransforms.py",
         "services\\inference\\tribev2\\tribev2\\grids\\defaults.py",
@@ -77,8 +77,8 @@
       ]
     },
     {
-      "label": "Cluster 4",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Chart Components",
+      "summary": "ECharts-based visualization components sharing a common theme and SSR-safe wrapper for rendering diverse chart types (scatter, bars, gauges, force graphs, metrics).",
       "files": [
         "apps\\web\\src\\components\\charts\\BatchScatter.tsx",
         "apps\\web\\src\\components\\charts\\EchartsBase.tsx",
@@ -93,8 +93,8 @@
       ]
     },
     {
-      "label": "Cluster 5",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Scan State Engine",
+      "summary": "Manages scan results, brain ROI activation state, and audience-specific interpretation of NAA metrics for visualization.",
       "files": [
         "apps\\web\\src\\lib\\demographics.ts",
         "apps\\web\\src\\lib\\example-content.ts",
@@ -106,8 +106,8 @@
       ]
     },
     {
-      "label": "Cluster 6",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Brain Visualization",
+      "summary": "Plotting module for cortical and subcortical brain regions using matplotlib, nilearn, and pyvista backends.",
       "files": [
         "services\\inference\\tribev2\\tribev2\\plotting\\__init__.py",
         "services\\inference\\tribev2\\tribev2\\plotting\\base.py",
@@ -118,8 +118,8 @@
       ]
     },
     {
-      "label": "Cluster 7",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Inference API Core",
+      "summary": "FastAPI inference server infrastructure with API key authentication, rate limiting, and TRIBE v2 model lifecycle management.",
       "files": [
         "services\\inference\\app\\__init__.py",
         "services\\inference\\app\\main.py",
@@ -129,8 +129,8 @@
       ]
     },
     {
-      "label": "Cluster 8",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Authenticated Scans",
+      "summary": "Scan operations enforced with user ownership verification and rate limiting across mutations.",
       "files": [
         "apps\\web\\convex\\lib\\auth.ts",
         "apps\\web\\convex\\lib\\rateLimit.ts",
@@ -138,505 +138,505 @@
       ]
     },
     {
-      "label": "Cluster 9",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Authentication Middleware",
+      "summary": "Clerk middleware protecting scanner, report, and batch routes with authentication.",
       "files": [
         "apps\\web\\middleware.ts"
       ]
     },
     {
-      "label": "Cluster 10",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Next.js TypeScript Config",
+      "summary": "Auto-generated type definitions for Next.js image and environment APIs.",
       "files": [
         "apps\\web\\next-env.d.ts"
       ]
     },
     {
-      "label": "Cluster 11",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Next.js Frontend Config",
+      "summary": "Web application configuration with production optimizations and security headers for Docker deployment.",
       "files": [
         "apps\\web\\next.config.mjs"
       ]
     },
     {
-      "label": "Cluster 12",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "CSS Styling Config",
+      "summary": "PostCSS configuration that processes Tailwind CSS for the web application.",
       "files": [
         "apps\\web\\postcss.config.mjs"
       ]
     },
     {
-      "label": "Cluster 13",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Tailwind Config",
+      "summary": "Configures Tailwind CSS content paths and theme variables for the Next.js web app.",
       "files": [
         "apps\\web\\tailwind.config.ts"
       ]
     },
     {
-      "label": "Cluster 14",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Convex User Schema",
+      "summary": "Defines the database schema for user accounts with tier-based credit management and Clerk authentication integration.",
       "files": [
         "apps\\web\\convex\\schema.ts"
       ]
     },
     {
-      "label": "Cluster 15",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "User Credits Query",
+      "summary": "Convex query that retrieves remaining and maximum credits for a user by Clerk ID, defaulting to zero if user not found.",
       "files": [
         "apps\\web\\convex\\users.ts"
       ]
     },
     {
-      "label": "Cluster 16",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Root Layout & Providers",
+      "summary": "Next.js app shell setting up Clerk auth, Convex backend, scan provider, and global styles with header component.",
       "files": [
         "apps\\web\\src\\app\\layout.tsx"
       ]
     },
     {
-      "label": "Cluster 17",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Landing Page Hero",
+      "summary": "Next.js client component rendering home page with Phosphor icon imports for feature showcase.",
       "files": [
         "apps\\web\\src\\app\\page.tsx"
       ]
     },
     {
-      "label": "Cluster 18",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Batch UI Layout",
+      "summary": "Layout wrapper for batch operations using split-panel view structure.",
       "files": [
         "apps\\web\\src\\app\\batch\\layout.tsx"
       ]
     },
     {
-      "label": "Cluster 19",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Batch Audit Page",
+      "summary": "Standalone /batch route rendering batch audit panel with item selection and detailed report view.",
       "files": [
         "apps\\web\\src\\app\\batch\\page.tsx"
       ]
     },
     {
-      "label": "Cluster 20",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Report Layout",
+      "summary": "Next.js layout wrapper that applies split-pane structure to report views.",
       "files": [
         "apps\\web\\src\\app\\report\\layout.tsx"
       ]
     },
     {
-      "label": "Cluster 21",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Report Dashboard",
+      "summary": "Main report page composing multiple audit and financial visualization charts.",
       "files": [
         "apps\\web\\src\\app\\report\\page.tsx"
       ]
     },
     {
-      "label": "Cluster 22",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Audit Comparison Layout",
+      "summary": "Layout wrapper for split-view scanner interface with side-by-side comparison capabilities.",
       "files": [
         "apps\\web\\src\\app\\scanner\\layout.tsx"
       ]
     },
     {
-      "label": "Cluster 23",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Scanner Dashboard",
+      "summary": "Multi-tab interface for content auditing with batch processing, comparison, and multimodal analysis modes.",
       "files": [
         "apps\\web\\src\\app\\scanner\\page.tsx"
       ]
     },
     {
-      "label": "Cluster 24",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Clerk Auth SignIn",
+      "summary": "Sign-in page component using Clerk authentication with email input and session management.",
       "files": [
         "apps\\web\\src\\app\\sign-in\\[[...sign-in]]\\page.tsx"
       ]
     },
     {
-      "label": "Cluster 25",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Clerk Sign-Up Page",
+      "summary": "Client-side sign-up page using Clerk authentication with email state management and Next.js routing.",
       "files": [
         "apps\\web\\src\\app\\sign-up\\[[...sign-up]]\\page.tsx"
       ]
     },
     {
-      "label": "Cluster 26",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Audit Report Display",
+      "summary": "Client component rendering audit narratives with summary, findings, and caveats sections.",
       "files": [
         "apps\\web\\src\\components\\AuditReportCard.tsx"
       ]
     },
     {
-      "label": "Cluster 27",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Math Equation Renderer",
+      "summary": "React component for rendering LaTeX equations using KaTeX with inline/block display modes.",
       "files": [
         "apps\\web\\src\\components\\Equation.tsx"
       ]
     },
     {
-      "label": "Cluster 28",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Header Navigation",
+      "summary": "Client-side header component with Clerk authentication UI that conditionally renders sign-in or user profile button.",
       "files": [
         "apps\\web\\src\\components\\Header.tsx"
       ]
     },
     {
-      "label": "Cluster 29",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Icon Components",
+      "summary": "Reusable SVG icon components with configurable size and styling for web UI.",
       "files": [
         "apps\\web\\src\\components\\icons.tsx"
       ]
     },
     {
-      "label": "Cluster 30",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Brain Split Layout",
+      "summary": "Layout component splitting brain visualization panel from scan result controls, supporting comparison mode.",
       "files": [
         "apps\\web\\src\\components\\SplitLayout.tsx"
       ]
     },
     {
-      "label": "Cluster 31",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Tab Navigation",
+      "summary": "React tab navigation component with TypeScript interfaces for managing tab state and onChange callbacks.",
       "files": [
         "apps\\web\\src\\components\\TabNav.tsx"
       ]
     },
     {
-      "label": "Cluster 32",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Brain Depth Shading",
+      "summary": "Computes per-face grey palette from sulcal depth to render 3D brain surface with uniform polygonal shading.",
       "files": [
         "apps\\web\\src\\components\\BrainViewer\\engine\\SulcalShading.ts"
       ]
     },
     {
-      "label": "Cluster 33",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Guide Toggle Button",
+      "summary": "Reusable button component for toggling guide visibility in the BrainViewer interface.",
       "files": [
         "apps\\web\\src\\components\\BrainViewer\\ui\\GuideButton.tsx"
       ]
     },
     {
-      "label": "Cluster 34",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "NAA Classification Explainer",
+      "summary": "Explainer component that displays NAA classification levels (LOW/MOD/HIGH) with associated affinity and deletion metrics.",
       "files": [
         "apps\\web\\src\\components\\explainers\\NAAExplainer.tsx"
       ]
     },
     {
-      "label": "Cluster 35",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Report Summary Display",
+      "summary": "Renders executive summary paragraph from scan results on report page.",
       "files": [
         "apps\\web\\src\\components\\explainers\\ReportSummary.tsx"
       ]
     },
     {
-      "label": "Cluster 36",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Scientific Disclaimers",
+      "summary": "Footer component displaying methodology disclaimers for neuroscience result views.",
       "files": [
         "apps\\web\\src\\components\\explainers\\ScientificDisclaimer.tsx"
       ]
     },
     {
-      "label": "Cluster 37",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Demographic Selector",
+      "summary": "UI component for selecting demographic categories in scanner with dropdown interaction.",
       "files": [
         "apps\\web\\src\\components\\scanner\\DemographicSelect.tsx"
       ]
     },
     {
-      "label": "Cluster 38",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Scan Result Display",
+      "summary": "React component props for rendering scan results with audience-specific takeaways and loading state.",
       "files": [
         "apps\\web\\src\\components\\scanner\\ElementCard.tsx"
       ]
     },
     {
-      "label": "Cluster 39",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Batch Scanning",
+      "summary": "Component for uploading and visualizing batch text analysis results in a scatter chart.",
       "files": [
         "apps\\web\\src\\components\\scanner-tabs\\BatchTab.tsx"
       ]
     },
     {
-      "label": "Cluster 40",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Scan Comparison UI",
+      "summary": "Tab component for displaying and comparing scan results with demographic charts and element cards.",
       "files": [
         "apps\\web\\src\\components\\scanner-tabs\\CompareTab.tsx"
       ]
     },
     {
-      "label": "Cluster 41",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Multimodal Analysis UI",
+      "summary": "React component for visualizing multimodal brain activation data with ROI processing and synthetic scan support.",
       "files": [
         "apps\\web\\src\\components\\scanner-tabs\\MultimodalTab.tsx"
       ]
     },
     {
-      "label": "Cluster 42",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Scanner Dashboard UI",
+      "summary": "Tabbed scanning interface with scientific charts, gauges, and analysis visualizations.",
       "files": [
         "apps\\web\\src\\components\\scanner-tabs\\ScanTab.tsx"
       ]
     },
     {
-      "label": "Cluster 43",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Brain Hemisphere Coordinates",
+      "summary": "Utilities for loading fsaverage5 pial surface vertex positions and generating spatially coherent brain activation data.",
       "files": [
         "apps\\web\\src\\lib\\brain-data.ts"
       ]
     },
     {
-      "label": "Cluster 44",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Convex Provider",
+      "summary": "Client provider setup combining Convex backend client with Clerk authentication, guards against missing deployment URL.",
       "files": [
         "apps\\web\\src\\lib\\convex-provider.tsx"
       ]
     },
     {
-      "label": "Cluster 45",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Multimodal Encoder Integration",
+      "summary": "Interprets per-modality neural activity from TRIBE v2 encoders (text/audio/video) mapped to cortical networks.",
       "files": [
         "apps\\web\\src\\lib\\multimodal.ts"
       ]
     },
     {
-      "label": "Cluster 46",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "NAA Classification Format",
+      "summary": "Defines classification types (LOW/MOD/HIGH) and human-readable labels (Neutral/Mixed/Reactive) for assessment scoring shared between scanner and reports.",
       "files": [
         "apps\\web\\src\\lib\\naa-format.ts"
       ]
     },
     {
-      "label": "Cluster 47",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Data Normalization",
+      "summary": "Percentile-based robust normalization utility for rescaling visualization data to [0,1] range.",
       "files": [
         "apps\\web\\src\\lib\\normalize.ts"
       ]
     },
     {
-      "label": "Cluster 48",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Brain Region Labels",
+      "summary": "Manages metadata and descriptions for 17 brain regions in the Show Guide overlay, organized by neural system types (affective, deliberative, sensory, social).",
       "files": [
         "apps\\web\\src\\lib\\roi-labels.ts"
       ]
     },
     {
-      "label": "Cluster 49",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Input Sanitization",
+      "summary": "Utilities for stripping HTML and preventing XSS attacks in user-provided scan text.",
       "files": [
         "apps\\web\\src\\lib\\sanitize.ts"
       ]
     },
     {
-      "label": "Cluster 50",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Platform Detection",
+      "summary": "Identifies media platforms (YouTube, TikTok, Instagram, Spotify, etc.) from URLs for client-side categorization.",
       "files": [
         "apps\\web\\src\\lib\\url-detector.ts"
       ]
     },
     {
-      "label": "Cluster 51",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Inference Security",
+      "summary": "Security middleware for the inference server request pipeline.",
       "files": [
         "services\\inference\\app\\middleware\\__init__.py"
       ]
     },
     {
-      "label": "Cluster 52",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Request/Response Models",
+      "summary": "Pydantic models and enums defining schema for inference service API requests and responses.",
       "files": [
         "services\\inference\\app\\models\\__init__.py"
       ]
     },
     {
-      "label": "Cluster 53",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Report Chart Rendering",
+      "summary": "Matplotlib chart renderers that generate PNG bytes for PDF report embedding with unified monochrome-plus-fire styling.",
       "files": [
         "services\\inference\\app\\services\\report_charts.py"
       ]
     },
     {
-      "label": "Cluster 54",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Resumable Batch Inference",
+      "summary": "Checkpoints batch inference progress using memory-mapped arrays and JSON tracking to resume from failures without reprocessing completed items.",
       "files": [
         "services\\inference\\app\\utils\\checkpoint.py"
       ]
     },
     {
-      "label": "Cluster 55",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Multimodal Preprocessing",
+      "summary": "Thin wrapper layer enforcing limits and extracting formats (language, timestamps, frames) from text, audio, and video inputs for TRIBE v2 processing pipeline.",
       "files": [
         "services\\inference\\app\\utils\\preprocessing.py"
       ]
     },
     {
-      "label": "Cluster 56",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Inference Utilities",
+      "summary": "Lower-level helpers for preprocessing, file handling, and batch checkpointing in the inference service.",
       "files": [
         "services\\inference\\app\\utils\\__init__.py"
       ]
     },
     {
-      "label": "Cluster 57",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "ROI Index Caching",
+      "summary": "Pre-computes HCP MMP1.0 ROI vertex-index cache to enable fast API server lookups without tribev2 import overhead.",
       "files": [
         "services\\inference\\scripts\\cache_roi.py"
       ]
     },
     {
-      "label": "Cluster 58",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Ising Alpha Calibration",
+      "summary": "Estimates opinion-dynamics coupling parameter from neural arousal asymmetry via empirical regression.",
       "files": [
         "services\\inference\\scripts\\calibrate_alpha.py"
       ]
     },
     {
-      "label": "Cluster 59",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "ROI Vertex Export",
+      "summary": "Exports HCP brain region-of-interest vertex indices from fsaverage5 mesh to backend cache and frontend visualization.",
       "files": [
         "services\\inference\\scripts\\export_roi_vertices.py"
       ]
     },
     {
-      "label": "Cluster 60",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Brain Surface Masking",
+      "summary": "Generates and geometrically validates medial-wall masks for fsaverage5 brain surfaces from FreeSurfer data.",
       "files": [
         "services\\inference\\scripts\\gen_medial_mask.py"
       ]
     },
     {
-      "label": "Cluster 61",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Brain Surface Upsampling",
+      "summary": "Creates lookup maps for expanding low-resolution brain surface data onto high-resolution meshes using nearest-neighbor geometry.",
       "files": [
         "services\\inference\\scripts\\gen_upsample_maps.py"
       ]
     },
     {
-      "label": "Cluster 62",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Model Weight Prewarming",
+      "summary": "Script pre-downloads ML model weights (gTTS, WhisperX, LLaMA, Wav2Vec-BERT) to mounted cache before inference serving to eliminate request-time download latency.",
       "files": [
         "services\\inference\\scripts\\prewarm.py"
       ]
     },
     {
-      "label": "Cluster 63",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Inference Deployment Validation",
+      "summary": "Smoke test that verifies deployment environment health for TRIBE v2 inference by checking Python/GPU/model dependencies and running a single prediction round-trip.",
       "files": [
         "services\\inference\\scripts\\smoke_test.py"
       ]
     },
     {
-      "label": "Cluster 64",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Inference Test Fixtures",
+      "summary": "Pytest configuration providing shared test fixtures for inference tests, including ROI cache mocking to avoid tribev2 dependency.",
       "files": [
         "services\\inference\\tests\\conftest.py"
       ]
     },
     {
-      "label": "Cluster 65",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "FastAPI Boot Tests",
+      "summary": "Smoke test verifying app startup and health endpoint work with model loading disabled.",
       "files": [
         "services\\inference\\tests\\test_app_boot.py"
       ]
     },
     {
-      "label": "Cluster 66",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Auth Middleware Tests",
+      "summary": "Tests for APIKeyMiddleware authenticating requests via API keys in the inference service.",
       "files": [
         "services\\inference\\tests\\test_auth.py"
       ]
     },
     {
-      "label": "Cluster 67",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Blob Storage & Serialization",
+      "summary": "Tests in-memory blob storage and numpy array serialization/deserialization for inference services.",
       "files": [
         "services\\inference\\tests\\test_blob_store.py"
       ]
     },
     {
-      "label": "Cluster 68",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Inference Service Tests",
+      "summary": "Unit tests for TribeInferenceService covering structural paths; GPU model load/predict tested via deployment smoke test.",
       "files": [
         "services\\inference\\tests\\test_inference.py"
       ]
     },
     {
-      "label": "Cluster 69",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Landau Magnetic Analysis",
+      "summary": "Test suite for Landau theory phase-transition calculations\u2014equilibrium magnetization, susceptibility curves, physics math independent of external services.",
       "files": [
         "services\\inference\\tests\\test_landau.py"
       ]
     },
     {
-      "label": "Cluster 70",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "NAA Inference Testing",
+      "summary": "Unit tests for neural analysis computation using cached ROI data fixtures.",
       "files": [
         "services\\inference\\tests\\test_naa.py"
       ]
     },
     {
-      "label": "Cluster 71",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Inference Pooling Tests",
+      "summary": "Unit tests for aggregation functions (mean, peak, trimmed-mean pooling) on prediction tensors in the inference service.",
       "files": [
         "services\\inference\\tests\\test_pooling.py"
       ]
     },
     {
-      "label": "Cluster 72",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Rate Limit Middleware",
+      "summary": "Token-bucket rate limiting middleware tests for FastAPI services with configurable refill rates and proxy trust.",
       "files": [
         "services\\inference\\tests\\test_rate_limit.py"
       ]
     },
     {
-      "label": "Cluster 73",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Report Testing",
+      "summary": "Offline unit and integration tests for the audit-report API endpoint, context builder, and message rendering pipeline.",
       "files": [
         "services\\inference\\tests\\test_report.py"
       ]
     },
     {
-      "label": "Cluster 74",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "ROI Inference Tests",
+      "summary": "Tests disk-cache fallback path for ROI service inference, with integration tests for live tribev2 lookup skipped if dependencies unavailable.",
       "files": [
         "services\\inference\\tests\\test_roi.py"
       ]
     },
     {
-      "label": "Cluster 75",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Timeseries Playback Tests",
+      "summary": "Tests timeseries endpoint playback by injecting frames directly without model dependency.",
       "files": [
         "services\\inference\\tests\\test_timeseries.py"
       ]
     },
     {
-      "label": "Cluster 76",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Inference Tests",
+      "summary": "Test suite package initialization for inference service.",
       "files": [
         "services\\inference\\tests\\__init__.py"
       ]
     },
     {
-      "label": "Cluster 77",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "Brain Mesh Export",
+      "summary": "Converts fsaverage5 brain surfaces to Three.js-compatible formats (JSON, BIN, GLB) for neuroimaging visualization.",
       "files": [
         "services\\inference\\tribev2\\scripts\\export_brain_mesh.py"
       ]
     },
     {
-      "label": "Cluster 78",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "TRIBE v2 Demo Utils",
+      "summary": "Utilities for TribeModel inference demonstrations and event DataFrame construction.",
       "files": [
         "services\\inference\\tribev2\\tribev2\\demo_utils.py"
       ]
     },
     {
-      "label": "Cluster 79",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "TRIBE Model Export",
+      "summary": "Exposes TribeModel from tribev2 inference service as package entry point.",
       "files": [
         "services\\inference\\tribev2\\tribev2\\__init__.py"
       ]
     },
     {
-      "label": "Cluster 80",
-      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "label": "TRIBE Experiment Grids",
+      "summary": "Grid configurations and defaults for TRIBE v2 neuroscience experiments.",
       "files": [
         "services\\inference\\tribev2\\tribev2\\grids\\__init__.py"
       ]
