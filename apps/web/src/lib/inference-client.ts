@@ -220,23 +220,62 @@ export async function scanText(text: string): Promise<ScanResult> {
   }
 
   try {
-    const res = await fetch(`${INFERENCE_URL}/api/scan`, {
+    const submit = await fetch(`${INFERENCE_URL}/api/scan/jobs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, modality: 'text' }),
     });
 
-    if (!res.ok) {
-      console.warn(`Inference server returned ${res.status}, falling back to synthetic`);
+    if (!submit.ok) {
+      console.warn(`Inference server returned ${submit.status}, falling back to synthetic`);
       return fallbackSynthetic(text);
     }
 
-    const data: RawScanResponse = await res.json();
+    const { job_id: jobId } = (await submit.json()) as { job_id: string };
+    const data = await pollScanJob(jobId);
     return buildResultFromResponse(data, text.slice(0, 120));
   } catch (err) {
     console.warn('Inference server unreachable, falling back to synthetic:', err);
     return fallbackSynthetic(text);
   }
+}
+
+const JOB_POLL_INTERVAL_MS = 2_500;
+const JOB_TIMEOUT_MS = 15 * 60_000;
+
+/**
+ * Poll a queued scan until it finishes.
+ *
+ * A cold scan runs the whole TRIBE cascade and takes minutes, which outlives
+ * the request timeout of any proxy in front of the API, so the result is
+ * collected over short polls instead of one long-held connection.
+ */
+async function pollScanJob(jobId: string): Promise<RawScanResponse> {
+  const deadline = Date.now() + JOB_TIMEOUT_MS;
+
+  while (Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, JOB_POLL_INTERVAL_MS));
+
+    const res = await fetch(`${INFERENCE_URL}/api/scan/jobs/${jobId}`);
+    if (!res.ok) {
+      throw new Error(`Scan job ${jobId} lookup failed: ${res.status}`);
+    }
+
+    const body = (await res.json()) as {
+      status: 'pending' | 'running' | 'done' | 'error';
+      result?: RawScanResponse;
+      error?: string;
+    };
+
+    if (body.status === 'done' && body.result) {
+      return body.result;
+    }
+    if (body.status === 'error') {
+      throw new Error(body.error ?? 'Scan failed on the inference server');
+    }
+  }
+
+  throw new Error(`Scan job ${jobId} did not finish within ${JOB_TIMEOUT_MS / 60_000} minutes`);
 }
 
 /**

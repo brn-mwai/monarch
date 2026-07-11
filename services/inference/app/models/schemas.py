@@ -1,6 +1,6 @@
 """Pydantic schemas for request/response validation."""
 
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -104,6 +104,15 @@ class ScanResponse(BaseModel):
     # "reference unavailable" state rather than inventing one.
     true_activation_url: Optional[str] = None
 
+
+
+class ScanJobStatus(BaseModel):
+    """State of a queued scan: pending -> running -> done | error."""
+
+    job_id: str
+    status: Literal["pending", "running", "done", "error"]
+    result: Optional[ScanResponse] = None
+    error: Optional[str] = None
 
 class CompareResponse(BaseModel):
     content_a: ScanResponse

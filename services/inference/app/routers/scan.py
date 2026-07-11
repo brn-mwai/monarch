@@ -5,7 +5,15 @@ import uuid
 from pathlib import Path
 
 import numpy as np
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    UploadFile,
+)
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import Response
 
@@ -17,11 +25,13 @@ from ..models.schemas import (
     LandauResult,
     NAAResult,
     ROIBreakdown,
+    ScanJobStatus,
     ScanRequest,
     ScanResponse,
 )
 from ..services.alpha_calibration import load_alpha_hat
 from ..services.inference import TribeInferenceService
+from ..services.jobs import job_store
 from ..services.landau import compute_landau_analysis
 from ..services.naa import (
     VERTICES,
@@ -135,6 +145,56 @@ async def scan_content(
     clean_text = validate_text_input(request.text)
     result = await run_in_threadpool(model.predict_text, clean_text)
     return _build_scan_response(result, Modality.TEXT)
+
+
+async def _run_text_job(
+    job_id: str, clean_text: str, model: TribeInferenceService
+) -> None:
+    """Execute a text scan and record it against its job."""
+    job_store.mark_running(job_id)
+    try:
+        result = await run_in_threadpool(model.predict_text, clean_text)
+        response = _build_scan_response(result, Modality.TEXT)
+        job_store.mark_done(job_id, response.model_dump(mode="json"))
+    except Exception as exc:
+        job_store.mark_error(job_id, str(exc))
+
+
+@router.post("/scan/jobs", response_model=ScanJobStatus, status_code=202)
+async def submit_text_scan(
+    request: ScanRequest,
+    background: BackgroundTasks,
+    model: TribeInferenceService = Depends(require_loaded_model),
+) -> ScanJobStatus:
+    """Queue a text scan and return its job id immediately.
+
+    The synchronous ``POST /api/scan`` still exists, but a cold scan outruns
+    the request timeout of any proxy in front of the API (a Cloudflare quick
+    tunnel cuts the connection at ~100s while the cascade needs minutes), so
+    the browser never receives the result. Callers poll
+    ``GET /api/scan/jobs/{job_id}`` instead.
+    """
+    if request.modality.value != "text":
+        raise HTTPException(
+            400,
+            "Use POST /api/scan/upload for audio or video; scan jobs are text-only.",
+        )
+    if not request.text:
+        raise HTTPException(400, "Text content required for text modality")
+
+    clean_text = validate_text_input(request.text)
+    job = job_store.create()
+    background.add_task(_run_text_job, job.job_id, clean_text, model)
+    return ScanJobStatus(**job.as_dict())
+
+
+@router.get("/scan/jobs/{job_id}", response_model=ScanJobStatus)
+async def get_scan_job(job_id: str) -> ScanJobStatus:
+    """Return a queued scan's status, and its result once it has finished."""
+    job = job_store.get(job_id)
+    if job is None:
+        raise HTTPException(404, "Unknown or expired scan job")
+    return ScanJobStatus(**job.as_dict())
 
 
 @router.post("/scan/upload", response_model=ScanResponse)
