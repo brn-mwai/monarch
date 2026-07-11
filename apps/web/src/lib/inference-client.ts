@@ -8,6 +8,13 @@
 // ============================================================
 
 import type { ScanResult } from './scan-store';
+import {
+  demographicAction,
+  demographicLabel,
+  demographicLens,
+  demographicTakeaway,
+  type DemographicId,
+} from './demographics';
 import { buildSyntheticScan, buildSyntheticTimeSeries } from './mock-data';
 import { buildDenseActivation } from './roi-activation';
 
@@ -15,6 +22,163 @@ const INFERENCE_URL = process.env.NEXT_PUBLIC_INFERENCE_URL ?? '';
 
 /** True when a real inference server is configured. */
 export const hasInferenceServer = !!INFERENCE_URL;
+
+/**
+ * Plain-language audit narrative for a scan. ``source`` distinguishes a real
+ * Gemma-via-Fireworks generation from the deterministic template fallback so
+ * the UI can attribute it honestly.
+ */
+export interface AuditReport {
+  summary: string;
+  source: 'gemma' | 'fallback';
+  model: string;
+}
+
+/**
+ * Fetch the plain-language audit report for a completed scan. Calls the
+ * backend Gemma endpoint (POST /api/report) when an inference server is
+ * configured; otherwise, or on any failure, returns a deterministic
+ * client-side narrative built from the scan's own numbers so the report
+ * page always has something honest to show.
+ */
+export async function fetchReport(
+  result: ScanResult,
+  demographic: DemographicId = 'general',
+): Promise<AuditReport> {
+  if (INFERENCE_URL) {
+    try {
+      // Data-in endpoint: send the numbers the UI already holds, so Gemma
+      // writes the report for any scan -- live or synthetic -- without a
+      // server-side cached activation.
+      const res = await fetch(`${INFERENCE_URL}/api/report/audit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          naa: result.naa,
+          landau: result.landau,
+          roi_breakdown: result.roiBreakdown.map((r) => ({
+            name: r.name,
+            activation: r.activation,
+            system: r.system,
+            vertex_count: r.vertexCount,
+          })),
+          content_excerpt: result.inputContent.slice(0, 400),
+          demographic,
+          modality: result.modality,
+        }),
+      });
+      if (res.ok) {
+        return (await res.json()) as AuditReport;
+      }
+      console.warn(`Report endpoint returned ${res.status}, using local template`);
+    } catch (err) {
+      console.warn('Report endpoint unreachable, using local template:', err);
+    }
+  }
+  return {
+    summary: buildTemplateReport(result, demographic),
+    source: 'fallback',
+    model: 'template',
+  };
+}
+
+/**
+ * Render and download the full styled PDF (logo, charts, physics, audit)
+ * from the numbers already on screen. Posts to the data-in endpoint so it
+ * works for any active scan -- live or synthetic demo -- and the PDF matches
+ * the report exactly. Returns false when no inference server is configured
+ * or the request fails, so the caller can fall back to the browser print
+ * dialog.
+ */
+export async function downloadReportPdf(
+  result: ScanResult,
+  report: AuditReport | null,
+  demographic = 'general',
+): Promise<boolean> {
+  if (!INFERENCE_URL) return false;
+
+  try {
+    const res = await fetch(`${INFERENCE_URL}/api/report/pdf`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        scan_id: result.scanId,
+        naa: result.naa,
+        landau: result.landau,
+        roi_breakdown: result.roiBreakdown.map((r) => ({
+          name: r.name,
+          activation: r.activation,
+          system: r.system,
+          vertex_count: r.vertexCount,
+        })),
+        audit: report,
+        content_excerpt: result.inputContent.slice(0, 400),
+        demographic,
+        modality: result.modality,
+      }),
+    });
+
+    if (!res.ok) {
+      console.warn(`PDF endpoint returned ${res.status}, falling back to print`);
+      return false;
+    }
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `monarch-scan-${result.scanId.slice(0, 12)}.pdf`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+    return true;
+  } catch (err) {
+    console.warn('PDF endpoint unreachable, falling back to print:', err);
+    return false;
+  }
+}
+
+/**
+ * Deterministic narrative from the scan numbers. Mirrors the backend
+ * template (Summary / Key findings / Caveats) so an offline demo degrades in
+ * wording, not in correctness, and keeps the same honesty guarantees.
+ */
+function buildTemplateReport(result: ScanResult, demographic: DemographicId): string {
+  const { naa, classification } = result.naa;
+  const lean =
+    naa > 1
+      ? 'emotional systems more than reasoning systems'
+      : 'reasoning systems more than emotional systems';
+  const audience = demographicLabel(demographic);
+  const lens = demographicLens(demographic);
+  const summary =
+    `Read for ${audience} -- ${lens}\n` +
+    `This ${result.modality} item is predicted to engage ${lean} ` +
+    `(NAA = ${naa.toFixed(2)}, class ${classification}). ` +
+    `${demographicTakeaway(demographic, result.naa)}`;
+
+  const topBySystem = (system: 'affective' | 'deliberative') =>
+    result.roiBreakdown
+      .filter((r) => r.system === system)
+      .sort((a, b) => b.activation - a.activation)
+      .slice(0, 3)
+      .map((r) => r.name)
+      .join(', ') || 'none';
+
+  const findings = [
+    `- Predicted emotional-region activation: ${result.naa.a_aff.toFixed(3)}`,
+    `- Predicted reasoning-region activation: ${result.naa.a_del.toFixed(3)}`,
+    `- Most-engaged emotional regions: ${topBySystem('affective')}`,
+    `- Most-engaged reasoning regions: ${topBySystem('deliberative')}`,
+    `- Recommended for ${audience.toLowerCase()}: ${demographicAction(demographic, result.naa)}`,
+  ].join('\n');
+
+  const caveats = [
+    '- This is a prediction for an average brain about the content, not a measurement of any real person.',
+    '- The collective-opinion figures use an uncalibrated constant and are illustrative only, not validated predictions.',
+  ].join('\n');
+
+  return `Summary\n${summary}\n\nKey findings\n${findings}\n\nCaveats\n${caveats}`;
+}
 
 interface RawScanResponse {
   scan_id: string;

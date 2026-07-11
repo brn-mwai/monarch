@@ -1,6 +1,18 @@
+# Build for the MI300X pod: docker build --platform linux/amd64 -t monarch-inference .
+# rocm/pytorch is amd64-only, which satisfies the hackathon linux/amd64 gate.
+# Pin this to a specific ROCm tag once verified against the pod image
+# (e.g. rocm/pytorch:rocm6.2_ubuntu22.04_py3.10_pytorch_2.3.0) before the
+# final demo; :latest is used here only because the pod's exact ROCm build
+# is not known ahead of provisioning.
 FROM rocm/pytorch:latest
 
 WORKDIR /app
+
+# Cache Hugging Face weights under the mounted volume so re-runs and restarts
+# do not re-download the multi-GB TRIBE + LLaMA weights. HF_TOKEN is supplied
+# at RUNTIME (docker run -e HF_TOKEN=... / compose env) -- never baked into an
+# image layer, which would leak the secret.
+ENV HF_HOME=/app/cache/hf
 
 # System deps for WhisperX (invoked via uvx by tribev2)
 RUN apt-get update && apt-get install -y \

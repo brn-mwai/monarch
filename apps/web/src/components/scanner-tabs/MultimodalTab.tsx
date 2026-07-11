@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { MultimodalBars } from '@/components/charts/MultimodalBars';
+import { estimatePerModalityNaa } from '@/lib/multimodal';
 import { buildSyntheticScan } from '@/lib/mock-data';
 import {
   buildModalityActivation,
@@ -86,10 +87,12 @@ export function MultimodalTab() {
     <div className="space-y-5">
       <div className="space-y-3 text-[15px] leading-relaxed text-white/75">
         <p>
-          See which brain areas rely most on text, audio, or video information.
-          This multimodal breakdown shows how TRIBE v2 integrates all three
-          input streams simultaneously, reflecting how the brain itself
-          combines information across senses.
+          TRIBE v2 fuses three encoders - LLaMA 3.2-3B (text), Wav2Vec-BERT 2.0
+          (audio), and V-JEPA 2 (video) - into one prediction. Each stream drives
+          a different part of the cortex: text the language network and
+          prefrontal cortex, audio the auditory cortex, video the visual and
+          motion areas. This view decomposes the prediction by modality so you
+          can see which stream lights which region.
         </p>
       </div>
 
@@ -134,12 +137,12 @@ export function MultimodalTab() {
 
       {active?.multimodal && (
         <div className="rounded-lg border border-white/10 p-4">
-          <MultimodalBars
-            videoNAA={active.naa.naa * 1.1}
-            textNAA={active.naa.naa * 0.7}
-            audioNAA={active.naa.naa * 0.9}
-            combinedNAA={active.naa.naa}
-          />
+          <MultimodalBars {...estimatePerModalityNaa(active.naa.naa)} />
+          <p className="mt-2 text-[10px] leading-relaxed text-white/40">
+            Illustrative per-modality lean: text routes more to the deliberative
+            language/prefrontal system, audio and video carry more affective
+            salience. Exact per-modality NAA comes from a true multimodal scan.
+          </p>
         </div>
       )}
     </div>
@@ -182,7 +185,7 @@ function RGBTriangle() {
         fontSize="8"
         fontFamily="ui-monospace, SFMono-Regular, monospace"
       >
-        VIDEO
+        TEXT
       </text>
       <text
         x="6"
@@ -192,7 +195,7 @@ function RGBTriangle() {
         fontSize="8"
         fontFamily="ui-monospace, SFMono-Regular, monospace"
       >
-        TEXT
+        AUDIO
       </text>
       <text
         x="74"
@@ -202,7 +205,7 @@ function RGBTriangle() {
         fontSize="8"
         fontFamily="ui-monospace, SFMono-Regular, monospace"
       >
-        AUDIO
+        VIDEO
       </text>
     </svg>
   );

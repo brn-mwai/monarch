@@ -1,6 +1,6 @@
 """Pydantic schemas for request/response validation."""
 
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -19,6 +19,46 @@ class CompareRequest(BaseModel):
     content_a: str = Field(..., min_length=10, max_length=10000)
     content_b: str = Field(..., min_length=10, max_length=10000)
     modality: Modality = Modality.TEXT
+
+
+class ReportRequest(BaseModel):
+    scan_id: str = Field(..., min_length=1, max_length=100)
+    content_excerpt: Optional[str] = Field(None, max_length=10000)
+    demographic: str = Field("general", max_length=40)
+
+
+class ReportPdfRequest(BaseModel):
+    """Render a PDF from numbers the client already holds.
+
+    Decouples the PDF from the server-side activation cache so any scan the
+    UI is showing -- live or synthetic demo -- renders exactly what is on
+    screen, no re-computation.
+    """
+
+    scan_id: str = Field(..., min_length=1, max_length=100)
+    naa: dict[str, Any]
+    landau: dict[str, Any]
+    roi_breakdown: list[dict[str, Any]] = Field(default_factory=list)
+    audit: Optional[dict[str, Any]] = None
+    content_excerpt: Optional[str] = Field(None, max_length=10000)
+    demographic: str = Field("general", max_length=40)
+    modality: str = Field("text", max_length=20)
+
+
+class ReportAuditRequest(BaseModel):
+    """Generate the Gemma audit narrative from numbers the client holds.
+
+    Lets the plain-language report work for any scan the UI is showing -- live
+    or synthetic demo -- without a server-side cached activation, so the
+    Gemma-written report is demoable even before the model is on the pod.
+    """
+
+    naa: dict[str, Any]
+    landau: dict[str, Any]
+    roi_breakdown: list[dict[str, Any]] = Field(default_factory=list)
+    content_excerpt: Optional[str] = Field(None, max_length=10000)
+    demographic: str = Field("general", max_length=40)
+    modality: str = Field("text", max_length=20)
 
 
 # === Response models ===

@@ -14,10 +14,23 @@ services:
       - MONARCH_TRIBE_DEVICE=auto
       - HF_TOKEN=${HF_TOKEN}
       - INFERENCE_API_KEY=${INFERENCE_API_KEY}
+      - FIREWORKS_API_KEY=${FIREWORKS_API_KEY:-}
     deploy:
       resources:
         reservations:
           devices:
             - driver: amd
               capabilities: [gpu]
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      # Point the frontend at the inference service for live TRIBE; omit to
+      # run in synthetic-demo mode.
+      - NEXT_PUBLIC_INFERENCE_URL=${NEXT_PUBLIC_INFERENCE_URL:-}
     restart: unless-stopped

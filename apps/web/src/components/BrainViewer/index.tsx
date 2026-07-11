@@ -13,6 +13,7 @@ import type {
   SurfaceMode,
 } from './types';
 import { ActivityLegend } from './ui/ActivityLegend';
+import { BrainControls, type BrainControlValues } from './ui/BrainControls';
 import { ControlToggles } from './ui/ControlToggles';
 import { MultimodalLegend } from './ui/MultimodalLegend';
 import { PlaybackControls } from './ui/PlaybackControls';
@@ -59,6 +60,73 @@ export function BrainViewer({
   const [selectedROI, setSelectedROI] = useState<ROIDescription | null>(null);
   const [playbackPlaying, setPlaybackPlaying] = useState(false);
   const [playbackTime, setPlaybackTime] = useState(0);
+  const [controlsOpen, setControlsOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [recording, setRecording] = useState(false);
+  const [controls, setControls] = useState<BrainControlValues>({
+    surface: 'pial',
+    inflation: 0,
+    opacity: 1,
+    specularity: 0.2,
+    curvBrightness: 0.3,
+    curvContrast: 0.15,
+    leftVisible: true,
+    rightVisible: true,
+  });
+
+  const applyControls = (patch: Partial<BrainControlValues>) => {
+    setControls((prev) => ({ ...prev, ...patch }));
+    const engine = engineRef.current;
+    if (!engine) return;
+    if (patch.surface !== undefined) engine.setSurface(patch.surface);
+    if (patch.inflation !== undefined) engine.setInflation(patch.inflation);
+    if (patch.opacity !== undefined) engine.setBrainOpacity(patch.opacity);
+    if (patch.specularity !== undefined) engine.setSpecular(patch.specularity);
+    if (patch.curvBrightness !== undefined || patch.curvContrast !== undefined) {
+      engine.setCurvature(
+        patch.curvBrightness ?? controls.curvBrightness,
+        patch.curvContrast ?? controls.curvContrast,
+      );
+    }
+    if (patch.leftVisible !== undefined)
+      engine.setHemisphereVisible('left', patch.leftVisible);
+    if (patch.rightVisible !== undefined)
+      engine.setHemisphereVisible('right', patch.rightVisible);
+  };
+
+  const downloadBlob = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportImage = async () => {
+    const engine = engineRef.current;
+    if (!engine) return;
+    setExportOpen(false);
+    try {
+      downloadBlob(await engine.captureImagePNG(2), `monarch-brain-${Date.now()}.png`);
+    } catch (err) {
+      console.error('brain image export failed', err);
+    }
+  };
+
+  const exportRotation = async () => {
+    const engine = engineRef.current;
+    if (!engine || recording) return;
+    setExportOpen(false);
+    setRecording(true);
+    try {
+      downloadBlob(await engine.captureRotationWebM(4000, 30), `monarch-brain-wrap-${Date.now()}.webm`);
+    } catch (err) {
+      console.error('brain rotation export failed', err);
+    } finally {
+      setRecording(false);
+    }
+  };
 
   // --- Mount / unmount ----------------------------------------------
   useEffect(() => {
@@ -283,25 +351,79 @@ export function BrainViewer({
             onSurfaceModeChange={handleSurfaceChange}
             onHemisphereModeChange={handleHemisphereChange}
           />
-          {/* ROI label toggle - small pill in the top-left corner.
-              Side effect (engine.toggleGuide) is OUTSIDE the React state
-              updater so it does not double-fire under Strict Mode. */}
-          <button
-            type="button"
-            onClick={() => {
-              const next = !labelsVisible;
-              setLabelsVisible(next);
-              engineRef.current?.toggleGuide();
-              if (!next) setSelectedROI(null);
-            }}
-            className={`absolute left-4 top-4 z-30 rounded-full border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider backdrop-blur-md transition-colors ${
-              labelsVisible
-                ? 'border-white/60 bg-white/15 text-white'
-                : 'border-white/20 bg-black/40 text-white/65 hover:border-white/40 hover:text-white'
-            }`}
-          >
-            {labelsVisible ? 'Hide labels' : 'Show labels'}
-          </button>
+          {/* Top-left button group: ROI labels + advanced surface controls.
+              The label toggle's side effect (engine.toggleGuide) is OUTSIDE
+              the React state updater so it does not double-fire under Strict
+              Mode. */}
+          <div className="absolute left-4 top-4 z-30 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const next = !labelsVisible;
+                setLabelsVisible(next);
+                engineRef.current?.toggleGuide();
+                if (!next) setSelectedROI(null);
+              }}
+              className={`rounded-full border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider backdrop-blur-md transition-colors ${
+                labelsVisible
+                  ? 'border-white/60 bg-white/15 text-white'
+                  : 'border-white/20 bg-black/40 text-white/65 hover:border-white/40 hover:text-white'
+              }`}
+            >
+              {labelsVisible ? 'Hide labels' : 'Show labels'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setControlsOpen((open) => !open)}
+              className={`rounded-full border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider backdrop-blur-md transition-colors ${
+                controlsOpen
+                  ? 'border-white/60 bg-white/15 text-white'
+                  : 'border-white/20 bg-black/40 text-white/65 hover:border-white/40 hover:text-white'
+              }`}
+            >
+              {controlsOpen ? 'Hide controls' : 'Show controls'}
+            </button>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setExportOpen((open) => !open)}
+                disabled={recording}
+                className={`rounded-full border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider backdrop-blur-md transition-colors disabled:opacity-50 ${
+                  exportOpen
+                    ? 'border-white/60 bg-white/15 text-white'
+                    : 'border-white/20 bg-black/40 text-white/65 hover:border-white/40 hover:text-white'
+                }`}
+              >
+                {recording ? 'Recording...' : 'Export'}
+              </button>
+              {exportOpen && !recording && (
+                <div className="absolute left-0 top-9 z-40 w-44 overflow-hidden rounded-lg border border-white/15 bg-black/80 backdrop-blur-md">
+                  <button
+                    type="button"
+                    onClick={exportImage}
+                    className="block w-full px-3 py-2 text-left text-[11px] uppercase tracking-wider text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    Save image (PNG)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={exportRotation}
+                    className="block w-full border-t border-white/10 px-3 py-2 text-left text-[11px] uppercase tracking-wider text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    Record wrap (WebM)
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Advanced surface controls panel -- opens on the left. */}
+          {controlsOpen && (
+            <BrainControls
+              {...controls}
+              onChange={applyControls}
+              onClose={() => setControlsOpen(false)}
+            />
+          )}
           {selectedROI && (
             <ROIDescriptionPanel
               roi={selectedROI}

@@ -41,16 +41,18 @@ const HEAD_URL = '/models/head.glb';
 // inhuman shape. At 13% opacity an oversized silhouette is invisible;
 // a distorted head is immediately obvious.
 const NEEDED_X = 1.32; // brain width * 1.32 must fit head native width  (temples)
-const NEEDED_Y = 1.32; // brain depth * 1.32 must fit head native depth  (occipital)
+const NEEDED_Y = 1.34; // brain depth * 1.34 must fit head native depth  (occipital)
 const NEEDED_Z = 1.46; // brain height * 1.46 must fit head native height (face/jaw below)
 
 // Cranium top sits CRANIUM_GAP mm above the brain top (max.z).
 const CRANIUM_GAP = 18;
 
 // Y center offset: head bbox center is shifted forward of brain center
-// by this much. Small value keeps the back of the skull behind the
-// occipital lobe; large values would expose the back of the brain.
-const Y_ANTERIOR_SHIFT = 5;
+// by this much. The head bbox includes the protruding face/nose, which
+// pulls its center anterior; without this shift the brain seats in front
+// of the actual cranial vault. Seat it posterior so the occipital lobe
+// fills the back of the skull. Too large would expose the back of the brain.
+const Y_ANTERIOR_SHIFT = 16;
 
 // LeePerrySmith.glb is Y-up with the face along +Z. fsaverage5 is Z-up
 // with the face along +Y. The matrix below maps:

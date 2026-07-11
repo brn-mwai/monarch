@@ -19,7 +19,6 @@ import type { MeshLoader } from './MeshLoader';
 import type { MultimodalActivation } from '../types';
 
 const HEMI_VERTS = 10242;
-const BASE_GREY = 0.82;
 // TRIBE alpha_cmap: opacity ramps to 1 by colormap-stop 0.2.
 const ALPHA_HI = 0.2;
 
@@ -89,31 +88,31 @@ export class ActivationMapper {
       | undefined;
     if (!colorAttr) return;
     const colors = colorAttr.array as Float32Array;
+    const base = this.loader.getBaseColors(side);
     const upsample = this.loader.getUpsampleMap(side);
     const count = this.loader.getVertexCount(side);
 
     for (let i = 0; i < count; i++) {
+      const o = i * 3;
       const fsav = activationOffset + upsample[i];
       if (this.medialMask && this.medialMask[fsav] === 0) {
-        const om = i * 3;
-        colors[om] = BASE_GREY;
-        colors[om + 1] = BASE_GREY;
-        colors[om + 2] = BASE_GREY;
+        colors[o] = base[o];
+        colors[o + 1] = base[o + 1];
+        colors[o + 2] = base[o + 2];
         continue;
       }
       const nv = normalized[fsav];
       const t = normalizedToColorStop(nv);
-      let r = BASE_GREY;
-      let g = BASE_GREY;
-      let b = BASE_GREY;
+      let r = base[o];
+      let g = base[o + 1];
+      let b = base[o + 2];
       if (t > 0) {
         const alpha = t >= ALPHA_HI ? 1 : t / ALPHA_HI;
         const idx = Math.min(255, Math.max(0, Math.round(t * 255))) * 3;
-        r = BASE_GREY + (LOOKUP[idx] - BASE_GREY) * alpha;
-        g = BASE_GREY + (LOOKUP[idx + 1] - BASE_GREY) * alpha;
-        b = BASE_GREY + (LOOKUP[idx + 2] - BASE_GREY) * alpha;
+        r += (LOOKUP[idx] - r) * alpha;
+        g += (LOOKUP[idx + 1] - g) * alpha;
+        b += (LOOKUP[idx + 2] - b) * alpha;
       }
-      const o = i * 3;
       colors[o] = r;
       colors[o + 1] = g;
       colors[o + 2] = b;
@@ -156,16 +155,17 @@ export class ActivationMapper {
       | undefined;
     if (!colorAttr) return;
     const colors = colorAttr.array as Float32Array;
+    const base = this.loader.getBaseColors(side);
     const upsample = this.loader.getUpsampleMap(side);
     const count = this.loader.getVertexCount(side);
 
     for (let i = 0; i < count; i++) {
+      const o = i * 3;
       const src = offset + upsample[i];
       if (this.medialMask && this.medialMask[src] === 0) {
-        const om = i * 3;
-        colors[om] = BASE_GREY;
-        colors[om + 1] = BASE_GREY;
-        colors[om + 2] = BASE_GREY;
+        colors[o] = base[o];
+        colors[o + 1] = base[o + 1];
+        colors[o + 2] = base[o + 2];
         continue;
       }
       const tv = textN[src];
@@ -178,25 +178,24 @@ export class ActivationMapper {
       const cr = tv / maxVal;
       const cg = av / maxVal;
       const cb = vv / maxVal;
-      const o = i * 3;
-      colors[o] = BASE_GREY + (cr - BASE_GREY) * alpha;
-      colors[o + 1] = BASE_GREY + (cg - BASE_GREY) * alpha;
-      colors[o + 2] = BASE_GREY + (cb - BASE_GREY) * alpha;
+      colors[o] = base[o] + (cr - base[o]) * alpha;
+      colors[o + 1] = base[o + 1] + (cg - base[o + 1]) * alpha;
+      colors[o + 2] = base[o + 2] + (cb - base[o + 2]) * alpha;
     }
     colorAttr.needsUpdate = true;
   }
 
   clearActivation(leftMesh: THREE.Mesh, rightMesh: THREE.Mesh): void {
-    this.fillGrey(leftMesh);
-    this.fillGrey(rightMesh);
+    this.restoreBase(leftMesh, 'left');
+    this.restoreBase(rightMesh, 'right');
   }
 
-  private fillGrey(mesh: THREE.Mesh): void {
+  private restoreBase(mesh: THREE.Mesh, side: 'left' | 'right'): void {
     const colorAttr = mesh.geometry.getAttribute('color') as
       | THREE.BufferAttribute
       | undefined;
     if (!colorAttr) return;
-    (colorAttr.array as Float32Array).fill(BASE_GREY);
+    (colorAttr.array as Float32Array).set(this.loader.getBaseColors(side));
     colorAttr.needsUpdate = true;
   }
 }

@@ -3,7 +3,7 @@ version: "3.8"
 services:
   monarch-backend:
     build:
-      context: ./monarch-backend
+      context: .
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
@@ -14,7 +14,10 @@ services:
     environment:
       - MONARCH_TRIBE_DEVICE=auto
       - MONARCH_CACHE_FOLDER=/app/cache
+      - MONARCH_SKIP_MODEL_LOAD=${MONARCH_SKIP_MODEL_LOAD:-0}
       - HF_TOKEN=${HF_TOKEN}
+      - INFERENCE_API_KEY=${INFERENCE_API_KEY:-}
+      - FIREWORKS_API_KEY=${FIREWORKS_API_KEY:-}
     deploy:
       resources:
         reservations:

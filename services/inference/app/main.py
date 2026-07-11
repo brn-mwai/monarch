@@ -6,6 +6,7 @@ startup via the lifespan context manager. The lifespan honours the
 dev box without paying the (multi-GB, GPU-only) model download.
 """
 
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -34,6 +35,13 @@ async def lifespan(_app: FastAPI):
             "MONARCH_SKIP_MODEL_LOAD=0."
         )
     else:
+        if not (os.getenv("HF_TOKEN") or os.getenv("HUGGING_FACE_HUB_TOKEN")):
+            print(
+                "[Monarch] WARNING: no HF_TOKEN in the environment. TRIBE v2 and "
+                "the gated LLaMA-3.2-3B feature extractor download from Hugging "
+                "Face; without a token the load will fail with HTTP 401. Set "
+                "HF_TOKEN (see .env.example) or run with MONARCH_SKIP_MODEL_LOAD=1."
+            )
         print("[Monarch] Loading TRIBE v2 model...")
         inference_service.load_model()
         print("[Monarch] Server ready.")

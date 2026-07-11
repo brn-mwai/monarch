@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   productionBrowserSourceMaps: false,
+  // Emit a self-contained server bundle for the Docker image (see Dockerfile).
+  output: "standalone",
 
   async headers() {
     return [

@@ -1,14 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
+import { AuditReportCard } from '@/components/AuditReportCard';
 import { LandauCurve } from '@/components/charts/LandauCurve';
 import { MultimodalBars } from '@/components/charts/MultimodalBars';
 import { NAAGauge } from '@/components/charts/NAAGauge';
 import { ROIBreakdown } from '@/components/charts/ROIBreakdown';
 import { SusceptibilityChart } from '@/components/charts/SusceptibilityChart';
+import { ArrowLeft } from '@/components/icons';
+import {
+  downloadReportPdf,
+  fetchReport,
+  type AuditReport,
+} from '@/lib/inference-client';
 import { buildSyntheticScan } from '@/lib/mock-data';
+import { estimatePerModalityNaa } from '@/lib/multimodal';
+import { NAA_LABEL, NAA_VERDICT, naaColor } from '@/lib/naa-format';
 import { buildDenseActivation } from '@/lib/roi-activation';
 import { getActiveResult, useScanState } from '@/lib/scan-store';
 
@@ -46,6 +55,68 @@ export default function ReportPage() {
 
   const active = getActiveResult(state);
 
+  function downloadJson() {
+    if (!active) return;
+    const payload = {
+      scanId: active.scanId,
+      modality: active.modality,
+      inputContent: active.inputContent,
+      nTrs: active.nTrs,
+      naa: active.naa,
+      landau: active.landau,
+      roiBreakdown: active.roiBreakdown,
+      audit: report,
+      note: 'Predicted population-level cortical activation. The full (20484,) activation vector is served as a binary blob by the inference API, not included here.',
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `monarch-scan-${active.scanId}.json`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const [report, setReport] = useState<AuditReport | null>(null);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [pdfBusy, setPdfBusy] = useState(false);
+
+  async function handleSavePdf() {
+    if (!active || pdfBusy) return;
+    setPdfBusy(true);
+    try {
+      const rendered = await downloadReportPdf(active, report, demographic);
+      // No inference server (or it failed): fall back to the browser print
+      // dialog so the user still gets a PDF from the on-screen report.
+      if (!rendered) window.print();
+    } finally {
+      setPdfBusy(false);
+    }
+  }
+
+  const activeScanId = active?.scanId;
+  const demographic = state.demographic;
+  useEffect(() => {
+    if (!active) return;
+    let cancelled = false;
+    setReportLoading(true);
+    fetchReport(active, demographic)
+      .then((result) => {
+        if (!cancelled) setReport(result);
+      })
+      .catch((err: unknown) => {
+        console.error('report: failed to generate audit', err);
+      })
+      .finally(() => {
+        if (!cancelled) setReportLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // Refetch when the active scan or the selected audience changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeScanId, demographic]);
+
   if (!active) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-8">
@@ -53,6 +124,9 @@ export default function ReportPage() {
       </div>
     );
   }
+
+  const cls = active.naa.classification;
+  const accent = naaColor(cls);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-6 py-8">
@@ -64,6 +138,38 @@ export default function ReportPage() {
           Physics-grounded summary for the active scan
         </p>
       </header>
+
+      {/* Verdict hero -- the one-glance headline of the whole report */}
+      <section
+        className="rounded-lg border p-5"
+        style={{ borderColor: `${accent}55`, background: `${accent}0d` }}
+      >
+        <div className="flex items-center gap-4">
+          <span
+            className="font-mono text-5xl font-light leading-none"
+            style={{ color: accent }}
+          >
+            {active.naa.naa.toFixed(2)}
+          </span>
+          <div className="flex flex-col gap-1.5">
+            <span
+              className="w-fit rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider"
+              style={{ borderColor: `${accent}80`, color: accent }}
+            >
+              {NAA_LABEL[cls]}
+            </span>
+            <span className="font-mono text-[10px] uppercase tracking-wider text-white/40">
+              NAA index
+            </span>
+          </div>
+        </div>
+        <p className="mt-4 text-sm leading-relaxed text-white/75">
+          {NAA_VERDICT[cls]}
+        </p>
+      </section>
+
+      {/* Plain-language audit -- the Gemma-written headline of the report */}
+      <AuditReportCard report={report} loading={reportLoading} />
 
       {/* Section 1 -- NAA summary */}
       <section className="rounded-lg border border-white/10 p-5">
@@ -131,12 +237,7 @@ export default function ReportPage() {
           <h2 className="mb-3 font-mono text-[11px] uppercase tracking-wider text-white/45">
             Section 5 / Modality contribution
           </h2>
-          <MultimodalBars
-            videoNAA={active.naa.naa * 1.1}
-            textNAA={active.naa.naa * 0.7}
-            audioNAA={active.naa.naa * 0.9}
-            combinedNAA={active.naa.naa}
-          />
+          <MultimodalBars {...estimatePerModalityNaa(active.naa.naa)} />
         </section>
       )}
 
@@ -148,21 +249,25 @@ export default function ReportPage() {
         <div className="flex flex-wrap gap-3">
           <button
             type="button"
-            disabled
-            className="rounded-full border border-white/30 px-4 py-1.5 text-xs text-white/80 transition-colors hover:border-white/60 disabled:cursor-not-allowed disabled:opacity-40"
+            onClick={handleSavePdf}
+            disabled={pdfBusy}
+            className="rounded-full border border-white/30 px-4 py-1.5 text-xs text-white/80 transition-colors hover:border-white/60 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Download PDF report
+            {pdfBusy ? 'Generating PDF...' : 'Save PDF report'}
           </button>
           <button
             type="button"
-            disabled
-            className="rounded-full border border-white/30 px-4 py-1.5 text-xs text-white/80 transition-colors hover:border-white/60 disabled:cursor-not-allowed disabled:opacity-40"
+            onClick={downloadJson}
+            className="rounded-full border border-white/30 px-4 py-1.5 text-xs text-white/80 transition-colors hover:border-white/60"
           >
             Download raw data (JSON)
           </button>
         </div>
         <p className="mt-3 text-[10px] text-white/40">
-          Export wires up once the backend report endpoint ships.
+          JSON includes the NAA, Landau, ROI breakdown, and the plain-language
+          audit. Save PDF renders the full styled report -- logo, NAA gauge,
+          physics curves, ROI breakdown, and audit -- on the inference server;
+          without a server connected it falls back to the browser print dialog.
         </p>
       </section>
 
@@ -174,7 +279,8 @@ export default function ReportPage() {
         href="/scanner"
         className="inline-flex items-center gap-2 text-xs text-white/60 hover:text-white"
       >
-        &lt;- Back to scanner
+        <ArrowLeft size={13} />
+        Back to scanner
       </Link>
     </div>
   );

@@ -110,6 +110,48 @@ const TAKEAWAYS: Record<DemographicId, Takeaway> = {
   },
 };
 
+// The concrete next step each audience takes at each level. This is where the
+// audiences separate most: the same score routes a researcher to a study
+// condition, a parent to a co-viewing choice, and a fact-checker to a triage
+// queue. Verbs are workflow-specific, never generic "be careful".
+const ACTIONS: Record<DemographicId, Takeaway> = {
+  general: {
+    LOW: 'Share as-is; nothing here is engineered to bait a reaction.',
+    MOD: 'Read it twice before resharing.',
+    HIGH: 'Pause before reacting or resharing; separate the feeling from the claim.',
+  },
+  researcher: {
+    LOW: 'Use as a low-affect control stimulus.',
+    MOD: 'Slot in as a mid-arousal condition in a graded set.',
+    HIGH: 'Use as a high-arousal condition; counterbalance presentation order.',
+  },
+  educator: {
+    LOW: 'Use for neutral instruction where reasoning leads.',
+    MOD: 'Pair with a discussion prompt so students reason through the charge.',
+    HIGH: 'Teach it as a worked example of framing steering feeling before thought.',
+  },
+  journalist: {
+    LOW: 'Standard sourcing checks apply; no framing red flag.',
+    MOD: 'Check which specific claims carry the emotional charge.',
+    HIGH: 'Verify the underlying claims before amplifying or quoting.',
+  },
+  parent: {
+    LOW: 'Fine for independent viewing.',
+    MOD: 'Watch together and talk it through.',
+    HIGH: 'Co-view, or skip for younger kids.',
+  },
+  safety: {
+    LOW: 'Deprioritise for review.',
+    MOD: 'Queue for a second look if the source is unknown.',
+    HIGH: 'Escalate to a human reviewer; do not auto-action on this signal.',
+  },
+  student: {
+    LOW: 'Read it for the argument it is making.',
+    MOD: 'Notice which words are doing the pulling.',
+    HIGH: 'Name the emotion first, then judge the claim on its own.',
+  },
+};
+
 export function demographicTakeaway(
   id: DemographicId,
   naa: NAAData,
@@ -117,6 +159,17 @@ export function demographicTakeaway(
   return TAKEAWAYS[id][naa.classification];
 }
 
+export function demographicAction(
+  id: DemographicId,
+  naa: NAAData,
+): string {
+  return ACTIONS[id][naa.classification];
+}
+
 export function demographicLabel(id: DemographicId): string {
   return DEMOGRAPHICS.find((d) => d.id === id)?.label ?? 'General';
+}
+
+export function demographicLens(id: DemographicId): string {
+  return DEMOGRAPHICS.find((d) => d.id === id)?.lens ?? '';
 }

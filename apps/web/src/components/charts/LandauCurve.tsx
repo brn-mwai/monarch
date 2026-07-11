@@ -131,7 +131,7 @@ export function LandauCurve({
         type: 'value',
         min: -1,
         max: 1,
-        name: 'm  (deliberative <- -> reactive)',
+        name: 'm  (deliberative ← → reactive)',
         nameLocation: 'middle',
         nameGap: 24,
       },

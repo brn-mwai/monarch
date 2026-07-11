@@ -45,6 +45,22 @@ export class InflateManager {
     this.startAnimation(this.inflated ? 0 : 1);
   }
 
+  /**
+   * Set the pial<->inflated morph directly (slider drag). Bypasses the
+   * animation, applies the morph immediately, and refreshes normals so the
+   * shading tracks the surface at every step.
+   */
+  setT(t: number): void {
+    const clamped = t < 0 ? 0 : t > 1 ? 1 : t;
+    this.animating = false;
+    this.currentT = clamped;
+    this.inflated = clamped > 0.5;
+    this.lerpHemi(this.leftMesh, 'left', clamped);
+    this.lerpHemi(this.rightMesh, 'right', clamped);
+    this.loader.recomputeSmoothNormals(this.leftMesh, 'left');
+    this.loader.recomputeSmoothNormals(this.rightMesh, 'right');
+  }
+
   isInflated(): boolean {
     return this.inflated;
   }
@@ -89,15 +105,23 @@ export class InflateManager {
     }
   }
 
+  /** Re-apply the current morph, e.g. after the base surface changes. */
+  refresh(): void {
+    this.lerpHemi(this.leftMesh, 'left', this.currentT);
+    this.lerpHemi(this.rightMesh, 'right', this.currentT);
+    this.loader.recomputeSmoothNormals(this.leftMesh, 'left');
+    this.loader.recomputeSmoothNormals(this.rightMesh, 'right');
+  }
+
   private lerpHemi(mesh: THREE.Mesh, hemi: 'left' | 'right', t: number): void {
     const geom = mesh.geometry as THREE.BufferGeometry;
     const posAttr = geom.getAttribute('position') as THREE.BufferAttribute;
     const target = posAttr.array as Float32Array;
-    const pial = this.loader.getPialPositions(hemi);
+    const base = this.loader.getBasePositions(hemi);
     const infl = this.loader.getInflatedPositions(hemi);
 
     for (let i = 0; i < target.length; i++) {
-      target[i] = pial[i] + (infl[i] - pial[i]) * t;
+      target[i] = base[i] + (infl[i] - base[i]) * t;
     }
     posAttr.needsUpdate = true;
   }

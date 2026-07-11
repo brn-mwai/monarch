@@ -113,6 +113,11 @@ export function buildSyntheticScan(
     mStar = next;
   }
 
+  // Mean-field susceptibility AT the equilibrium: it must vary with NAA, not
+  // be a constant. sech^2(arg) = 1 - m*^2 since m* = tanh(arg).
+  const sech2 = 1 - mStar * mStar;
+  const susceptibility = sech2 / Math.max(1e-6, 1 - beta_j * sech2);
+
   return {
     scanId,
     inputContent,
@@ -129,24 +134,45 @@ export function buildSyntheticScan(
       free_energy_m,
       free_energy_F,
       equilibrium_m: mStar,
-      susceptibility: 1 / (1 - beta_j),
+      susceptibility,
       external_field_h: h,
       beta_j,
       alpha_hat,
     },
-    roiBreakdown: [
-      { name: 'OFC', activation: 0.65 * naaValue * 0.5, system: 'affective', vertexCount: 312 },
-      { name: 'AAIC', activation: 0.72 * naaValue * 0.5, system: 'affective', vertexCount: 198 },
-      { name: 'a24', activation: 0.58 * naaValue * 0.5, system: 'affective', vertexCount: 245 },
-      { name: 'TGd', activation: 0.81 * naaValue * 0.5, system: 'affective', vertexCount: 167 },
-      { name: 'TE1a', activation: 0.69 * naaValue * 0.5, system: 'affective', vertexCount: 203 },
-      { name: '46', activation: 0.42, system: 'deliberative', vertexCount: 289 },
-      { name: 'a9-46v', activation: 0.38, system: 'deliberative', vertexCount: 234 },
-      { name: 'd32', activation: 0.45, system: 'deliberative', vertexCount: 178 },
-      { name: 'a10p', activation: 0.35, system: 'deliberative', vertexCount: 156 },
-      { name: '13l', activation: 0.41, system: 'deliberative', vertexCount: 201 },
-    ],
+    // Per-ROI activation. Weights are normalised so the affective ROIs
+    // average to a_aff and the deliberative ROIs average to a_del -- so the
+    // breakdown is consistent with the reported NAA, not an arbitrary scale.
+    roiBreakdown: buildRoiBreakdown(a_aff, a_del),
   };
+}
+
+interface RoiSeed {
+  name: string;
+  weight: number;
+  system: 'affective' | 'deliberative';
+  vertexCount: number;
+}
+
+const ROI_SEEDS: RoiSeed[] = [
+  { name: 'OFC', weight: 0.94, system: 'affective', vertexCount: 312 },
+  { name: 'AAIC', weight: 1.04, system: 'affective', vertexCount: 198 },
+  { name: 'a24', weight: 0.84, system: 'affective', vertexCount: 245 },
+  { name: 'TGd', weight: 1.18, system: 'affective', vertexCount: 167 },
+  { name: 'TE1a', weight: 1.0, system: 'affective', vertexCount: 203 },
+  { name: '46', weight: 1.05, system: 'deliberative', vertexCount: 289 },
+  { name: 'a9-46v', weight: 0.95, system: 'deliberative', vertexCount: 234 },
+  { name: 'd32', weight: 1.12, system: 'deliberative', vertexCount: 178 },
+  { name: 'a10p', weight: 0.87, system: 'deliberative', vertexCount: 156 },
+  { name: '13l', weight: 1.01, system: 'deliberative', vertexCount: 201 },
+];
+
+function buildRoiBreakdown(aAff: number, aDel: number) {
+  return ROI_SEEDS.map((r) => ({
+    name: r.name,
+    activation: r.weight * (r.system === 'affective' ? aAff : aDel),
+    system: r.system,
+    vertexCount: r.vertexCount,
+  }));
 }
 
 /**

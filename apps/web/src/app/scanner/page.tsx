@@ -21,9 +21,17 @@ export default function ScannerPage() {
 
   return (
     <div>
-      <div className="mb-4 flex justify-end">
+      <header className="mb-5 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-mono text-xl font-light tracking-wider text-white">
+            Neural scanner
+          </h1>
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-white/40">
+            Predict how media engages emotion versus reasoning
+          </p>
+        </div>
         <DemographicSelect />
-      </div>
+      </header>
       <TabNav
         tabs={TABS}
         active={activeTab}

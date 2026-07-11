@@ -20,6 +20,7 @@ Usage:
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -31,6 +32,16 @@ def main() -> int:
     print(f"PyTorch: {torch.__version__}")
     print(f"CUDA available: {torch.cuda.is_available()}")
     print(f"ROCm/HIP available: {hasattr(torch.version, 'hip') and torch.version.hip is not None}")
+
+    # Fail fast on the #1 documented failure: gated LLaMA-3.2-3B needs a token.
+    # Catching it here beats a deep, cryptic 401 halfway through model load.
+    if not (os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")):
+        print(
+            "\n[FAIL] No HF_TOKEN set. facebook/tribev2 and the gated "
+            "meta-llama/Llama-3.2-3B download will 401.\n"
+            "  export HF_TOKEN=<hf-read-token-with-llama-access>"
+        )
+        return 1
 
     if torch.cuda.is_available():
         print(f"Device count: {torch.cuda.device_count()}")
@@ -67,19 +78,20 @@ def main() -> int:
         return 1
 
     # --- Model load ---
-    cache = Path("./cache")
-    cache.mkdir(exist_ok=True)
+    # Honour the same knobs the server uses so the smoke test proves the
+    # deployment's real config, not a hardcoded one.
+    cache = Path(os.environ.get("MONARCH_CACHE_FOLDER", "./cache"))
+    cache.mkdir(parents=True, exist_ok=True)
+    device = os.environ.get("MONARCH_TRIBE_DEVICE", "auto")
 
-    print("\nLoading TRIBE v2 model (downloads ~1 GB on first run)...")
-    print("NOTE: LLaMA 3.2-3B is gated. You must have run:")
-    print("  huggingface-cli login")
-    print("  and accepted the licence at https://huggingface.co/meta-llama/Llama-3.2-3B")
+    print(f"\nLoading TRIBE v2 model on device={device} (downloads ~1 GB on first run)...")
+    print("NOTE: LLaMA 3.2-3B is gated -- the HF_TOKEN above must have accepted its licence.")
 
     try:
         model = TribeModel.from_pretrained(
             "facebook/tribev2",
             cache_folder=cache,
-            device="auto",
+            device=device,
         )
     except Exception as e:
         print(f"\n[FAIL] TRIBE v2 model load failed: {e}")

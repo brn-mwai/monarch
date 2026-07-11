@@ -21,33 +21,33 @@ import { buildDenseActivation } from '@/lib/roi-activation';
 
 const FEATURES = [
   {
-    title: 'Neural bias index',
-    body: 'NAA measures the predicted balance between affective-salience and deliberative-control cortical processing for any media item.',
+    title: 'One clear score',
+    body: 'A single number for how much a piece of media leans on emotion versus reasoning. Higher means it pushes feeling before thought.',
     Icon: Brain,
   },
   {
-    title: 'Physics-grounded',
-    body: 'A Landau / Ising mean-field layer turns the NAA observable into population susceptibility, free energy, and equilibrium polarisation.',
+    title: 'Backed by physics',
+    body: 'A model borrowed from how opinions spread through a crowd estimates how far the content could tip a group, not just one person.',
     Icon: Atom,
   },
   {
-    title: 'Tri-modal',
-    body: 'Text, audio, and video pass through the same TRIBE v2 fusion encoder; per-modality contributions are recoverable.',
+    title: 'Text, audio, or video',
+    body: 'Scan a headline, a voice clip, or a video. The same model reads all three, and can show which one is doing the pulling.',
     Icon: Waveform,
   },
   {
-    title: 'Batch audit',
-    body: 'Process up to 1,500 corpus items with checkpoint-resume, ranked output, and exportable reports.',
+    title: 'Score in bulk',
+    body: 'Upload a spreadsheet of up to 1,500 items and get them all scored, ranked, and exportable in one pass.',
     Icon: Stack,
   },
   {
-    title: 'Interactive brain',
-    body: 'A real fsaverage5 cortical surface lights up the predicted activation, with per-region drill-down on hover.',
+    title: 'See it in a 3D brain',
+    body: 'Watch the predicted response light up a real 3D brain surface you can rotate and explore region by region.',
     Icon: CubeFocus,
   },
   {
-    title: 'Open source',
-    body: 'Built on TRIBE v2 (CC BY-NC) by Meta FAIR. The Monarch wrapper, charts, and physics layer are MIT.',
+    title: 'Open and free',
+    body: "Built on Meta's TRIBE v2 brain model. Monarch's own code is open source and free to use.",
     Icon: GithubLogo,
   },
 ];
@@ -120,10 +120,10 @@ export default function HomePage() {
       {/* === Section 1 - Hero ================================================ */}
       <section className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 py-8">
         <div className="grid w-full max-w-[1600px] grid-cols-1 items-center gap-10 md:grid-cols-[1fr_minmax(320px,500px)_1fr]">
-          {/* LEFT brain - Neutral framing */}
+          {/* LEFT brain - calm wording */}
           <figure className="flex flex-col items-center">
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-white/50">
-              Neutral framing
+              Calm wording
             </p>
             <div className="relative h-[480px] w-full max-w-[540px]">
               <BrainViewer
@@ -136,25 +136,26 @@ export default function HomePage() {
               />
             </div>
             <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/40">
-              NAA 0.84 / LOW
+              Score 0.84 / Calm
             </p>
           </figure>
 
           {/* CENTER - headline + CTAs */}
           <div className="text-center">
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-white/45">
-              Neural processing scanner
+              Monarch
             </p>
             <h1 className="mt-4 text-balance text-4xl font-semibold leading-[1.1] text-white sm:text-5xl">
-              An AI model of the
+              Is this media built
               <br />
-              human brain, applied
+              to make you feel,
               <br />
-              to media
+              or to make you think?
             </h1>
             <p className="mx-auto mt-5 max-w-md text-balance text-[15px] leading-relaxed text-white/65">
-              Predicting cortical processing balance for sight, sound and
-              language. Same story, different brain - now you can see it.
+              Paste a headline, post, or clip. Monarch scores how strongly it
+              pushes emotion over reason, and shows it on a 3D brain. The same
+              story, told two ways, looks different inside the head.
             </p>
 
             <div className="mx-auto mt-9 flex max-w-[260px] flex-col gap-3">
@@ -162,14 +163,14 @@ export default function HomePage() {
                 href="/scanner"
                 className="inline-flex items-center justify-between rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/70 hover:bg-white/5"
               >
-                Explore the demo
+                Try it now
                 <ArrowRight size={13} weight="bold" className="opacity-70" />
               </Link>
               <Link
                 href="/report"
                 className="inline-flex items-center justify-between rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/70 hover:bg-white/5"
               >
-                Read the paper
+                See a sample report
                 <ArrowRight size={13} weight="bold" className="opacity-70" />
               </Link>
               <a
@@ -178,7 +179,7 @@ export default function HomePage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-between rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/70 hover:bg-white/5"
               >
-                Access the code
+                See the code
                 <ArrowRight size={13} weight="bold" className="opacity-70" />
               </a>
               <a
@@ -197,10 +198,10 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* RIGHT brain - Reactive framing */}
+          {/* RIGHT brain - charged wording */}
           <figure className="flex flex-col items-center">
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-white/50">
-              Reactive framing
+              Charged wording
             </p>
             <div className="relative h-[480px] w-full max-w-[540px]">
               <BrainViewer
@@ -213,7 +214,7 @@ export default function HomePage() {
               />
             </div>
             <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/40">
-              NAA 3.71 / HIGH
+              Score 3.71 / Charged
             </p>
           </figure>
         </div>
@@ -263,27 +264,26 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-start gap-12 lg:grid-cols-[1.1fr_1fr]">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-white/45">
-              01 / The challenge
+              01 / The idea
             </p>
             <h2 className="mt-4 text-balance text-3xl font-semibold leading-tight text-white sm:text-4xl">
-              Sentiment is not the
+              Most tools check what
               <br className="hidden sm:inline" />
-              processing pathway.
+              media says. Monarch
+              <br className="hidden sm:inline" />
+              checks how it lands.
             </h2>
             <div className="mt-6 space-y-4 text-[15px] leading-relaxed text-white/70">
               <p>
-                For decades, media analysis has relied on semantic tools.
-                Sentiment classifiers, fact-checkers, credibility scorers.
-                None of these measures the predicted neurophysiological
-                pathway through which content reaches a brain before
-                deliberative evaluation can engage.
+                Sentiment tools, fact-checkers, and credibility scores all read
+                the words. None of them tell you whether a piece of media is
+                wired to trigger a gut reaction before you get a chance to think
+                it through.
               </p>
               <p>
-                Monarch wraps Meta FAIR&rsquo;s TRIBE v2, the first
-                population-averaged predictor of cortical activation across
-                the full surface, and reads its predictions through a
-                content-level bias index (NAA) that sits one layer above
-                sentiment.
+                Monarch uses Meta&rsquo;s TRIBE v2, an AI trained to predict how
+                the brain responds to media, and turns that into one plain score:
+                how much this content leans on feeling versus reasoning.
               </p>
             </div>
 
@@ -323,11 +323,11 @@ export default function HomePage() {
           {/* Right column: distribution chart */}
           <figure className="rounded-lg border border-white/10 bg-white/[0.02] p-5">
             <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.25em] text-white/45">
-              NAA distribution across two corpora
+              Two sets of stories, scored
             </p>
             <p className="mb-4 text-[12px] text-white/55">
-              Wire-style coverage clusters near LOW. The same factual story
-              re-framed for engagement shifts the entire population to HIGH.
+              Straight news coverage clusters at the calm end. The same facts
+              re-written to grab attention push the whole set to the charged end.
             </p>
             <NAADistributionMini height={240} />
             <p className="mt-3 font-mono text-[10px] text-white/35">
@@ -341,12 +341,12 @@ export default function HomePage() {
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-white/45">
-            02 / Pipeline
+            02 / How it works
           </p>
           <h2 className="mt-4 text-balance text-3xl font-semibold leading-tight text-white sm:text-4xl">
-            From media stream to cortical prediction
+            From a piece of media to a
             <br className="hidden sm:inline" />
-            in three stages.
+            score, in three steps.
           </h2>
 
           <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -354,23 +354,23 @@ export default function HomePage() {
               {
                 step: '01',
                 Icon: Waveform,
-                title: 'Tri-modal encoding',
-                body: 'TRIBE v2 ingests text, audio, and video. Each stream goes through its own pretrained encoder (LLaMA 3.2-3B, Wav2Vec-BERT 2.0, V-JEPA 2) and the fusion transformer aligns them into a shared latent space.',
-                tag: 'TRIBE v2 fusion encoder',
+                title: 'Read the content',
+                body: 'Monarch feeds your text, audio, or video into TRIBE v2, an AI that has learned how the brain reacts to each kind of media.',
+                tag: 'TRIBE v2 brain model',
               },
               {
                 step: '02',
                 Icon: Brain,
-                title: 'Cortical prediction',
-                body: 'The encoder outputs predicted population-averaged activation across 20,484 fsaverage5 cortical vertices, aggregated into NAA across the affective-salience and deliberative-control ROI groups.',
-                tag: '20,484 vertices / fsaverage5',
+                title: 'Predict the brain response',
+                body: 'It predicts where the content would light up across the whole brain, then boils that down to one score: how much it leans on emotion versus reasoning.',
+                tag: 'Whole-brain prediction',
               },
               {
                 step: '03',
                 Icon: Atom,
-                title: 'Physics analysis',
-                body: 'NAA becomes the external field of an Ising-style mean-field model. We compute equilibrium polarisation m*, susceptibility chi(NAA), and the Landau free-energy landscape for the population.',
-                tag: 'Landau / Ising mean-field',
+                title: 'Model the ripple effect',
+                body: 'A physics model of how opinions spread through a crowd estimates how far this content could move a group, not just one person.',
+                tag: 'Crowd-dynamics model',
               },
             ].map(({ step, Icon, title, body, tag }, i) => (
               <article
@@ -441,12 +441,18 @@ export default function HomePage() {
             </p>
           </div>
           <h2 className="text-balance text-3xl font-semibold leading-snug text-white sm:text-4xl">
-            Equations behind the scanner
+            The maths behind the score
           </h2>
 
           <p className="mt-6 text-[15px] leading-relaxed text-white/70">
-            NAA is the ratio of mean predicted activation across the
-            affective-salience ROI group to the deliberative-control group:
+            For the curious. You don&rsquo;t need any of this to use Monarch -
+            this is the physics that turns a brain prediction into a score and a
+            ripple estimate.
+          </p>
+
+          <p className="mt-6 text-[15px] leading-relaxed text-white/70">
+            The score compares how active the brain&rsquo;s emotion-related
+            regions are against its reasoning-related regions:
           </p>
           <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.03] px-6 py-5">
             <Equation tex={String.raw`\mathrm{NAA} \;=\; \dfrac{A_{\mathrm{aff}}}{A_{\mathrm{del}} + \delta}`} />
@@ -512,9 +518,9 @@ export default function HomePage() {
                 AMD Developer Hackathon 2026
               </p>
               <p className="mt-2 text-[13px] leading-relaxed text-white/60">
-                Track 3: Vision &amp; multimodal AI.
+                Track 3: multimodal AI.
                 <br />
-                Deadline 10 May 2026.
+                Runs on AMD Instinct MI300X.
               </p>
             </article>
           </div>

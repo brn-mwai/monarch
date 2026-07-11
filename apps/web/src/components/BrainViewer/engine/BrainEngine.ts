@@ -17,7 +17,7 @@ import { CameraPresets } from './CameraPresets';
 import { HeadShell } from './HeadShell';
 import { HemisphereManager } from './HemisphereManager';
 import { InflateManager } from './InflateManager';
-import { MeshLoader } from './MeshLoader';
+import { MeshLoader, type SurfaceKind } from './MeshLoader';
 import { ROILabelManager } from './ROILabelManager';
 import type {
   ColorMode,
@@ -27,6 +27,11 @@ import type {
   SurfaceMode,
   ViewPreset,
 } from '../types';
+
+// Solid background used only when exporting (image / rotation), matching the
+// app's near-black page so the head silhouette reads. The live canvas stays
+// transparent over the page.
+const EXPORT_BG = 0x0a0a0a;
 
 export class BrainEngine {
   private renderer: THREE.WebGLRenderer;
@@ -67,6 +72,9 @@ export class BrainEngine {
       canvas,
       antialias: true,
       alpha: true,
+      // Keep the drawing buffer so canvas snapshots / recordings capture the
+      // rendered frame reliably (export image + rotation "wrap").
+      preserveDrawingBuffer: true,
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(width, height, false);
@@ -76,7 +84,7 @@ export class BrainEngine {
     // colors; the small exposure lift recovers the soft highlight the Meta
     // TRIBE v2 demo gets from its env map without blowing out the base grey.
     this.renderer.toneMapping = THREE.NoToneMapping;
-    this.renderer.toneMappingExposure = 1.15;
+    this.renderer.toneMappingExposure = 1.0;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.setClearColor(0x000000, 0);
     // The HeadShell uses a per-material clipping plane to hide the
@@ -140,13 +148,15 @@ export class BrainEngine {
     // supplies the ambient fill, so the ambient term is trimmed to keep the
     // bright grey base from clipping; the hemisphere + camera-tracking key
     // still carve the gyri/sulci as the viewer orbits.
-    const ambient = new THREE.AmbientLight(0xffffff, 0.32);
-    const hemi = new THREE.HemisphereLight(0xffffff, 0x6a6a6a, 0.4);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.22);
+    const hemi = new THREE.HemisphereLight(0xffffff, 0x6a6a6a, 0.28);
     hemi.position.set(0, 0, 1);
 
     // Soft camera-tracking key light. Whichever side faces the viewer is
     // lit; the away side falls into soft shadow that reveals the folds.
-    this.cameraLight = new THREE.DirectionalLight(0xffffff, 0.85);
+    // Trimmed so the lit side no longer sums above 1.0 and clips the mid-grey
+    // base to white -- the curvature grey now reads as anatomical grey.
+    this.cameraLight = new THREE.DirectionalLight(0xffffff, 0.6);
     this.cameraLight.position.set(-220, 0, 15);
     this.cameraLight.target.position.set(0, 0, 15);
 
@@ -211,37 +221,59 @@ export class BrainEngine {
 
     // Pose the brain FIRST (tilt + lift), THEN fit the head around the
     // posed brain, so the silhouette wraps the brain wherever it ends up.
-    // The ~22 deg X tilt sets the frontal lobe slightly above the
-    // occipital lobe, matching the natural angle inside the cranium.
-    const brainTilt = new THREE.Euler(THREE.MathUtils.degToRad(22), 0, 0, 'XYZ');
+    // The ~12 deg X tilt sets the frontal lobe slightly above the
+    // occipital lobe, matching the natural angle inside the cranium. A
+    // gentler tilt keeps the occipital lobe up in the posterior vault
+    // instead of dropping it down-and-forward and leaving the back empty.
+    const brainTilt = new THREE.Euler(THREE.MathUtils.degToRad(12), 0, 0, 'XYZ');
     left.rotation.copy(brainTilt);
     right.rotation.copy(brainTilt);
 
-    // Lift slightly so the crown sits near the inside of the skull top,
-    // and nudge laterally so it reads centered from the anterior camera.
-    const brainLift = 10;
+    // Nudge laterally so it reads centered from the anterior camera. Fit the
+    // head and frame the camera on the brain at REST (no vertical lift), then
+    // raise the brain inside the now-fixed head below -- so the silhouette and
+    // camera stay put and only the brain rises within the cranium.
     const brainSideShift = 3;
-    left.position.set(brainSideShift, 0, brainLift);
-    right.position.set(brainSideShift, 0, brainLift);
+    left.position.set(brainSideShift, 0, 0);
+    right.position.set(brainSideShift, 0, 0);
 
     left.updateMatrixWorld(true);
     right.updateMatrixWorld(true);
 
-    // Measure the posed brain bbox and fit the head silhouette to it.
+    // Measure the resting brain bbox and fit the head silhouette to it.
     const brainBbox = new THREE.Box3().setFromObject(left);
     brainBbox.expandByObject(right);
     this.headShell.fitToActualBrain(brainBbox);
 
-    // Construct HemisphereManager AFTER the pose so its constructor
-    // snapshots this pose as the "closed rest" state.
-    this.hemisphereManager = new HemisphereManager(left, right);
-
-    // Camera presets are framed on the FITTED head bbox so the head
-    // sits centered in the viewport and the brain naturally appears
-    // inside the cranium.
+    // Camera presets are framed on the CRANIUM, not the full head. The
+    // fitted head bbox includes the protruding face/nose (front) and a long
+    // neck (below); framing that zooms the camera out so the brain renders
+    // small with slack above and below. Clip the framing box to the cranial
+    // vault -- keep the skull crown and occiput, drop the neck below and the
+    // face in front -- so the brain fills the frame and the face/jaw fall
+    // toward the edges of the faint silhouette.
+    const NECK_EXCLUDE_MARGIN = 20; // below the brain base
+    const FACE_EXCLUDE_MARGIN = 18; // in front of the frontal pole (smaller = bigger brain)
+    const VERTICAL_BIAS = 56; // seats the head/camera; brain lift is separate below
     const headBbox = this.headShell.getFittedBbox();
-    this.cameraPresets.setBoundingBox(headBbox);
+    const framingBbox = headBbox.clone();
+    framingBbox.min.z = brainBbox.min.z - NECK_EXCLUDE_MARGIN - VERTICAL_BIAS;
+    framingBbox.max.y = brainBbox.max.y + FACE_EXCLUDE_MARGIN;
+    this.cameraPresets.setBoundingBox(framingBbox);
     this.cameraPresets.setView('left', false);
+
+    // Raise ONLY the brain (superior axis) inside the fixed head + camera.
+    // Kept under CRANIUM_GAP (HeadShell = 18) so the brain stays under the
+    // skull crown rather than poking through it.
+    const BRAIN_RISE = 12;
+    left.position.z += BRAIN_RISE;
+    right.position.z += BRAIN_RISE;
+    left.updateMatrixWorld(true);
+    right.updateMatrixWorld(true);
+
+    // Construct HemisphereManager AFTER the final pose so its constructor
+    // snapshots the lifted pose as the "closed rest" state.
+    this.hemisphereManager = new HemisphereManager(left, right);
 
     this.loaded = true;
     this.animate();
@@ -271,6 +303,73 @@ export class BrainEngine {
 
     this.animationHandle = requestAnimationFrame(this.animate);
   };
+
+  // ------------------------------------------------------------------
+  // Export: still image + rotation "wrap"
+  // ------------------------------------------------------------------
+
+  /**
+   * Capture the current brain view as a PNG blob. Renders once at
+   * ``scale``x the on-screen resolution for a crisp export, then restores.
+   */
+  async captureImagePNG(scale = 2): Promise<Blob> {
+    const canvas = this.renderer.domElement;
+    const w = canvas.clientWidth || canvas.width;
+    const h = canvas.clientHeight || canvas.height;
+    const prevRatio = this.renderer.getPixelRatio();
+    // Render on the app's solid dark background so the exported image looks
+    // like the on-screen view (the live canvas is transparent over the page).
+    this.renderer.setClearColor(EXPORT_BG, 1);
+    this.renderer.setPixelRatio(Math.min(scale * window.devicePixelRatio, 4));
+    this.renderer.setSize(w, h, false);
+    this.renderer.render(this.scene, this.camera);
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/png"),
+    );
+    this.renderer.setClearColor(0x000000, 0);
+    this.renderer.setPixelRatio(prevRatio);
+    this.renderer.setSize(w, h, false);
+    if (!blob) throw new Error("BrainEngine: PNG capture failed");
+    return blob;
+  }
+
+  /**
+   * Record a full 360-degree orbit of the brain as a WebM blob (the "wrap").
+   * Orbits via OrbitControls.autoRotate for ``durationMs`` while MediaRecorder
+   * captures the canvas stream.
+   */
+  async captureRotationWebM(durationMs = 4000, fps = 30): Promise<Blob> {
+    const canvas = this.renderer.domElement as HTMLCanvasElement & {
+      captureStream?: (fps: number) => MediaStream;
+    };
+    if (typeof canvas.captureStream !== "function" || typeof MediaRecorder === "undefined") {
+      throw new Error("Rotation capture not supported in this browser");
+    }
+    const stream = canvas.captureStream(fps);
+    const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+      ? "video/webm;codecs=vp9"
+      : "video/webm";
+    const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8_000_000 });
+    const chunks: Blob[] = [];
+    recorder.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+    const finished = new Promise<Blob>((resolve) => {
+      recorder.onstop = () => resolve(new Blob(chunks, { type: "video/webm" }));
+    });
+
+    const prevAuto = this.controls.autoRotate;
+    const prevSpeed = this.controls.autoRotateSpeed;
+    this.renderer.setClearColor(EXPORT_BG, 1);
+    this.controls.autoRotate = true;
+    // one full orbit in durationMs (see OrbitControls: 2pi at speed 60/seconds).
+    this.controls.autoRotateSpeed = 60000 / durationMs;
+    recorder.start();
+    await new Promise((r) => setTimeout(r, durationMs));
+    recorder.stop();
+    this.controls.autoRotate = prevAuto;
+    this.controls.autoRotateSpeed = prevSpeed;
+    this.renderer.setClearColor(0x000000, 0);
+    return finished;
+  }
 
   // ------------------------------------------------------------------
   // Public API
@@ -323,6 +422,56 @@ export class BrainEngine {
     this.activationData = null;
     this.multimodalData = null;
     this.currentColorMode = 'activation';
+  }
+
+  /** Re-paint whatever colors are currently active over the live base. */
+  private reapplyColors(): void {
+    if (!this.loaded || !this.activationMapper) return;
+    const left = this.meshLoader.getLeftMesh();
+    const right = this.meshLoader.getRightMesh();
+    if (this.currentColorMode === 'multimodal' && this.multimodalData) {
+      this.activationMapper.applyMultimodalActivation(left, right, this.multimodalData);
+    } else if (this.activationData) {
+      this.activationMapper.applyActivation(left, right, this.activationData);
+    } else {
+      this.activationMapper.clearActivation(left, right);
+    }
+  }
+
+  /** Set the pial<->inflated morph directly (0 = pial, 1 = inflated). */
+  setInflation(t: number): void {
+    this.inflateManager?.setT(t);
+  }
+
+  /** Set the brain surface opacity (0 = invisible, 1 = solid). */
+  setBrainOpacity(opacity: number): void {
+    this.meshLoader.setOpacity(opacity);
+  }
+
+  /** Set the specular sheen (0 = matte, 1 = glossy). */
+  setSpecular(specularity: number): void {
+    this.meshLoader.setSpecular(specularity);
+  }
+
+  /** Select the base cortical surface (pial / fiducial / white). */
+  setSurface(kind: SurfaceKind): void {
+    this.meshLoader.setSurface(kind);
+    this.inflateManager?.refresh();
+  }
+
+  /** Retune the curvature shading and re-paint activation over the new base. */
+  setCurvature(brightness: number, contrast: number): void {
+    this.meshLoader.recolorCurvature(brightness, contrast);
+    this.reapplyColors();
+  }
+
+  /** Show or hide one hemisphere. */
+  setHemisphereVisible(side: 'left' | 'right', visible: boolean): void {
+    const mesh =
+      side === 'left'
+        ? this.meshLoader.getLeftMesh()
+        : this.meshLoader.getRightMesh();
+    mesh.visible = visible;
   }
 
   isActivationActive(): boolean {

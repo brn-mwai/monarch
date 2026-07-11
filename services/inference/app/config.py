@@ -84,7 +84,8 @@ class Settings(BaseSettings):
     # === CORS ===
     # Comma-separated list passed via env (MONARCH_CORS_ORIGINS=...).
     cors_origins: str = (
-        "http://localhost:3000,http://localhost:3300,https://monarch.brianmwai.com"
+        "http://localhost:3000,http://localhost:3001,http://localhost:3300,"
+        "https://monarch.brianmwai.com"
     )
 
     model_config = SettingsConfigDict(
