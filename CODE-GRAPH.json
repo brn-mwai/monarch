@@ -1,0 +1,645 @@
+{
+  "root": "C:\\Users\\Windows\\Downloads\\monarch",
+  "nodes": 158,
+  "edges": 122,
+  "clusters": [
+    {
+      "label": "Cluster 1",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\app\\config.py",
+        "services\\inference\\app\\dependencies.py",
+        "services\\inference\\app\\middleware\\input_validation.py",
+        "services\\inference\\app\\models\\enums.py",
+        "services\\inference\\app\\models\\schemas.py",
+        "services\\inference\\app\\routers\\batch.py",
+        "services\\inference\\app\\routers\\compare.py",
+        "services\\inference\\app\\routers\\report.py",
+        "services\\inference\\app\\routers\\scan.py",
+        "services\\inference\\app\\services\\__init__.py",
+        "services\\inference\\app\\services\\alpha_calibration.py",
+        "services\\inference\\app\\services\\blob_store.py",
+        "services\\inference\\app\\services\\gemma_report.py",
+        "services\\inference\\app\\services\\inference.py",
+        "services\\inference\\app\\services\\landau.py",
+        "services\\inference\\app\\services\\naa.py",
+        "services\\inference\\app\\services\\pooling.py",
+        "services\\inference\\app\\services\\report_generator.py",
+        "services\\inference\\app\\services\\roi.py",
+        "services\\inference\\app\\services\\stores.py",
+        "services\\inference\\app\\services\\susceptibility.py",
+        "services\\inference\\app\\utils\\file_handling.py"
+      ]
+    },
+    {
+      "label": "Cluster 2",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\BrainViewer\\engine\\ActivationMapper.ts",
+        "apps\\web\\src\\components\\BrainViewer\\engine\\AnimationController.ts",
+        "apps\\web\\src\\components\\BrainViewer\\engine\\BrainEngine.ts",
+        "apps\\web\\src\\components\\BrainViewer\\engine\\CameraPresets.ts",
+        "apps\\web\\src\\components\\BrainViewer\\engine\\Colormap.ts",
+        "apps\\web\\src\\components\\BrainViewer\\engine\\HeadShell.ts",
+        "apps\\web\\src\\components\\BrainViewer\\engine\\HemisphereManager.ts",
+        "apps\\web\\src\\components\\BrainViewer\\engine\\InflateManager.ts",
+        "apps\\web\\src\\components\\BrainViewer\\engine\\MeshLoader.ts",
+        "apps\\web\\src\\components\\BrainViewer\\engine\\ROILabelManager.ts",
+        "apps\\web\\src\\components\\BrainViewer\\index.tsx",
+        "apps\\web\\src\\components\\BrainViewer\\types.ts",
+        "apps\\web\\src\\components\\BrainViewer\\ui\\ActivityLegend.tsx",
+        "apps\\web\\src\\components\\BrainViewer\\ui\\BrainControls.tsx",
+        "apps\\web\\src\\components\\BrainViewer\\ui\\ControlToggles.tsx",
+        "apps\\web\\src\\components\\BrainViewer\\ui\\MultimodalLegend.tsx",
+        "apps\\web\\src\\components\\BrainViewer\\ui\\PlaybackControls.tsx",
+        "apps\\web\\src\\components\\BrainViewer\\ui\\ROIDescriptionPanel.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 3",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tribev2\\tribev2\\eventstransforms.py",
+        "services\\inference\\tribev2\\tribev2\\grids\\defaults.py",
+        "services\\inference\\tribev2\\tribev2\\grids\\run_cortical.py",
+        "services\\inference\\tribev2\\tribev2\\grids\\run_subcortical.py",
+        "services\\inference\\tribev2\\tribev2\\grids\\test_run.py",
+        "services\\inference\\tribev2\\tribev2\\main.py",
+        "services\\inference\\tribev2\\tribev2\\model.py",
+        "services\\inference\\tribev2\\tribev2\\pl_module.py",
+        "services\\inference\\tribev2\\tribev2\\studies\\__init__.py",
+        "services\\inference\\tribev2\\tribev2\\studies\\algonauts2025.py",
+        "services\\inference\\tribev2\\tribev2\\studies\\lahner2024bold.py",
+        "services\\inference\\tribev2\\tribev2\\studies\\lebel2023bold.py",
+        "services\\inference\\tribev2\\tribev2\\studies\\wen2017.py",
+        "services\\inference\\tribev2\\tribev2\\utils.py",
+        "services\\inference\\tribev2\\tribev2\\utils_fmri.py"
+      ]
+    },
+    {
+      "label": "Cluster 4",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\charts\\BatchScatter.tsx",
+        "apps\\web\\src\\components\\charts\\EchartsBase.tsx",
+        "apps\\web\\src\\components\\charts\\LandauCurve.tsx",
+        "apps\\web\\src\\components\\charts\\MultimodalBars.tsx",
+        "apps\\web\\src\\components\\charts\\NAADistributionMini.tsx",
+        "apps\\web\\src\\components\\charts\\NAAGauge.tsx",
+        "apps\\web\\src\\components\\charts\\NeuralForceGraph.tsx",
+        "apps\\web\\src\\components\\charts\\ROIBreakdown.tsx",
+        "apps\\web\\src\\components\\charts\\SusceptibilityChart.tsx",
+        "apps\\web\\src\\components\\charts\\echarts-theme.ts"
+      ]
+    },
+    {
+      "label": "Cluster 5",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\lib\\demographics.ts",
+        "apps\\web\\src\\lib\\example-content.ts",
+        "apps\\web\\src\\lib\\inference-client.ts",
+        "apps\\web\\src\\lib\\mock-data.ts",
+        "apps\\web\\src\\lib\\roi-activation.ts",
+        "apps\\web\\src\\lib\\scan-provider.tsx",
+        "apps\\web\\src\\lib\\scan-store.ts"
+      ]
+    },
+    {
+      "label": "Cluster 6",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tribev2\\tribev2\\plotting\\__init__.py",
+        "services\\inference\\tribev2\\tribev2\\plotting\\base.py",
+        "services\\inference\\tribev2\\tribev2\\plotting\\cortical.py",
+        "services\\inference\\tribev2\\tribev2\\plotting\\cortical_pv.py",
+        "services\\inference\\tribev2\\tribev2\\plotting\\subcortical.py",
+        "services\\inference\\tribev2\\tribev2\\plotting\\utils.py"
+      ]
+    },
+    {
+      "label": "Cluster 7",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\app\\__init__.py",
+        "services\\inference\\app\\main.py",
+        "services\\inference\\app\\middleware\\api_key.py",
+        "services\\inference\\app\\middleware\\rate_limit.py",
+        "services\\inference\\app\\routers\\__init__.py"
+      ]
+    },
+    {
+      "label": "Cluster 8",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\convex\\lib\\auth.ts",
+        "apps\\web\\convex\\lib\\rateLimit.ts",
+        "apps\\web\\convex\\scans.ts"
+      ]
+    },
+    {
+      "label": "Cluster 9",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\middleware.ts"
+      ]
+    },
+    {
+      "label": "Cluster 10",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\next-env.d.ts"
+      ]
+    },
+    {
+      "label": "Cluster 11",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\next.config.mjs"
+      ]
+    },
+    {
+      "label": "Cluster 12",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\postcss.config.mjs"
+      ]
+    },
+    {
+      "label": "Cluster 13",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\tailwind.config.ts"
+      ]
+    },
+    {
+      "label": "Cluster 14",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\convex\\schema.ts"
+      ]
+    },
+    {
+      "label": "Cluster 15",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\convex\\users.ts"
+      ]
+    },
+    {
+      "label": "Cluster 16",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\app\\layout.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 17",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\app\\page.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 18",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\app\\batch\\layout.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 19",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\app\\batch\\page.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 20",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\app\\report\\layout.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 21",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\app\\report\\page.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 22",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\app\\scanner\\layout.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 23",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\app\\scanner\\page.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 24",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\app\\sign-in\\[[...sign-in]]\\page.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 25",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\app\\sign-up\\[[...sign-up]]\\page.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 26",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\AuditReportCard.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 27",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\Equation.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 28",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\Header.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 29",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\icons.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 30",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\SplitLayout.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 31",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\TabNav.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 32",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\BrainViewer\\engine\\SulcalShading.ts"
+      ]
+    },
+    {
+      "label": "Cluster 33",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\BrainViewer\\ui\\GuideButton.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 34",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\explainers\\NAAExplainer.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 35",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\explainers\\ReportSummary.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 36",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\explainers\\ScientificDisclaimer.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 37",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\scanner\\DemographicSelect.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 38",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\scanner\\ElementCard.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 39",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\scanner-tabs\\BatchTab.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 40",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\scanner-tabs\\CompareTab.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 41",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\scanner-tabs\\MultimodalTab.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 42",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\components\\scanner-tabs\\ScanTab.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 43",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\lib\\brain-data.ts"
+      ]
+    },
+    {
+      "label": "Cluster 44",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\lib\\convex-provider.tsx"
+      ]
+    },
+    {
+      "label": "Cluster 45",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\lib\\multimodal.ts"
+      ]
+    },
+    {
+      "label": "Cluster 46",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\lib\\naa-format.ts"
+      ]
+    },
+    {
+      "label": "Cluster 47",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\lib\\normalize.ts"
+      ]
+    },
+    {
+      "label": "Cluster 48",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\lib\\roi-labels.ts"
+      ]
+    },
+    {
+      "label": "Cluster 49",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\lib\\sanitize.ts"
+      ]
+    },
+    {
+      "label": "Cluster 50",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "apps\\web\\src\\lib\\url-detector.ts"
+      ]
+    },
+    {
+      "label": "Cluster 51",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\app\\middleware\\__init__.py"
+      ]
+    },
+    {
+      "label": "Cluster 52",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\app\\models\\__init__.py"
+      ]
+    },
+    {
+      "label": "Cluster 53",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\app\\services\\report_charts.py"
+      ]
+    },
+    {
+      "label": "Cluster 54",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\app\\utils\\checkpoint.py"
+      ]
+    },
+    {
+      "label": "Cluster 55",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\app\\utils\\preprocessing.py"
+      ]
+    },
+    {
+      "label": "Cluster 56",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\app\\utils\\__init__.py"
+      ]
+    },
+    {
+      "label": "Cluster 57",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\scripts\\cache_roi.py"
+      ]
+    },
+    {
+      "label": "Cluster 58",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\scripts\\calibrate_alpha.py"
+      ]
+    },
+    {
+      "label": "Cluster 59",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\scripts\\export_roi_vertices.py"
+      ]
+    },
+    {
+      "label": "Cluster 60",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\scripts\\gen_medial_mask.py"
+      ]
+    },
+    {
+      "label": "Cluster 61",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\scripts\\gen_upsample_maps.py"
+      ]
+    },
+    {
+      "label": "Cluster 62",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\scripts\\prewarm.py"
+      ]
+    },
+    {
+      "label": "Cluster 63",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\scripts\\smoke_test.py"
+      ]
+    },
+    {
+      "label": "Cluster 64",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\conftest.py"
+      ]
+    },
+    {
+      "label": "Cluster 65",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_app_boot.py"
+      ]
+    },
+    {
+      "label": "Cluster 66",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_auth.py"
+      ]
+    },
+    {
+      "label": "Cluster 67",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_blob_store.py"
+      ]
+    },
+    {
+      "label": "Cluster 68",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_inference.py"
+      ]
+    },
+    {
+      "label": "Cluster 69",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_landau.py"
+      ]
+    },
+    {
+      "label": "Cluster 70",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_naa.py"
+      ]
+    },
+    {
+      "label": "Cluster 71",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_pooling.py"
+      ]
+    },
+    {
+      "label": "Cluster 72",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_rate_limit.py"
+      ]
+    },
+    {
+      "label": "Cluster 73",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_report.py"
+      ]
+    },
+    {
+      "label": "Cluster 74",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_roi.py"
+      ]
+    },
+    {
+      "label": "Cluster 75",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\test_timeseries.py"
+      ]
+    },
+    {
+      "label": "Cluster 76",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tests\\__init__.py"
+      ]
+    },
+    {
+      "label": "Cluster 77",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tribev2\\scripts\\export_brain_mesh.py"
+      ]
+    },
+    {
+      "label": "Cluster 78",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tribev2\\tribev2\\demo_utils.py"
+      ]
+    },
+    {
+      "label": "Cluster 79",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tribev2\\tribev2\\__init__.py"
+      ]
+    },
+    {
+      "label": "Cluster 80",
+      "summary": "(unlabelled - run without --no-label, claude CLI required)",
+      "files": [
+        "services\\inference\\tribev2\\tribev2\\grids\\__init__.py"
+      ]
+    }
+  ]
+}
