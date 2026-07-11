@@ -112,8 +112,10 @@ def compute_signed_naa(item_vector: np.ndarray) -> dict:
     negative means deliberative control dominates. Units are those of the
     standardized TRIBE output, which is what ``alpha_hat`` is then fitted in.
 
-    No LOW/MOD/HIGH banding is returned: thresholds must come from the
-    empirical corpus distribution, not from constants invented here.
+    The classification is banded on SIGN only -- ``HIGH`` when the affective
+    system leads, ``LOW`` when the deliberative system leads. That is the one
+    split the metric supports; a MOD band would need a magnitude cut-off, and
+    no such threshold has been established from a corpus yet.
     """
     if item_vector.shape != (VERTICES,):
         raise ValueError(f"Expected ({VERTICES},) vector, got {item_vector.shape}")
@@ -124,10 +126,14 @@ def compute_signed_naa(item_vector: np.ndarray) -> dict:
     if not (np.isfinite(a_aff) and np.isfinite(a_del)):
         raise ValueError("ROI mean activation is non-finite (NaN/inf in input)")
 
+    naa = a_aff - a_del
+    classification = NAAClassification.HIGH if naa > 0 else NAAClassification.LOW
+
     return {
-        "naa": a_aff - a_del,
+        "naa": naa,
         "a_aff": a_aff,
         "a_del": a_del,
+        "classification": classification.value,
         "valid": True,
     }
 

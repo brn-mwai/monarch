@@ -23,7 +23,12 @@ from ..models.schemas import (
 from ..services.alpha_calibration import load_alpha_hat
 from ..services.inference import TribeInferenceService
 from ..services.landau import compute_landau_analysis
-from ..services.naa import VERTICES, compute_naa, compute_roi_breakdown
+from ..services.naa import (
+    VERTICES,
+    compute_naa,
+    compute_roi_breakdown,
+    compute_signed_naa,
+)
 from ..services.stores import blob_store
 
 router = APIRouter(prefix="/api", tags=["scan"])
@@ -47,12 +52,12 @@ def _build_scan_response(result: dict, modality: Modality) -> ScanResponse:
 
     naa_dict = compute_naa(item_vector)
     if not naa_dict["valid"]:
-        raise HTTPException(
-            422,
-            "NAA is undefined for this content: one or both ROI networks show "
-            "below-baseline mean activation, so the affective/deliberative ratio "
-            "is not a meaningful index. No processing-bias verdict is emitted.",
-        )
+        # TRIBE predicts standardized activation, so an ROI mean is below
+        # baseline for most real content and the ratio is undefined there (it
+        # held for only 4/40 items on the EmoBank scan). Fall back to the
+        # signed asymmetry, which is always defined and is what the Landau
+        # field actually needs.
+        naa_dict = compute_signed_naa(item_vector)
 
     cal = load_alpha_hat(settings.alpha_hat_file)
     alpha_hat = cal["alpha_hat"]
@@ -199,8 +204,10 @@ async def scan_multimodal(
         key = f"{scan_id}:{channel}"
         blob_store.put(activation_key(key), vector)
         naa_dict = compute_naa(vector)
+        if not naa_dict["valid"]:
+            naa_dict = compute_signed_naa(vector)
         out[channel] = {
-            "naa": naa_dict["naa"] if naa_dict["valid"] else None,
+            "naa": naa_dict["naa"],
             "activation_url": f"/api/scan/{key}/activation",
         }
     return {"scan_id": scan_id, "channels": out}

@@ -6,10 +6,11 @@
 // they only apply to the standalone build; on Cloudflare they are set via the
 // dashboard / _headers instead.
 const isStatic = process.env.BUILD_STATIC === "1";
+const isVercel = !!process.env.VERCEL;
 
 const nextConfig = {
   productionBrowserSourceMaps: false,
-  output: isStatic ? "export" : "standalone",
+  ...(isStatic ? { output: "export" } : isVercel ? {} : { output: "standalone" }),
   images: { unoptimized: true },
   ...(isStatic
     ? { trailingSlash: true }
