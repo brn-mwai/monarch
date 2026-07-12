@@ -175,7 +175,10 @@ export function CompareTab() {
       }
       dispatch({ type: 'SET_COLOR_MODE', mode: 'activation' });
     } catch (err) {
-      dispatch({ type: 'ERROR', message: String(err) });
+      dispatch({
+        type: 'ERROR',
+        message: err instanceof Error ? err.message : String(err),
+      });
     } finally {
       setScanning(false);
     }

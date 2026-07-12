@@ -186,7 +186,10 @@ export function BatchTab({ onInspect }: BatchTabProps = {}) {
       dispatch({ type: 'SET_COLOR_MODE', mode: 'activation' });
       onInspect?.();
     } catch (err) {
-      dispatch({ type: 'ERROR', message: String(err) });
+      dispatch({
+        type: 'ERROR',
+        message: err instanceof Error ? err.message : String(err),
+      });
     }
   };
 
