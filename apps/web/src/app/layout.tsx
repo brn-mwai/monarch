@@ -5,6 +5,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { ConvexClientProvider } from "@/lib/convex-provider";
 import { ScanProvider } from "@/lib/scan-provider";
+import { ScanErrorDialog } from "@/components/ScanErrorDialog";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,6 +39,7 @@ export default function RootLayout({
           <ScanProvider>
             <Header />
             <main className="pt-16">{children}</main>
+            <ScanErrorDialog />
           </ScanProvider>
         </ConvexClientProvider>
       </body>

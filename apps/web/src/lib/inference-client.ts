@@ -2,9 +2,9 @@
 // inference-client.ts - frontend client for the inference server
 // ============================================================
 //
-// Calls the FastAPI inference server when NEXT_PUBLIC_INFERENCE_URL
-// is set, otherwise falls back to synthetic data so the platform
-// is always usable during development and demos.
+// Calls the FastAPI inference server (NEXT_PUBLIC_INFERENCE_URL). Every
+// failure raises ScanUnavailableError: a scan is research output, so the UI
+// reports what broke rather than substituting a synthetic brain map.
 // ============================================================
 
 import type { ScanResult } from './scan-store';
@@ -15,8 +15,6 @@ import {
   demographicTakeaway,
   type DemographicId,
 } from './demographics';
-import { buildSyntheticScan, buildSyntheticTimeSeries } from './mock-data';
-import { buildDenseActivation } from './roi-activation';
 
 const INFERENCE_URL = process.env.NEXT_PUBLIC_INFERENCE_URL ?? '';
 
@@ -211,14 +209,29 @@ interface RawScanResponse {
 }
 
 /**
- * Scan text content via the live inference server. Falls back to
- * synthetic data when the server is offline or unconfigured.
+ * A scan that could not be produced by the model.
+ *
+ * Monarch never substitutes synthetic activation for a failed scan: the brain
+ * map and the NAA are research output, and a plausible-looking fake is worse
+ * than no answer. Every failure path raises this so the UI can say what broke.
  */
+export class ScanUnavailableError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ScanUnavailableError';
+  }
+}
+
+/** Scan text content on the live inference server. */
 export async function scanText(text: string): Promise<ScanResult> {
   if (!INFERENCE_URL) {
-    return fallbackSynthetic(text);
+    throw new ScanUnavailableError(
+      'No inference server is configured, so no TRIBE v2 prediction can be made. ' +
+        'Monarch will not display a synthetic brain map in its place.',
+    );
   }
 
+  let jobId: string;
   try {
     const submit = await fetch(`${INFERENCE_URL}/api/scan/jobs`, {
       method: 'POST',
@@ -227,17 +240,20 @@ export async function scanText(text: string): Promise<ScanResult> {
     });
 
     if (!submit.ok) {
-      console.warn(`Inference server returned ${submit.status}, falling back to synthetic`);
-      return fallbackSynthetic(text);
+      throw new ScanUnavailableError(
+        `The inference server rejected the scan (HTTP ${submit.status}).`,
+      );
     }
-
-    const { job_id: jobId } = (await submit.json()) as { job_id: string };
-    const data = await pollScanJob(jobId);
-    return buildResultFromResponse(data, text.slice(0, 120));
+    ({ job_id: jobId } = (await submit.json()) as { job_id: string });
   } catch (err) {
-    console.warn('Inference server unreachable, falling back to synthetic:', err);
-    return fallbackSynthetic(text);
+    if (err instanceof ScanUnavailableError) throw err;
+    throw new ScanUnavailableError(
+      `Could not reach the inference server. It may be offline. (${String(err)})`,
+    );
   }
+
+  const data = await pollScanJob(jobId);
+  return buildResultFromResponse(data, text.slice(0, 120));
 }
 
 const JOB_POLL_INTERVAL_MS = 2_500;
@@ -258,7 +274,9 @@ async function pollScanJob(jobId: string): Promise<RawScanResponse> {
 
     const res = await fetch(`${INFERENCE_URL}/api/scan/jobs/${jobId}`);
     if (!res.ok) {
-      throw new Error(`Scan job ${jobId} lookup failed: ${res.status}`);
+      throw new ScanUnavailableError(
+        `Lost contact with the scan on the server (HTTP ${res.status}).`,
+      );
     }
 
     const body = (await res.json()) as {
@@ -271,25 +289,27 @@ async function pollScanJob(jobId: string): Promise<RawScanResponse> {
       return body.result;
     }
     if (body.status === 'error') {
-      throw new Error(body.error ?? 'Scan failed on the inference server');
+      throw new ScanUnavailableError(
+        body.error ?? 'The model failed while scanning this content.',
+      );
     }
   }
 
-  throw new Error(`Scan job ${jobId} did not finish within ${JOB_TIMEOUT_MS / 60_000} minutes`);
+  throw new ScanUnavailableError(
+    `The scan did not finish within ${JOB_TIMEOUT_MS / 60_000} minutes.`,
+  );
 }
 
-/**
- * Scan an uploaded media file (video or audio) via the live inference
- * server. Falls back to synthetic data keyed on the filename when the
- * server is offline or unconfigured, so the Compare flow stays usable
- * for demos without a model deployment.
- */
+/** Scan an uploaded audio or video file on the live inference server. */
 export async function scanMedia(
   file: File,
   modality: 'audio' | 'video',
 ): Promise<ScanResult> {
   if (!INFERENCE_URL) {
-    return fallbackSynthetic(file.name, modality);
+    throw new ScanUnavailableError(
+      'No inference server is configured, so this ' +
+        `${modality} cannot be scanned. Monarch will not display a synthetic brain map in its place.`,
+    );
   }
 
   try {
@@ -303,15 +323,18 @@ export async function scanMedia(
     });
 
     if (!res.ok) {
-      console.warn(`Inference server returned ${res.status}, falling back to synthetic`);
-      return fallbackSynthetic(file.name, modality);
+      throw new ScanUnavailableError(
+        `The inference server rejected this ${modality} (HTTP ${res.status}).`,
+      );
     }
 
     const data: RawScanResponse = await res.json();
     return buildResultFromResponse(data, file.name);
   } catch (err) {
-    console.warn('Inference server unreachable, falling back to synthetic:', err);
-    return fallbackSynthetic(file.name, modality);
+    if (err instanceof ScanUnavailableError) throw err;
+    throw new ScanUnavailableError(
+      `Could not reach the inference server. It may be offline. (${String(err)})`,
+    );
   }
 }
 
@@ -364,38 +387,4 @@ async function buildResultFromResponse(
       vertexCount: r.vertex_count,
     })),
   };
-}
-
-/**
- * Synthetic fallback when the inference server is not available.
- * Uses a simple heuristic (caps + exclamation density) to produce
- * a plausible NAA value for demonstration purposes.
- */
-async function fallbackSynthetic(
-  content: string,
-  modality: 'text' | 'audio' | 'video' = 'text',
-): Promise<ScanResult> {
-  // Heuristic NAA: more ALL-CAPS and exclamation marks = higher NAA. For
-  // uploaded media the only client-side signal is the filename, so the
-  // heuristic runs over that until the real model is connected.
-  const upperRatio =
-    (content.match(/[A-Z]/g)?.length ?? 0) / Math.max(1, content.length);
-  const exclam =
-    (content.match(/!/g)?.length ?? 0) / Math.max(1, content.length / 50);
-  const heuristicNAA = Math.max(
-    0.3,
-    Math.min(4.5, 0.6 + upperRatio * 8 + exclam),
-  );
-
-  const activation = await buildDenseActivation(heuristicNAA);
-  const ts = buildSyntheticTimeSeries(activation, 24);
-
-  const result = buildSyntheticScan(
-    `synth-${Date.now()}`,
-    content.slice(0, 120),
-    heuristicNAA,
-    activation,
-  );
-
-  return { ...result, modality, timeSeries: ts, nTrs: 24 };
 }

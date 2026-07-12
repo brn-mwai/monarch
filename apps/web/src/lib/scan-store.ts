@@ -157,7 +157,7 @@ export function scanReducer(state: ScanState, action: ScanAction): ScanState {
     case 'CLEAR':
       return { ...initialScanState };
     case 'ERROR':
-      return { ...state, mode: 'idle', error: action.message };
+      return { ...state, mode: 'idle', error: action.message || null };
     default:
       return state;
   }
