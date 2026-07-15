@@ -54,7 +54,7 @@ def main() -> int:
     args = parser.parse_args()
 
     from app.services.inference import TribeInferenceService
-    from app.services.naa import compute_naa
+    from app.services.naa import compute_naa, compute_signed_naa
 
     rows = _load_rows(args.csv, args.text_col, args.outcome_col)
     if args.limit:
@@ -76,6 +76,7 @@ def main() -> int:
         text = row[args.text_col].strip()
         result = service.predict_text(text)
         naa = compute_naa(result["item_vector"])
+        signed = compute_signed_naa(result["item_vector"])
 
         if naa["valid"]:
             naa_values.append(float(naa["naa"]))
@@ -87,6 +88,7 @@ def main() -> int:
                 "text": text,
                 args.outcome_col: row[args.outcome_col],
                 "naa": f"{naa['naa']:.6f}" if naa["valid"] else "",
+                "naa_signed": f"{signed['naa']:.6f}",
                 "a_aff": f"{naa['a_aff']:.6f}",
                 "a_del": f"{naa['a_del']:.6f}",
                 "classification": naa["classification"],
@@ -103,7 +105,7 @@ def main() -> int:
     with open(args.out, "w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(
             handle,
-            fieldnames=["text", args.outcome_col, "naa", "a_aff", "a_del", "classification"],
+            fieldnames=["text", args.outcome_col, "naa", "naa_signed", "a_aff", "a_del", "classification"],
         )
         writer.writeheader()
         writer.writerows(scanned)
