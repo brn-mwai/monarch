@@ -5,33 +5,65 @@ and `ROADMAP.md` (the schedule).
 
 ---
 
+## Read this first: what the proposal actually promised
+
+The proposal does **not** promise a positive result. It promises an instrument.
+Three times, in its own words:
+
+> "The primary deliverable is a functional **Asynchronous Measurement Apparatus
+> (AMA)**: an offline batch-inference pipeline producing physics-grounded audit
+> reports on arbitrary media corpora." (Abstract)
+
+> "The AMA is the primary deliverable of this project, **not a proposed future
+> application and not a conceptual description**." (§5.8)
+
+> "It proposes a thermometer, and delivers it as working, open-source code that
+> can be run today." (§6)
+
+This governs everything below. **A thermometer that reads zero is still a
+delivered thermometer.** The null does not fail the proposal. Failing to ship
+the AMA would.
+
+The thesis is therefore **the proposal, executed, with one amendment**. It is not
+a pivot to a different project, and it must not read as one.
+
 ## The argument, in one sentence
 
-> We built an instrument to measure media manipulation from predicted brain
-> activity. The instrument cannot make the measurement it was designed for,
-> because the released TRIBE v2 checkpoint does not predict the amygdala. We
-> reformulated to a cortical proxy, tested it rigorously, and it does not track
-> manipulation. This reports the evidence and what would be required to do it
-> properly.
+> We built the sociophysics framework and the measurement apparatus the proposal
+> specified, discovered during deployment that the released TRIBE v2 checkpoint
+> constrains the observable to a cortical proxy, answered the research questions
+> within that constraint, and shipped the instrument.
 
 Every chapter serves that sentence. If a paragraph does not, cut it.
 
-## The three claims
+## What the document delivers, in the proposal's own order of priority
 
-The whole document rests on three claims, in descending order of importance.
-Claim 1 is the contribution. Claims 2 and 3 are consequences.
+1. **The AMA, shipped and working.** Objective (vii). The primary deliverable.
+   Codebase, corpus manifest, and one complete example report over the corpus.
+   **This is the thing that must exist on submission day.** If time runs out,
+   time runs out of the analysis, never out of this.
+2. **The framework, derived in full.** Objectives (iv) and (v). The Landau /
+   Ising treatment is implemented and tested and stands independently of any
+   empirical result.
+3. **The research questions, answered.** RQ I to RQ IV, honestly, at whatever n
+   is reached.
 
-1. **The released TRIBE v2 checkpoint is cortical-only and cannot support the
-   subcortical claims its own technical report describes.** Novel. Unpublished.
-   Verifiable by anyone in five minutes. This is the thesis.
+## The three empirical claims
+
+Supporting the above, in descending order of confidence:
+
+1. **The released TRIBE v2 checkpoint is cortical-only**, so the observable is
+   constrained to a cortical proxy. Novel, unpublished, verifiable in five
+   minutes. This is a **constraint on RQ I and a contribution in its own right**.
+   It is not the thesis, and writing it as though it were would be a pivot away
+   from the proposal.
 2. **Ratio observables over standardized encoder output are undefined on real
-   content.** A general methodological point, not specific to Monarch, evidenced
-   at 4/40 and 1/10.
+   content.** Evidenced at 4/40 and 1/10. A general methodological point.
 3. **The cortical proxy does not track manipulation.** The null, at whatever n
    the scan reaches.
 
-Claim 1 stands whatever the scan says. Claims 2 and 3 are already evidenced by
-the runs on file. **Nothing in this document is hostage to the scan finishing.**
+Claims 1 and 2 are already evidenced by the runs on file. **Nothing in this
+document is hostage to the scan finishing.**
 
 ---
 
@@ -150,9 +182,36 @@ Structured as the RQ answers, in order. The only chapter that waits on the scan.
   grid, the four source fMRI corpora, and compute outside this project.
 
 ### Ch 7: Conclusion
-The framework is sound and the derivation stands. The instrument cannot deliver
-the measurement. The contribution is the documented limitation plus the honest
-empirical result. Future work is the subcortical checkpoint.
+The framework is derived, the apparatus is shipped, the research questions are
+answered within the constraint the released checkpoint imposes. The contribution
+is the instrument plus the documented limitation plus the honest empirical
+result. Future work is the subcortical checkpoint.
+
+---
+
+## The AMA: objective (vii), the primary deliverable
+
+Everything else in this plan is subordinate to this section. The proposal is an
+instrument-delivery project and this is the instrument.
+
+**Already working:** the offline batch CLI (`batch_naa.py`), per-item
+checkpoint-resume, the TRIBE cascade, ROI extraction, signed NAA, the full
+Landau analysis, and a single-scan PDF report with NAA gauge, `F(m)` curve,
+`chi(NAA)` curve, ROI breakdown and methodology figure.
+
+**Missing for the corpus-level report §5.8(iii):** the ranked NAA table over all
+items, per-category violin plots, the free-energy atlas over category mean NAA,
+and per-item flags against the ROC-optimal threshold. The single-item chart
+machinery in `report_charts.py` already covers most of the drawing; this is
+assembly, not new science.
+
+**Also required at completion (§5.8 Outcome):** public release of the codebase,
+the corpus manifest, and **one complete example report applied to the corpus**.
+The example report is part of the deliverable, not a nice-to-have.
+
+**Priority rule for the last four days.** If something has to give, it gives from
+the analysis, never from the AMA. An unfinished scan with a shipped instrument
+answers the proposal. A finished scan with no instrument does not.
 
 ---
 
