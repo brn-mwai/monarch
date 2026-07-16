@@ -47,6 +47,8 @@ DEFAULT_BETA_J = 0.7
 DEFAULT_HOLDOUT = 0.2
 DEFAULT_SEED = 17
 MIN_ROWS = 8
+DEFAULT_BOOTSTRAP = 1000
+SENSITIVITY_BETA_J = (0.5, 0.6, 0.7, 0.8, 0.9)
 
 
 def _read_columns(
@@ -104,6 +106,106 @@ def _naa_from_text(texts: list[Optional[str]]) -> list[float]:
             raise ValueError(f"NAA undefined for text: {text[:60]!r}")
         values.append(float(naa["naa"]))
     return values
+
+
+def bootstrap_alpha(
+    naa: np.ndarray,
+    outcome: np.ndarray,
+    beta_j: float,
+    replicates: int = DEFAULT_BOOTSTRAP,
+    seed: int = DEFAULT_SEED,
+    normalize_outcome: bool = True,
+) -> dict:
+    """Percentile bootstrap CI for alpha_hat (proposal §4.4, B = 1,000).
+
+    The analytic t-interval in ``calibrate`` assumes normally distributed
+    residuals. At the sample sizes reached so far (n = 10 and n = 40) that
+    assumption carries real weight and cannot be checked, which matters
+    because the headline result is a NULL: a CI that straddles zero is only
+    as credible as the distributional assumption behind it. Resampling
+    (NAA, outcome) pairs with replacement makes no normality assumption, so
+    a null that survives the bootstrap is the stronger statement.
+
+    Pairs are resampled -- not residuals -- because NAA is observed, not
+    fixed by design.
+
+    Returns the percentile CI, the bootstrap median, and ``fraction_negative``:
+    the share of replicates placing alpha_hat below zero. At ~0.5 the estimate
+    is indistinguishable from noise in sign as well as magnitude.
+    """
+    if naa.shape != outcome.shape:
+        raise ValueError("naa and outcome must have the same length")
+    if replicates < 1:
+        raise ValueError(f"replicates must be >= 1, got {replicates}")
+
+    x = naa.astype(np.float64)
+    y = outcome.astype(np.float64)
+    if normalize_outcome:
+        span = y.max() - y.min()
+        y = (y - y.min()) / span if span > 0 else y - y.min()
+
+    rng = np.random.default_rng(seed)
+    factor = 1.0 - beta_j
+    estimates: list[float] = []
+
+    for _ in range(replicates):
+        idx = rng.integers(0, x.size, size=x.size)
+        xs, ys = x[idx], y[idx]
+        if np.ptp(xs) == 0.0:
+            continue
+        slope = float(stats.linregress(xs, ys).slope)
+        estimates.append(slope * factor)
+
+    if len(estimates) < 2:
+        raise ValueError("bootstrap produced too few usable replicates")
+
+    values = np.array(estimates, dtype=np.float64)
+    return {
+        "bootstrap_replicates": int(values.size),
+        "bootstrap_ci_low": float(np.percentile(values, 2.5)),
+        "bootstrap_ci_high": float(np.percentile(values, 97.5)),
+        "bootstrap_median": float(np.median(values)),
+        "fraction_negative": float(np.mean(values < 0.0)),
+    }
+
+
+def sensitivity_sweep(
+    naa: np.ndarray,
+    outcome: np.ndarray,
+    beta_j_values: tuple[float, ...] = SENSITIVITY_BETA_J,
+    normalize_outcome: bool = True,
+) -> list[dict]:
+    """alpha_hat across the assumed social temperature (proposal §4.4).
+
+    beta_J is an ASSUMPTION -- 0.7, borrowed from Castellano et al. (2009)
+    for online political discourse -- not something this data measures. The
+    proposal therefore requires the sweep over [0.5, 0.9] to show that no
+    downstream conclusion is an artifact of that choice.
+
+    The fitted slope does not depend on beta_J; only the back-out factor
+    ``alpha_hat = slope * (1 - beta_j)`` does. So the sweep is an exact
+    rescaling rather than a refit, and alpha_hat varies by the full factor
+    of 5 spanned by (1 - beta_j) over [0.5, 0.9]. That is worth stating
+    plainly in the paper: the magnitude of alpha_hat is driven as much by
+    the social-temperature assumption as by the data. Its SIGN and its
+    significance are invariant under the sweep, which is why a null is
+    robust to beta_J even though a point estimate would not be.
+    """
+    x = naa.astype(np.float64)
+    y = outcome.astype(np.float64)
+    if normalize_outcome:
+        span = y.max() - y.min()
+        y = (y - y.min()) / span if span > 0 else y - y.min()
+
+    fit = stats.linregress(x, y)
+    return [
+        {
+            "beta_j": float(beta_j),
+            "alpha_hat": float(fit.slope * (1.0 - beta_j)),
+            "p_value": float(fit.pvalue),
+        }
+        for beta_j in beta_j_values
+    ]
 
 
 def calibrate(
@@ -182,7 +284,13 @@ def calibrate(
 
 
 def run_self_test() -> int:
-    """Recover a known alpha_hat from synthetic data. No CSV, no model."""
+    """Verify the estimator on synthetic data. No CSV, no model.
+
+    Three checks: it recovers a known coupling; the bootstrap CI covers that
+    known value; and -- the case that matters for this project -- it reports
+    a NULL rather than a spurious estimate when the outcome is independent
+    of NAA. A calibrator that cannot detect its own null is not evidence.
+    """
     beta_j = 0.7
     true_alpha = 0.6
     slope = true_alpha / (1.0 - beta_j)  # low-field: field ~= slope * naa
@@ -196,13 +304,54 @@ def run_self_test() -> int:
         naa, field, beta_j, DEFAULT_HOLDOUT, DEFAULT_SEED, normalize_outcome=False
     )
     recovered = result["alpha_hat"]
-    ok = abs(recovered - true_alpha) < 0.05
+    recovery_ok = abs(recovered - true_alpha) < 0.05
     print(
-        f"[self-test] true alpha_hat={true_alpha:.3f} "
+        f"[self-test] recovery: true alpha_hat={true_alpha:.3f} "
         f"recovered={recovered:.3f} "
         f"CI=[{result['ci_low']:.3f}, {result['ci_high']:.3f}] "
-        f"r2_holdout={result['r2_holdout']:.3f} -> {'PASS' if ok else 'FAIL'}"
+        f"r2_holdout={result['r2_holdout']:.3f} "
+        f"-> {'PASS' if recovery_ok else 'FAIL'}"
     )
+
+    boot = bootstrap_alpha(
+        naa, field, beta_j, replicates=200, seed=DEFAULT_SEED, normalize_outcome=False
+    )
+    covers = boot["bootstrap_ci_low"] <= true_alpha <= boot["bootstrap_ci_high"]
+    print(
+        f"[self-test] bootstrap: CI=[{boot['bootstrap_ci_low']:.3f}, "
+        f"{boot['bootstrap_ci_high']:.3f}] covers {true_alpha:.3f} "
+        f"-> {'PASS' if covers else 'FAIL'}"
+    )
+
+    sweep = sensitivity_sweep(naa, field, normalize_outcome=False)
+    implied_slopes = [row["alpha_hat"] / (1.0 - row["beta_j"]) for row in sweep]
+    scaling_ok = max(implied_slopes) - min(implied_slopes) < 1e-9
+    spread = max(r["alpha_hat"] for r in sweep) / min(r["alpha_hat"] for r in sweep)
+    print(
+        f"[self-test] sensitivity: beta_j 0.5->0.9 spans alpha_hat "
+        f"{sweep[0]['alpha_hat']:.3f}..{sweep[-1]['alpha_hat']:.3f} "
+        f"({spread:.1f}x) -> {'PASS' if scaling_ok else 'FAIL'}"
+    )
+
+    null_outcome = rng.normal(0.0, 1.0, size=naa.size)
+    null_boot = bootstrap_alpha(
+        naa,
+        null_outcome,
+        beta_j,
+        replicates=200,
+        seed=DEFAULT_SEED,
+        normalize_outcome=False,
+    )
+    null_ok = null_boot["bootstrap_ci_low"] < 0.0 < null_boot["bootstrap_ci_high"]
+    print(
+        f"[self-test] null detection: outcome independent of NAA -> "
+        f"CI=[{null_boot['bootstrap_ci_low']:.3f}, "
+        f"{null_boot['bootstrap_ci_high']:.3f}] straddles zero "
+        f"-> {'PASS' if null_ok else 'FAIL'}"
+    )
+
+    ok = recovery_ok and covers and scaling_ok and null_ok
+    print(f"[self-test] {'ALL PASS' if ok else 'FAILURES PRESENT'}")
     return 0 if ok else 1
 
 
@@ -215,6 +364,12 @@ def main() -> int:
     parser.add_argument("--beta-j", type=float, default=DEFAULT_BETA_J)
     parser.add_argument("--holdout", type=float, default=DEFAULT_HOLDOUT)
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
+    parser.add_argument(
+        "--bootstrap",
+        type=int,
+        default=DEFAULT_BOOTSTRAP,
+        help="bootstrap replicates for the alpha_hat CI (0 disables)",
+    )
     parser.add_argument(
         "--no-normalize-outcome",
         action="store_true",
@@ -255,6 +410,17 @@ def main() -> int:
     result["outcome_variable"] = args.outcome_col
     result["csv"] = str(args.csv)
 
+    normalize = not args.no_normalize_outcome
+    if args.bootstrap:
+        result.update(
+            bootstrap_alpha(
+                naa, outcome, args.beta_j, args.bootstrap, args.seed, normalize
+            )
+        )
+    result["sensitivity"] = sensitivity_sweep(
+        naa, outcome, SENSITIVITY_BETA_J, normalize
+    )
+
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=2), encoding="utf-8")
 
@@ -268,7 +434,29 @@ def main() -> int:
         f"  train R^2={result['r2_train']:.3f}  "
         f"holdout R^2="
         + (f"{result['r2_holdout']:.3f}" if result["r2_holdout"] is not None else "n/a")
+        + f"  p={result['p_value']:.3f}"
     )
+
+    if args.bootstrap:
+        print(
+            f"  bootstrap ({result['bootstrap_replicates']} reps): "
+            f"95% CI [{result['bootstrap_ci_low']:.4f}, "
+            f"{result['bootstrap_ci_high']:.4f}]  "
+            f"median={result['bootstrap_median']:.4f}  "
+            f"frac<0={result['fraction_negative']:.2f}"
+        )
+        straddles = result["bootstrap_ci_low"] < 0.0 < result["bootstrap_ci_high"]
+        if straddles:
+            print(
+                "  [NULL] bootstrap CI straddles zero: alpha_hat is not "
+                "distinguishable from zero. Report the null; do not quote "
+                "a point estimate."
+            )
+
+    print("  sensitivity over beta_j:")
+    for row in result["sensitivity"]:
+        print(f"    beta_j={row['beta_j']:.1f} -> alpha_hat={row['alpha_hat']:.4f}")
+
     print(f"  written to {args.out}")
     return 0
 
