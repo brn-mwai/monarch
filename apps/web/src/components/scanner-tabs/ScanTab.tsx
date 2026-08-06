@@ -215,9 +215,11 @@ export function ScanTab() {
                 {ex.text}
               </p>
             </div>
+            {/* No NAA is shown before a scan runs. expectedNAA is an authored demo
+                constant, and a reader cannot tell one from a measurement. */}
             <div className="flex items-center justify-between px-3 py-2.5 text-[11px]">
-              <span className="font-mono text-white/55">
-                NAA {ex.expectedNAA.toFixed(2)}
+              <span className="font-mono uppercase tracking-wider text-white/35">
+                Example
               </span>
               <span className="font-mono uppercase tracking-wider text-white/45">
                 {ex.label}

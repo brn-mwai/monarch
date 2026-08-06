@@ -136,7 +136,7 @@ export default function HomePage() {
               />
             </div>
             <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/40">
-              Score 0.84 / Calm
+              Calm / illustrative
             </p>
           </figure>
 
@@ -214,7 +214,7 @@ export default function HomePage() {
               />
             </div>
             <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/40">
-              Score 3.71 / Charged
+              Charged / illustrative
             </p>
           </figure>
         </div>
@@ -287,7 +287,8 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Inline contrast cards */}
+            {/* Inline contrast cards. The bands illustrate the contrast the index is
+                built to expose; they are not scores measured on these two passages. */}
             <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <article className="rounded-lg border border-white/10 p-4">
                 <header className="mb-2 flex items-center justify-between">
@@ -295,7 +296,7 @@ export default function HomePage() {
                     Reuters wire
                   </span>
                   <span className="rounded-sm border border-emerald-300/30 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-emerald-200">
-                    LOW 0.84
+                    LOW
                   </span>
                 </header>
                 <p className="text-[13px] leading-relaxed text-white/80">
@@ -309,7 +310,7 @@ export default function HomePage() {
                     Outrage feed
                   </span>
                   <span className="rounded-sm border border-orange-300/40 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-orange-300">
-                    HIGH 3.71
+                    HIGH
                   </span>
                 </header>
                 <p className="text-[13px] leading-relaxed text-white/80">
@@ -318,6 +319,9 @@ export default function HomePage() {
                 </p>
               </article>
             </div>
+            <p className="mt-3 font-mono text-[10px] text-white/35">
+              illustrative, not measured
+            </p>
           </div>
 
           {/* Right column: distribution chart */}

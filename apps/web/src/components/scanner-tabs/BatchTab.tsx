@@ -107,26 +107,33 @@ export function BatchTab({ onInspect }: BatchTabProps = {}) {
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   const [rows, setRows] = useState<CorpusRow[]>(DEFAULT_ROWS);
-  const [scores, setScores] = useState<Record<string, number>>(() =>
-    Object.fromEntries(BATCH_CORPUS.map((c) => [c.id, c.expectedNAA])),
-  );
+  // Empty until a scan runs. Seeding from BATCH_CORPUS.expectedNAA drew the whole
+  // ranked chart from authored demo constants, which reads as a completed audit.
+  const [scores, setScores] = useState<Record<string, number>>({});
   const [results, setResults] = useState<Record<string, ScanResult>>({});
   const [source, setSource] = useState<'sample' | 'uploaded'>('sample');
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(
     null,
   );
 
+  // Only scanned rows become points. An unscored row has no NAA, and defaulting it
+  // to 0 plotted a measurement that was never taken.
   const items: BatchItem[] = useMemo(
     () =>
-      rows.map((row, index) => ({
-        id: row.id,
-        index,
-        naa: scores[row.id] ?? 0,
-        category: row.category,
-        label: row.label,
-      })),
+      rows
+        .map((row, index) => ({ row, index }))
+        .filter(({ row }) => typeof scores[row.id] === 'number')
+        .map(({ row, index }) => ({
+          id: row.id,
+          index,
+          naa: scores[row.id],
+          category: row.category,
+          label: row.label,
+        })),
     [rows, scores],
   );
+
+  const unscored = rows.length - items.length;
 
   const ranked = useMemo(
     () => [...items].sort((a, b) => b.naa - a.naa),
@@ -146,7 +153,8 @@ export function BatchTab({ onInspect }: BatchTabProps = {}) {
         nextScores[row.id] = result.naa.naa;
         nextResults[row.id] = result;
       } catch {
-        nextScores[row.id] = 0;
+        // An item that failed to scan carries no score. Writing 0 put it on the
+        // chart and in the export as though zero had been measured.
       }
       setProgress({ done: i + 1, total: corpus.length });
     }
@@ -231,6 +239,13 @@ export function BatchTab({ onInspect }: BatchTabProps = {}) {
           to audit up to 1,500 items. Each item runs through the same encoder as a
           single scan.
         </p>
+        {unscored > 0 && (
+          <p className="font-mono text-[11px] uppercase tracking-wider text-white/40">
+            {items.length > 0
+              ? `${unscored} of ${rows.length} items not scored`
+              : `${rows.length} items loaded, none scored yet. Press Score corpus.`}
+          </p>
+        )}
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
