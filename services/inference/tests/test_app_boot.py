@@ -22,7 +22,11 @@ def test_health_endpoint():
         assert "version" in body
 
 
-def test_scan_returns_503_when_model_unloaded():
+def test_scan_returns_503_when_model_unloaded(auth_headers):
     with TestClient(app) as client:
-        resp = client.post("/api/scan", json={"text": "hello world this is enough"})
+        resp = client.post(
+            "/api/scan",
+            json={"text": "hello world this is enough"},
+            headers=auth_headers,
+        )
         assert resp.status_code == 503

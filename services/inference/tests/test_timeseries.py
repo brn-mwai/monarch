@@ -17,7 +17,7 @@ from app.routers import scan as scan_router  # noqa: E402
 VERTICES = 20484
 
 
-def test_timeseries_serves_frame_major_float32():
+def test_timeseries_serves_frame_major_float32(auth_headers):
     n_frames = 4
     frames = np.arange(n_frames * VERTICES, dtype=np.float32).reshape(
         n_frames, VERTICES
@@ -25,7 +25,9 @@ def test_timeseries_serves_frame_major_float32():
     scan_router.blob_store.put(scan_router.timeseries_key("ts-roundtrip"), frames)
 
     with TestClient(app) as client:
-        resp = client.get("/api/scan/ts-roundtrip/timeseries")
+        resp = client.get(
+            "/api/scan/ts-roundtrip/timeseries", headers=auth_headers
+        )
 
     assert resp.status_code == 200
     assert resp.headers["X-Frame-Count"] == str(n_frames)
@@ -39,17 +41,21 @@ def test_timeseries_serves_frame_major_float32():
     assert np.array_equal(recovered, frames)
 
 
-def test_timeseries_404_when_missing():
+def test_timeseries_404_when_missing(auth_headers):
     with TestClient(app) as client:
-        resp = client.get("/api/scan/does-not-exist/timeseries")
+        resp = client.get(
+            "/api/scan/does-not-exist/timeseries", headers=auth_headers
+        )
     assert resp.status_code == 404
 
 
-def test_timeseries_500_on_bad_shape():
+def test_timeseries_500_on_bad_shape(auth_headers):
     scan_router.blob_store.put(
         scan_router.timeseries_key("ts-bad-shape"),
         np.zeros((3, 100), dtype=np.float32),
     )
     with TestClient(app) as client:
-        resp = client.get("/api/scan/ts-bad-shape/timeseries")
+        resp = client.get(
+            "/api/scan/ts-bad-shape/timeseries", headers=auth_headers
+        )
     assert resp.status_code == 500

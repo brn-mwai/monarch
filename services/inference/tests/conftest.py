@@ -45,6 +45,20 @@ def stub_roi_cache(tmp_path: Path, monkeypatch) -> Path:
 
 
 @pytest.fixture
+def auth_headers() -> dict:
+    """Bearer header when INFERENCE_API_KEY is configured, empty when it is not.
+
+    Route tests must pass this or they assert against 401 instead of the
+    status the route actually returns, which depends on whether the local
+    .env happens to carry a key.
+    """
+    from app.config import settings
+
+    key = settings.inference_api_key
+    return {"Authorization": f"Bearer {key}"} if key else {}
+
+
+@pytest.fixture
 def synthetic_item_vector() -> np.ndarray:
     """A deterministic (20484,) vector with predictable per-region means.
 

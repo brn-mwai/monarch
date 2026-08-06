@@ -41,11 +41,18 @@ then point this script at the files.
 
 Downstream note
 ---------------
-``batch_naa.py`` carries exactly one outcome column through the GPU pass and
-drops the rest, so scanning this corpus with ``--outcome-col category`` would
-lose ``credibility``, and vice versa. Scan with ``--outcome-col category`` for
-objectives (iii)/(vi) and re-join on ``text`` for the (iv) calibration, or
-teach ``batch_naa.py`` to carry extra columns.
+Scan with ``--outcome-col category`` for objectives (iii)/(vi) and name every
+other column the analysis needs in ``--carry-cols``, since the GPU pass is the
+one step that cannot be repeated cheaply:
+
+    python scripts/batch_naa.py --csv corpus.csv \
+        --outcome-col category \
+        --carry-cols id,manipulative,credibility,source_dataset,word_count \
+        --out corpus_naa.csv
+
+``word_count`` and ``source_dataset`` are carried so the length confound and
+the dataset-leak check can be run against the scanned rows themselves rather
+than re-joined on text.
 
 Usage
 -----
@@ -122,11 +129,14 @@ CLICKBAIT_POSITIVE = "clickbait"
 
 PUBMED_COLUMN = "abstract"
 
+HYPERPARTISAN_COLUMNS = ("text", "partisan_intensity")
+
 _SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+")
 _DATELINE = re.compile(
     r"^\s*[A-Z][A-Za-z.\-/' ]{0,40}\s*\(\s*Reuters\s*\)\s*[-–—]\s*"
 )
 _AGENCY_MENTION = re.compile(r"\(\s*Reuters\s*\)", re.IGNORECASE)
+_AGENCY_TOKEN = re.compile(r"\breuters\b", re.IGNORECASE)
 _WHITESPACE = re.compile(r"\s+")
 
 
@@ -339,6 +349,36 @@ def read_clickbait(instances_path: Path, truth_path: Path) -> Iterator[dict]:
             }
 
 
+def read_hyperpartisan(path: Path) -> Iterator[dict]:
+    """High-outrage: SemEval-2019 Task 4 articles labelled hyperpartisan.
+
+    Stands in for NELA-GT-2021, which the proposal named but whose authors
+    deaccessioned it on 1 January 2024. Produced by ``fetch_hyperpartisan.py``,
+    which has already applied the label filter and stripped the source markup.
+
+    ``credibility`` is left empty on purpose. This dataset carries a political
+    lean, not a reliability rating, and writing lean into a credibility column
+    would silently change what objective (iv) regresses against. The lean is
+    carried separately as ``partisan_intensity``.
+    """
+    header = _csv_header(path)
+    _require_columns(header, HYPERPARTISAN_COLUMNS, f"hyperpartisan {path}")
+
+    with open(path, newline="", encoding="utf-8", errors="replace") as handle:
+        for row in csv.DictReader(handle):
+            passage = _to_passage(row.get("text") or "")
+            if passage is None:
+                continue
+            yield {
+                "text": passage,
+                "source_dataset": "SemEval-2019-Task4",
+                "source_name": "hyperpartisan",
+                "credibility": "",
+                "partisan_intensity": (row.get("partisan_intensity") or "").strip(),
+                "title": (row.get("title") or "").strip(),
+            }
+
+
 def read_pubmed(path: Path, column: str = PUBMED_COLUMN) -> Iterator[dict]:
     """Neutral-informational: scientific abstracts."""
     header = _csv_header(path)
@@ -359,6 +399,20 @@ def read_pubmed(path: Path, column: str = PUBMED_COLUMN) -> Iterator[dict]:
 
 
 def _sample(pool: list[dict], count: int, category: str) -> list[dict]:
+    """Draw ``count`` items, balanced across the category's source datasets.
+
+    A flat random draw is proportional to pool size, which quietly destroys
+    the point of using more than one source. ``neutral_informational`` pools
+    ~13.7k ISOT wire articles against 150 PubMed abstracts, so a flat draw of
+    100 returned 99 wire and 1 abstract: the neutral category became a single
+    publisher's house style, while the other three categories came from
+    elsewhere. Any separation could then be publisher detection rather than
+    the NAA index, which is the same failure the dateline strip exists to
+    prevent.
+
+    Sources are therefore drawn round-robin. A source that runs out yields its
+    remaining share to the others, so the count is still met.
+    """
     rng = random.Random(f"{SEED}:{category}")
     if len(pool) < count:
         print(
@@ -369,8 +423,30 @@ def _sample(pool: list[dict], count: int, category: str) -> list[dict]:
         )
         rng.shuffle(pool)
         return pool
-    rng.shuffle(pool)
-    return pool[:count]
+
+    by_source: dict[str, list[dict]] = {}
+    for item in pool:
+        by_source.setdefault(item["source_dataset"], []).append(item)
+    for items in by_source.values():
+        rng.shuffle(items)
+
+    if len(by_source) > 1:
+        shares = {name: len(items) for name, items in by_source.items()}
+        print(f"  {category}: balancing across {shares}")
+
+    drawn: list[dict] = []
+    queues = sorted(by_source.items())
+    while len(drawn) < count:
+        progressed = False
+        for _, items in queues:
+            if len(drawn) >= count:
+                break
+            if items:
+                drawn.append(items.pop())
+                progressed = True
+        if not progressed:
+            break
+    return drawn
 
 
 def _report(rows: list[dict]) -> bool:
@@ -444,6 +520,7 @@ def _inspect(args: argparse.Namespace) -> int:
 
     for label, path in (
         ("NELA labels", args.nela_labels),
+        ("hyperpartisan", args.hyperpartisan),
         ("ISOT fake", args.isot_fake),
         ("ISOT true", args.isot_true),
         ("PubMed", args.pubmed),
@@ -465,10 +542,30 @@ def _inspect(args: argparse.Namespace) -> int:
     return 0
 
 
+def _drop_agency_mentions(pool: list[dict], label: str) -> list[dict]:
+    """Remove any item still naming the wire agency, in any form.
+
+    ``_strip_dateline`` removes the leading "CITY (Reuters) - " and the
+    parenthesised form, but it only runs on the ISOT readers, and neither form
+    catches a bare "told Reuters" mid-sentence. Either survivor restores the
+    leak that lets a classifier score on publisher detection instead of on the
+    NAA index, so the item is dropped rather than edited: excising the token
+    in place leaves a grammatical scar that is itself a tell, and the pools
+    are large enough that dropping costs nothing.
+    """
+    kept = [item for item in pool if not _AGENCY_TOKEN.search(item["text"])]
+    dropped = len(pool) - len(kept)
+    if dropped:
+        print(f"  {label}: dropped {dropped} items naming the wire agency")
+    return kept
+
+
 def _collect(args: argparse.Namespace) -> dict[str, list[dict]]:
     pools: dict[str, list[dict]] = {category: [] for category in CATEGORIES}
 
-    if args.nela_db and args.nela_labels:
+    if args.hyperpartisan:
+        pools["high_outrage"] = list(read_hyperpartisan(args.hyperpartisan))
+    elif args.nela_db and args.nela_labels:
         pools["high_outrage"] = list(read_nela(args.nela_db, args.nela_labels))
     if args.isot_fake:
         pools["fear_activating"] = list(
@@ -486,7 +583,10 @@ def _collect(args: argparse.Namespace) -> dict[str, list[dict]]:
         neutral.extend(read_pubmed(args.pubmed))
     pools["neutral_informational"] = neutral
 
-    return pools
+    return {
+        category: _drop_agency_mentions(pool, category)
+        for category, pool in pools.items()
+    }
 
 
 def main() -> int:
@@ -495,6 +595,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--nela-db", type=Path, help="nela-gt-2021.db (sqlite)")
     parser.add_argument("--nela-labels", type=Path, help="NELA labels.csv")
+    parser.add_argument(
+        "--hyperpartisan",
+        type=Path,
+        help="hyperpartisan.csv from fetch_hyperpartisan.py; supersedes --nela-db",
+    )
     parser.add_argument("--isot-fake", type=Path, help="ISOT Fake.csv")
     parser.add_argument("--isot-true", type=Path, help="ISOT True.csv")
     parser.add_argument("--clickbait-instances", type=Path, help="instances.jsonl")
@@ -532,6 +637,7 @@ def main() -> int:
                     "category": category,
                     "manipulative": "0" if category == "neutral_informational" else "1",
                     "credibility": item["credibility"],
+                    "partisan_intensity": item.get("partisan_intensity", ""),
                     "source_dataset": item["source_dataset"],
                     "source_name": item["source_name"],
                     "word_count": str(len(item["text"].split())),
@@ -546,7 +652,7 @@ def main() -> int:
     args.out.parent.mkdir(parents=True, exist_ok=True)
     fields = [
         "id", "text", "category", "manipulative", "credibility",
-        "source_dataset", "source_name", "word_count",
+        "partisan_intensity", "source_dataset", "source_name", "word_count",
     ]
     with open(args.out, "w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
@@ -565,7 +671,20 @@ def main() -> int:
             file=sys.stderr,
         )
 
-    return 0 if balanced and not leaked else 1
+    short = {
+        category: sum(1 for row in rows if row["category"] == category)
+        for category in CATEGORIES
+    }
+    missing = {c: n for c, n in short.items() if n < args.per_category}
+    if missing:
+        print(
+            f"[FAIL] categories under --per-category {args.per_category}: "
+            f"{missing}. A corpus short of a whole category cannot support the "
+            "objective (iii) contrast it exists to measure.",
+            file=sys.stderr,
+        )
+
+    return 0 if balanced and not leaked and not missing else 1
 
 
 if __name__ == "__main__":

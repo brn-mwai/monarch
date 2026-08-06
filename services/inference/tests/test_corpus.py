@@ -211,3 +211,99 @@ class TestReport:
         lengths["reward_hook"] = 12
         assert bc._report(self._rows(lengths)) is False
         assert "IMBALANCED" in capsys.readouterr().out
+
+
+class TestHyperpartisan:
+    """The NELA replacement. NELA was deaccessioned by its authors on
+    1 Jan 2024 and is now behind manual review.
+    """
+
+    def _csv(self, tmp_path, rows: list[dict]):
+        path = tmp_path / "hyperpartisan.csv"
+        with open(path, "w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(
+                handle, fieldnames=["uid", "text", "title", "bias", "partisan_intensity"]
+            )
+            writer.writeheader()
+            writer.writerows(rows)
+        return path
+
+    def test_credibility_stays_empty_so_lean_is_not_read_as_reliability(
+        self, tmp_path
+    ):
+        """Political lean and factual reliability are different quantities.
+
+        Writing ``bias`` into ``credibility`` would silently change what
+        objective (iv) regresses against.
+        """
+        path = self._csv(
+            tmp_path,
+            [{"uid": "1", "text": _sentences(20), "title": "t", "bias": "0",
+              "partisan_intensity": "2"}],
+        )
+        items = list(bc.read_hyperpartisan(path))
+
+        assert len(items) == 1
+        assert items[0]["credibility"] == ""
+        assert items[0]["partisan_intensity"] == "2"
+
+    def test_source_dataset_is_recorded_for_the_leak_check(self, tmp_path):
+        path = self._csv(
+            tmp_path,
+            [{"uid": "1", "text": _sentences(20), "title": "t", "bias": "4",
+              "partisan_intensity": "2"}],
+        )
+        assert list(bc.read_hyperpartisan(path))[0]["source_dataset"] == (
+            "SemEval-2019-Task4"
+        )
+
+    def test_short_articles_are_skipped_not_padded(self, tmp_path):
+        path = self._csv(
+            tmp_path,
+            [{"uid": "1", "text": "Too short.", "title": "t", "bias": "0",
+              "partisan_intensity": "2"}],
+        )
+        assert list(bc.read_hyperpartisan(path)) == []
+
+    def test_missing_column_fails_with_actual_and_expected(self, tmp_path):
+        path = tmp_path / "bad.csv"
+        with open(path, "w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=["uid", "text"])
+            writer.writeheader()
+        with pytest.raises(ValueError, match="partisan_intensity"):
+            list(bc.read_hyperpartisan(path))
+
+
+class TestDropAgencyMentions:
+    """A first build left 21 survivors: ``_strip_dateline`` only removes the
+    parenthesised form, and it never ran on the clickbait reader at all, so
+    "DAKAR (Reuters) -" and "told Reuters" both reached the corpus.
+    """
+
+    def test_drops_bare_token_the_dateline_regex_misses(self, capsys):
+        pool = [
+            {"text": "A source told Reuters the vote failed."},
+            {"text": "The council met and adjourned."},
+        ]
+        kept = bc._drop_agency_mentions(pool, "neutral_informational")
+
+        assert len(kept) == 1
+        assert kept[0]["text"] == "The council met and adjourned."
+
+    def test_drops_unstripped_dateline_from_a_reader_that_skips_cleaning(self):
+        pool = [{"text": "DAKAR (Reuters) - The epidemic could spread."}]
+        assert bc._drop_agency_mentions(pool, "reward_hook") == []
+
+    def test_reports_the_drop_count_rather_than_truncating_silently(self, capsys):
+        pool = [{"text": f"Item {i} told Reuters something."} for i in range(3)]
+        bc._drop_agency_mentions(pool, "fear_activating")
+
+        assert "dropped 3" in capsys.readouterr().out
+
+    def test_clean_pool_passes_through_untouched(self):
+        pool = [{"text": "The council met."}, {"text": "The vote passed."}]
+        assert bc._drop_agency_mentions(pool, "neutral_informational") == pool
+
+    def test_match_is_word_bounded(self):
+        pool = [{"text": "The reutersian hypothesis is unrelated."}]
+        assert len(bc._drop_agency_mentions(pool, "neutral_informational")) == 1

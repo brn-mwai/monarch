@@ -16,10 +16,20 @@ killed session (Colab disconnect, OOM) keeps every item computed so far.
 Re-running with the same ``--out`` resumes: items whose text is already in the
 file are skipped, and only the remainder is scanned.
 
+``--carry-cols`` copies further columns through the GPU pass unchanged. The
+scan is the only expensive step and it cannot be repeated cheaply, so any
+column a later analysis needs must be named here: scanning the four-category
+corpus with ``--outcome-col category`` alone would drop ``credibility`` and
+force a second scan to calibrate against it.
+
 Usage
 -----
     python scripts/batch_naa.py --csv data/corpus.csv \
         --text-col text --outcome-col arousal --out data/corpus_naa.csv
+
+    python scripts/batch_naa.py --csv corpus.csv \
+        --outcome-col category --carry-cols credibility,source \
+        --out corpus_naa.csv
 """
 
 from __future__ import annotations
@@ -32,12 +42,20 @@ import time
 from pathlib import Path
 
 
-def _load_rows(csv_path: Path, text_col: str, outcome_col: str) -> list[dict]:
+COMPUTED_COLUMNS = ("naa", "naa_signed", "a_aff", "a_del", "classification")
+
+
+def _load_rows(
+    csv_path: Path,
+    text_col: str,
+    outcome_col: str,
+    carry_cols: tuple[str, ...] = (),
+) -> list[dict]:
     with open(csv_path, newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         if reader.fieldnames is None:
             raise ValueError(f"{csv_path} has no header row")
-        for column in (text_col, outcome_col):
+        for column in (text_col, outcome_col, *carry_cols):
             if column not in reader.fieldnames:
                 raise ValueError(
                     f"column '{column}' not in CSV header {reader.fieldnames}"
@@ -49,6 +67,14 @@ def _load_rows(csv_path: Path, text_col: str, outcome_col: str) -> list[dict]:
         ]
 
 
+def _output_fieldnames(outcome_col: str, carry_cols: tuple[str, ...]) -> list[str]:
+    fieldnames = ["text", outcome_col]
+    for column in carry_cols:
+        if column not in fieldnames:
+            fieldnames.append(column)
+    return fieldnames + list(COMPUTED_COLUMNS)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--csv", type=Path, required=True)
@@ -56,24 +82,46 @@ def main() -> int:
     parser.add_argument("--outcome-col", required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--limit", type=int, default=0)
+    parser.add_argument(
+        "--carry-cols",
+        default="",
+        help="comma-separated extra source columns to copy into --out unchanged",
+    )
     args = parser.parse_args()
 
-    from app.services.inference import TribeInferenceService
-    from app.services.naa import compute_naa, compute_signed_naa
+    carry_cols = tuple(c.strip() for c in args.carry_cols.split(",") if c.strip())
+    reserved = {"text", *COMPUTED_COLUMNS}
+    clashing = [c for c in carry_cols if c in reserved]
+    if clashing:
+        print(
+            f"[FAIL] --carry-cols may not name output columns: {clashing}",
+            file=sys.stderr,
+        )
+        return 1
 
-    rows = _load_rows(args.csv, args.text_col, args.outcome_col)
+    rows = _load_rows(args.csv, args.text_col, args.outcome_col, carry_cols)
     if args.limit:
         rows = rows[: args.limit]
     if not rows:
         print("[FAIL] no usable rows in corpus", file=sys.stderr)
         return 1
 
-    fieldnames = ["text", args.outcome_col, "naa", "naa_signed", "a_aff", "a_del", "classification"]
+    fieldnames = _output_fieldnames(args.outcome_col, carry_cols)
 
     done_texts: set[str] = set()
     if args.out.exists():
         with open(args.out, newline="", encoding="utf-8") as handle:
-            done_texts = {r["text"] for r in csv.DictReader(handle) if r.get("text")}
+            reader = csv.DictReader(handle)
+            existing = reader.fieldnames or []
+            if existing and existing != fieldnames:
+                print(
+                    f"[FAIL] {args.out} has header {existing}, this run writes "
+                    f"{fieldnames}. Appending would misalign every resumed row. "
+                    "Use a different --out or match the original flags.",
+                    file=sys.stderr,
+                )
+                return 1
+            done_texts = {r["text"] for r in reader if r.get("text")}
 
     pending = [row for row in rows if row[args.text_col].strip() not in done_texts]
     if done_texts:
@@ -83,6 +131,9 @@ def main() -> int:
         return 0
 
     print(f"Scanning {len(pending)} items through TRIBE...")
+    from app.services.inference import TribeInferenceService
+    from app.services.naa import compute_naa, compute_signed_naa
+
     service = TribeInferenceService()
     service.load_model()
 
@@ -101,17 +152,18 @@ def main() -> int:
             naa = compute_naa(result["item_vector"])
             signed = compute_signed_naa(result["item_vector"])
 
-            writer.writerow(
-                {
-                    "text": text,
-                    args.outcome_col: row[args.outcome_col],
-                    "naa": f"{naa['naa']:.6f}" if naa["valid"] else "",
-                    "naa_signed": f"{signed['naa']:.6f}",
-                    "a_aff": f"{naa['a_aff']:.6f}",
-                    "a_del": f"{naa['a_del']:.6f}",
-                    "classification": naa["classification"],
-                }
-            )
+            record = {
+                "text": text,
+                args.outcome_col: row[args.outcome_col],
+                "naa": f"{naa['naa']:.6f}" if naa["valid"] else "",
+                "naa_signed": f"{signed['naa']:.6f}",
+                "a_aff": f"{naa['a_aff']:.6f}",
+                "a_del": f"{naa['a_del']:.6f}",
+                "classification": naa["classification"],
+            }
+            for column in carry_cols:
+                record.setdefault(column, row.get(column, ""))
+            writer.writerow(record)
             handle.flush()
             completed += 1
             elapsed = time.time() - started

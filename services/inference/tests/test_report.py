@@ -141,10 +141,16 @@ def test_report_route_404_for_unknown_scan():
 
 
 def test_report_route_returns_fallback_for_seeded_scan(
-    stub_roi_cache, synthetic_item_vector
+    stub_roi_cache, synthetic_item_vector, monkeypatch
 ):
     scan_id = "seeded-scan-for-report-test"
     blob_store.put(activation_key(scan_id), synthetic_item_vector)
+
+    # Force the unkeyed branch. Asserting on the ambient .env made this test
+    # pass or fail on whether a live Fireworks call happened to succeed.
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "fireworks_api_key", "")
 
     with TestClient(app) as client:
         resp = client.post("/api/report", json={"scan_id": scan_id},
@@ -152,8 +158,6 @@ def test_report_route_returns_fallback_for_seeded_scan(
 
     assert resp.status_code == 200
     body = resp.json()
-    # No Fireworks key configured in the test env, so the route must degrade
-    # to the deterministic template rather than error.
     assert body["source"] == "fallback"
     for header in ("Summary", "Key findings", "Caveats"):
         assert header in body["summary"]
