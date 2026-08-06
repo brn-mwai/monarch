@@ -1,0 +1,237 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Brian Mwai -- 1050555}
+\rhead{\small B.Sc. Physics -- Proposal Amendment}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.8em}{}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+\newcommand{\naa}{\mathrm{NAA}}
+
+\begin{document}
+
+\begin{center}
+{\large THE CATHOLIC UNIVERSITY OF EASTERN AFRICA}\\[0.2em]
+{\normalsize Faculty of Science \quad$\cdot$\quad Department of Physics}\\[1.4em]
+{\Large\bfseries Proposal Amendment}\\[0.6em]
+{\large \emph{Measuring the Invisible:} A Sociophysics Framework for Quantifying\\
+Emotionally Manipulative Media Content Using Predictive Neural Encoding}\\[1.4em]
+\end{center}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Student} & Brian Mwai (1050555) \\
+\textbf{Programme} & Bachelor of Science in Physics \\
+\textbf{Supervisor} & Dr. Songa Mutambi \\
+\textbf{Instrument} & \url{https://monarch.brianmwai.com} \\
+\textbf{Status} & Requires supervisor sign-off before the thesis is written \\
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\section{What this document is}
+
+The April proposal was written before the model at the centre of it had been run.
+Once it was run, three things turned out to be different from what the proposal
+assumed, and one dataset the proposal names is no longer available to anybody.
+
+None of these is a mistake in the work. Each is a property of the tools, found by
+testing them. This document states each one in plain terms, says what the project
+does instead, and asks for four decisions.
+
+\textbf{The short version:} the project still delivers the instrument the proposal
+promised, and answers three of its four research questions. What it can no longer
+do is measure the amygdala, because the released model does not predict it.
+
+\section{The four changes}
+
+\subsection{Change 1: the model cannot see the amygdala}
+
+\textbf{What the proposal assumed.} That TRIBE v2 predicts activity across 29{,}286
+brain targets including the amygdala and nucleus accumbens. Equation (4) defines the
+project's central measurement as the ratio of amygdala activity to prefrontal activity.
+
+\textbf{What the released model actually does.} It predicts 20{,}484 points on the
+outer surface of the brain only. The amygdala sits deep inside the brain, so it is
+not among them. This is not a setting that can be switched on; those outputs do not
+exist in the released weights. It is stated in the checkpoint's own configuration
+file, which is included with the model.
+
+\textbf{Why this matters in one sentence.} The quantity Equation (4) is built from
+cannot be computed at all.
+
+\textbf{What the project does instead.} It measures the same balance one level up,
+on the brain surface: regions associated with emotional salience versus regions
+associated with deliberate reasoning. Everywhere this appears, it is called a
+\emph{cortical proxy} and never called the amygdala.
+
+\textbf{Honest consequence.} The thesis can say that emotionally charged content is
+predicted to shift the balance of surface brain activity. It cannot say anything
+about the amygdala itself. That limitation is stated in the abstract, not buried.
+
+\subsection{Change 2: the original formula does not work on real content}
+
+\textbf{What the proposal specified.} A ratio,
+\[
+\naa \;=\; \frac{A_{\text{amyg}}}{A_{\text{PFC}} + \delta},
+\qquad \delta = 10^{-3}.
+\]
+
+\textbf{What happens when it is used.} The model reports activity in standardised
+units, centred on zero. That means the bottom of the fraction is negative roughly
+half the time. Dividing by a negative number flips the answer's sign; dividing by
+a number near zero makes it explode. On a 40-item test run the formula produced no
+usable value for a single item.
+
+\textbf{What the project does instead.} It subtracts rather than divides:
+\[
+\naa_{\text{signed}} \;=\; A_{\text{aff}} - A_{\text{del}}.
+\]
+Positive means the emotional side leads. Negative means the reasoning side leads.
+This is always defined. The cost is that the number is no longer dimensionless: it
+carries the units of the model's standardised output, and the thesis says so.
+
+\subsection{Change 3: the calibration found nothing, twice}
+
+\textbf{What the proposal specified.} Objective (iv): fit the coupling constant
+$\hat{\alpha}$, the number connecting the brain index to the physics model's field
+strength.
+
+\textbf{What happened.} It was fitted twice, on independent runs. Both times the
+confidence interval comfortably included zero, and the fit performed worse than
+guessing on held-out data. In plain terms: there is no evidence at this sample size
+that the connection exists at a size this study could measure.
+
+\textbf{What the project does instead.} It reports the null result and quotes no
+value for $\hat{\alpha}$ anywhere -- not in a table, not in a caption, not ``for
+illustration''. The phase structure is then presented across a range of possible
+$\alpha$ values, which shows how the physics would behave for each, and states that
+the data do not pin it down.
+
+\textbf{Why this is acceptable physics.} A null result that is properly powered
+constrains what everyone working after you has to believe. It is only worthless when
+the sample is too small to have detected anything, which is why the sample size and
+the detectable effect size are both reported.
+
+\subsection{Change 4: a named dataset was withdrawn by its authors}
+
+\textbf{What the proposal specified.} NELA-GT-2021, for the credibility scores in
+objective (iv).
+
+\textbf{What happened.} Its authors removed it from public access on 1 January 2024,
+after the proposal was written. It now requires per-application manual approval.
+This was verified rather than assumed: with a valid Harvard Dataverse account, a
+control file from an unrelated dataset downloads normally while every NELA file
+returns ``forbidden'', and the dataset does not appear in search at all.
+
+\textbf{What the project does instead.} It uses SemEval-2019 Task 4 (Hyperpartisan
+News Detection), openly licensed CC BY 4.0. This is arguably a better fit: NELA
+labels whether a \emph{publisher} is credible, while this labels the \emph{article},
+and the project's categories are defined by what an article does.
+
+\section{What the thesis will deliver}
+
+\subsection{Delivered}
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{The measurement instrument, working and public.} The proposal calls
+this the primary deliverable and says so three times. It exists: the batch pipeline,
+the four-category corpus, and the corpus-level audit report described in
+\S5.8(iii) -- ranked table of every item, distribution per category, free-energy
+landscape, and per-item flags. Released as open-source code with the corpus manifest
+and one complete example report. Live at \url{https://monarch.brianmwai.com}.
+
+\item \textbf{The physics, derived in full.} The mean-field Ising treatment, the
+self-consistency condition, the free-energy expansion, the susceptibility and the
+phase structure. This stands on its own and does not depend on any experimental
+outcome. One coefficient error in the proposal's Equation~(10) is corrected in the
+derivation.
+
+\item \textbf{A measured result on 400 items.} One hundred items in each of four
+categories, length-matched, with wire-service tells removed and sources balanced
+within each category, so that the categories differ by content rather than by where
+they came from.
+
+\item \textbf{Two findings that are new to the literature.} First, that the released
+TRIBE v2 checkpoint predicts only surface activity, which constrains any study built
+on it. Second, that ratio-type measures over standardised model output are undefined
+on real content. This is the first independent research application of this model.
+\end{enumerate}
+
+\subsection{Not delivered, and why}
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{Any statement about the amygdala.} The instrument cannot reach it.
+\item \textbf{A calibrated value for $\hat{\alpha}$.} The fit is not distinguishable
+from zero, so quoting a number would misrepresent it.
+\item \textbf{1{,}500 items across text, audio and video.} The corpus is 400 text
+items. Each item takes about 75 seconds of GPU time, and the available quota does
+not cover the original size. Text is the modality the proposal processes first by
+design.
+\item \textbf{Research Question IV.} It compares information across modalities,
+which requires the audio and video that were dropped.
+\end{enumerate}
+
+\subsection{Status of each objective}
+
+\begin{center}
+\begin{tabular}{@{}clp{7.6cm}@{}}
+\toprule
+\textbf{\#} & \textbf{Objective} & \textbf{Status after this amendment} \\
+\midrule
+(i)   & Build the corpus        & Delivered at 400 text items, not 1{,}500 multimodal \\
+(ii)  & Run TRIBE, compute the index & Delivered, using the signed index \\
+(iii) & Characterise the distribution & Delivered \\
+(iv)  & Calibrate $\hat{\alpha}$ & Attempted; reported as a null result \\
+(v)   & Derive the phase structure & Delivered across a range of $\alpha$, not at one fitted value \\
+(vi)  & Validate as a classifier & Delivered, reporting AUC as the headline figure \\
+(vii) & Deliver the instrument  & Delivered; this is the primary deliverable \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{What an examiner receives}
+
+A thesis that sets out a physics framework, builds the instrument the proposal
+promised, runs it on a controlled corpus, and reports honestly what it found and
+what it could not reach. The result may well be that the surface-level brain proxy
+does not separate manipulative from neutral content. If so, that is the finding,
+reported with the sample size and the smallest effect the design could have detected.
+
+\section{Decisions requested}
+
+\begin{enumerate}[leftmargin=1.6em]
+\item Approve the amended measurement (cortical proxy, signed difference) and the
+corresponding rewrite of the abstract, \S4.1 and Equation~(4). \emph{Blocking.}
+\item Approve reducing the corpus to 400 text items and dropping audio and video,
+with Research Question IV declared out of scope. \emph{Blocking.}
+\item Confirm that the null calibration is reported as the result, with no value of
+$\hat{\alpha}$ quoted anywhere. \emph{Blocking.}
+\item Note the substitution of SemEval-2019 Task 4 for the withdrawn NELA-GT-2021.
+\end{enumerate}
+
+\vspace{1.5em}
+\begin{tabular}{@{}p{7cm}p{7cm}@{}}
+\hrulefill & \hrulefill \\
+Brian Mwai (1050555) \quad Date & Dr. Songa Mutambi \quad Date \\
+\end{tabular}
+
+\end{document}
