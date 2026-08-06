@@ -79,9 +79,20 @@ Two gotchas worth recording:
 | 1 | ERROR in seconds | `AssertionError: No GPU`. The notebook asserts CUDA before doing anything, so it cost about 0.2 GPU-hours instead of failing after the installs |
 | 2 | ERROR in seconds | Same. `enable_gpu: true` plus `accelerator: nvidiaTeslaT4` in `kernel-metadata.json` did not attach a GPU |
 
-Working hypothesis for version 2: Kaggle gates both GPU and internet access behind phone
-verification, and an unverified account is given neither without saying so. To be confirmed
-from the account settings page before a third attempt.
+Hypothesis after version 2 was that Kaggle gates GPU and internet behind phone verification.
+**Confirmed** by the error the session surfaced:
+
+```
+Error: Permission 'kernelSessions.enableInternet' was denied
+```
+
+The account is not phone-verified, so the API accepts `enable_gpu` and `enable_internet` in
+the kernel metadata and the platform then refuses both at session start. Nothing in the
+notebook or the metadata can work around it: the run needs internet to clone the repository
+and to pull the model weights, and it needs the GPU to run them.
+
+Fix: verify the phone number at https://www.kaggle.com/settings, then re-push. No code
+change is required, and version 3 will be identical to version 2.
 
 The assertion at cell 1 is doing its job. Without it, both runs would have spent ten minutes
 on `pip install` and the spaCy model download before failing.
@@ -91,6 +102,17 @@ on `pip install` and the spaCy model download before failing.
 Live scans cannot run on the development laptop: the embedding stage needs roughly 6.5 GB and
 the machine had 1,025 MB free of 16 GB. This is why the scan is on Kaggle at all, and it is
 not a pipeline defect.
+
+---
+
+### Screenshots taken
+
+| File | What it shows |
+|---|---|
+| `docs/figures/screenshots/S3-scan-refusal.png` | The scanner refusing to draw a brain map with no inference server attached: *"No brain map is shown, because Monarch does not display simulated activation in place of a real TRIBE v2 prediction."* Captured against the live site after the redeploy, so it also shows the corrected example cards reading EXAMPLE rather than an authored NAA value |
+
+Naming: `S<n>-<slug>.png`, filed under `docs/figures/screenshots/`, listed in `FIGURES.md`
+with what it is evidence of. A screenshot with no entry there does not go in the thesis.
 
 ---
 
