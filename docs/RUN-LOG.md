@@ -105,6 +105,49 @@ not a pipeline defect.
 
 ---
 
+### Version 3, after phone verification
+
+Verification cleared both gates at once. GPU allocated, internet allowed, repository cloned,
+the `--carry-cols` guard passed, dependencies installed. Cells 1 to 4 green.
+
+Two new failures:
+
+1. **Wrong card.** Kaggle allocated a Tesla P100 despite `"accelerator": "nvidiaTeslaT4"`:
+
+   ```
+   Tesla P100-PCIE-16GB with CUDA capability sm_60 is not compatible with the current
+   PyTorch installation.
+   ```
+
+   PyTorch 2.10.0+cu128 no longer builds for sm_60, so the model could not have run on that
+   card even with everything else correct. The metadata enum for two T4s is `gpuT4x2`.
+
+2. **The secret does not survive an API push.** `UserSecretsClient().get_secret('HF_TOKEN')`
+   returned HTTP 400. `kernel-metadata.json` has no field for secret attachments, so each
+   pushed version starts with none attached, whatever was attached in the editor before.
+
+   Consequence for the workflow: push the code by API, then attach the secret and start the
+   run **from the editor**, not from another push.
+
+### Output directory
+
+The notebook cloned the repository into `/kaggle/working`, which is the kernel's output
+directory, so every download pulled 355 files including the whole repo and tribev2. Code now
+clones to `/kaggle/temp` and only `corpus.csv`, `corpus_naa.csv` and `tribe_facts.json` are
+written to `/kaggle/working`.
+
+### Reading a kernel log quickly
+
+`kaggle kernels output` downloads every output file before the log, which took minutes with
+the repo in there. The log is returned inline by the API instead:
+
+```
+GET https://www.kaggle.com/api/v1/kernels/output?user_name=<user>&kernel_slug=<slug>
+```
+
+with `Authorization: Bearer <access_token>`. The `log` field is the JSON array itself, not a
+URL to it.
+
 ### Screenshots taken
 
 | File | What it shows |
