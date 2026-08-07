@@ -148,6 +148,32 @@ GET https://www.kaggle.com/api/v1/kernels/output?user_name=<user>&kernel_slug=<s
 with `Authorization: Bearer <access_token>`. The `log` field is the JSON array itself, not a
 URL to it.
 
+### Version 5: the accelerator on offer is a P100
+
+T4 x2 and TPU are greyed out on this account, so P100 is the only choice. Rather than wait
+for a T4 to free up, the notebook now adapts: a first cell reads the card name from
+`nvidia-smi` and installs `torch==2.6.0+cu121` on a Pascal-class card, because those wheels
+still target sm_60 while the image's cu128 build does not. It runs before any torch import,
+since a live kernel keeps whichever version it loaded first, and it is skipped on cards the
+image already supports. Cost is about 4 minutes against an 8.3 hour run.
+
+The GPU check was also too weak. `torch.cuda.is_available()` returned True on the P100: the
+card was visible, just unusable. It now compares the device capability against
+`torch.cuda.get_arch_list()`, so a mismatch fails in the first cell rather than deep in the
+model load.
+
+### Committing from the editor while the API pushes
+
+```
+ConcurrencyViolation Sequence number must match Draft record:
+ExpectedSequence=11, ActualSequence=7
+```
+
+An API push moves the kernel's sequence number while an open editor tab still holds the
+earlier draft, and Kaggle refuses the commit rather than overwrite. Reloading the tab clears
+it. The workflow that avoids it: push code by API, then leave the API alone and drive the run
+from the editor, since the secret attachment has to be made there anyway.
+
 ### Screenshots taken
 
 | File | What it shows |
