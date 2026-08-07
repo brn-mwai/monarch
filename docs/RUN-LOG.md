@@ -162,6 +162,34 @@ card was visible, just unusable. It now compares the device capability against
 `torch.cuda.get_arch_list()`, so a mismatch fails in the first cell rather than deep in the
 model load.
 
+### Versions 6 and 8: no internet in an editor-launched session
+
+Both died in the torch cell with what looked like a missing package:
+
+```
+ERROR: Could not find a version that satisfies the requirement torch==2.5.1 (from versions: none)
+```
+
+The cause is above that line, in the retry warnings:
+
+```
+Failed to establish a new connection: [Errno -3] Temporary failure in name resolution
+```
+
+DNS is dead, so pip never reached the index. `from versions: none` means the index was
+unreachable, not that the version does not exist. **The torch pin was never the problem.**
+Version 6 showed the same signature, so the earlier reading of it as a genuinely missing
+2.6.0 wheel was wrong; the 2.5.1 pin is kept because it is correct, not because it was the
+fix.
+
+Why it appeared only now: version 3 was launched by an API push, whose
+`kernel-metadata.json` sets `enable_internet: true`. Versions 6 and 8 were launched from the
+editor, which uses its own Session options, and Internet is off there by default. The two
+launch paths do not share settings.
+
+The run needs the network three times: cloning the repository, installing packages, and
+pulling roughly 7 GB of model weights.
+
 ### Committing from the editor while the API pushes
 
 ```
