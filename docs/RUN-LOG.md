@@ -190,6 +190,33 @@ launch paths do not share settings.
 The run needs the network three times: cloning the repository, installing packages, and
 pulling roughly 7 GB of model weights.
 
+### The two launch paths each grant half of what the run needs
+
+After nine versions the pattern is exact, and it is a property of Kaggle rather than of this
+notebook:
+
+| Launch path | Internet | `HF_TOKEN` | Dies at |
+|---|---|---|---|
+| API `kernels push` | granted by `enable_internet` in the metadata | never attached, the metadata has no field for secrets | the secrets cell, `HTTPError` from `kaggle_web_client` |
+| Editor Save & Run All | off unless set in Session options | attached, it is a notebook-level setting made in the UI | the torch install, DNS failure |
+
+Version 10 settled it. Pushed by API, it cleared every gate that had failed before:
+
+```
+installed 2.5.1+cu121 ['sm_50', 'sm_60', 'sm_70', 'sm_75', 'sm_80', 'sm_86', 'sm_90']
+2.5.1+cu121 Tesla P100-PCIE-16GB sm_60 OK
+OK: batch_naa.py supports --carry-cols
+deps done
+```
+
+then stopped at `In [6]`, the secrets cell, with an HTTP error from the secrets client. So the
+Pascal swap works, the architecture guard works, the repository guard works, and the network
+works on that path. Only the secret is missing.
+
+The combination that can work is therefore the editor path with Internet switched on in
+Session options before the version is saved. Both halves exist; they have simply never been
+present in the same session.
+
 ### Committing from the editor while the API pushes
 
 ```
