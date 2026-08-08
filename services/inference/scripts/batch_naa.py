@@ -49,6 +49,26 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 COMPUTED_COLUMNS = ("naa", "naa_signed", "a_aff", "a_del", "classification")
 
 
+def free_gpu_memory() -> None:
+    """Return this item's allocations to the driver before the next one starts.
+
+    The cascade holds several models resident and each item adds a (T, 20484) prediction
+    plus the intermediates behind it. Without this the run reaches an allocator failure
+    within a handful of items on a 16 GB card, having already paid for the model load.
+    Safe on CPU-only machines, where it does nothing.
+    """
+    import gc
+
+    gc.collect()
+    try:
+        import torch
+
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except ImportError:
+        pass
+
+
 def _load_rows(
     csv_path: Path,
     text_col: str,
@@ -170,8 +190,15 @@ def main() -> int:
             writer.writerow(record)
             handle.flush()
             completed += 1
+
+            # Each item's (T, 20484) predictions and the cascade's intermediates stay
+            # referenced until the next assignment, so on a 16 GB card the run died of an
+            # allocator failure after three items. Releasing here bounds memory to one item.
+            del result, naa, signed
+            free_gpu_memory()
+
             elapsed = time.time() - started
-            shown = f"{naa['naa']:.4f}" if naa["valid"] else "UNDEFINED"
+            shown = f"{record['naa'] or 'UNDEFINED'}"
             print(
                 f"[{index}/{len(pending)}] naa={shown} ({elapsed / index:.1f}s/item)",
                 flush=True,

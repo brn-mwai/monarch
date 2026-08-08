@@ -33,6 +33,9 @@ TOKEN_FILENAME = "hf_token.txt"
 
 SESSION_DEFAULTS = {
     "HF_HUB_DISABLE_XET": "1",
+    # The cascade allocates and frees a large tensor per item; without expandable segments
+    # the allocator fragments and fails on a request it has the free memory to serve.
+    "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True",
     "MONARCH_WHISPER_MODEL": "small",
     "MONARCH_WHISPER_DEVICE": "cuda",
     "MONARCH_WHISPERX_CMD": "whisperx",
