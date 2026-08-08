@@ -1,0 +1,18 @@
+{
+  "alpha": 0.05,
+  "target_power": 0.8,
+  "anova": {
+    "n_per_group": 100,
+    "n_groups": 4,
+    "n_total": 400,
+    "minimum_detectable_eta_squared": 0.026789363650265394,
+    "minimum_detectable_cohens_f": 0.1659119911450209
+  },
+  "auc": {
+    "n_positive": 300,
+    "n_negative": 100,
+    "minimum_detectable_auc": 0.5916140976562501,
+    "minimum_detectable_separation": 0.3276718744662816,
+    "seed": 0
+  }
+}
