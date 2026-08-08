@@ -15,6 +15,8 @@ Four things changed once I actually ran the model:
 
 2. The original formula divides by a number that is negative about half the
    time, which made it unusable on real content. I subtract instead of dividing.
+   This is the change you raised at the proposal defence, and running the model
+   is what showed why it was necessary.
 
 3. I tried twice to calibrate the number linking the brain measure to the
    physics model. Both times the result was indistinguishable from zero, so I

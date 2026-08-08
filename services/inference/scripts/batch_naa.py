@@ -49,6 +49,39 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 COMPUTED_COLUMNS = ("naa", "naa_signed", "a_aff", "a_del", "classification")
 
 
+def is_out_of_memory(error: BaseException) -> bool:
+    """Whether this failure is the GPU running out of room, rather than a real defect.
+
+    torch raises OutOfMemoryError on recent versions and a plain RuntimeError on older
+    ones, so the message is checked as well as the type. Nothing else is treated as
+    recoverable: a genuine bug must stop the run rather than be skipped 400 times.
+    """
+    if type(error).__name__ == "OutOfMemoryError":
+        return True
+    return isinstance(error, RuntimeError) and "out of memory" in str(error).lower()
+
+
+def scan_one_item(service, text: str, retries: int = 1):
+    """Predict one item, retrying once after clearing the cache if memory ran out.
+
+    A single long passage can need most of the card in one attention allocation. Killing
+    the whole run for it costs every remaining item, so the item is retried on a cleared
+    cache and, failing that, the caller records it as unscanned and moves on.
+    """
+    for attempt in range(retries + 1):
+        try:
+            return service.predict_text(text)
+        except BaseException as error:
+            if not is_out_of_memory(error) or attempt == retries:
+                raise
+            print(
+                f"  out of memory, retrying once on a cleared cache: {str(error)[:120]}",
+                flush=True,
+            )
+            free_gpu_memory()
+    raise AssertionError("unreachable")
+
+
 def free_gpu_memory() -> None:
     """Return this item's allocations to the driver before the next one starts.
 
@@ -107,6 +140,13 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument(
+        "--max-skips",
+        type=int,
+        default=20,
+        help="abort once this many items have been skipped for memory; past it the "
+             "card is too small for the corpus rather than unlucky",
+    )
+    parser.add_argument(
         "--carry-cols",
         default="",
         help="comma-separated extra source columns to copy into --out unchanged",
@@ -164,6 +204,7 @@ def main() -> int:
     args.out.parent.mkdir(parents=True, exist_ok=True)
     started = time.time()
     completed = 0
+    skipped: list[str] = []
     with open(args.out, "a", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         if not done_texts:
@@ -172,7 +213,29 @@ def main() -> int:
 
         for index, row in enumerate(pending, start=1):
             text = row[args.text_col].strip()
-            result = service.predict_text(text)
+            try:
+                result = scan_one_item(service, text)
+            except BaseException as error:
+                if not is_out_of_memory(error):
+                    raise
+                # Recorded as unscanned, never as a value. The item is absent from the
+                # output, so a later run retries it and the count of skips is reported.
+                skipped.append(row.get("id", text[:40]))
+                print(
+                    f"[{index}/{len(pending)}] SKIPPED, out of memory after a retry "
+                    f"({len(skipped)} skipped so far)",
+                    flush=True,
+                )
+                free_gpu_memory()
+                if args.max_skips and len(skipped) > args.max_skips:
+                    print(
+                        f"[FAIL] {len(skipped)} items exceeded --max-skips {args.max_skips}; "
+                        "the card is too small for this corpus rather than unlucky",
+                        file=sys.stderr,
+                    )
+                    return 1
+                continue
+
             naa = compute_naa(result["item_vector"])
             signed = compute_signed_naa(result["item_vector"])
 
@@ -216,6 +279,9 @@ def main() -> int:
     total = len(naa_values) + undefined
     print(f"\nWrote {args.out} ({total} rows, {completed} new this run)")
     print(f"NAA defined: {len(naa_values)}/{total}  undefined: {undefined}")
+    if skipped:
+        print(f"skipped for memory: {len(skipped)} -> {skipped[:10]}")
+        print("Those items are absent from the output, so a resumed run retries them.")
     if naa_values:
         print("--- NAA distribution ---")
         print(f"  min    : {min(naa_values):.4f}")
