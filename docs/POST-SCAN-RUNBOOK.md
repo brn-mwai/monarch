@@ -30,9 +30,13 @@ kaggle kernels output brianmwa/monarch-corpus-scan -p <dir>
 Pass condition: `rows scanned: N / 400` appears in the log and `corpus_naa.csv` has N rows.
 
 **A2. Verify the rows are genuine before trusting them.**
-Cross-check `text`, `category` and `id` against the first N rows of `corpus.csv`, confirm the
-values are distinct, and confirm `naa_signed` equals `a_aff - a_del` to the stored 6 decimal
-places. Tighter tolerances than 1e-6 will report false mismatches from rounding.
+```bash
+python scripts/verify_scan_output.py --corpus data/corpus.csv --scan <dir>/corpus_naa.csv
+```
+Exit 0 means every scanned row matches the corpus on `text`, `category` and `id`, values are
+distinct, and `naa_signed` agrees with `a_aff - a_del`. Do not tighten the tolerance: three
+independently rounded six-decimal columns disagree by up to 1.5e-6, and a 1e-6 threshold
+rejected 4 of the 50 sound rows in run 1.
 
 **A3. Republish the partial so the next run resumes instead of rescanning.**
 ```bash
@@ -84,7 +88,17 @@ Exit 0 means the index discriminates, exit 2 means it does not. Both are results
 python scripts/build_corpus_report.py --csv data/corpus_naa.csv --out-dir data/report
 ```
 
-**C4. Calibration, on CPU, separate from the scan.**
+**C4. The bound, which is what makes a null publishable.**
+```bash
+python scripts/field_bound.py \
+  --scan data/corpus_naa.csv --report data/paper1/phase_boundary.json \
+  --out data/field_bound.json
+```
+Reads the observable's measured spread from the scan and the spinodal from the solver, and
+reports the coupling a media mechanism would need. On the first 50 rows, `dX = 0.0801` gave
+`alpha >= 6.6563` at `beta_J = 2.000`. Run it on the full corpus before quoting any figure.
+
+**C5. Calibration, on CPU, separate from the scan.**
 ```bash
 python scripts/calibrate_alpha.py \
   --csv data/corpus_naa.csv --naa-col naa_signed --outcome-col credibility \
