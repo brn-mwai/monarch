@@ -240,6 +240,84 @@ with what it is evidence of. A screenshot with no entry there does not go in the
 
 ---
 
+## 2026-08-08
+
+### The card question, settled
+
+Five sessions in a row drew a Tesla P100 despite T4 x2 being requested. One of those was
+pushed through the API with `machine_shape: gpuT4x2` and `--accelerator gpuT4x2`:
+
+```
+card: Tesla P100-PCIE-16GB
+STOP: Tesla P100-PCIE-16GB is sm_60, below sm_70.
+SystemExit: pre-Volta GPU refused
+```
+
+The accelerator field is a request the scheduler may ignore, not an allocation. Waiting for a
+T4 was abandoned and the notebook now accepts a pre-Volta card, printing which card it got.
+
+### Quota, previously misread
+
+`quota_view()`'s JSON repr prints `totalTimeAllowed "21600s"`. The typed field says
+`total_time_allowed = 1 day, 6:00:00`, which is 108000 s. The allowance is 30 GPU-h per week,
+not 6. A plan built on the smaller figure was discarded. Read the timedelta fields.
+
+### v34: the first run that finished
+
+`--limit 50` on a P100. Status `COMPLETE`, output published.
+
+```
+rows scanned: 50 / 400
+NAA (ratio) defined: 43  undefined: 7
+```
+
+No OOM, retry or skip appeared anywhere in 23642 log entries, so the `--max-skips` path
+remains unexercised.
+
+Signed NAA per category, descriptive only, no test:
+
+```
+fear_activating          n=12  mean=-0.0088  sd=0.0215
+high_outrage             n=13  mean=-0.0185  sd=0.0253
+neutral_informational    n=12  mean=-0.0267  sd=0.0126
+reward_hook              n=13  mean=-0.0137  sd=0.0186
+```
+
+Every category mean negative, matching both prior runs. Measured spread across the 50 items:
+`0.0801`. Session cost about 5900 s of quota including setup, putting the per-item cost
+between 64 and 78 s, not the 187.5 s taken from an earlier partial run.
+
+Rows verified against the source corpus: `text`, `category` and `id` match the first 50 rows
+of `corpus.csv` exactly, 50 distinct values, internally consistent to the stored 6 decimals.
+Apparent mismatches at 1e-9 tolerance were rounding, not error.
+
+### Pilot analysis, run to prove the pipeline, not to claim a result
+
+`analyze_corpus.py` and `build_corpus_report.py` both exit 0 on the 50 rows. Reported
+AUC 0.6996, separation F=1.717, p=0.1767, eta^2=0.1007, flagged `NOT USABLE` by the script.
+
+At 12 per group the design could only detect eta^2 above 0.1989, and power at the observed
+0.1007 was 0.434. The pilot is therefore uninformative in both directions. Not a null.
+
+### Power statement for the full design
+
+`scripts/power_statement.py --out data/power_statement.json`
+
+```
+smallest detectable eta^2 : 0.0268   (Cohen's f 0.1659)
+smallest detectable AUC   : 0.5916   (separation d 0.3277)
+```
+
+At 400 items, power is 1.0 if the true eta^2 equals the pilot's 0.1007, so the full scan
+decides in either direction.
+
+### v35 started
+
+`--limit 350`, resuming from the 50 via the private dataset
+`brianmwa/monarch-corpus-naa-partial`. Running at the time of writing.
+
+---
+
 ## Template for the next entry
 
 ```

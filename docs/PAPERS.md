@@ -107,10 +107,19 @@ against held-out subjects on public naturalistic fMRI, with a measured noise cei
 bootstrap intervals. Either the sign holds or it does not; both outcomes are publishable, and
 either constrains every study built on this checkpoint.
 
-**Feasibility.** No large GPU. The checkpoint outputs fsaverage5, the same surface CNeuroMod
-and Algonauts publish. The work is data preparation and evaluation discipline, not compute.
+**Feasibility.** No large GPU: the work is data preparation and evaluation discipline, not
+compute. But the earlier claim here, that the checkpoint outputs "fsaverage5, the same surface
+CNeuroMod and Algonauts publish", was half wrong and is corrected in `docs/paper3/PLAN.md`.
+The checkpoint does emit fsaverage5, confirmed by `tribe-ckpt/config.yaml` (`mesh: fsaverage5`)
+and the smoke test's `(T, 20484)` = 2 x 10242. The Algonauts 2025 public release is not a
+surface: it is MNI-normalised and reduced to 1000 Schaefer parcels, CC0 via CONP. A projection
+step is therefore required, and parcel-level results may not be compared directly with the
+audit's vertex-level `r`, because averaging within a parcel cancels independent noise and
+raises correlations on identical data.
 
-**Status.** Not started. Estimated three to five days, most of it alignment and preprocessing.
+**Status.** Evaluation core built and tested (`app/services/encoder_validation.py`,
+`app/services/parcellation.py`); data acquisition not started. Estimated three to five days,
+most of it alignment and preprocessing.
 
 **Venue.** Imaging Neuroscience, or NeuroImage as a brief communication.
 
