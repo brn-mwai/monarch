@@ -158,11 +158,29 @@ def alpha_required(h_c: np.ndarray, spreads: list[float]) -> dict:
     return {f"{s:g}": (h_c / s).tolist() for s in spreads}
 
 
-def _figures(out_dir: Path, exps: dict, bnd: dict, spreads: list[float]) -> None:
+def _save(fig, out_dir: Path, stem: str, formats: list[str]) -> None:
+    """Write one figure in every requested format.
+
+    Journals want vector; the repo and the site want a raster to look at. Both come off
+    the same figure object so they cannot drift apart.
+    """
+    for fmt in formats:
+        fig.savefig(out_dir / f"{stem}.{fmt}", dpi=200 if fmt == "png" else None,
+                    format=fmt, bbox_inches="tight")
+
+
+def _figures(out_dir: Path, exps: dict, bnd: dict, spreads: list[float],
+             formats: list[str]) -> None:
     import matplotlib
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+
+    # Type 42 keeps text as text in the PDF, which is what production desks require;
+    # the default Type 3 subsets glyphs and fails preflight at several journals.
+    matplotlib.rcParams["pdf.fonttype"] = 42
+    matplotlib.rcParams["ps.fonttype"] = 42
+    matplotlib.rcParams["svg.fonttype"] = "none"
 
     beta_j = np.asarray(bnd["beta_j"])
     h_c = np.asarray(bnd["h_c"])
@@ -176,7 +194,7 @@ def _figures(out_dir: Path, exps: dict, bnd: dict, spreads: list[float]) -> None
     ax.set_xlabel("m"); ax.set_ylabel("F(m)")
     ax.set_title("Free energy at zero field", fontsize=10)
     ax.legend(fontsize=8)
-    fig.tight_layout(); fig.savefig(out_dir / "F1_free_energy.png", dpi=200); plt.close(fig)
+    fig.tight_layout(); _save(fig, out_dir, "F1_free_energy", formats); plt.close(fig)
 
     # F2: order parameter, with the fitted exponent stated on the figure.
     t = np.linspace(1e-4, 0.4, 200)
@@ -188,7 +206,7 @@ def _figures(out_dir: Path, exps: dict, bnd: dict, spreads: list[float]) -> None
     ax.set_xlabel(r"$\beta J$"); ax.set_ylabel(r"$m^*$")
     ax.set_title(rf"Order parameter, fitted $\beta$ = {exps['beta']['fitted']:.3f} (exact 1/2)",
                  fontsize=10)
-    fig.tight_layout(); fig.savefig(out_dir / "F2_order_parameter.png", dpi=200); plt.close(fig)
+    fig.tight_layout(); _save(fig, out_dir, "F2_order_parameter", formats); plt.close(fig)
 
     # F3: susceptibility divergence.
     t3 = np.logspace(-4, -1, 120)
@@ -201,7 +219,7 @@ def _figures(out_dir: Path, exps: dict, bnd: dict, spreads: list[float]) -> None
     ax.set_xlabel(r"$1 - \beta J$"); ax.set_ylabel(r"$\chi$")
     ax.set_title(rf"Susceptibility, fitted $\gamma$ = {exps['gamma']['fitted']:.3f} (exact 1)",
                  fontsize=10)
-    fig.tight_layout(); fig.savefig(out_dir / "F3_susceptibility.png", dpi=200); plt.close(fig)
+    fig.tight_layout(); _save(fig, out_dir, "F3_susceptibility", formats); plt.close(fig)
 
     # F4: critical isotherm.
     h = np.logspace(-6, -2, 120)
@@ -211,7 +229,7 @@ def _figures(out_dir: Path, exps: dict, bnd: dict, spreads: list[float]) -> None
     ax.set_xlabel("h"); ax.set_ylabel("m")
     ax.set_title(rf"Critical isotherm, fitted $\delta$ = {exps['delta']['fitted']:.3f} (exact 3)",
                  fontsize=10)
-    fig.tight_layout(); fig.savefig(out_dir / "F4_critical_isotherm.png", dpi=200); plt.close(fig)
+    fig.tight_layout(); _save(fig, out_dir, "F4_critical_isotherm", formats); plt.close(fig)
 
     # F5: the phase diagram.
     fig, ax = plt.subplots(figsize=(5.8, 4.0))
@@ -220,7 +238,7 @@ def _figures(out_dir: Path, exps: dict, bnd: dict, spreads: list[float]) -> None
     ax.set_xlabel(r"$\beta J$"); ax.set_ylabel("h")
     ax.set_title("Phase diagram: where two opinions coexist", fontsize=10)
     ax.legend(fontsize=8)
-    fig.tight_layout(); fig.savefig(out_dir / "F5_phase_diagram.png", dpi=200); plt.close(fig)
+    fig.tight_layout(); _save(fig, out_dir, "F5_phase_diagram", formats); plt.close(fig)
 
     # F6: the bound.
     fig, ax = plt.subplots(figsize=(5.8, 4.0))
@@ -229,7 +247,7 @@ def _figures(out_dir: Path, exps: dict, bnd: dict, spreads: list[float]) -> None
     ax.set_xlabel(r"$\beta J$"); ax.set_ylabel(r"$\alpha$ required")
     ax.set_title(r"Coupling needed before media can drive a transition", fontsize=10)
     ax.legend(fontsize=8, title="observable spread", title_fontsize=8)
-    fig.tight_layout(); fig.savefig(out_dir / "F6_alpha_required.png", dpi=200); plt.close(fig)
+    fig.tight_layout(); _save(fig, out_dir, "F6_alpha_required", formats); plt.close(fig)
 
 
 def main() -> int:
@@ -239,9 +257,16 @@ def main() -> int:
     parser.add_argument("--points", type=int, default=120)
     parser.add_argument("--spreads", default="0.1,0.5,1.0,2.0")
     parser.add_argument("--exponent-tol", type=float, default=0.05)
+    parser.add_argument("--formats", default="png,pdf",
+                        help="comma-separated figure formats; pdf and svg are vector")
     args = parser.parse_args()
 
     spreads = [float(s) for s in args.spreads.split(",") if s.strip()]
+    formats = [f.strip().lower() for f in args.formats.split(",") if f.strip()]
+    unknown = [f for f in formats if f not in ("png", "pdf", "svg", "eps")]
+    if unknown:
+        print(f"[FAIL] unsupported format(s): {', '.join(unknown)}", file=sys.stderr)
+        return 1
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
     exps = exponents()
@@ -249,7 +274,7 @@ def main() -> int:
     bnd = boundary(beta_j_values)
     h_c = np.asarray(bnd["h_c"])
 
-    _figures(args.out_dir, exps, bnd, spreads)
+    _figures(args.out_dir, exps, bnd, spreads, formats)
 
     result = {
         "exponents": exps,
@@ -277,7 +302,8 @@ def main() -> int:
         print(f"  observable spread {s:>4g}: alpha must exceed {h_c[-1] / s:.4f} "
               f"at beta_J = {args.beta_j_max:g}")
 
-    print(f"\nWrote {args.out_dir}/ : phase_boundary.json and 6 figures")
+    print(f"\nWrote {args.out_dir}/ : phase_boundary.json and 6 figures "
+          f"in {', '.join(formats)}")
 
     # The exponents are the check that licenses every other figure here, so a solver that
     # misses them fails the run rather than publishing curves nobody verified.

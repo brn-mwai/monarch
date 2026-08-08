@@ -46,3 +46,9 @@ next-env.d.ts
 
 # Vendored Meta TRIBE v2 repo (has its own .git; installed via pip install -e .)
 services/inference/tribev2/
+
+# Paper 1 figures: regenerated deterministically by scripts/phase_boundary.py, and the
+# numbers behind them are committed as phase_boundary.json, which is what a reviewer checks.
+services/inference/data/paper1/*.png
+services/inference/data/paper1/*.pdf
+services/inference/data/paper1/*.svg

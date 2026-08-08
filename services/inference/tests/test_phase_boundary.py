@@ -112,3 +112,40 @@ class TestOutputs:
         assert report["critical_beta_j"] == 1.0
         assert report["exponents"]["delta"]["error"] < 0.05
         assert set(report["alpha_required_per_spread"]) == {"0.1", "0.5", "1", "2"}
+
+    def test_default_run_emits_vector_alongside_raster(self, mod, tmp_path):
+        argv = sys.argv
+        sys.argv = ["phase_boundary.py", "--out-dir", str(tmp_path), "--points", "40"]
+        try:
+            assert mod.main() == 0
+        finally:
+            sys.argv = argv
+
+        for stem in ("F1_free_energy", "F5_phase_diagram", "F6_alpha_required"):
+            assert (tmp_path / f"{stem}.pdf").exists(), stem
+            assert (tmp_path / f"{stem}.png").exists(), stem
+
+    def test_svg_keeps_text_as_text(self, mod, tmp_path):
+        argv = sys.argv
+        sys.argv = ["phase_boundary.py", "--out-dir", str(tmp_path), "--points", "40",
+                    "--formats", "svg"]
+        try:
+            assert mod.main() == 0
+        finally:
+            sys.argv = argv
+
+        svg = (tmp_path / "F5_phase_diagram.svg").read_text(encoding="utf-8")
+        # svg.fonttype="none" leaves labels selectable; the default converts them to paths.
+        assert "<text" in svg
+        assert not (tmp_path / "F5_phase_diagram.png").exists()
+
+    def test_unsupported_format_fails_before_drawing(self, mod, tmp_path):
+        argv = sys.argv
+        sys.argv = ["phase_boundary.py", "--out-dir", str(tmp_path), "--points", "40",
+                    "--formats", "png,tiff"]
+        try:
+            assert mod.main() == 1
+        finally:
+            sys.argv = argv
+
+        assert not (tmp_path / "F1_free_energy.png").exists()
