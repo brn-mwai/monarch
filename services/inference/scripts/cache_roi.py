@@ -5,9 +5,14 @@ goes to ``data/roi_definitions.json`` and lets the API server resolve
 NAA ROIs without paying the tribev2 import cost on every boot.
 """
 
+import sys
 from pathlib import Path
 
-from app.services.roi import cache_roi_indices
+# Python puts the script's own directory on sys.path, not the working directory, so the
+# app package is invisible when this is run as `python scripts/cache_roi.py`.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from app.services.roi import cache_roi_indices  # noqa: E402
 
 
 def main() -> int:

@@ -43,6 +43,10 @@ from typing import Optional
 import numpy as np
 from scipy import stats
 
+# Python puts the script's own directory on sys.path, not the working directory, so the
+# app package is invisible when this is run as `python scripts/calibrate_alpha.py`.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 DEFAULT_BETA_J = 0.7
 DEFAULT_HOLDOUT = 0.2
 DEFAULT_SEED = 17

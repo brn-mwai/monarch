@@ -32,6 +32,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+# Python puts the script's own directory on sys.path, not the working directory, so the
+# app package is invisible when this is run as `python scripts/verify_tribe_checkpoint.py`.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 
 def _tolerant_loader():
     """A YAML loader that survives the checkpoint's python-object tags.

@@ -41,6 +41,10 @@ import sys
 import time
 from pathlib import Path
 
+# Python puts the script's own directory on sys.path, not the working directory, so the
+# app package is invisible when this is run as `python scripts/batch_naa.py`.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 
 COMPUTED_COLUMNS = ("naa", "naa_signed", "a_aff", "a_del", "classification")
 
