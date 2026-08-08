@@ -1,128 +1,145 @@
-# Two journal articles, and the physics in each
+# Publication plan
 
-Dr. Mutambi's standing requirement from the proposal defence: two published journal
-articles in addition to the project document. This maps both, states where the physics
-sits in each, and dates the work.
+Dr. Mutambi's standing requirement from the proposal defence: two published journal articles
+besides the project document. This maps four candidates, of which two satisfy that
+requirement and the third is the one most likely to be cited.
 
-The rule applied throughout: **the neural encoder is the thermometer, not the physics.**
-The physics is the statistical mechanics of a coupled population under an external field,
-and what a measured field value implies for it. A paper that is mostly about the encoder
-is not a physics paper and does not count against this requirement.
+Physics sits in every one of them. The neural encoder is the thermometer; the physics is the
+statistical mechanics of a coupled population under an external field, and what a measured
+field value implies for it. A paper that is mostly about the encoder is not a physics paper.
+
+**On timing, stated plainly:** what is controllable is *submitted plus a dated preprint*.
+Review at Physica A runs three to six months, so no date below promises publication.
 
 ---
 
-## Paper 1: bounding the external field in mean-field opinion dynamics
+## The dissertation
 
-**Independent of the scan.** Every result is analytic or computed on a CPU, so this can be
-drafted while the GPU run is still queued.
+> **Measuring the Invisible: a sociophysics framework for quantifying emotionally
+> manipulative media content using predictive neural encoding — instrument, constraint,
+> and null**
 
-### The gap it addresses
+The approved title, with the amendment carried in the subtitle rather than discovered in
+Chapter 5. Requires supervisor sign-off on `docs/amendment/PROPOSAL-AMENDMENT.pdf` first.
 
-Social Ising studies carry an external field `h` that is assigned by hand: a coupling
-strength, a propaganda term, a media bias parameter. It is chosen to make figures, never
-measured, and its magnitude is almost never justified. The consequence is that the
-literature can show a population tipping without establishing that any real influence is
-strong enough to tip it.
+---
 
-### The physics, section by section
+## Paper 1 — theory
 
-1. **Model.** Ising Hamiltonian on a fully connected graph,
-   `H = -J Σ⟨i,j⟩ sᵢsⱼ - h Σᵢ sᵢ`, with the mean-field self-consistency
-   `m = tanh(βJ m + βh)`.
+> **Bounding the external field in mean-field opinion dynamics: what any content observable
+> must satisfy to drive a transition**
 
-2. **Landau expansion.** `artanh(m) ≈ m + m³/3` gives
-   `F(m) = a m² + b m⁴ - h m` with `a = (1 - βJ)/2` and `b = 1/12`. These coefficients
-   are derived rather than asserted; the form widely quoted in this corner of the
-   literature does not follow from its own self-consistency condition, and the
-   discrepancy is worth one paragraph.
+**Independent of the scan.** Every result is analytic or CPU-computed, so this can be drafted
+while the GPU run is still queued, and it stands whatever the scan returns.
 
-3. **Phase structure.** Second-order transition at `βJ = 1` in zero field. For `h ≠ 0`
-   the transition becomes a crossover, with a bistable region bounded by the spinodal.
-   The critical field `h_c(βJ)` is the boundary above which a single well survives.
+**The gap.** Social Ising studies carry an external field `h` that is assigned by hand and
+never measured. The literature can therefore show a population tipping without establishing
+that any real influence is strong enough to tip it.
 
-4. **Numerical verification.** The solver recovers the mean-field exponents
-   `β = 1/2`, `γ = 1`, `δ = 3`. This validates the implementation against exact results
-   before any of it is applied to data.
+**The contribution.** For any observable `X` used as a field, `h = αX`, no media-driven
+transition is possible unless
 
-5. **The bound, which is the contribution.** For any proposed observable `X` used as a
-   field, `h = α X`, the population cannot be driven across the boundary unless
+```
+α  ≥  h_c(βJ) / ΔX
+```
 
-   ```
-   α  ≥  h_c(βJ) / ΔX
-   ```
+This inverts the usual procedure. Rather than fitting `α` and hoping it clears zero, it
+states what `α` would have to be for the mechanism to work at all, and it applies to any
+candidate field observable, not only to this project's index.
 
-   where `ΔX` is the spread of the observable across real content. This inverts the usual
-   question. Instead of fitting `α` and hoping it is non-zero, it states what `α` would
-   have to be for the mechanism to work at all, and it applies to **any** candidate field
-   observable, not only to this project's index.
+**Contents.** Mean-field Ising and the self-consistency condition; the Landau expansion with
+coefficients derived rather than asserted; the second-order transition and the spinodal;
+numerical recovery of the exact exponents `β = 1/2`, `γ = 1`, `δ = 3` as a check on the
+solver; the bound; a screening criterion others can apply before collecting data.
 
-6. **Consequence.** A screening criterion: any sociophysics paper proposing a media-driven
-   transition can be checked against this bound before its data is collected.
+**Status.** `scripts/phase_boundary.py` produces all six figures and the exponent check.
+Missing: vector output for submission, and the prose.
 
 **Venue.** Physica A, European Physical Journal B, or Journal of Physics: Complexity.
-arXiv preprint under physics.soc-ph on submission day.
-
-**Status of the inputs.** `landau.py` and `phase_map.py` are implemented and tested.
-Missing: the exponent verification, the phase-diagram figure, and the `α_required` curve.
+Preprint to arXiv physics.soc-ph on submission day.
 
 ---
 
-## Paper 2: an empirically anchored field from predictive neural encoding
+## Paper 2 — the instrument and the corpus
 
-**Waits on the scan.** This is the thesis compressed, with the physics kept in front.
+> **A cortical-proxy observable for emotionally manipulative media: an instrument, a
+> 400-item corpus, and a null result**
 
-### The physics, section by section
+**Blocked on the scan.** This is the thesis compressed, with the physics kept in front.
 
-1. **The field mapping.** `h = α · NAA`, taking the observable from predicted cortical
-   activity rather than from a chosen constant. This is the step the literature skips.
+**Contents.** The field mapping `h = α·NAA`, taking the observable from predicted cortical
+activity rather than from a chosen constant; free energy at each category's measured mean,
+swept over `α` and never fitted; susceptibility across the measured range; the measured
+spread fed into Paper 1's bound, which turns a null calibration into a quantitative
+constraint; then the measurement chapter — corpus design, length matching, source balancing,
+the cortical-proxy limitation, the null with its power statement, AUC as the headline.
 
-2. **Free-energy landscape at measured values.** `F(m)` evaluated at each content
-   category's measured mean, showing how the landscape would deform across a range of `α`.
-   The range is swept, never fitted, because the calibration is null.
+**What makes the null publishable.** `α ≥ h_c(βJ)/ΔNAA` converts "we did not detect a
+coupling" into "the coupling would have to exceed this value, and the measurement excludes
+that range".
 
-3. **Susceptibility.** `χ(NAA)` across the same range: how sharply a population's opinion
-   responds to a change in media diet, and where that response is largest.
-
-4. **The constraint, joined to Paper 1.** The measured spread `ΔNAA` over 400 items goes
-   into `α ≥ h_c(βJ)/ΔNAA`, turning a null calibration into a quantitative statement about
-   how strong the content-to-opinion coupling would have to be. **A null result becomes a
-   bound**, which is a physics result rather than an absence of one.
-
-5. **The measurement chapter, kept honest.** Instrument, corpus design, length matching,
-   source balancing, removal of publisher tells, the cortical-proxy limitation, the null
-   with its power statement, AUC as the headline. The apparatus is described here as
-   methods; it is not the subject of the paper.
+**Status.** Instrument, corpus and analysis scripts done and tested. Needs `corpus_naa.csv`.
 
 **Venue.** Physica A or Entropy.
 
 ---
 
-## What is not a separate paper
+## Paper 3 — the validation
 
-The finding that the released TRIBE v2 checkpoint predicts only cortical surface vertices
-is novel and unpublished, but it is a neuroscience-tooling result with no physics in it.
-It belongs in Paper 2's methods, stated plainly, where it constrains the measurement. It
-does not carry a physics paper on its own.
+> **Does an average brain predict any brain? Held-out validation of the released TRIBE v2
+> average-subject checkpoint**
 
-Likewise the software. A software-venue article (JOSS, SoftwareX) would be accepted and
-would contain no physics, so it does not satisfy this requirement. The apparatus is
-released alongside the papers as the reproducibility artifact.
+**The one most likely to be cited, and the one nobody has published openly.**
+
+**Why it exists.** Monarch runs the released checkpoint in its average-subject configuration,
+because `tribev2/demo_utils.py:218` forces `average_subjects = True` at load. A commercial
+lab has since published a zero-shot audit reporting that this configuration is anti-correlated
+with real cortex: vertex `r = −0.0145` against a measured inter-subject ceiling of `+0.0508`,
+negative in all seven Yeo networks and all four subjects. A companion paper reports that
+averaged read-outs carry no more signal than deleting the subject term entirely.
+
+That work is self-published by a company selling the per-subject alternative, uses four
+subjects and one stimulus, and reports magnitudes near `r = 0.015` either way. It is a sign
+claim, not an effect-size claim, and it has not been independently replicated.
+
+**The contribution.** Replicate it. Compute vertex-level Pearson `r` for the checkpoint
+against held-out subjects on public naturalistic fMRI, with a measured noise ceiling and
+bootstrap intervals. Either the sign holds or it does not; both outcomes are publishable, and
+either constrains every study built on this checkpoint.
+
+**Feasibility.** No large GPU. The checkpoint outputs fsaverage5, the same surface CNeuroMod
+and Algonauts publish. The work is data preparation and evaluation discipline, not compute.
+
+**Status.** Not started. Estimated three to five days, most of it alignment and preprocessing.
+
+**Venue.** Imaging Neuroscience, or NeuroImage as a brief communication.
 
 ---
 
-## Dates
+## Optional short note
 
-Proposed, subject to Dr. Mutambi's approval.
+> **Ratio observables over standardised encoder output are undefined on real content**
 
-| Date | Item |
-|---|---|
-| 2026-08-07 | Amendment sent for sign-off; corpus scan starts |
-| 2026-08-09 | Scan returns; analysis and corpus report run |
-| 2026-08-13 | Project document submitted |
-| 2026-08-27 | Paper 1 drafted (independent of the scan) |
-| 2026-09-10 | Paper 1 submitted; preprint posted |
-| 2026-09-24 | Paper 2 drafted |
-| 2026-10-08 | Paper 2 submitted; preprint posted |
+A methods note. Encoder output is z-scored, so a denominator built from an ROI mean sits below
+zero for a large fraction of items and the ratio sign-flips or explodes. Evidenced at 40/40 on
+the EmoBank run and again in the corpus scan. Useful to anyone defining an index over these
+models. Two pages.
 
-Paper 1 leads because it does not depend on the empirical result, which means one
-submission is safe regardless of what the scan returns.
+---
+
+## What is deliberately not a paper
+
+**The cortical-only checkpoint finding.** Novel and unpublished, but it is neuroscience
+tooling with no physics in it. It belongs in Paper 2's methods, and in Paper 3's framing.
+
+**A software-venue article** (JOSS, SoftwareX). It would be accepted and would contain no
+physics, so it does not meet the two-article requirement. The apparatus is released alongside
+the papers as the reproducibility artifact.
+
+---
+
+## Order
+
+Paper 1 first: it depends on nothing and guarantees one submission whatever the scan returns.
+Paper 3 second if the validation runs, because it is the strongest result available.
+Paper 2 last, since it consumes both.
