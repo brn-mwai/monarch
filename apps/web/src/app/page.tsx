@@ -194,7 +194,7 @@ export default function HomePage() {
             </div>
 
             <p className="mt-9 font-mono text-[10px] uppercase tracking-[0.25em] text-white/35">
-              Built on TRIBE v2 / AMD Instinct MI300X / Open source
+              Built on TRIBE v2 / fsaverage5 cortical surface / Open source
             </p>
           </div>
 
@@ -491,11 +491,87 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* === Section 6 - Attribution ========================================== */}
+      {/* === Section 6 - Research status ====================================== */}
+      <section className="border-t border-white/10 px-6 py-24">
+        <div className="mx-auto max-w-5xl">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/45">
+            05 / Research status
+          </p>
+          <h2 className="mt-3 text-balance text-3xl font-semibold leading-snug text-white sm:text-4xl">
+            What is measured, and what is still open
+          </h2>
+          <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/60">
+            The instrument is the deliverable. It is being applied to a 400-item corpus of
+            four content categories, 100 each, and the result of that measurement is reported
+            whichever way it comes out. A null is a result here, not a failure.
+          </p>
+
+          <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <article className="rounded-lg border border-white/10 p-6">
+              <h3 className="mb-2 font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+                Paper 1 / theory
+              </h3>
+              <p className="text-[13px] leading-relaxed text-white/60">
+                For any content observable used as a field through h = αX, no media-driven
+                transition is possible unless α ≥ h<sub>c</sub>(βJ) / ΔX. The bound states
+                what the coupling would have to be for the mechanism to work at all, and can
+                be checked before any data are collected.
+              </p>
+            </article>
+            <article className="rounded-lg border border-white/10 p-6">
+              <h3 className="mb-2 font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+                Paper 2 / the corpus
+              </h3>
+              <p className="text-[13px] leading-relaxed text-white/60">
+                The scan supplies the observable&apos;s measured spread ΔX. Fed into the bound,
+                a null calibration stops being &quot;nothing was detected&quot; and becomes a
+                range the measurement excludes. The design detects an effect down to η² =
+                0.0268, or AUC 0.5916, at 80% power.
+              </p>
+            </article>
+            <article className="rounded-lg border border-white/10 p-6">
+              <h3 className="mb-2 font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+                Paper 3 / validation
+              </h3>
+              <p className="text-[13px] leading-relaxed text-white/60">
+                Whether the released average-subject checkpoint predicts real cortex at all is
+                an open question, and a published audit reports it anti-correlated. Held-out
+                validation against public fMRI, with a measured noise ceiling, is the test.
+              </p>
+            </article>
+          </div>
+
+          <div className="mt-8 rounded-lg border border-white/10 p-6">
+            <h3 className="mb-3 font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
+              Stated limits
+            </h3>
+            <ul className="space-y-2 text-[13px] leading-relaxed text-white/60">
+              <li>
+                The observable is a cortical proxy. The checkpoint is cortical-only and cannot
+                speak to subcortical structures.
+              </li>
+              <li>
+                Monarch predicts an average brain&apos;s response to content. It never scans a
+                person, and predicted activation is not measured activation.
+              </li>
+              <li>
+                The opinion-dynamics layer sweeps the coupling and never fits it. No calibrated
+                coupling value is quoted anywhere on this site.
+              </li>
+              <li>
+                The ratio form of the index is undefined whenever either network mean sits
+                below baseline. Those items are counted, never dropped or filled in.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* === Section 7 - Attribution ========================================== */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-5xl">
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/45">
-            05 / Attribution
+            06 / Attribution
           </p>
           <h2 className="mt-3 text-balance text-3xl font-semibold leading-snug text-white sm:text-4xl">
             Who is building this
@@ -522,9 +598,9 @@ export default function HomePage() {
                 AMD Developer Hackathon 2026
               </p>
               <p className="mt-2 text-[13px] leading-relaxed text-white/60">
-                Track 3: multimodal AI.
+                Track 3: multimodal AI, built on AMD Instinct MI300X.
                 <br />
-                Runs on AMD Instinct MI300X.
+                The 400-item corpus scan runs on a Tesla P100.
               </p>
             </article>
           </div>
