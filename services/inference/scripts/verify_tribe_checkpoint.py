@@ -107,14 +107,52 @@ def _module_evidence(module: Any) -> dict:
     }
 
 
+def _find_torch_module(container: Any) -> Any:
+    """The nn.Module inside whatever TribeModel wraps it in.
+
+    ``TribeModel`` is a pydantic object, not an ``nn.Module``: it has no ``parameters``
+    and no ``named_modules``, so introspecting it directly raises. The network is held on
+    one of its attributes, and pydantic raises on unknown attribute access, so each read
+    is guarded rather than assumed.
+    """
+    from torch import nn
+
+    if isinstance(container, nn.Module):
+        return container
+
+    for attribute in dir(container):
+        if attribute.startswith("_"):
+            continue
+        try:
+            value = getattr(container, attribute)
+        except Exception:
+            continue
+        if isinstance(value, nn.Module):
+            return value
+    return None
+
+
 def _from_model() -> dict:
     from app.services.inference import TribeInferenceService
 
     service = TribeInferenceService()
     service.load_model()
-    model = service.model
+    wrapper = service.model
+    model = _find_torch_module(wrapper)
 
-    facts: dict = {"loaded_via": "app.services.inference.TribeInferenceService.load_model"}
+    facts: dict = {
+        "loaded_via": "app.services.inference.TribeInferenceService.load_model",
+        "wrapper_class": type(wrapper).__name__,
+    }
+    if model is None:
+        facts["torch_module_found"] = False
+        facts["note"] = (
+            f"no nn.Module on {type(wrapper).__name__}; parameter counts and module "
+            "structure cannot be read from this object"
+        )
+        return facts
+    facts["torch_module_found"] = True
+    facts["torch_module_class"] = type(model).__name__
 
     # Depth: count the repeated encoder blocks rather than trusting the config, since
     # a half-depth release would keep the full-depth config around it.
