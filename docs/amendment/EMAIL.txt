@@ -4,13 +4,14 @@ Dear Dr. Mutambi,
 
 Attached is a four-page amendment to my proposal. I need your approval on it
 before I write the thesis. The working tool is at https://monarch.brianmwai.com
+if you would like to see what the project delivers.
 
 Four things changed once I actually ran the model:
 
-1. The released model only predicts activity on the outer surface of the brain.
-   The amygdala sits deep inside, so it is not included. My proposal's main
-   measurement was built on it. I now measure the balance between surface
-   regions instead, and I never call it the amygdala.
+1. The released TRIBE v2 checkpoint only predicts activity on the outer surface
+   of the brain, 20,484 points. The amygdala sits deep inside, so it is not
+   included. My proposal's main measurement was built on it. I now measure the
+   balance between surface regions instead, and I never call it the amygdala.
 
 2. The original formula divides by a number that is negative about half the
    time, which made it unusable on real content. I subtract instead of dividing.
@@ -20,14 +21,25 @@ Four things changed once I actually ran the model:
    report that plainly and quote no value for it.
 
 4. The dataset my proposal names, NELA-GT-2021, was withdrawn by its authors in
-   January 2024. I replaced it with an open one, SemEval-2019 Task 4.
+   January 2024. I verified this against the Harvard Dataverse API with a valid
+   account. I have substituted SemEval-2019 Task 4, which is openly licensed and
+   labels the article rather than the publisher.
 
-Section 3 of the attachment sets out what the thesis still delivers and what it
-will not claim. Section 4 lists the decisions I need, three of which block the
-write-up.
+One further development I would like your view on. A commercial lab has
+published an audit of the same released checkpoint, in the same average-subject
+configuration my instrument uses, reporting that its predictions are
+anti-correlated with real cortex across four subjects. It is not peer reviewed,
+it comes from a company selling the alternative, and I have not replicated it.
+If it holds, it would explain the null in point 3, and I think replicating it is
+the strongest piece of work available to me after submission.
 
-The tool is built, the 400-item test set is ready, and the main run happens this
-week.
+Section 3 of the attachment sets out what the thesis delivers with these changes
+applied, and what it will not claim. Section 4 lists the decisions I need, three
+of which block the write-up.
+
+The apparatus is built and tested, the 400-item corpus is complete and audited,
+and the scan is running now. I will send a dated plan through to submission
+separately this week, including the two journal articles.
 
 Could I have fifteen minutes this week, or your approval by email?
 
