@@ -133,20 +133,32 @@ def _render(values: np.ndarray, surface, title: str, out_dir: Path, stem: str,
             cmap=cmap,
             vmin=vmin,
             vmax=vmax,
-            colorbar=colorbar and hemi == "right",
+            colorbar=False,
             avg_method="median",
             axes=ax,
             figure=fig,
         )
         ax.set_title(hemi, fontsize=11, pad=2)
 
+    # nilearn draws its colourbar inside the hemisphere's own axes, where it sits on top of
+    # the cortex. Drawn here instead, in reserved space to the right of both brains.
+    if colorbar and vmin is not None and vmax is not None:
+        from matplotlib.cm import ScalarMappable
+        from matplotlib.colors import Normalize
+
+        bar_axes = fig.add_axes([0.90, 0.22, 0.014, 0.52])
+        mappable = ScalarMappable(norm=Normalize(vmin=vmin, vmax=vmax), cmap=cmap)
+        bar = fig.colorbar(mappable, cax=bar_axes)
+        bar.ax.tick_params(labelsize=9)
+        bar.outline.set_visible(False)
+
     fig.suptitle(title, fontsize=11, y=0.97)
     # subplots_adjust rather than tight_layout: 3d axes are not compatible with it and it
     # warns that the result may be wrong.
-    fig.subplots_adjust(left=0.01, right=0.99, top=0.90, bottom=0.01, wspace=0.02)
+    fig.subplots_adjust(left=0.01, right=0.87, top=0.90, bottom=0.01, wspace=0.02)
     for fmt in formats:
         fig.savefig(out_dir / f"{stem}.{fmt}", dpi=200 if fmt == "png" else None,
-                    format=fmt, bbox_inches="tight")
+                    format=fmt)
     plt.close(fig)
 
 
