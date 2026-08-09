@@ -42,11 +42,6 @@ function TogglePair<T extends string>({ value, options, onChange }: PairProps<T>
   );
 }
 
-const DATA_OPTS = [
-  { value: 'true', label: 'True' },
-  { value: 'predicted', label: 'Predicted' },
-] as const;
-
 const SURFACE_OPTS = [
   { value: 'normal', label: 'Normal' },
   { value: 'inflated', label: 'Inflated' },
@@ -67,7 +62,6 @@ export function ControlToggles({
 }: ControlTogglesProps) {
   return (
     <div className="pointer-events-auto absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-4">
-      <TogglePair value={dataMode} options={DATA_OPTS} onChange={onDataModeChange} />
       <TogglePair
         value={surfaceMode}
         options={SURFACE_OPTS}
