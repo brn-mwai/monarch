@@ -3,6 +3,7 @@
 import { ArrowUp, ChatCircle, X } from '@phosphor-icons/react/dist/ssr';
 import { useEffect, useRef, useState } from 'react';
 
+import { Markdown } from '@/components/Markdown';
 import { subscribeChatContext, type ChatContext } from '@/lib/chat-context';
 
 interface Message {
@@ -11,10 +12,10 @@ interface Message {
 }
 
 const SUGGESTIONS = [
-  'What does the score actually measure?',
-  'Did the categories separate?',
-  'Is this validated against real brains?',
-  'What is the confound?',
+  'What does this actually measure?',
+  'What did the 400 items show?',
+  'Why can you not say it detects manipulation?',
+  'Is any of this a real brain?',
 ];
 
 export function Chat() {
@@ -114,10 +115,8 @@ export function Chat() {
         {messages.length === 0 && (
           <div>
             <p className="text-[13px] leading-relaxed text-white/60">
-              This answers from the project&apos;s own measurements and says so when a question
-              is not covered by them. It will not quote a coupling value, call the measured
-              regions the amygdala, or claim the instrument has been checked against real
-              brains, because none of those are true of this work.
+              Answers come from this project&apos;s own measurements. When something is not in
+              them, it says so rather than guessing.
             </p>
             <div className="mt-4 flex flex-col gap-2">
               {SUGGESTIONS.map((s) => (
@@ -139,15 +138,15 @@ export function Chat() {
             key={i}
             className={m.role === 'user' ? 'flex justify-end' : 'flex justify-start'}
           >
-            <p
-              className={`max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-[13px] leading-relaxed ${
+            <div
+              className={`max-w-[85%] rounded-lg px-3 py-2 text-[13px] leading-relaxed ${
                 m.role === 'user'
-                  ? 'bg-white/[0.08] text-white'
+                  ? 'whitespace-pre-wrap bg-white/[0.08] text-white'
                   : 'border border-white/10 text-white/75'
               }`}
             >
-              {m.content}
-            </p>
+              {m.role === 'user' ? m.content : <Markdown text={m.content} />}
+            </div>
           </div>
         ))}
 
