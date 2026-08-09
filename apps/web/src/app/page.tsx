@@ -17,7 +17,8 @@ import { useEffect, useState } from 'react';
 import { BrainViewer } from '@/components/BrainViewer';
 import { NAADistributionMini } from '@/components/charts/NAADistributionMini';
 import { Equation } from '@/components/Equation';
-import { buildDenseActivation } from '@/lib/roi-activation';
+import type { CorpusItem } from '@/lib/corpus-types';
+import { loadItemVector } from '@/lib/measured-activation';
 
 const FEATURES = [
   {
@@ -49,22 +50,51 @@ const FEATURES = [
 // NAA) lights the affective-salience network.
 
 export default function HomePage() {
-  const [neutralAct, setNeutralAct] = useState<Float32Array | null>(null);
-  const [reactiveAct, setReactiveAct] = useState<Float32Array | null>(null);
+  const [pair, setPair] = useState<{
+    left: { item: CorpusItem; map: Float32Array } | null;
+    right: { item: CorpusItem; map: Float32Array } | null;
+  }>({ left: null, right: null });
 
+  // Real scanned items, cycled. Each frame is one item's own predicted response, so the
+  // hero shows measurements from the corpus rather than a generated field.
   useEffect(() => {
     let cancelled = false;
-    Promise.all([buildDenseActivation(0.84), buildDenseActivation(3.71)])
-      .then(([neutral, reactive]) => {
-        if (cancelled) return;
-        setNeutralAct(neutral);
-        setReactiveAct(reactive);
+    let timer: ReturnType<typeof setInterval> | undefined;
+
+    fetch('/data/corpus.json')
+      .then((r) => r.json())
+      .then(async (data: { items: CorpusItem[] }) => {
+        const withMap = data.items.filter((i) => i.hasVector);
+        if (withMap.length < 2 || cancelled) return;
+
+        const ranked = [...withMap].sort(
+          (a, b) => (b.naaSigned ?? 0) - (a.naaSigned ?? 0),
+        );
+        const loaded = await Promise.all(
+          ranked.map(async (item) => {
+            const map = await loadItemVector(item.id);
+            return map ? { item, map } : null;
+          }),
+        );
+        const usable = loaded.filter(Boolean) as { item: CorpusItem; map: Float32Array }[];
+        if (usable.length < 2 || cancelled) return;
+
+        let index = 0;
+        const show = () => {
+          setPair({
+            left: usable[index % usable.length],
+            right: usable[(usable.length - 1 - (index % usable.length))],
+          });
+          index += 1;
+        };
+        show();
+        timer = setInterval(show, 6000);
       })
-      .catch((err: unknown) => {
-        console.error('home: failed to build hero activation', err);
-      });
+      .catch(() => undefined);
+
     return () => {
       cancelled = true;
+      if (timer) clearInterval(timer);
     };
   }, []);
 
@@ -76,20 +106,21 @@ export default function HomePage() {
           {/* LEFT brain - calm wording */}
           <figure className="flex flex-col items-center">
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-white/50">
-              Calm wording
+              Predicted activity
             </p>
             <div className="relative h-[480px] w-full max-w-[540px]">
               <BrainViewer
-                activation={neutralAct}
+                activation={pair.left?.map ?? null}
                 colorMode="activation"
+                autoRotate
                 initialView="left"
                 showOverlays={false}
-                interactive={false}
+                interactive
                 className="absolute inset-0"
               />
             </div>
             <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/40">
-              Calm / illustrative
+              {pair.left ? pair.left.item.category.replace(/_/g, ' ') : 'loading'}
             </p>
           </figure>
 
@@ -106,9 +137,7 @@ export default function HomePage() {
               or to make you think?
             </h1>
             <p className="mx-auto mt-5 max-w-md text-balance text-[15px] leading-relaxed text-white/65">
-              An instrument that scores how strongly a piece of media leans on
-              emotion over reason, built to be measured against a corpus rather
-              than demonstrated on one example.
+              Predicting how cortex responds to written media.
             </p>
 
             <div className="mx-auto mt-9 flex max-w-[260px] flex-col gap-3">
@@ -147,20 +176,21 @@ export default function HomePage() {
           {/* RIGHT brain - charged wording */}
           <figure className="flex flex-col items-center">
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-white/50">
-              Charged wording
+              Predicted activity
             </p>
             <div className="relative h-[480px] w-full max-w-[540px]">
               <BrainViewer
-                activation={reactiveAct}
+                activation={pair.right?.map ?? null}
                 colorMode="activation"
+                autoRotate
                 initialView="right"
                 showOverlays={false}
-                interactive={false}
+                interactive
                 className="absolute inset-0"
               />
             </div>
             <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-white/40">
-              Charged / illustrative
+              {pair.right ? pair.right.item.category.replace(/_/g, ' ') : 'loading'}
             </p>
           </figure>
         </div>

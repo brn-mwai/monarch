@@ -74,6 +74,8 @@ export interface BrainViewerProps {
   comparisonActivation?: Float32Array | null;
   /** Three-channel modality activation for multimodal RGB visualization. */
   multimodalActivation?: MultimodalActivation | null;
+  /** Spin slowly until the viewer is touched. */
+  autoRotate?: boolean;
   /** Which color rendering mode is active. Defaults to 'activation'. */
   colorMode?: ColorMode;
   /** Which data stream to display. */

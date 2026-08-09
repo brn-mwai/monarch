@@ -31,6 +31,7 @@ export * from './types';
 export function BrainViewer({
   activation = null,
   multimodalActivation = null,
+  autoRotate = false,
   colorMode = 'activation',
   dataMode: dataModeProp,
   highlightROI = null,
@@ -51,6 +52,7 @@ export function BrainViewer({
   const engineRef = useRef<BrainEngine | null>(null);
 
   const [isLoaded, setIsLoaded] = useState(false);
+
   const [initError, setInitError] = useState<string | null>(null);
   const [surfaceMode, setSurfaceMode] = useState<SurfaceMode>('normal');
   const [hemisphereMode, setHemisphereMode] = useState<HemisphereMode>('close');
@@ -192,6 +194,12 @@ export function BrainViewer({
     }
     engine.clearActivation();
   }, [activation, multimodalActivation, colorMode, isLoaded]);
+
+  useEffect(() => {
+    const engine = engineRef.current;
+    if (!engine || !isLoaded) return;
+    engine.setAutoRotate(autoRotate);
+  }, [autoRotate, isLoaded]);
 
   // --- Reactive view changes ----------------------------------------
   useEffect(() => {

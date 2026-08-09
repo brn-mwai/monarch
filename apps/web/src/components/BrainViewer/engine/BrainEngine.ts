@@ -125,6 +125,11 @@ export class BrainEngine {
     this.controls.minDistance = 120;
     this.controls.maxDistance = 700;
     this.controls.autoRotate = false;
+    // Any drag, zoom or pan ends the idle spin. A view that keeps turning while someone is
+    // trying to look at one gyrus is worse than no motion at all.
+    this.controls.addEventListener('start', () => {
+      this.controls.autoRotate = false;
+    });
 
     this.addLights();
 
@@ -607,6 +612,12 @@ export class BrainEngine {
 
   isLoaded(): boolean {
     return this.loaded;
+  }
+
+  /** Idle spin, stopped by the first interaction. */
+  setAutoRotate(enabled: boolean, speed = 0.6): void {
+    this.controls.autoRotate = enabled;
+    this.controls.autoRotateSpeed = speed;
   }
 
   dispose(): void {
