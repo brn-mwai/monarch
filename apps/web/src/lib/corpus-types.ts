@@ -15,6 +15,7 @@ export interface CorpusItem {
   category: string;
   preview: string;
   text?: string;
+  hasVector?: boolean;
   wordCount: number | null;
   source: string;
   naaSigned: number | null;

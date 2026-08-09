@@ -86,3 +86,22 @@ export function buildScaledRoiActivation(
 
 export { loadRoiVertices };
 export type { RoiVertices };
+
+/**
+ * The real per-vertex prediction for an item, when one was kept.
+ *
+ * A run with --save-vectors writes the (20484,) float32 map the cascade actually produced.
+ * That map has genuine structure at every vertex, so the renderer's own normalisation
+ * produces the graded picture; nothing here invents a gradient. Items scanned before that
+ * flag existed have no map and fall back to the flat two-region fill.
+ */
+export async function loadItemVector(id: string): Promise<Float32Array | null> {
+  try {
+    const res = await fetch(`/data/vectors/${id}.f32`);
+    if (!res.ok) return null;
+    const data = new Float32Array(await res.arrayBuffer());
+    return data.length === TOTAL_VERTS ? data : null;
+  } catch {
+    return null;
+  }
+}

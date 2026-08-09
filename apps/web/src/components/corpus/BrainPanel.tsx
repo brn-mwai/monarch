@@ -1,11 +1,12 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { categoryLabel, signed, type CorpusItem } from '@/lib/corpus-types';
 import {
   buildScaledRoiActivation,
+  loadItemVector,
   type RoiVertices,
 } from '@/lib/measured-activation';
 
@@ -44,10 +45,29 @@ export function BrainPanel({
   chrome = true,
 }: Props) {
   const [expanded, setExpanded] = useState(false);
-  const activation = useMemo(() => {
+  const [vector, setVector] = useState<Float32Array | null>(null);
+
+  // The real per-vertex map when the scan kept one. It replaces the flat fill entirely
+  // rather than being blended with it, so what is drawn is the prediction itself.
+  useEffect(() => {
+    let cancelled = false;
+    setVector(null);
+    if (!item.hasVector) return;
+    loadItemVector(item.id).then((v) => {
+      if (!cancelled) setVector(v);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [item]);
+
+  const fallback = useMemo(() => {
     if (!rois || item.aAff === null || item.aDel === null) return null;
     return buildScaledRoiActivation(rois, item.aAff, item.aDel, scaleLo, scaleHi, mask);
   }, [rois, item, scaleLo, scaleHi, mask]);
+
+  const activation = vector ?? fallback;
+  const perVertex = vector !== null;
 
   const leads =
     item.aAff === null || item.aDel === null
@@ -62,8 +82,22 @@ export function BrainPanel({
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
           {categoryLabel(item.category)}
         </span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
-          {leads === null ? 'no values' : `${leads} leads`}
+        <span className="flex items-center gap-3">
+          <span
+            className={`font-mono text-[9px] uppercase tracking-[0.18em] ${
+              perVertex ? 'text-white/70' : 'text-white/30'
+            }`}
+            title={
+              perVertex
+                ? 'Every vertex carries its own predicted value'
+                : 'Two region averages; the per-vertex map was not kept for this item'
+            }
+          >
+            {perVertex ? 'Per vertex' : 'Region average'}
+          </span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
+            {leads === null ? 'no values' : `${leads} leads`}
+          </span>
         </span>
       </div>
 
