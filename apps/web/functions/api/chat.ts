@@ -12,7 +12,10 @@ interface ChatMessage {
   content: string;
 }
 
-const DEFAULT_MODEL = 'llama-3.3-70b-versatile';
+// The assistant's job is to hold five refusals and decline anything the fact sheet does
+// not cover. That is an instruction-following problem before it is a knowledge one, so the
+// default is the largest model on the account rather than the fastest.
+const DEFAULT_MODEL = 'openai/gpt-oss-120b';
 const MAX_MESSAGES = 12;
 const MAX_CHARS = 2000;
 const WINDOW_SECONDS = 60;
