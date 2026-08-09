@@ -84,6 +84,23 @@ as the window widens. The run fails if any exponent departs from its exact value
 a stated tolerance, so a solver regression stops the analysis rather than producing plausible
 curves.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{../../services/inference/data/paper1/F1_free_energy.pdf}
+\caption{Free energy \eqref{eq:landau} at zero field with the derived coefficients
+\eqref{eq:coefficients}, at $\beta J = 0.8$, $1.0$ and $1.4$. The second minimum appears only
+above the critical coupling.}
+\label{fig:free-energy}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{../../services/inference/data/paper1/F2_order_parameter.pdf}
+\caption{Order parameter across the transition. The fitted exponent is $0.4872$ against an
+exact $1/2$.}
+\label{fig:order}
+\end{figure}
+
 \section{The spinodal field}
 
 Above $\beta J = 1$ the free energy has two minima at zero field. Raising the field deepens
@@ -95,6 +112,14 @@ It is located by bisection on the presence of a second stationary point, which k
 consistent with the solver used elsewhere rather than importing a closed form derived under
 different approximations. It vanishes as $\beta J \to 1^{+}$ and grows monotonically, reaching
 $0.53284$ at $\beta J = 2$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{../../services/inference/data/paper1/F5_phase_diagram.pdf}
+\caption{Phase diagram in $(\beta J, h)$. The shaded region is where two opinion states
+coexist; its upper boundary is the spinodal $h_c(\beta J)$.}
+\label{fig:phase}
+\end{figure}
 
 \section{The bound}
 \label{sec:bound}
@@ -129,6 +154,14 @@ interval containing zero has, alone, only the statement that no coupling was det
 Combined with \eqref{eq:bound}, the same interval says the coupling would have to exceed
 $h_c(\beta J)/\Delta X$ for the mechanism to operate, and that the measurement excludes that
 range.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{../../services/inference/data/paper1/F6_alpha_required.pdf}
+\caption{Coupling required before a content observable of spread $\Delta X$ can drive the
+population across the spinodal.}
+\label{fig:alpha-required}
+\end{figure}
 
 \section{A screening criterion}
 
