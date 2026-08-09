@@ -83,10 +83,13 @@ export default function CorpusPage() {
   }, [data]);
 
   useEffect(() => {
-    if (ranked.length > 1) {
-      setPrimary(ranked[0].index);
-      setSecondary(ranked[ranked.length - 1].index);
-    }
+    if (ranked.length < 2) return;
+    // Prefer items with a kept per-vertex map, since those are the ones worth looking at
+    // on the surface. Only 12 of 400 have one.
+    const withVector = ranked.filter((r) => r.item.hasVector);
+    const pool = withVector.length > 1 ? withVector : ranked;
+    setPrimary(pool[0].index);
+    setSecondary(pool[pool.length - 1].index);
   }, [ranked]);
 
   const scale = useMemo(() => {
@@ -120,7 +123,12 @@ export default function CorpusPage() {
   }
 
   const { summary, items } = data;
-  const rows = filter === 'all' ? ranked : ranked.filter((r) => r.item.category === filter);
+  const rows =
+    filter === 'all'
+      ? ranked
+      : filter === 'pervertex'
+        ? ranked.filter((r) => r.item.hasVector)
+        : ranked.filter((r) => r.item.category === filter);
   const left = items[primary];
   const right = items[secondary];
 
@@ -166,10 +174,10 @@ export default function CorpusPage() {
 
       <section className="mt-20">
         <SectionHeading index="01" title="On the surface">
-          The two regions are filled with the values measured for the chosen item. Colour runs
-          on one scale shared by every item in the corpus, so the same shade means the same
-          number wherever you see it. Colour is flat inside each region because the scan keeps
-          two numbers per item and nothing finer.
+          Items marked <span className="text-white/80">Per vertex</span> show the prediction
+          at every one of the 20,484 surface points, which is what produces a graded map. The
+          scan kept that map for 12 items; for the rest it stored only two region averages, so
+          those render as flat regions. The panel header says which you are looking at.
         </SectionHeading>
 
         <div className="mb-5 flex flex-wrap items-center gap-3">
@@ -377,7 +385,7 @@ export default function CorpusPage() {
           Sorted from the most emotional-leaning to the least.
         </SectionHeading>
         <div className="mb-4 flex flex-wrap gap-2">
-          {['all', ...summary.categories.map((c) => c.category)].map((option) => (
+          {['all', 'pervertex', ...summary.categories.map((c) => c.category)].map((option) => (
             <button
               key={option}
               type="button"
@@ -388,7 +396,11 @@ export default function CorpusPage() {
                   : 'border-white/15 text-white/50 hover:border-white/35'
               }`}
             >
-              {option === 'all' ? `All ${summary.nScanned}` : categoryLabel(option)}
+              {option === 'all'
+                ? `All ${summary.nScanned}`
+                : option === 'pervertex'
+                  ? `Per vertex ${items.filter((i) => i.hasVector).length}`
+                  : categoryLabel(option)}
             </button>
           ))}
         </div>
