@@ -16,14 +16,13 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { label: 'Corpus', href: '/corpus' },
   { label: 'Research', href: 'https://cuea.edu', external: true },
-  { label: 'AMD', href: 'https://www.amd.com/en/developer.html', external: true },
 ];
 
 /**
  * Fixed top header bar on every page.
  *
- * Public visitors see: logo + Research + AMD + Sign In.
- * Authenticated users see: logo + Scanner + Report + Batch + Research + AMD + UserButton.
+ * Public visitors see: logo + Corpus + Research + Sign In.
+ * Authenticated users additionally see the UserButton.
  */
 export function Header() {
   const pathname = usePathname() ?? '/';

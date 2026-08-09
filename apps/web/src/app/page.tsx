@@ -585,13 +585,14 @@ export default function HomePage() {
             </article>
             <article className="rounded-lg border border-white/10 p-6">
               <h3 className="mb-2 font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
-                Submission
+                Apparatus
               </h3>
               <p className="text-base font-semibold text-white">
-                AMD Developer Hackathon 2026
+                Open-source measurement pipeline
               </p>
               <p className="mt-2 text-[13px] leading-relaxed text-white/60">
-                Track 3: multimodal AI, built on AMD Instinct MI300X.
+                Built on Meta&apos;s TRIBE v2, released under the project&apos;s own
+                open-source licence.
                 <br />
                 The 400-item corpus scan runs on a Tesla P100.
               </p>

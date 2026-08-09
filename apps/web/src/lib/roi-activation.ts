@@ -165,7 +165,7 @@ function pushSeeds(
  * networks the NAA measures (NAA scales their relative brightness) plus the
  * visual/auditory/language networks as a softer whole-cortex backdrop. The
  * result is a continuous map, clear at a glance, anchored on real fsaverage5
- * geometry. The live AMD model replaces this with its true (20484,) output
+ * geometry. The live encoder replaces this with its true (20484,) output
  * through the same render path.
  */
 export async function buildDenseActivation(
