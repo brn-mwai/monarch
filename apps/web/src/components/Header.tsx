@@ -14,9 +14,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Scanner', href: '/scanner', protected: true },
-  { label: 'Report', href: '/report', protected: true },
-  { label: 'Batch', href: '/batch', protected: true },
+  { label: 'Corpus', href: '/corpus' },
   { label: 'Research', href: 'https://cuea.edu', external: true },
   { label: 'AMD', href: 'https://www.amd.com/en/developer.html', external: true },
 ];

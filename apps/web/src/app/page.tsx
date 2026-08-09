@@ -153,24 +153,17 @@ export default function HomePage() {
               or to make you think?
             </h1>
             <p className="mx-auto mt-5 max-w-md text-balance text-[15px] leading-relaxed text-white/65">
-              Paste a headline, post, or clip. Monarch scores how strongly it
-              pushes emotion over reason, and shows it on a 3D brain. The same
-              story, told two ways, looks different inside the head.
+              An instrument that scores how strongly a piece of media leans on
+              emotion over reason, built to be measured against a corpus rather
+              than demonstrated on one example.
             </p>
 
             <div className="mx-auto mt-9 flex max-w-[260px] flex-col gap-3">
               <Link
-                href="/scanner"
+                href="/corpus"
                 className="inline-flex items-center justify-between rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/70 hover:bg-white/5"
               >
-                Try it now
-                <ArrowRight size={13} weight="bold" className="opacity-70" />
-              </Link>
-              <Link
-                href="/report"
-                className="inline-flex items-center justify-between rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/70 hover:bg-white/5"
-              >
-                See a sample report
+                See the measured corpus
                 <ArrowRight size={13} weight="bold" className="opacity-70" />
               </Link>
               <a
@@ -618,9 +611,7 @@ export default function HomePage() {
             className="h-7 w-auto opacity-70"
           />
           <nav className="flex flex-wrap gap-5 text-xs font-semibold text-white/55">
-            <Link href="/scanner" className="hover:text-white">Scanner</Link>
-            <Link href="/report" className="hover:text-white">Report</Link>
-            <Link href="/batch" className="hover:text-white">Batch</Link>
+            <Link href="/corpus" className="hover:text-white">Corpus</Link>
           </nav>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">
             (c) 2026 Brian Mwai / CUEA Department of Physics

@@ -15,7 +15,6 @@ import type {
 import { ActivityLegend } from './ui/ActivityLegend';
 import { BrainControls, type BrainControlValues } from './ui/BrainControls';
 import { ControlToggles } from './ui/ControlToggles';
-import { MultimodalLegend } from './ui/MultimodalLegend';
 import { PlaybackControls } from './ui/PlaybackControls';
 import { ROIDescriptionPanel } from './ui/ROIDescriptionPanel';
 
@@ -342,7 +341,6 @@ export function BrainViewer({
       {isLoaded && !initError && showOverlays && (
         <>
           {showActivation && <ActivityLegend />}
-          {showMultimodal && <MultimodalLegend />}
           <ControlToggles
             dataMode={dataMode}
             surfaceMode={surfaceMode}
