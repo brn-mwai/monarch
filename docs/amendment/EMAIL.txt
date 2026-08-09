@@ -32,15 +32,20 @@ published an audit of the same released checkpoint, in the same average-subject
 configuration my instrument uses, reporting that its predictions are
 anti-correlated with real cortex across four subjects. It is not peer reviewed,
 it comes from a company selling the alternative, and I have not replicated it.
-If it holds, it would explain the null in point 3, and I think replicating it is
-the strongest piece of work available to me after submission.
+If it holds, it would explain why the coupling in point 3 has no predictive
+value out of sample, and I think replicating it is the strongest piece of work
+available to me after submission.
 
 Section 3 of the attachment sets out what the thesis delivers with these changes
 applied, and what it will not claim. Section 4 lists the decisions I need, three
 of which block the write-up.
 
-The apparatus is built and tested, the 400-item corpus is complete and audited,
-and the scan is running now. I will send a dated plan through to submission
+The apparatus is built and tested, and the 400-item corpus is complete,
+audited, and analysed. The categories do separate, at an effect size the design
+was powered to detect, though the separation is carried almost entirely by one
+category and each category comes from a single source dataset, so I cannot
+attribute it to framing rather than provenance. Section 3 states that
+confound before the result. I will send a dated plan through to submission
 separately this week, including the two journal articles.
 
 Could I have fifteen minutes this week, or your approval by email?
