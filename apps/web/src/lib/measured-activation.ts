@@ -100,8 +100,36 @@ export async function loadItemVector(id: string): Promise<Float32Array | null> {
     const res = await fetch(`/data/vectors/${id}.f32`);
     if (!res.ok) return null;
     const data = new Float32Array(await res.arrayBuffer());
-    return data.length === TOTAL_VERTS ? data : null;
+    return data.length === TOTAL_VERTS ? displayRange(data) : null;
   } catch {
     return null;
   }
+}
+
+/**
+ * Place a real per-vertex map in the band the renderer's ramp uses.
+ *
+ * The renderer paints nothing below 0.5 and reaches white at 1.0. Predicted activation is
+ * roughly centred on zero, so handed over raw about half the cortex falls under the floor
+ * and renders bare, leaving disconnected patches instead of a graded field. Rescaling by
+ * the map's own 1st and 99th percentiles into [0.5, 1] uses the whole ramp: the lowest
+ * predicted values sit at dark red and the highest at white, which is how TRIBE's own
+ * demo reads.
+ *
+ * This is a display range, not a change to the data. The mapping is monotonic, so a
+ * higher predicted value is always a warmer colour, and no vertex value is invented.
+ */
+function displayRange(data: Float32Array): Float32Array {
+  const sorted = Float32Array.from(data).sort();
+  const at = (q: number) => sorted[Math.floor((q / 100) * (sorted.length - 1))];
+  const lo = at(1);
+  const hi = at(99);
+  const span = hi - lo;
+
+  const out = new Float32Array(data.length);
+  for (let i = 0; i < data.length; i++) {
+    const t = span > 0 ? Math.min(1, Math.max(0, (data[i] - lo) / span)) : 0.5;
+    out[i] = 0.5 + t * 0.5;
+  }
+  return out;
 }

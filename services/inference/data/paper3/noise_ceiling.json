@@ -1,0 +1,15 @@
+{
+  "n_subjects": 4,
+  "n_parcels_defined": 482,
+  "mean_ceiling": 0.22469459912669704,
+  "ci_low": 0.21466150828917327,
+  "ci_high": 0.2363001210426896,
+  "per_subject": [
+    0.21172937609959566,
+    0.240804684310736,
+    0.22345790485790615,
+    0.22278643123855035
+  ],
+  "space": "Schaefer 1000 parcels, MNI152NLin2009cAsym",
+  "note": "parcel level, not vertex level; averaging within a parcel raises r"
+}

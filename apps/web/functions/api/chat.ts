@@ -3,6 +3,8 @@ import facts from '../context.json';
 interface Env {
   GROQ_API_KEY: string;
   GROQ_MODEL?: string;
+  /** Optional KV namespace. Without it the limiter falls back to per-isolate counting. */
+  CHAT_RATE?: KVNamespace;
 }
 
 interface ChatMessage {
@@ -13,6 +15,49 @@ interface ChatMessage {
 const DEFAULT_MODEL = 'llama-3.3-70b-versatile';
 const MAX_MESSAGES = 12;
 const MAX_CHARS = 2000;
+const WINDOW_SECONDS = 60;
+const REQUESTS_PER_WINDOW = 8;
+const DAILY_CAP = 200;
+
+const localHits = new Map<string, number[]>();
+
+/**
+ * Per-caller rate limit.
+ *
+ * A KV namespace makes this correct across the edge; without one it degrades to counting
+ * inside a single isolate, which a distributed caller can walk around. That is a real
+ * weakness and is stated rather than hidden: bind CHAT_RATE before this endpoint is public.
+ */
+async function overLimit(ip: string, env: Env): Promise<{ blocked: boolean; retry: number }> {
+  const now = Date.now();
+
+  if (env.CHAT_RATE) {
+    const windowKey = `w:${ip}:${Math.floor(now / (WINDOW_SECONDS * 1000))}`;
+    const dayKey = `d:${ip}:${Math.floor(now / 86400000)}`;
+    const [windowRaw, dayRaw] = await Promise.all([
+      env.CHAT_RATE.get(windowKey),
+      env.CHAT_RATE.get(dayKey),
+    ]);
+    const inWindow = Number(windowRaw ?? 0) + 1;
+    const inDay = Number(dayRaw ?? 0) + 1;
+
+    if (inWindow > REQUESTS_PER_WINDOW) return { blocked: true, retry: WINDOW_SECONDS };
+    if (inDay > DAILY_CAP) return { blocked: true, retry: 3600 };
+
+    await Promise.all([
+      env.CHAT_RATE.put(windowKey, String(inWindow), { expirationTtl: WINDOW_SECONDS * 2 }),
+      env.CHAT_RATE.put(dayKey, String(inDay), { expirationTtl: 86400 }),
+    ]);
+    return { blocked: false, retry: 0 };
+  }
+
+  const cutoff = now - WINDOW_SECONDS * 1000;
+  const hits = (localHits.get(ip) ?? []).filter((t) => t > cutoff);
+  hits.push(now);
+  localHits.set(ip, hits);
+  if (localHits.size > 5000) localHits.clear();
+  return { blocked: hits.length > REQUESTS_PER_WINDOW, retry: WINDOW_SECONDS };
+}
 
 /**
  * The model is given the project's own generated fact sheet and told to answer from it
@@ -42,6 +87,15 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     return Response.json(
       { error: 'The chat is not configured on this deployment.' },
       { status: 503 },
+    );
+  }
+
+  const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
+  const limit = await overLimit(ip, env);
+  if (limit.blocked) {
+    return Response.json(
+      { error: 'Too many questions in a short time. Try again shortly.' },
+      { status: 429, headers: { 'Retry-After': String(limit.retry) } },
     );
   }
 
