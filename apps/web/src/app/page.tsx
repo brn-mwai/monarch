@@ -21,79 +21,32 @@ import { buildDenseActivation } from '@/lib/roi-activation';
 
 const FEATURES = [
   {
-    title: 'One clear score',
-    body: 'A single number for how much a piece of media leans on emotion versus reasoning. Higher means it pushes feeling before thought.',
+    title: 'One number per item',
+    body: "The affective-salience mean minus the deliberative-control mean, in units of the encoder's standardised output. Positive means affective leads.",
     Icon: Brain,
   },
   {
-    title: 'Backed by physics',
-    body: 'A model borrowed from how opinions spread through a crowd estimates how far the content could tip a group, not just one person.',
-    Icon: Atom,
-  },
-  {
-    title: 'Text, audio, or video',
-    body: 'Scan a headline, a voice clip, or a video. The same model reads all three, and can show which one is doing the pulling.',
-    Icon: Waveform,
-  },
-  {
-    title: 'Score in bulk',
-    body: 'Upload a spreadsheet of up to 1,500 items and get them all scored, ranked, and exportable in one pass.',
+    title: 'A measured corpus, not a demo',
+    body: '400 items across four categories, scanned once on a GPU. Every value on this site came from that run.',
     Icon: Stack,
   },
   {
-    title: 'See it in a 3D brain',
-    body: 'Watch the predicted response light up a real 3D brain surface you can rotate and explore region by region.',
-    Icon: CubeFocus,
+    title: 'Physics that is swept, not fitted',
+    body: 'A mean-field model of coupled opinion states, evaluated across a range of couplings. No coupling value is fitted or quoted.',
+    Icon: Atom,
   },
   {
-    title: 'Open and free',
-    body: "Built on Meta's TRIBE v2 brain model. Monarch's own code is open source and free to use.",
+    title: 'Open source',
+    body: "Built on Meta's TRIBE v2. The pipeline, the analysis scripts and the corpus builder are public.",
     Icon: GithubLogo,
   },
 ];
+
 
 // Both brains light the same real ROIs the NAA index is computed over;
 // only the affective/deliberative balance differs. Neutral content (low
 // NAA) lights the deliberative-control network; reactive content (high
 // NAA) lights the affective-salience network.
-const WHO_ITS_FOR = [
-  {
-    title: 'Researchers',
-    value:
-      'A measuring stick for "is this built to provoke?" - run it across thousands of items and study the pattern at a scale no one could read by hand.',
-    Icon: ChartLineUp,
-  },
-  {
-    title: 'Educators',
-    value:
-      'Show students the same story written two ways and watch the score and the brain view diverge. Manipulation becomes something they can see, not just be told about.',
-    Icon: Brain,
-  },
-  {
-    title: 'Journalists & editors',
-    value:
-      'A gut-check before you publish: are we informing people, or fear-baiting them? Answered honestly about your own headline.',
-    Icon: Waveform,
-  },
-  {
-    title: 'Parents & EdTech',
-    value:
-      "A sugar-label for children's media - rate a clip and see whether it is calm or built to over-excite. It checks the content, never the child.",
-    Icon: CubeFocus,
-  },
-  {
-    title: 'Safety & fact-check teams',
-    value:
-      'Flag emotionally manipulative content at scale - scam messages and outrage feeds ranked by their emotional fingerprint, ready for human review.',
-    Icon: Stack,
-  },
-  {
-    title: 'Students',
-    value:
-      'A real, working example that connects brain-AI with the physics of crowds - far more memorable than a textbook.',
-    Icon: Atom,
-  },
-];
 
 export default function HomePage() {
   const [neutralAct, setNeutralAct] = useState<Float32Array | null>(null);
@@ -167,7 +120,7 @@ export default function HomePage() {
                 <ArrowRight size={13} weight="bold" className="opacity-70" />
               </Link>
               <a
-                href="https://github.com/brn-mwai"
+                href="https://github.com/brn-mwai/monarch"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-between rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/70 hover:bg-white/5"
@@ -213,42 +166,23 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* === Section 1.5 - What it does + who it's for ====================== */}
+      {/* === Section 1.5 - What it does ===================================== */}
       <section className="border-t border-white/10 px-6 py-24">
         <div className="mx-auto max-w-5xl">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-white/45">
             What it does
           </p>
           <h2 className="mt-4 max-w-3xl text-balance text-3xl font-semibold leading-tight text-white sm:text-4xl">
-            It rates a piece of content for how strongly it is built to hit your
-            emotions versus make you think.
+            It measures how far a piece of text leans on emotion rather than
+            reasoning, and reports the number it gets.
           </h2>
           <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/65">
-            Give it text, audio, or video. You get back a clear score - Calm,
-            Mixed, or Charged - a view of where the content tends to land in the
-            brain, and a preview of how it could ripple through a crowd. It rates
-            the content, not any real person.
+            The text is spoken, transcribed, embedded, and passed to an encoder
+            trained to predict cortical responses. Two networks are averaged, one
+            associated with affective salience and one with deliberative control,
+            and the index is the difference between them. It rates the content,
+            never a person, and it predicts a response rather than recording one.
           </p>
-
-          <p className="mt-14 font-mono text-[11px] uppercase tracking-[0.3em] text-white/45">
-            Who it&rsquo;s for
-          </p>
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {WHO_ITS_FOR.map(({ title, value, Icon }) => (
-              <article
-                key={title}
-                className="rounded-lg border border-white/10 p-6 transition-colors hover:border-white/25"
-              >
-                <Icon size={22} weight="duotone" className="mb-4 text-white/85" />
-                <h3 className="mb-2 text-base font-semibold text-white">
-                  {title}
-                </h3>
-                <p className="text-[13px] leading-relaxed text-white/60">
-                  {value}
-                </p>
-              </article>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -352,22 +286,22 @@ export default function HomePage() {
                 step: '01',
                 Icon: Waveform,
                 title: 'Read the content',
-                body: 'Monarch feeds your text, audio, or video into TRIBE v2, an AI that has learned how the brain reacts to each kind of media.',
+                body: 'The item is spoken, transcribed for word timings, and embedded, then passed to TRIBE v2, an encoder trained to predict cortical responses to naturalistic media.',
                 tag: 'TRIBE v2 brain model',
               },
               {
                 step: '02',
                 Icon: Brain,
                 title: 'Predict the brain response',
-                body: 'It predicts where the content would light up across the whole brain, then boils that down to one score: how much it leans on emotion versus reasoning.',
+                body: 'The encoder returns a predicted response for 20,484 points on the cortical surface. Two networks are averaged from it, one affective, one deliberative.',
                 tag: 'Whole-brain prediction',
               },
               {
                 step: '03',
                 Icon: Atom,
-                title: 'Model the ripple effect',
-                body: 'A physics model of how opinions spread through a crowd estimates how far this content could move a group, not just one person.',
-                tag: 'Crowd-dynamics model',
+                title: 'Ask what it would take to matter',
+                body: 'A mean-field model states how strong the coupling between this index and a population would have to be before content of this spread could shift a consensus at all.',
+                tag: 'Mean-field bound',
               },
             ].map(({ step, Icon, title, body, tag }, i) => (
               <article
