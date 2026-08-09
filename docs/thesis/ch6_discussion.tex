@@ -1,0 +1,198 @@
+\chapter{Discussion}
+\label{ch:discussion}
+
+Chapter~5 reported that the four categories separate, that the separation is carried almost
+entirely by one of them, and that category is confounded with source dataset by construction.
+This chapter asks what can be concluded from that, and is organised around the order in which
+an examiner is entitled to doubt it.
+
+\section{What the separation can and cannot support}
+
+The measured effect, $\eta^2 = 0.1068$ at $p = 1.035\times10^{-9}$, is four times the
+smallest effect the design could detect. Taken on its own terms it is unambiguous: the index
+assigns systematically different values to the four groups of documents.
+
+What it does not support is the sentence the proposal was written to test. Because each
+category is drawn from a single source dataset (\S\ref{sec:confound}), a separation between
+categories and a separation between corpora are the same measurement here. Fear-activating
+items are ISOT-fake items. Whatever distinguishes ISOT-fake from PubMed and ISOT-true --- its
+framing, but equally its vocabulary, its house style, its editorial process, its era --- is
+folded into the effect and cannot be separated from it by any analysis of this data.
+
+This is a design limitation, not an analytical one. No amount of statistical work on 400
+items assembled this way can attribute the difference to framing.
+
+\subsection{The evidence that argues against a pure source artifact}
+
+Three observations bear on it, none decisive.
+
+First, high outrage does not separate ($d = +0.030$, $p = 0.832$) despite coming from its own
+distinct source, SemEval-2019 Task~4. If the index were simply detecting provenance, every
+category drawn from a different corpus should move away from the baseline. Three of four
+moving, in an ordered way, is a weaker pattern than pure source detection predicts.
+
+Second, length is controlled. Word counts sit at $167.4$, $163.5$, $163.7$ and $162.2$ with
+standard deviations near $11$. The most obvious surface confound was designed out.
+
+Third, the ordering is not arbitrary with respect to the hypothesis. Fear-activating content
+sits furthest from neutral and reward-hook content sits between. A source artifact carries no
+reason to order itself along the dimension the study proposed.
+
+Against these stands the plain fact that the confound exists and is complete. The honest
+position is that the result is consistent with the hypothesis and equally consistent with a
+corpus artifact, and that this study cannot choose between them.
+
+\subsection{The experiment that would decide it}
+
+The confound is removable by design, not by analysis. Two routes are available to a
+successor:
+
+\begin{enumerate}
+\item \textbf{Within-source variation.} Draw all four categories from a single source, so
+provenance is held constant while framing varies. Feasible where a source contains both
+plainly-reported and emotively-framed material.
+\item \textbf{Crossed design.} Ensure each source appears in more than one category, making
+source and category statistically separable so their contributions can be estimated
+independently.
+\end{enumerate}
+
+Either would convert the present result from a suggestive to an interpretable one. Neither
+requires new instrumentation; both require rebuilding the corpus.
+
+\section{Why high outrage does not separate}
+
+The proposal expected outrage to separate most strongly, and it separated least. Three
+readings deserve stating.
+
+The first is that it is correct. Outrage framing may engage deliberative and affective
+systems in more balanced measure than threat framing does, in which case a signed difference
+between the two networks is precisely the wrong instrument for detecting it: a large
+symmetric response and no response are indistinguishable in a difference.
+
+The second is a property of the source. SemEval-2019 Task~4 labels hyperpartisan publishing
+at the article level. Hyperpartisan is not synonymous with outrage-framed, and a corpus
+selected on partisanship may contain a substantial fraction of items that are simply
+argumentative rather than emotionally charged.
+
+The third is the encoder. TRIBE was trained on naturalistic film and podcast viewing, and is
+being asked to predict responses to synthesised speech from news text. There is no reason to
+expect its sensitivity to be uniform across framing styles that were absent from training.
+
+These are not ranked, because the data does not rank them.
+
+\section{The instrument's standing}
+\label{sec:standing}
+
+Every value in this thesis is a prediction from a released encoder. No participant was
+scanned, no brain was measured, and the observable is a cortical proxy computed from
+predicted activation over two ROI unions.
+
+That distinction is load-bearing here in a way it was not when the result looked like a null.
+A null in predicted activation is a weak statement whichever way the encoder behaves. A
+\emph{detected separation} in predicted activation is only a statement about media if the
+encoder tracks cortex at all. The result reported in Chapter~5 therefore raises the stakes on
+a question this study cannot answer from its own data.
+
+\subsection{The checkpoint problem}
+
+The released checkpoint is loaded in its average-subject configuration, which
+\texttt{tribev2/demo\_utils.py} forces at load time. A commercial laboratory has published an
+audit of that configuration reporting vertex-level $r = -0.0145$ against a measured
+inter-subject ceiling of $+0.0508$: anti-correlated with real cortex, across four subjects
+and all seven Yeo networks.
+
+That audit is self-published by a company selling the per-subject alternative, uses four
+subjects and one stimulus, and reports magnitudes near $0.015$ in either direction. It is a
+claim about sign, not about effect size, and it has not been independently replicated. It
+should not be accepted uncritically, and it cannot be dismissed either.
+
+Work toward replicating it was begun within this project. Using the publicly released
+Algonauts~2025 responses, the leave-one-subject-out noise ceiling was measured directly from
+four subjects across 482 parcels:
+\begin{equation}
+r_{\text{ceiling}} = 0.2247, \qquad 95\%\ \text{CI}\ [0.2147,\ 0.2363].
+\end{equation}
+This is the quantity any encoder must be judged against, and it is measured here rather than
+quoted. It is larger than the audit's $+0.0508$ by construction and not by disagreement:
+averaging vertices within a parcel cancels independent noise and raises correlations, so a
+parcel-level ceiling and a vertex-level ceiling are not comparable numbers. The comparison
+against the checkpoint's own predictions was not completed within this project's timeline and
+is stated as unfinished rather than estimated.
+
+\subsection{What this means for building on foundation models}
+
+A technical report describing an architecture is not a warranty about the weights that are
+released under its name. The checkpoint used here is cortical-only, which the proposal did
+not anticipate; it is loaded in a configuration the accompanying paper does not foreground;
+and its agreement with real cortex is contested in the literature. None of that is visible
+from the paper.
+
+The practical lesson generalises beyond this project: anyone building a measurement on a
+released model should verify the checkpoint's properties from the artifact itself, as
+\texttt{scripts/verify\_tribe\_checkpoint.py} does here, rather than inheriting them from the
+publication.
+
+\section{The coupling, and what the bound does instead}
+
+The coupling between the index and the physics model's field is unidentified
+(\S\ref{sec:rq3}): significant in sample, negative in held-out $R^2$, and inversely dependent
+on a $\beta J$ that nothing in this study measures. Reporting a value would report a choice.
+
+The bound is what survives. Because it requires only the observable's measured spread and the
+model's own spinodal, $\alpha \ge h_c(\beta J)/\Delta X$ converts $\Delta X = 0.1241$ into a
+statement no fit is needed to make: a coupling below $4.2938$ at $\beta J = 2$ cannot drive
+the transition regardless of how the calibration is performed. This inverts the usual
+practice in the sociophysics literature, where the field is assigned and the population is
+shown to tip, without establishing that any real influence reaches the assigned magnitude.
+
+That inversion is the contribution most likely to be reusable by others, because it applies
+to any proposed field observable and can be evaluated before a corpus is collected.
+
+\section{Limitations}
+
+Stated here in full rather than distributed through the text.
+
+\begin{enumerate}
+\item \textbf{Category is confounded with source dataset.} The central limitation. Discussed
+in \S\ref{sec:confound} and above.
+
+\item \textbf{Predicted, not measured, activation.} No brain was scanned. Whether the
+encoder tracks cortex is unresolved and contested.
+
+\item \textbf{Cortical proxy, not a subcortical measurement.} The checkpoint is
+cortical-only. The structures the original proposal named cannot be measured with it, and no
+claim about them is made anywhere in this document.
+
+\item \textbf{Average-subject configuration.} Forced by the loader. Whatever individual
+variation the model can express is unavailable.
+
+\item \textbf{Out-of-distribution stimuli.} The encoder was trained on naturalistic
+audiovisual material and is fed synthesised speech from written text.
+
+\item \textbf{The ratio form fails on $17.25\%$ of items}, and the reformulation to a signed
+difference, while necessary, changes what the index means: it measures which network leads,
+not by what proportion.
+
+\item \textbf{English-language corpus from five specific sources.} The measured spread is a
+property of this corpus, not of media in general, and the bound inherits that.
+
+\item \textbf{Mean-field physics.} All-to-all coupling, one homogeneous population, a static
+field, binary opinions. Network structure and heterogeneity generally lower $h_c$, so the
+bound is conservative within the model and is not a universal statement.
+\end{enumerate}
+
+\section{What would be required next}
+
+In order of what each would buy.
+
+\textbf{A crossed or within-source corpus} would make the separation interpretable. It is the
+cheapest of these and the one that most changes what can be claimed.
+
+\textbf{Completing the validation} would establish whether the instrument measures anything
+about brains. The noise ceiling is measured and the evaluation code is written and tested;
+what remains is running the checkpoint over a held-out stimulus and correlating. It needs no
+large compute.
+
+\textbf{A subcortical checkpoint} would let the original proposal's question be asked as
+posed. That means the training grid, the four source fMRI corpora and compute well outside
+the scope of an undergraduate project, and it is recorded as future work rather than a plan.
