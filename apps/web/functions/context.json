@@ -1,0 +1,60 @@
+{
+  "what_monarch_is": "An instrument that scores how far a piece of text leans on emotion rather than reasoning. Text is spoken, transcribed, embedded, and passed to TRIBE v2, an encoder that predicts cortical responses. Two regions are averaged from that prediction, one linked to emotional salience and one to deliberate control, and the score is the difference between them.",
+  "corpus": {
+    "items": 400,
+    "categories": [
+      "fear_activating",
+      "high_outrage",
+      "neutral_informational",
+      "reward_hook"
+    ],
+    "per_category": {
+      "fear_activating": 100,
+      "high_outrage": 100,
+      "neutral_informational": 100,
+      "reward_hook": 100
+    },
+    "ratio_undefined": 69,
+    "spread": 0.12409600000000001,
+    "range": [
+      -0.069774,
+      0.054322
+    ],
+    "category_means": {
+      "fear_activating": -0.00178607,
+      "high_outrage": -0.01849725,
+      "neutral_informational": -0.01905596,
+      "reward_hook": -0.01275343
+    }
+  },
+  "results": {
+    "rq2_separation": {},
+    "rq1_classifier": {}
+  },
+  "power": {
+    "min_detectable_eta_squared": 0.026789363650265394,
+    "min_detectable_auc": 0.5916140976562501,
+    "alpha": 0.05,
+    "target_power": 0.8
+  },
+  "physics_bound": {
+    "formula": "alpha >= h_c(beta_J) / dX",
+    "measured_spread": 0.12409600000000001,
+    "required_coupling": {
+      "1.1017394957983193": 0.16928640444977885,
+      "1.4963025210084033": 1.6552857828447896,
+      "2.0": 4.293772104752073
+    },
+    "meaning": "A necessary condition only. Clearing it does not establish that media moves populations; falling below it excludes the mechanism within the model."
+  },
+  "critical_beta_j": 1.0,
+  "confound": "Each category is drawn from exactly one source dataset: fear-activating from ISOT-fake, high outrage from SemEval-2019 Task 4, reward-hook from Webis-Clickbait-17, neutral from PubMed and ISOT-true. The separation is therefore between corpora and cannot be attributed to framing rather than provenance. Word counts are matched across categories, so length is not the confound.",
+  "must_never_say": [
+    "Do not quote any value for alpha_hat. The coupling is unidentified: significant in sample, negative held-out R squared, and it scales inversely with a beta_J the study does not measure.",
+    "Never call the measured regions the amygdala. The checkpoint is cortical-only and the observable is a cortical proxy.",
+    "Never say the instrument is validated against real brains. No fMRI comparison has been run. A published audit reports the released average-subject checkpoint anti-correlated with cortex, and replicating it is unfinished work.",
+    "Never describe the values as measured brain activity. They are predictions from an encoder; nobody was scanned.",
+    "Never claim the instrument detects manipulation. It separates four corpora, and category is confounded with source."
+  ],
+  "when_unsure": "If a question is not answered by these facts, say that the data does not cover it. Do not estimate, extrapolate, or fill the gap from general knowledge."
+}
