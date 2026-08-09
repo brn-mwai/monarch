@@ -9,6 +9,7 @@ import {
   SignedByCategory,
 } from '@/components/corpus/CorpusCharts';
 import { ItemSelect } from '@/components/corpus/ItemSelect';
+import { ItemTable } from '@/components/corpus/ItemTable';
 import { categoryNote } from '@/lib/category-notes';
 import {
   CATEGORY_COLORS,
@@ -348,42 +349,14 @@ export default function CorpusPage() {
           ))}
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-white/10">
-          <table className="w-full min-w-[760px] text-left text-[13px]">
-            <thead className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
-              <tr className="border-b border-white/10">
-                <th className="px-5 py-3 font-normal">Item</th>
-                <th className="px-3 py-3 font-normal">Category</th>
-                <th className="px-3 py-3 text-right font-normal">Words</th>
-                <th className="px-3 py-3 text-right font-normal">Score</th>
-                <th className="px-3 py-3 text-right font-normal">Emotional</th>
-                <th className="px-5 py-3 text-right font-normal">Deliberate</th>
-              </tr>
-            </thead>
-            <tbody className="text-white/70">
-              {rows.map(({ item, index }) => (
-                <tr
-                  key={index}
-                  onClick={() => setPrimary(index)}
-                  className="cursor-pointer border-b border-white/5 align-top transition-colors hover:bg-white/[0.03]"
-                >
-                  <td className="max-w-md px-5 py-3 text-white/80">{item.preview}</td>
-                  <td className="whitespace-nowrap px-3 py-3 text-white/50">
-                    {categoryLabel(item.category)}
-                  </td>
-                  <td className="px-3 py-3 text-right tabular-nums text-white/50">
-                    {item.wordCount ?? '--'}
-                  </td>
-                  <td className="px-3 py-3 text-right tabular-nums text-white">
-                    {signed(item.naaSigned)}
-                  </td>
-                  <td className="px-3 py-3 text-right tabular-nums">{signed(item.aAff)}</td>
-                  <td className="px-5 py-3 text-right tabular-nums">{signed(item.aDel)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <ItemTable
+          rows={rows}
+          selected={primary}
+          onSelect={setPrimary}
+          scaleLo={summary.min ?? 0}
+          scaleHi={summary.max ?? 1}
+        />
+
         <p className="mt-4 max-w-2xl text-[13px] leading-relaxed text-white/50">
           Click any row to load it into the surface view above. {summary.nRatioUndefined} of{' '}
           {summary.nScanned} items produce no usable ratio, because one region&apos;s average
