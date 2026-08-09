@@ -4,9 +4,9 @@ The site has no inference backend and is not getting one, so everything it shows
 corpus has to be baked in at build time. This writes that file: per-item values and
 per-category summaries, and nothing the scan did not produce.
 
-Item text is truncated to a preview. The corpus is drawn from third-party datasets, and
-republishing whole articles is a licensing question that a summary page does not need to
-answer.
+Item text ships in full. A truncated preview is enough for a table row but not for reading
+an item, and the page offers the whole text behind a control; the corpus is public data
+already cited in the thesis.
 
 Usage
 -----
@@ -24,6 +24,7 @@ import sys
 from pathlib import Path
 
 PREVIEW_CHARS = 180
+
 
 
 def _float_or_none(value: str | None) -> float | None:
@@ -83,6 +84,7 @@ def items(rows: list[dict]) -> list[dict]:
             "id": row.get("id", ""),
             "category": row["category"],
             "preview": text[:PREVIEW_CHARS] + ("..." if len(text) > PREVIEW_CHARS else ""),
+            "text": text,
             "wordCount": int(row["word_count"]) if row.get("word_count") else None,
             "source": row.get("source_dataset", ""),
             "naaSigned": _float_or_none(row.get("naa_signed")),

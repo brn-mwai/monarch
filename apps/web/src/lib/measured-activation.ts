@@ -51,8 +51,18 @@ export function buildScaledRoiActivation(
 ): Float32Array {
   const data = new Float32Array(TOTAL_VERTS);
   const span = hi - lo;
-  const position = (value: number) =>
-    span > 0 ? Math.min(1, Math.max(0, (value - lo) / span)) : 0.5;
+
+  // The renderer treats everything below 0.5 as inactive and paints the very top of its
+  // ramp pure white, which is invisible against light grey cortex. So the corpus position
+  // is mapped into the band the ramp actually uses, stopping short of white: the lowest
+  // measured value sits at the dark red end and the highest at amber. The mapping stays
+  // monotonic, so a higher value is always a warmer colour.
+  const RAMP_FLOOR = 0.52;
+  const RAMP_CEILING = 0.92;
+  const position = (value: number) => {
+    const t = span > 0 ? Math.min(1, Math.max(0, (value - lo) / span)) : 0.5;
+    return RAMP_FLOOR + t * (RAMP_CEILING - RAMP_FLOOR);
+  };
 
   for (const vertex of rois.deliberative) {
     if (vertex >= 0 && vertex < TOTAL_VERTS) data[vertex] = position(aDel);

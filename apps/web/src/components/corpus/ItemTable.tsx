@@ -90,7 +90,7 @@ export function ItemTable({ rows, selected, onSelect, scaleLo, scaleHi }: Props)
 
   return (
     <div className="overflow-hidden rounded-xl border border-white/10">
-      <div className="max-h-[620px] overflow-auto">
+      <div className="scroll-slim max-h-[620px] overflow-auto">
         <table className="w-full min-w-[820px] border-collapse text-left text-[13px]">
           <thead className="sticky top-0 z-10 bg-[#0a0a0a] font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">
             <tr className="border-b border-white/10">

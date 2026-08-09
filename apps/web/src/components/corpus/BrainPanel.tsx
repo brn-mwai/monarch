@@ -29,6 +29,8 @@ interface Props {
   scaleHi: number;
   height?: number;
   compact?: boolean;
+  /** False inside the shared-control comparison frame, which supplies its own chrome. */
+  chrome?: boolean;
 }
 
 export function BrainPanel({
@@ -39,6 +41,7 @@ export function BrainPanel({
   scaleHi,
   height = 420,
   compact = false,
+  chrome = true,
 }: Props) {
   const activation = useMemo(() => {
     if (!rois || item.aAff === null || item.aDel === null) return null;
@@ -52,8 +55,8 @@ export function BrainPanel({
         ? 'affective'
         : 'deliberative';
 
-  return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.015]">
+  const body = (
+    <>
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-3">
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
           {categoryLabel(item.category)}
@@ -73,7 +76,12 @@ export function BrainPanel({
 
       <div className="px-3 py-3" style={{ height }}>
         {activation ? (
-          <BrainViewer activation={activation} colorMode="activation" interactive />
+          <BrainViewer
+            activation={activation}
+            colorMode="activation"
+            interactive
+            showOverlays={chrome}
+          />
         ) : (
           <div className="flex h-full items-center justify-center text-xs text-white/40">
             This item has no measured values
@@ -95,6 +103,14 @@ export function BrainPanel({
           <dd className="mt-1 text-white">{signed(item.naaSigned)}</dd>
         </div>
       </dl>
+    </>
+  );
+
+  if (!chrome) return <div className="flex h-full flex-col">{body}</div>;
+
+  return (
+    <div className="flex h-full flex-col rounded-xl border border-white/10 bg-white/[0.015]">
+      {body}
     </div>
   );
 }

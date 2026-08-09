@@ -8,6 +8,7 @@ import {
   CategoryMeans,
   SignedByCategory,
 } from '@/components/corpus/CorpusCharts';
+import { ItemDetail } from '@/components/corpus/ItemDetail';
 import { ItemSelect } from '@/components/corpus/ItemSelect';
 import { ItemTable } from '@/components/corpus/ItemTable';
 import { categoryNote } from '@/lib/category-notes';
@@ -46,7 +47,9 @@ function SectionHeading({
 
 function Panel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.015] p-5">{children}</div>
+    <div className="flex flex-1 items-center rounded-xl border border-white/10 bg-white/[0.015] p-5">
+      {children}
+    </div>
   );
 }
 
@@ -59,6 +62,7 @@ export default function CorpusPage() {
   const [filter, setFilter] = useState('all');
   const [primary, setPrimary] = useState(0);
   const [secondary, setSecondary] = useState(0);
+  const [detail, setDetail] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('/data/corpus.json')
@@ -193,12 +197,76 @@ export default function CorpusPage() {
           </button>
         </div>
 
-        <div
-          className={`grid gap-4 ${compare ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'}`}
-        >
+        {compare ? (
+          <div className="rounded-xl border border-white/10 bg-white/[0.015]">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
+                Two items, one colour scale
+              </span>
+              <span className="flex items-center gap-3">
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40">
+                  Low
+                </span>
+                <span
+                  className="h-1.5 w-40 rounded-full"
+                  style={{
+                    background:
+                      'linear-gradient(90deg, #3a0a0a 0%, #b81d13 35%, #e8730c 65%, #f0c419 100%)',
+                  }}
+                />
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40">
+                  High
+                </span>
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 p-4 lg:grid-cols-2">
+              <div className="space-y-3">
+                <ItemSelect
+                  label="Left item"
+                  value={primary}
+                  options={ranked}
+                  onChange={setPrimary}
+                />
+                {left && (
+                  <BrainPanel
+                    item={left}
+                    rois={rois}
+                    mask={mask}
+                    scaleLo={scale.lo}
+                    scaleHi={scale.hi}
+                    height={340}
+                    compact
+                    chrome={false}
+                  />
+                )}
+              </div>
+              <div className="space-y-3 lg:border-l lg:border-white/10 lg:pl-4">
+                <ItemSelect
+                  label="Right item"
+                  value={secondary}
+                  options={ranked}
+                  onChange={setSecondary}
+                />
+                {right && (
+                  <BrainPanel
+                    item={right}
+                    rois={rois}
+                    mask={mask}
+                    scaleLo={scale.lo}
+                    scaleHi={scale.hi}
+                    height={340}
+                    compact
+                    chrome={false}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
           <div className="space-y-4">
             <ItemSelect
-              label={compare ? 'Left item' : 'Item'}
+              label="Item"
               value={primary}
               options={ranked}
               onChange={setPrimary}
@@ -210,34 +278,11 @@ export default function CorpusPage() {
                 mask={mask}
                 scaleLo={scale.lo}
                 scaleHi={scale.hi}
-                height={compare ? 360 : 460}
-                compact={compare}
+                height={460}
               />
             )}
           </div>
-
-          {compare && (
-            <div className="space-y-4">
-              <ItemSelect
-                label="Right item"
-                value={secondary}
-                options={ranked}
-                onChange={setSecondary}
-              />
-              {right && (
-                <BrainPanel
-                  item={right}
-                  rois={rois}
-                  mask={mask}
-                  scaleLo={scale.lo}
-                  scaleHi={scale.hi}
-                  height={360}
-                  compact
-                />
-              )}
-            </div>
-          )}
-        </div>
+        )}
       </section>
 
       <section className="mt-20">
@@ -249,8 +294,8 @@ export default function CorpusPage() {
         </Panel>
       </section>
 
-      <section className="mt-20 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div>
+      <section className="mt-20 grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
+        <div className="flex flex-col">
           <SectionHeading index="03" title="Category averages">
             Whiskers are one standard deviation. Read the gaps against them, not on their own.
           </SectionHeading>
@@ -258,7 +303,7 @@ export default function CorpusPage() {
             <CategoryMeans categories={summary.categories} />
           </Panel>
         </div>
-        <div>
+        <div className="flex flex-col">
           <SectionHeading index="04" title="The two regions against each other">
             Points above the dashed line are items where the deliberate side responded more.
           </SectionHeading>
@@ -352,18 +397,35 @@ export default function CorpusPage() {
         <ItemTable
           rows={rows}
           selected={primary}
-          onSelect={setPrimary}
+          onSelect={(index) => {
+            setPrimary(index);
+            setDetail(index);
+          }}
           scaleLo={summary.min ?? 0}
           scaleHi={summary.max ?? 1}
         />
 
         <p className="mt-4 max-w-2xl text-[13px] leading-relaxed text-white/50">
-          Click any row to load it into the surface view above. {summary.nRatioUndefined} of{' '}
+          Click any row to open it in full and load it into the surface view above. {summary.nRatioUndefined} of{' '}
           {summary.nScanned} items produce no usable ratio, because one region&apos;s average
           falls below its baseline and a ratio then has no meaning. Those items are counted,
           never dropped or filled in.
         </p>
       </section>
+
+      <ItemDetail
+        item={detail === null ? null : items[detail]}
+        category={
+          detail === null
+            ? undefined
+            : summary.categories.find((c) => c.category === items[detail].category)
+        }
+        scaleLo={summary.min ?? 0}
+        scaleHi={summary.max ?? 1}
+        rank={detail === null ? null : ranked.findIndex((r) => r.index === detail) + 1}
+        total={summary.nScanned}
+        onClose={() => setDetail(null)}
+      />
     </main>
   );
 }

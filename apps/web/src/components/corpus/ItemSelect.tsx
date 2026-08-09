@@ -132,7 +132,7 @@ export function ItemSelect({ label, value, options, onChange }: Props) {
             </span>
           </div>
 
-          <ul ref={listRef} role="listbox" className="max-h-[320px] overflow-y-auto">
+          <ul ref={listRef} role="listbox" className="scroll-slim max-h-[320px] overflow-y-auto">
             {filtered.length === 0 && (
               <li className="px-4 py-6 text-center text-[13px] text-white/40">
                 Nothing matches that
