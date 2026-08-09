@@ -82,7 +82,7 @@ export function ItemSelect({ label, value, options, onChange }: Props) {
   };
 
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={rootRef} className="relative z-40">
       <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
         {label}
       </span>
@@ -116,7 +116,7 @@ export function ItemSelect({ label, value, options, onChange }: Props) {
       </button>
 
       {open && (
-        <div className="absolute z-30 mt-2 w-full overflow-hidden rounded-lg border border-white/15 bg-[#0a0a0a] shadow-2xl">
+        <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-lg border border-white/15 bg-[#0a0a0a] shadow-2xl">
           <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2.5">
             <MagnifyingGlass size={14} className="shrink-0 text-white/35" />
             <input

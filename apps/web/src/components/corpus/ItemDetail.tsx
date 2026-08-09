@@ -15,8 +15,10 @@ import {
 interface Props {
   item: CorpusItem | null;
   category: CategorySummary | undefined;
-  scaleLo: number;
-  scaleHi: number;
+  scoreLo: number;
+  scoreHi: number;
+  regionLo: number;
+  regionHi: number;
   rank: number | null;
   total: number;
   onClose: () => void;
@@ -43,14 +45,15 @@ function ValueBar({
       </div>
     );
   }
-  const zero = ((0 - lo) / (hi - lo)) * 100;
-  const point = ((value - lo) / (hi - lo)) * 100;
+  const pct = (v: number) => Math.min(100, Math.max(0, ((v - lo) / (hi - lo)) * 100));
+  const zero = pct(0);
+  const point = pct(value);
   const left = Math.min(zero, point);
   const width = Math.max(0.6, Math.abs(point - zero));
 
   return (
     <div>
-      <div className="flex items-baseline justify-between">
+      <div className="flex items-baseline justify-between gap-4">
         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
           {label}
         </span>
@@ -58,7 +61,7 @@ function ValueBar({
           {signed(value)}
         </span>
       </div>
-      <div className="relative mt-2 h-2 w-full rounded-full bg-white/[0.06]">
+      <div className="relative mt-2 h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
         <span
           className="absolute top-0 h-full w-px bg-white/25"
           style={{ left: `${zero}%` }}
@@ -75,8 +78,10 @@ function ValueBar({
 export function ItemDetail({
   item,
   category,
-  scaleLo,
-  scaleHi,
+  scoreLo,
+  scoreHi,
+  regionLo,
+  regionHi,
   rank,
   total,
   onClose,
@@ -165,22 +170,22 @@ export function ItemDetail({
               <ValueBar
                 label="Emotional region"
                 value={item.aAff}
-                lo={scaleLo}
-                hi={scaleHi}
+                lo={regionLo}
+                hi={regionHi}
                 colour="#e8730c"
               />
               <ValueBar
                 label="Deliberate region"
                 value={item.aDel}
-                lo={scaleLo}
-                hi={scaleHi}
+                lo={regionLo}
+                hi={regionHi}
                 colour="#4a9eda"
               />
               <ValueBar
                 label="Score, emotional minus deliberate"
                 value={item.naaSigned}
-                lo={scaleLo}
-                hi={scaleHi}
+                lo={scoreLo}
+                hi={scoreHi}
                 colour="#c9a227"
               />
             </div>

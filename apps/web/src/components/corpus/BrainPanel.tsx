@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { categoryLabel, signed, type CorpusItem } from '@/lib/corpus-types';
 import {
@@ -43,6 +43,7 @@ export function BrainPanel({
   compact = false,
   chrome = true,
 }: Props) {
+  const [expanded, setExpanded] = useState(false);
   const activation = useMemo(() => {
     if (!rois || item.aAff === null || item.aDel === null) return null;
     return buildScaledRoiActivation(rois, item.aAff, item.aDel, scaleLo, scaleHi, mask);
@@ -66,13 +67,24 @@ export function BrainPanel({
         </span>
       </div>
 
-      <p
-        className={`px-5 pt-4 text-[13px] leading-relaxed text-white/70 ${
-          compact ? 'line-clamp-3' : ''
-        }`}
-      >
-        {item.preview}
-      </p>
+      <div className="px-5 pt-4">
+        <p
+          className={`text-[13px] leading-relaxed text-white/70 ${
+            compact && !expanded ? 'line-clamp-3' : ''
+          }`}
+        >
+          {expanded ? (item.text ?? item.preview) : item.preview}
+        </p>
+        {(item.text ?? '').length > item.preview.length && (
+          <button
+            type="button"
+            onClick={() => setExpanded((e) => !e)}
+            className="mt-2 font-mono text-[10px] uppercase tracking-[0.15em] text-white/45 underline-offset-4 transition-colors hover:text-white hover:underline"
+          >
+            {expanded ? 'Hide' : 'See more'}
+          </button>
+        )}
+      </div>
 
       <div className="px-3 py-3" style={{ height }}>
         {activation ? (

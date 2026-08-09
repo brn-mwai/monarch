@@ -47,7 +47,7 @@ function SectionHeading({
 
 function Panel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-1 items-center rounded-xl border border-white/10 bg-white/[0.015] p-5">
+    <div className="w-full flex-1 rounded-xl border border-white/10 bg-white/[0.015] p-5">
       {children}
     </div>
   );
@@ -420,8 +420,10 @@ export default function CorpusPage() {
             ? undefined
             : summary.categories.find((c) => c.category === items[detail].category)
         }
-        scaleLo={summary.min ?? 0}
-        scaleHi={summary.max ?? 1}
+        scoreLo={summary.min ?? 0}
+        scoreHi={summary.max ?? 1}
+        regionLo={scale.lo}
+        regionHi={scale.hi}
         rank={detail === null ? null : ranked.findIndex((r) => r.index === detail) + 1}
         total={summary.nScanned}
         onClose={() => setDetail(null)}

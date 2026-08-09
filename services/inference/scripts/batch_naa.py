@@ -38,6 +38,8 @@ import argparse
 import csv
 import statistics
 import sys
+
+import numpy as np
 import time
 from pathlib import Path
 
@@ -147,11 +149,22 @@ def main() -> int:
              "card is too small for the corpus rather than unlucky",
     )
     parser.add_argument(
+        "--save-vectors",
+        type=Path,
+        default=None,
+        help="directory to write each item's (20484,) float32 prediction into. Without "
+             "this the vector is computed, reduced to two ROI means and discarded, which "
+             "is why no per-vertex map exists for the items already scanned",
+    )
+    parser.add_argument(
         "--carry-cols",
         default="",
         help="comma-separated extra source columns to copy into --out unchanged",
     )
     args = parser.parse_args()
+
+    if args.save_vectors:
+        args.save_vectors.mkdir(parents=True, exist_ok=True)
 
     carry_cols = tuple(c.strip() for c in args.carry_cols.split(",") if c.strip())
     reserved = {"text", *COMPUTED_COLUMNS}
@@ -238,6 +251,14 @@ def main() -> int:
 
             naa = compute_naa(result["item_vector"])
             signed = compute_signed_naa(result["item_vector"])
+
+            if args.save_vectors:
+                # Mean-pooled over time to a single (20484,) map, which is what the ROI
+                # means are taken from and what a surface figure draws. float32 keeps a
+                # 400-item corpus near 33 MB.
+                vector = np.asarray(result["item_vector"], dtype=np.float32)
+                name = str(row.get("id") or index)
+                (args.save_vectors / f"{name}.f32").write_bytes(vector.tobytes())
 
             record = {
                 "text": text,
