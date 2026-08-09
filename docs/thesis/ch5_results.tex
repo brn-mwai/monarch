@@ -1,0 +1,246 @@
+\chapter{Results}
+\label{ch:results}
+
+This chapter answers the research questions in order. Every number in it is produced by a
+script in the repository and is reproducible from the corpus file
+\texttt{data/final/corpus\_naa.csv}; none is transcribed by hand. Where the design cannot
+support a claim, the chapter says so at the point the number appears rather than deferring
+it to the limitations section.
+
+One convention is fixed before any result: no value of $\hat{\alpha}$ appears anywhere in
+this document. Section~\ref{sec:rq3} explains why the coupling is unidentified rather than
+merely uncertain.
+
+\section{The corpus as scanned}
+
+The corpus is 400 text items in four categories of 100. All 400 were scanned; the output was
+verified row for row against the source corpus on text, category and identifier before any
+analysis was run, using \texttt{scripts/verify\_scan\_output.py}.
+
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Category} & \textbf{n} & \textbf{Mean} & \textbf{SD} \\
+\midrule
+Fear activating        & 100 & $-0.0018$ & $0.0204$ \\
+High outrage           & 100 & $-0.0185$ & $0.0208$ \\
+Neutral informational  & 100 & $-0.0191$ & $0.0162$ \\
+Reward hook            & 100 & $-0.0128$ & $0.0228$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Two features of this table matter before any test is applied. Every category mean is
+negative, so the deliberative-control network is predicted to respond more strongly than the
+affective-salience network for all four categories; the categories differ in how far below
+zero they sit, not in which network leads. And the standard deviations are of the same order
+as the differences between the means, which is the reason the separation test in
+Section~\ref{sec:rq2} is reported with an effect size rather than a $p$-value alone.
+
+\section{RQ I: the instrument and its classifier performance}
+\label{sec:rq1}
+
+\subsection{The ratio form is undefined on real content}
+
+Equation~(4) of the proposal defines the index as a ratio, $A_{\mathrm{aff}} /
+(A_{\mathrm{del}} + \delta)$. The encoder emits standardised activation, so an ROI mean sits
+near zero and is negative about as often as positive, and the ratio then sign-flips or
+diverges. On the completed corpus the ratio is undefined for \textbf{69 of 400 items}, a rate
+of $17.25\%$. Those items are counted and reported, never dropped or filled.
+
+The measurement therefore uses the signed difference,
+\begin{equation}
+\mathrm{NAA}_{\text{signed}} = A_{\mathrm{aff}} - A_{\mathrm{del}},
+\end{equation}
+which is defined everywhere and is what the field mapping in Chapter~3 requires: the Landau
+field needs a signed scalar, not a dimensionless ratio. The classification banding follows
+the same constraint. The signed form supports a two-way split on sign, and no magnitude
+threshold has been established from any corpus, so the three-band scheme of the proposal
+becomes two bands.
+
+\subsection{Classifier performance}
+
+Scored against the \texttt{manipulative} label the items carried before they were ever
+scanned, over 300 labelled manipulative and 100 labelled neutral:
+
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+AUC (headline)              & $0.6274$ \\
+F1 (threshold fitted in sample) & $0.6680$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{AUC is the headline and F1 is not.} The threshold that produces F1 is chosen on the
+same data it is scored on, which inflates it; AUC is threshold-free and does not reward that
+choice. A null corpus can return a respectable F1 at an AUC below chance, so quoting F1
+alone would present a failure as a success.
+
+The measured AUC of $0.6274$ clears $0.5916$, the smallest AUC this design could detect at
+$80\%$ power (Section~\ref{sec:power}), and it lies in the direction the proposal predicted.
+It is nonetheless a modest separation, and no per-item verdict is derived from it in this
+work: at this AUC, a correct-or-incorrect label on individual items would overstate what the
+measurement supports.
+
+\section{RQ II: distribution across categories}
+\label{sec:rq2}
+
+A one-way analysis of variance across the four categories gives
+\begin{equation}
+F = 15.779, \qquad p = 1.035\times 10^{-9}, \qquad \eta^2 = 0.1068 .
+\end{equation}
+The effect is roughly four times the $\eta^2 = 0.0268$ the design was powered to detect, and
+power at the observed value is $1.0$. The categories separate, and this is not the null that
+both partial runs pointed toward.
+
+The separation is not evenly distributed. Welch tests of each category against the neutral
+baseline give:
+
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Category vs neutral} & \textbf{t} & \textbf{p} & \textbf{Cohen's d} \\
+\midrule
+Fear activating & $+6.639$ & $3.283\times 10^{-10}$ & $+0.939$ \\
+Reward hook     & $+2.254$ & $2.539\times 10^{-2}$  & $+0.319$ \\
+High outrage    & $+0.212$ & $8.320\times 10^{-1}$  & $+0.030$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+High outrage does not separate from neutral at all. That is the category the proposal
+expected to separate most strongly. Fear-activating content carries the result almost
+entirely, with reward-hook content contributing a small effect.
+
+\subsection{The confound, stated before the interpretation}
+\label{sec:confound}
+
+Each category is drawn from exactly one source dataset: fear-activating from ISOT-fake, high
+outrage from SemEval-2019 Task~4, reward-hook from Webis-Clickbait-17, and neutral from
+PubMed and ISOT-true in equal parts. Category and provenance are therefore confounded by
+construction, and the separation reported above is a separation \emph{between corpora}. It
+cannot be attributed to framing rather than to the writing conventions, vocabulary and
+editorial process of the source.
+
+Length is not the confounding variable. Word counts are matched across categories at $167.4$,
+$163.5$, $163.7$ and $162.2$ with standard deviations near $11$, which the corpus design
+achieved deliberately. Provenance is the variable that was not controlled.
+
+One piece of internal evidence argues against a pure source artifact. High outrage is drawn
+from its own distinct source and does not separate from neutral. An effect driven only by
+provenance would be expected to move every category away from the baseline, not three of four
+in an ordered way. This is suggestive, not decisive.
+
+The design that would settle it is a corpus in which framing varies within a single source,
+or in which one source appears in more than one category. Neither exists here, so the
+attribution remains open and is carried into the discussion as a limitation rather than
+resolved by argument.
+
+\section{RQ III: phase structure and the coupling}
+\label{sec:rq3}
+
+The mean-field treatment of Chapter~3 gives the free energy $F(m) = a m^2 + b m^4 - hm$ with
+$a = (1 - \beta J)/2$ and $b = 1/12$, coefficients derived from the self-consistency
+condition rather than asserted. The phase structure is presented across a range of $\alpha$
+and is not evaluated at a fitted value.
+
+\subsection{The coupling is unidentified}
+
+The calibration was run three times: on two partial corpora and on the completed 400 items.
+On the partial runs the confidence interval comfortably included zero. On the full corpus it
+does not, and the bootstrap over $10{,}000$ replicates places no mass below zero.
+
+That is not a measurement of the coupling, for two reasons stated together because either
+alone would be misleading. The fit's held-out $R^2$ is \textbf{negative}, so it predicts less
+well than the sample mean on data it has not seen. And the estimate scales inversely with
+$\beta J$, which no measurement in this study fixes: halving the assumed coupling strength
+roughly doubles the fitted value. A single number would therefore report a choice of
+$\beta J$ rather than a property of media.
+
+The coupling is accordingly reported as unidentified, and no value is quoted.
+
+\subsection{The bound}
+
+What the corpus does supply is the observable's measured spread, $\Delta X = 0.1241$ over the
+range $-0.0698$ to $+0.0543$. Chapter~3's bound,
+\begin{equation}
+\alpha \;\ge\; \frac{h_c(\beta J)}{\Delta X},
+\end{equation}
+converts that spread into a statement about what the coupling would have to be:
+
+\begin{center}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+$\beta J$ & $h_c(\beta J)$ & $\alpha$ required \\
+\midrule
+$1.102$ & $0.02101$ & $0.1693$ \\
+$1.496$ & $0.20541$ & $1.6553$ \\
+$2.000$ & $0.53284$ & $4.2938$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This is a necessary condition and not a sufficient one. Clearing it would not establish that
+media of this measured spread moves populations; falling below it excludes the mechanism
+within the model's assumptions. The value of the bound is that it requires no fit: it uses
+the measured spread and the model's own spinodal, and it applies to any candidate observable
+proposed as a field.
+
+\section{Statistical power}
+\label{sec:power}
+
+The design's sensitivity was computed before the corpus was analysed and is reported
+alongside every result above, so that a reader can see what this study could and could not
+have found. At $\alpha = 0.05$ and $80\%$ power, with four categories of 100 and 300 against
+100 for the classifier:
+
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Smallest detectable effect} & \textbf{Value} \\
+\midrule
+Category separation, $\eta^2$ & $0.0268$ \\
+Equivalently, Cohen's $f$      & $0.1659$ \\
+Classifier AUC                 & $0.5916$ \\
+Equivalent separation $d$      & $0.3277$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Both observed effects clear these thresholds, and power at the observed values is $1.0$ for
+the separation and $0.961$ for the AUC. Had either fallen below, the correct reading would
+have been that the design could not have detected an effect of that size, not that no effect
+exists.
+
+\section{RQ IV: out of scope}
+
+Research Question IV asked for per-modality mutual information across text, audio and video.
+The amendment reduced the corpus to 400 text items and dropped the audio and video arms, so
+the question as posed cannot be answered by this study. The narrowed text-only version was
+not reached within the project timeline. It is recorded here as out of scope rather than
+attempted and reported thinly.
+
+\section{Summary of the answers}
+
+\begin{enumerate}
+\item \textbf{RQ I.} The ratio form of the index is undefined for $17.25\%$ of real content
+and is replaced by the signed difference. Against pre-scan human labels the index achieves
+AUC $0.6274$, above the detectable floor and in the predicted direction, but modest.
+
+\item \textbf{RQ II.} The four categories separate, $F = 15.779$, $p = 1.035 \times 10^{-9}$,
+$\eta^2 = 0.1068$. The effect is concentrated in fear-activating content
+($d = +0.939$); high outrage does not separate at all. Category is confounded with source
+dataset, so the separation cannot be attributed to framing.
+
+\item \textbf{RQ III.} The coupling is unidentified and no value is quoted. The measured
+spread $\Delta X = 0.1241$ yields a lower bound on any coupling capable of driving a
+transition, reaching $\alpha \ge 4.2938$ at $\beta J = 2$.
+
+\item \textbf{RQ IV.} Out of scope under the amendment.
+\end{enumerate}
+
+Every category mean remains negative throughout. Whatever the categories differ in, none of
+them shows the affective-salience network leading in absolute terms.
