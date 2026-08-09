@@ -117,11 +117,11 @@ def _render(values: np.ndarray, surface, title: str, out_dir: Path, stem: str,
     import matplotlib.pyplot as plt
     from nilearn import plotting
 
-    fig, axes = plt.subplots(1, 2, figsize=(9.0, 3.6),
+    fig, axes = plt.subplots(1, 2, figsize=(12.0, 5.4),
                              subplot_kw={"projection": "3d"})
     for ax, hemi, mesh, bg, slice_ in (
-        (axes[0], "left", surface.infl_left, surface.sulc_left, slice(0, HEMI_VERTICES)),
-        (axes[1], "right", surface.infl_right, surface.sulc_right,
+        (axes[0], "left", surface.pial_left, surface.sulc_left, slice(0, HEMI_VERTICES)),
+        (axes[1], "right", surface.pial_right, surface.sulc_right,
          slice(HEMI_VERTICES, VERTICES)),
     ):
         plotting.plot_surf(
@@ -138,12 +138,12 @@ def _render(values: np.ndarray, surface, title: str, out_dir: Path, stem: str,
             axes=ax,
             figure=fig,
         )
-        ax.set_title(hemi, fontsize=9)
+        ax.set_title(hemi, fontsize=11, pad=2)
 
-    fig.suptitle(title, fontsize=10)
+    fig.suptitle(title, fontsize=11, y=0.97)
     # subplots_adjust rather than tight_layout: 3d axes are not compatible with it and it
     # warns that the result may be wrong.
-    fig.subplots_adjust(left=0.02, right=0.98, top=0.88, bottom=0.02, wspace=0.05)
+    fig.subplots_adjust(left=0.01, right=0.99, top=0.90, bottom=0.01, wspace=0.02)
     for fmt in formats:
         fig.savefig(out_dir / f"{stem}.{fmt}", dpi=200 if fmt == "png" else None,
                     format=fmt, bbox_inches="tight")
@@ -157,6 +157,12 @@ def main() -> int:
                         help="scan CSV; without it only the definition map is drawn")
     parser.add_argument("--category-col", default="category")
     parser.add_argument("--formats", default="png,pdf")
+    parser.add_argument("--vectors", type=Path,
+                        help="directory of (20484,) float32 maps written by --save-vectors. "
+                             "With it, each item is drawn at every vertex instead of as two "
+                             "flat regions")
+    parser.add_argument("--vector-items", type=int, default=4,
+                        help="how many per-vertex items to render")
     args = parser.parse_args()
 
     formats = [f.strip().lower() for f in args.formats.split(",") if f.strip()]
@@ -214,6 +220,36 @@ def main() -> int:
     print(f"\nWrote {args.out_dir}/ : 1 definition map and {len(means)} ROI-mean maps "
           f"in {', '.join(formats)}")
     print("ROI-mean maps carry two numbers each. They are not vertexwise activation, and")
+    if args.vectors and args.vectors.exists():
+        by_id = {row.get("id"): row for row in rows}
+        drawn = 0
+        for path in sorted(args.vectors.glob("*.f32")):
+            if drawn >= args.vector_items:
+                break
+            vector = np.fromfile(path, dtype=np.float32)
+            if vector.size != VERTICES:
+                continue
+            category = by_id.get(path.stem, {}).get(args.category_col, path.stem)
+            # Floor and ceiling from the map's own distribution. Painting from zero covers
+            # every positive vertex and buries the anatomy, which makes the figure
+            # unreadable against an atlas; starting at the 70th percentile leaves the
+            # sulcal shading visible and colours only the elevated response. Both bounds
+            # are printed in the caption so the threshold is not hidden.
+            floor = float(np.nanpercentile(vector, 70))
+            ceiling = float(np.nanpercentile(vector, 99.5))
+            shown = vector.astype(float).copy()
+            shown[shown < floor] = np.nan
+            _render(
+                shown, surface,
+                f"{category}: predicted response at every vertex, "
+                f"shown above {floor:+.3f}",
+                args.out_dir, f"B3_per_vertex_{path.stem}", formats,
+                cmap="hot", vmin=floor, vmax=ceiling, colorbar=True,
+            )
+            drawn += 1
+            print(f"  per-vertex {path.stem:32s} {vector.min():+.4f} to {vector.max():+.4f}")
+        print(f"rendered {drawn} per-vertex maps")
+
     print("their captions say so, because the per-vertex vectors are not retained by the scan.")
     return 0
 
