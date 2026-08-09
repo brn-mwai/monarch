@@ -1,112 +1,104 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
 
+import { BrainPanel } from '@/components/corpus/BrainPanel';
 import {
   AffectiveVsDeliberative,
   CategoryMeans,
   SignedByCategory,
 } from '@/components/corpus/CorpusCharts';
+import { ItemSelect } from '@/components/corpus/ItemSelect';
+import { categoryNote } from '@/lib/category-notes';
 import {
-  categoryLabel,
   CATEGORY_COLORS,
+  categoryLabel,
   signed,
   type CorpusData,
-  type CorpusItem,
 } from '@/lib/corpus-types';
 import {
-  buildMeasuredRoiActivation,
+  loadMedialMask,
   loadRoiVertices,
   type RoiVertices,
 } from '@/lib/measured-activation';
 
-const BrainViewer = dynamic(
-  () => import('@/components/BrainViewer').then((m) => m.BrainViewer),
-  { ssr: false, loading: () => <div className="h-[340px] rounded-lg bg-white/[0.03]" /> },
-);
-
-function ItemBrain({ item, rois }: { item: CorpusItem; rois: RoiVertices | null }) {
-  const activation = useMemo(() => {
-    if (!rois || item.aAff === null || item.aDel === null) return null;
-    return buildMeasuredRoiActivation(rois, item.aAff, item.aDel);
-  }, [rois, item]);
-
+function SectionHeading({
+  index,
+  title,
+  children,
+}: {
+  index: string;
+  title: string;
+  children?: React.ReactNode;
+}) {
   return (
-    <div className="rounded-lg border border-white/10 p-4">
-      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
-        {categoryLabel(item.category)}
+    <div className="mb-6">
+      <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/45">
+        {index} / {title}
       </p>
-      <p className="mt-2 line-clamp-3 text-[13px] leading-relaxed text-white/70">
-        {item.preview}
-      </p>
-      <div className="mt-3 h-[300px]">
-        {activation ? (
-          <BrainViewer activation={activation} interactive showOverlays={false} />
-        ) : (
-          <div className="flex h-full items-center justify-center text-xs text-white/40">
-            No measured values for this item
-          </div>
-        )}
-      </div>
-      <dl className="mt-3 grid grid-cols-3 gap-3 font-mono text-[11px] tabular-nums">
-        <div>
-          <dt className="text-white/40">Affective</dt>
-          <dd className="text-white">{signed(item.aAff)}</dd>
-        </div>
-        <div>
-          <dt className="text-white/40">Deliberative</dt>
-          <dd className="text-white">{signed(item.aDel)}</dd>
-        </div>
-        <div>
-          <dt className="text-white/40">Signed NAA</dt>
-          <dd className="text-white">{signed(item.naaSigned)}</dd>
-        </div>
-      </dl>
+      {children ? (
+        <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-white/60">{children}</p>
+      ) : null}
     </div>
+  );
+}
+
+function Panel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/[0.015] p-5">{children}</div>
   );
 }
 
 export default function CorpusPage() {
   const [data, setData] = useState<CorpusData | null>(null);
   const [rois, setRois] = useState<RoiVertices | null>(null);
+  const [mask, setMask] = useState<Uint8Array | null>(null);
   const [failed, setFailed] = useState(false);
-  const [category, setCategory] = useState('all');
-  const [leftId, setLeftId] = useState<number>(0);
-  const [rightId, setRightId] = useState<number>(1);
+  const [compare, setCompare] = useState(false);
+  const [filter, setFilter] = useState('all');
+  const [primary, setPrimary] = useState(0);
+  const [secondary, setSecondary] = useState(0);
 
   useEffect(() => {
     fetch('/data/corpus.json')
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then(setData)
       .catch(() => setFailed(true));
-    loadRoiVertices().then(setRois).catch(() => setRois(null));
+    loadRoiVertices()
+      .then(setRois)
+      .catch(() => setRois(null));
+    loadMedialMask().then(setMask);
   }, []);
 
-  const sorted = useMemo(() => {
+  const ranked = useMemo(() => {
     if (!data) return [];
-    return [...data.items]
+    return data.items
       .map((item, index) => ({ item, index }))
       .sort((a, b) => (b.item.naaSigned ?? 0) - (a.item.naaSigned ?? 0));
   }, [data]);
 
-  const rows = useMemo(
-    () => (category === 'all' ? sorted : sorted.filter((r) => r.item.category === category)),
-    [sorted, category],
-  );
-
   useEffect(() => {
-    if (sorted.length > 1) {
-      setLeftId(sorted[0].index);
-      setRightId(sorted[sorted.length - 1].index);
+    if (ranked.length > 1) {
+      setPrimary(ranked[0].index);
+      setSecondary(ranked[ranked.length - 1].index);
     }
-  }, [sorted]);
+  }, [ranked]);
+
+  const scale = useMemo(() => {
+    if (!data) return { lo: 0, hi: 1 };
+    const values = data.items.flatMap((i) =>
+      i.aAff === null || i.aDel === null ? [] : [i.aAff, i.aDel],
+    );
+    return values.length
+      ? { lo: Math.min(...values), hi: Math.max(...values) }
+      : { lo: 0, hi: 1 };
+  }, [data]);
 
   if (failed) {
     return (
-      <main className="mx-auto max-w-6xl px-6 py-16">
+      <main className="mx-auto max-w-6xl px-6 py-20">
         <p className="text-sm text-white/60">
-          The corpus data file did not load. Nothing is shown rather than a placeholder.
+          The corpus data did not load. Nothing is shown rather than a placeholder.
         </p>
       </main>
     );
@@ -114,236 +106,289 @@ export default function CorpusPage() {
 
   if (!data) {
     return (
-      <main className="mx-auto max-w-6xl px-6 py-16">
+      <main className="mx-auto max-w-6xl px-6 py-20">
         <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-white/40">
-          Loading measured corpus
+          Loading corpus
         </p>
       </main>
     );
   }
 
   const { summary, items } = data;
-  const left = items[leftId];
-  const right = items[rightId];
+  const rows = filter === 'all' ? ranked : ranked.filter((r) => r.item.category === filter);
+  const left = items[primary];
+  const right = items[secondary];
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">
-      <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/45">
-        Measured corpus
-      </p>
-      <h1 className="mt-3 text-3xl font-semibold leading-snug text-white sm:text-4xl">
-        {summary.nScanned} items scanned{data.complete ? '' : ` of ${data.corpusTarget}`}
-      </h1>
-      <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/60">
-        Every value on this page came from running the cascade over that item&apos;s text.
-        The index is the signed asymmetry: affective-salience mean minus deliberative-control
-        mean, in units of the encoder&apos;s standardised output.
-        {!data.complete && ' The scan is unfinished, so this is a partial corpus.'}
-      </p>
+      <header>
+        <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/45">
+          Measured corpus
+        </p>
+        <h1 className="mt-3 text-3xl font-semibold leading-snug text-white sm:text-4xl">
+          {summary.nScanned} items scanned{data.complete ? '' : ` of ${data.corpusTarget}`}
+        </h1>
+        <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/60">
+          Each item was read aloud, transcribed, and passed to an encoder that predicts how
+          cortex responds. Two regions are averaged from that prediction, one linked to
+          emotional salience and one to deliberate control, and the score is the difference
+          between them. Positive means the emotional side led.
+          {!data.complete && ' The scan is unfinished, so this is a partial corpus.'}
+        </p>
+      </header>
 
-      <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <section className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {[
           { k: 'Items', v: String(summary.nScanned) },
-          { k: 'Ratio defined', v: `${summary.nRatioDefined} / ${summary.nScanned}` },
+          { k: 'Usable ratio', v: `${summary.nRatioDefined} / ${summary.nScanned}` },
           { k: 'Spread', v: summary.spread === null ? '--' : summary.spread.toFixed(4) },
           {
             k: 'Range',
             v:
               summary.min === null || summary.max === null
                 ? '--'
-                : `${signed(summary.min, 3)} .. ${signed(summary.max, 3)}`,
+                : `${signed(summary.min, 3)} to ${signed(summary.max, 3)}`,
           },
         ].map((cell) => (
-          <div key={cell.k} className="rounded-lg border border-white/10 p-4">
+          <div key={cell.k} className="rounded-xl border border-white/10 p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
               {cell.k}
             </p>
             <p className="mt-2 font-mono text-lg tabular-nums text-white">{cell.v}</p>
           </div>
         ))}
-      </div>
+      </section>
 
-      <section className="mt-16">
-        <h2 className="text-xl font-semibold text-white">Where every item falls</h2>
-        <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-white/55">
-          One point per item, not a summary. The dashed line is zero, where the two networks
-          are predicted to respond equally.
-        </p>
-        <div className="mt-5 rounded-lg border border-white/10 p-4">
+      <section className="mt-20">
+        <SectionHeading index="01" title="On the surface">
+          The two regions are filled with the values measured for the chosen item. Colour runs
+          on one scale shared by every item in the corpus, so the same shade means the same
+          number wherever you see it. Colour is flat inside each region because the scan keeps
+          two numbers per item and nothing finer.
+        </SectionHeading>
+
+        <div className="mb-5 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setCompare(false)}
+            className={`rounded-full border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors ${
+              compare
+                ? 'border-white/15 text-white/50 hover:border-white/35'
+                : 'border-white/60 text-white'
+            }`}
+          >
+            Single item
+          </button>
+          <button
+            type="button"
+            onClick={() => setCompare(true)}
+            className={`rounded-full border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors ${
+              compare
+                ? 'border-white/60 text-white'
+                : 'border-white/15 text-white/50 hover:border-white/35'
+            }`}
+          >
+            Compare two
+          </button>
+        </div>
+
+        <div
+          className={`grid gap-4 ${compare ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'}`}
+        >
+          <div className="space-y-4">
+            <ItemSelect
+              label={compare ? 'Left item' : 'Item'}
+              value={primary}
+              options={ranked}
+              onChange={setPrimary}
+            />
+            {left && (
+              <BrainPanel
+                item={left}
+                rois={rois}
+                mask={mask}
+                scaleLo={scale.lo}
+                scaleHi={scale.hi}
+                height={compare ? 360 : 460}
+                compact={compare}
+              />
+            )}
+          </div>
+
+          {compare && (
+            <div className="space-y-4">
+              <ItemSelect
+                label="Right item"
+                value={secondary}
+                options={ranked}
+                onChange={setSecondary}
+              />
+              {right && (
+                <BrainPanel
+                  item={right}
+                  rois={rois}
+                  mask={mask}
+                  scaleLo={scale.lo}
+                  scaleHi={scale.hi}
+                  height={360}
+                  compact
+                />
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="mt-20">
+        <SectionHeading index="02" title="Every item, by category">
+          One point per item. The dashed line is zero, where both regions respond equally.
+        </SectionHeading>
+        <Panel>
           <SignedByCategory items={items} />
-        </div>
+        </Panel>
       </section>
 
-      <section className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <section className="mt-20 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div>
-          <h2 className="text-xl font-semibold text-white">Category means</h2>
-          <p className="mt-2 text-[13px] leading-relaxed text-white/55">
-            Whiskers are one standard deviation. Read the gaps against them.
-          </p>
-          <div className="mt-5 rounded-lg border border-white/10 p-4">
+          <SectionHeading index="03" title="Category averages">
+            Whiskers are one standard deviation. Read the gaps against them, not on their own.
+          </SectionHeading>
+          <Panel>
             <CategoryMeans categories={summary.categories} />
-          </div>
+          </Panel>
         </div>
         <div>
-          <h2 className="text-xl font-semibold text-white">The two networks directly</h2>
-          <p className="mt-2 text-[13px] leading-relaxed text-white/55">
-            Affective against deliberative. Points below the dashed line lean deliberative.
-          </p>
-          <div className="mt-5 rounded-lg border border-white/10 p-4">
+          <SectionHeading index="04" title="The two regions against each other">
+            Points above the dashed line are items where the deliberate side responded more.
+          </SectionHeading>
+          <Panel>
             <AffectiveVsDeliberative items={items} />
-          </div>
+          </Panel>
         </div>
       </section>
 
-      <section className="mt-16">
-        <h2 className="text-xl font-semibold text-white">Compare two items on the surface</h2>
-        <p className="mt-2 max-w-3xl text-[13px] leading-relaxed text-white/55">
-          Each network is painted with the one mean the scan produced for it, so the colour is
-          uniform inside each region. This is not vertex-level activation: the scan reduces
-          every item&apos;s prediction to two numbers and keeps only those, so finer structure
-          does not exist to draw.
+      <section className="mt-20">
+        <SectionHeading index="05" title="What each category is">
+          Descriptions of how items were selected, written from the corpus design. The numbers
+          beside them are computed from the scan.
+        </SectionHeading>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {summary.categories.map((c) => {
+            const note = categoryNote(c.category);
+            return (
+              <div key={c.category} className="rounded-xl border border-white/10 p-5">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="inline-block h-2.5 w-2.5 rounded-full"
+                    style={{ background: CATEGORY_COLORS[c.category] ?? '#888' }}
+                  />
+                  <h3 className="text-base font-semibold text-white">
+                    {categoryLabel(c.category)}
+                  </h3>
+                  <span className="ml-auto font-mono text-[11px] tabular-nums text-white/45">
+                    n = {c.n}
+                  </span>
+                </div>
+                {note && (
+                  <>
+                    <p className="mt-3 text-[13px] leading-relaxed text-white/65">
+                      {note.definition}
+                    </p>
+                    <p className="mt-2 text-[13px] leading-relaxed text-white/50">
+                      {note.whatItTests}
+                    </p>
+                  </>
+                )}
+                <dl className="mt-4 grid grid-cols-3 gap-3 border-t border-white/10 pt-4 font-mono text-[11px] tabular-nums">
+                  <div>
+                    <dt className="text-white/40">Average</dt>
+                    <dd className="mt-1 text-white">{signed(c.mean)}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-white/40">Middle</dt>
+                    <dd className="mt-1 text-white">{signed(c.median)}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-white/40">Spread</dt>
+                    <dd className="mt-1 text-white">
+                      {c.sd === null ? '--' : c.sd.toFixed(4)}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            );
+          })}
+        </div>
+        <p className="mt-5 max-w-2xl text-[13px] leading-relaxed text-white/50">
+          No claim of a real difference is made here. Whether the categories separate is
+          settled by the analysis over the full corpus, and this design can only detect an
+          effect above a stated size. Anything smaller would be missed, and that limit is
+          reported alongside the result rather than after it.
         </p>
+      </section>
 
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {[
-            { value: leftId, set: setLeftId, label: 'Left' },
-            { value: rightId, set: setRightId, label: 'Right' },
-          ].map((picker) => (
-            <label key={picker.label} className="block">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
-                {picker.label}
-              </span>
-              <select
-                value={picker.value}
-                onChange={(e) => picker.set(Number(e.target.value))}
-                className="mt-2 w-full rounded-lg border border-white/15 bg-black px-3 py-2 text-[13px] text-white"
-              >
-                {sorted.map(({ item, index }) => (
-                  <option key={index} value={index}>
-                    {signed(item.naaSigned)} — {categoryLabel(item.category)} —{' '}
-                    {item.preview.slice(0, 60)}
-                  </option>
-                ))}
-              </select>
-            </label>
+      <section className="mt-20">
+        <SectionHeading index="06" title="All items">
+          Sorted from the most emotional-leaning to the least.
+        </SectionHeading>
+        <div className="mb-4 flex flex-wrap gap-2">
+          {['all', ...summary.categories.map((c) => c.category)].map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => setFilter(option)}
+              className={`rounded-full border px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors ${
+                filter === option
+                  ? 'border-white/60 text-white'
+                  : 'border-white/15 text-white/50 hover:border-white/35'
+              }`}
+            >
+              {option === 'all' ? `All ${summary.nScanned}` : categoryLabel(option)}
+            </button>
           ))}
         </div>
 
-        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {left && <ItemBrain item={left} rois={rois} />}
-          {right && <ItemBrain item={right} rois={rois} />}
-        </div>
-      </section>
-
-      <section className="mt-16">
-        <h2 className="text-xl font-semibold text-white">By category</h2>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[680px] text-left text-[13px]">
+        <div className="overflow-x-auto rounded-xl border border-white/10">
+          <table className="w-full min-w-[760px] text-left text-[13px]">
             <thead className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
               <tr className="border-b border-white/10">
-                <th className="py-3 pr-4 font-normal">Category</th>
-                <th className="py-3 pr-4 text-right font-normal">n</th>
-                <th className="py-3 pr-4 text-right font-normal">Mean</th>
-                <th className="py-3 pr-4 text-right font-normal">Median</th>
-                <th className="py-3 pr-4 text-right font-normal">SD</th>
-                <th className="py-3 pr-4 text-right font-normal">Affective</th>
-                <th className="py-3 text-right font-normal">Deliberative</th>
+                <th className="px-5 py-3 font-normal">Item</th>
+                <th className="px-3 py-3 font-normal">Category</th>
+                <th className="px-3 py-3 text-right font-normal">Words</th>
+                <th className="px-3 py-3 text-right font-normal">Score</th>
+                <th className="px-3 py-3 text-right font-normal">Emotional</th>
+                <th className="px-5 py-3 text-right font-normal">Deliberate</th>
               </tr>
             </thead>
             <tbody className="text-white/70">
-              {summary.categories.map((c) => (
-                <tr key={c.category} className="border-b border-white/5">
-                  <td className="py-3 pr-4 text-white">
-                    <span
-                      className="mr-2 inline-block h-2 w-2 rounded-full align-middle"
-                      style={{ background: CATEGORY_COLORS[c.category] ?? '#888' }}
-                    />
-                    {categoryLabel(c.category)}
+              {rows.map(({ item, index }) => (
+                <tr
+                  key={index}
+                  onClick={() => setPrimary(index)}
+                  className="cursor-pointer border-b border-white/5 align-top transition-colors hover:bg-white/[0.03]"
+                >
+                  <td className="max-w-md px-5 py-3 text-white/80">{item.preview}</td>
+                  <td className="whitespace-nowrap px-3 py-3 text-white/50">
+                    {categoryLabel(item.category)}
                   </td>
-                  <td className="py-3 pr-4 text-right tabular-nums">{c.n}</td>
-                  <td className="py-3 pr-4 text-right tabular-nums">{signed(c.mean)}</td>
-                  <td className="py-3 pr-4 text-right tabular-nums">{signed(c.median)}</td>
-                  <td className="py-3 pr-4 text-right tabular-nums">
-                    {c.sd === null ? '--' : c.sd.toFixed(4)}
+                  <td className="px-3 py-3 text-right tabular-nums text-white/50">
+                    {item.wordCount ?? '--'}
                   </td>
-                  <td className="py-3 pr-4 text-right tabular-nums">{signed(c.aAffMean)}</td>
-                  <td className="py-3 text-right tabular-nums">{signed(c.aDelMean)}</td>
+                  <td className="px-3 py-3 text-right tabular-nums text-white">
+                    {signed(item.naaSigned)}
+                  </td>
+                  <td className="px-3 py-3 text-right tabular-nums">{signed(item.aAff)}</td>
+                  <td className="px-5 py-3 text-right tabular-nums">{signed(item.aDel)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         <p className="mt-4 max-w-2xl text-[13px] leading-relaxed text-white/50">
-          No significance is claimed here. Whether these categories separate is settled by the
-          analysis over the full corpus, and the design detects an effect down to
-          &eta;&sup2; = 0.0268 at 80% power. Anything smaller would be missed.
-        </p>
-      </section>
-
-      <section className="mt-16">
-        <h2 className="text-xl font-semibold text-white">Every item</h2>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {['all', ...summary.categories.map((c) => c.category)].map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => setCategory(option)}
-              className={`rounded-full border px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors ${
-                category === option
-                  ? 'border-white/60 text-white'
-                  : 'border-white/15 text-white/50 hover:border-white/35'
-              }`}
-            >
-              {option === 'all' ? 'All' : categoryLabel(option)}
-            </button>
-          ))}
-        </div>
-
-        <div className="mt-5 overflow-x-auto">
-          <table className="w-full min-w-[760px] text-left text-[13px]">
-            <thead className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
-              <tr className="border-b border-white/10">
-                <th className="py-3 pr-4 font-normal">Item</th>
-                <th className="py-3 pr-4 font-normal">Category</th>
-                <th className="py-3 pr-4 text-right font-normal">Words</th>
-                <th className="py-3 pr-4 text-right font-normal">Signed</th>
-                <th className="py-3 pr-4 text-right font-normal">Ratio</th>
-                <th className="py-3 pr-4 text-right font-normal">Affective</th>
-                <th className="py-3 text-right font-normal">Deliberative</th>
-              </tr>
-            </thead>
-            <tbody className="text-white/70">
-              {rows.map(({ item, index }) => (
-                <tr key={index} className="border-b border-white/5 align-top">
-                  <td className="max-w-md py-3 pr-4 text-white/80">{item.preview}</td>
-                  <td className="whitespace-nowrap py-3 pr-4 text-white/50">
-                    {categoryLabel(item.category)}
-                  </td>
-                  <td className="py-3 pr-4 text-right tabular-nums text-white/50">
-                    {item.wordCount ?? '--'}
-                  </td>
-                  <td className="py-3 pr-4 text-right tabular-nums text-white">
-                    {signed(item.naaSigned)}
-                  </td>
-                  <td className="py-3 pr-4 text-right tabular-nums">
-                    {item.naaRatio === null ? (
-                      <span className="text-white/35">undefined</span>
-                    ) : (
-                      item.naaRatio.toFixed(4)
-                    )}
-                  </td>
-                  <td className="py-3 pr-4 text-right tabular-nums">{signed(item.aAff)}</td>
-                  <td className="py-3 text-right tabular-nums">{signed(item.aDel)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-6 max-w-2xl text-[13px] leading-relaxed text-white/50">
-          Items marked <span className="text-white/70">undefined</span> are those where the
-          ratio form has no meaning, because a network mean sits below baseline on
-          standardised output. They are counted, never dropped or filled in, and how often
-          that happens is itself a result.
+          Click any row to load it into the surface view above. {summary.nRatioUndefined} of{' '}
+          {summary.nScanned} items produce no usable ratio, because one region&apos;s average
+          falls below its baseline and a ratio then has no meaning. Those items are counted,
+          never dropped or filled in.
         </p>
       </section>
     </main>
