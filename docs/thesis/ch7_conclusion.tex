@@ -1,0 +1,121 @@
+\chapter{Conclusion}
+\label{ch:conclusion}
+
+\section{What was promised}
+
+The proposal committed to an instrument. It said so three times: that the primary deliverable
+is a functional Asynchronous Measurement Apparatus, that this is ``not a proposed future
+application and not a conceptual description'', and that the project ``proposes a thermometer,
+and delivers it as working, open-source code that can be run today''.
+
+That framing governs how this work should be judged. A thermometer that reads a value nobody
+expected is still a delivered thermometer. Failing to ship it would have been the failure.
+
+\section{What was delivered}
+
+\subsection{The apparatus}
+
+The instrument exists and runs. Given a passage of text it synthesises speech, obtains word
+timings, computes text and audio embeddings, passes them to the released encoder, and returns
+a predicted response over $20{,}484$ cortical surface points, from which the index is
+computed. It is open source, it is deployed, and it was run end to end over 400 items.
+
+Its outputs are reproducible: the corpus file, the analysis scripts, the power calculation
+and the physics all regenerate from the repository, and every number in Chapters~5 and~6 is
+produced by a script rather than transcribed.
+
+\subsection{The framework}
+
+The mean-field treatment of Chapter~3 derives its Landau coefficients from the
+self-consistency condition rather than asserting them, recovers the exact critical exponents
+numerically as a check on the solver, and locates the spinodal field $h_c(\beta J)$ at which
+bistability collapses.
+
+From that follows the bound: for any observable $X$ proposed as a field through $h = \alpha
+X$, no media-driven transition is possible unless
+\begin{equation}
+\alpha \;\ge\; \frac{h_c(\beta J)}{\Delta X}.
+\end{equation}
+This inverts the usual procedure in the sociophysics literature, where the field is assigned
+by hand and the population is then shown to tip. It requires no fit, applies to any candidate
+observable, and can be evaluated before a corpus is collected.
+
+\subsection{The measurement}
+
+All 400 items were scanned and verified. The four categories separate at $\eta^2 = 0.1068$,
+$p = 1.035\times10^{-9}$, against a design powered to detect $0.0268$. Against the labels the
+items carried before scanning, the index achieves AUC $0.6274$, above the detectable floor of
+$0.5916$ and in the predicted direction.
+
+The separation is carried almost entirely by fear-activating content ($d = +0.939$). High
+outrage, the category the proposal expected to separate most, does not separate at all
+($d = +0.030$, $p = 0.832$).
+
+Every category mean is negative. The deliberative-control network is predicted to respond
+more strongly than the affective-salience network for all four categories; they differ in how
+far below zero they sit, not in which network leads.
+
+\section{What is claimed, and what is not}
+
+\textbf{Claimed.} That the instrument works and is reproducible. That the index assigns
+systematically different values to these four groups of documents, at an effect size the
+design was powered to detect, with the power statement reported alongside. That the measured
+spread $\Delta X = 0.1241$ places a lower bound on any coupling capable of driving a
+transition, reaching $\alpha \ge 4.2938$ at $\beta J = 2$.
+
+\textbf{Not claimed.} That the index detects manipulation. That the separation is due to
+framing rather than to source dataset: category and provenance are confounded by construction
+and this design cannot distinguish them. That the coupling has been measured: it is
+unidentified, and no value of $\hat{\alpha}$ appears anywhere in this document. That anything
+here measures a brain: every value is a prediction from a released encoder, the observable is
+a cortical proxy, and no participant was scanned.
+
+The gap between those two lists is the honest content of this work.
+
+\section{Contribution}
+
+Three things, in the order they are likely to be useful to someone else.
+
+\textbf{The bound.} A necessary condition on the coupling between any content observable and
+an opinion-dynamics field, requiring only the observable's measured spread and the model's own
+spinodal. It is the part of this work that transfers beyond the instrument that produced it.
+
+\textbf{The instrument, with its limitation documented.} A working, open pipeline from text to
+predicted cortical response, together with the finding that the released checkpoint is
+cortical-only, that the loader forces its average-subject configuration, and that its
+agreement with real cortex is contested. A technical report describing an architecture is not
+a warranty about released weights, and this project's experience is a concrete instance of
+that.
+
+\textbf{The measurement and its confound.} A separation reported with the design's
+sensitivity attached and its central weakness stated before its interpretation, together with
+the specific experiment that would resolve it.
+
+\section{Future work}
+
+\textbf{Remove the confound.} A corpus in which framing varies within a single source, or in
+which sources are crossed with categories, would make the separation interpretable. It needs
+no new instrumentation, only a rebuilt corpus, and it is the single change that most alters
+what can be claimed.
+
+\textbf{Finish the validation.} Whether the encoder tracks cortex at all is unresolved and
+determines what the measurement means. The noise ceiling has been measured directly from
+public data at $0.2247$, CI $[0.2147,\ 0.2363]$, and the evaluation code is written and
+tested. What remains is running the checkpoint over a held-out stimulus and correlating, which
+needs no large compute.
+
+\textbf{A subcortical checkpoint.} The structures the original proposal named cannot be
+measured with a cortical-only model. Training one means the full grid, the source fMRI
+corpora, and compute outside the scope of an undergraduate project.
+
+\section{Closing}
+
+This work set out to make an invisible property of media measurable, and to say honestly what
+the measurement supports. It delivers a working instrument, a bound that constrains any future
+proposal of this kind, and a result that is real, modest, and confounded in a way this
+document states plainly rather than leaves to be discovered.
+
+The physics is the part that survives whatever becomes of the encoder. Whether or not the
+released checkpoint predicts any brain, the requirement that $\alpha \ge h_c(\beta J)/\Delta
+X$ holds for every observable anyone proposes as a field, and the burden it places on such
+proposals does not depend on this instrument being the right one.
