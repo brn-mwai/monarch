@@ -49,9 +49,10 @@ export function computePresets(bbox: THREE.Box3): Record<ViewPreset, Preset> {
   const center = bbox.getCenter(new THREE.Vector3());
   const size = bbox.getSize(new THREE.Vector3());
   const radius = Math.max(size.x, size.y, size.z) * 0.5;
-  // Distance multiplier: head fills ~70% of the viewport with comfortable
-  // margin so chin + crown + ears never clip on any preset.
-  const d = radius * 2.8;
+  // Distance multiplier. The camera's field of view is vertical, so a panel wider than it
+  // is tall clips the silhouette at the sides before it clips the crown. 2.8 framed the
+  // head to about 70% of a square viewport and cut the ears and jaw off a wide one.
+  const d = radius * 3.9;
 
   return {
     // ----- Lateral views (camera on the X axis, up = +Z) -----
