@@ -3,6 +3,8 @@
 import { ArrowUp, ChatCircle, X } from '@phosphor-icons/react/dist/ssr';
 import { useEffect, useRef, useState } from 'react';
 
+import { subscribeChatContext, type ChatContext } from '@/lib/chat-context';
+
 interface Message {
   role: 'user' | 'assistant';
   content: string;
@@ -21,7 +23,10 @@ export function Chat() {
   const [draft, setDraft] = useState('');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [scope, setScope] = useState<ChatContext | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => subscribeChatContext(setScope), []);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -49,7 +54,7 @@ export function Chat() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ messages: next, context: scope?.detail ?? null }),
       });
       const data = (await res.json()) as { reply?: string; error?: string };
 
@@ -95,6 +100,15 @@ export function Chat() {
           <X size={12} weight="bold" />
         </button>
       </div>
+
+      {scope && (
+        <div className="border-b border-white/10 px-5 py-2.5">
+          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">
+            Answering about
+          </p>
+          <p className="mt-1 truncate text-[12px] text-white/70">{scope.label}</p>
+        </div>
+      )}
 
       <div className="scroll-slim flex-1 space-y-4 overflow-y-auto px-5 py-4">
         {messages.length === 0 && (

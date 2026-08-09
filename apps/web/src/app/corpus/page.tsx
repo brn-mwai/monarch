@@ -13,6 +13,7 @@ import { ItemDetail } from '@/components/corpus/ItemDetail';
 import { ItemSelect } from '@/components/corpus/ItemSelect';
 import { ItemTable } from '@/components/corpus/ItemTable';
 import { categoryNote } from '@/lib/category-notes';
+import { setChatContext } from '@/lib/chat-context';
 import {
   CATEGORY_COLORS,
   categoryLabel,
@@ -95,6 +96,29 @@ export default function CorpusPage() {
     setPrimary(pool[0].index);
     setSecondary(pool[pool.length - 1].index);
   }, [ranked]);
+
+  // The chat answers about whichever item is on the surface. Only values already on the
+  // page go into the scope, so scoping can never widen what the assistant knows.
+  useEffect(() => {
+    const item = data?.items[primary];
+    if (!item) return;
+    setChatContext({
+      label: `${categoryLabel(item.category)} — ${item.preview.slice(0, 60)}`,
+      detail: JSON.stringify({
+        category: item.category,
+        source_dataset: item.source,
+        pre_scan_label_manipulative: item.labelManipulative,
+        word_count: item.wordCount,
+        emotional_region_mean: item.aAff,
+        deliberate_region_mean: item.aDel,
+        score_emotional_minus_deliberate: item.naaSigned,
+        ratio_form: item.naaRatio ?? 'undefined for this item',
+        has_per_vertex_map: Boolean(item.hasVector),
+        text: item.text ?? item.preview,
+      }),
+    });
+    return () => setChatContext(null);
+  }, [data, primary]);
 
   const scale = useMemo(() => {
     if (!data) return { lo: 0, hi: 1 };

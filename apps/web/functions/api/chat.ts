@@ -65,7 +65,18 @@ async function overLimit(ip: string, env: Env): Promise<{ blocked: boolean; retr
  * claims it forbids are exactly the ones a helpful model reaches for: a coupling value, the
  * amygdala, a validated instrument, measured brain activity.
  */
-function systemPrompt(): string {
+function systemPrompt(scope: string | null): string {
+  const scoped = scope
+    ? [
+        '',
+        'The reader has scoped this conversation to one item or view. Answer about that,',
+        'using the SELECTED CONTEXT below together with the FACTS. If they ask about',
+        'something outside it, say what is in scope and answer only if the FACTS cover it.',
+        '',
+        'SELECTED CONTEXT:',
+        scope,
+      ]
+    : [];
   return [
     'You answer questions about Monarch, an undergraduate physics research instrument.',
     'Answer only from the FACTS below. If they do not cover the question, say the data does',
@@ -100,9 +111,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   }
 
   let messages: ChatMessage[];
+  let scope: string | null = null;
   try {
-    const body = (await request.json()) as { messages?: ChatMessage[] };
+    const body = (await request.json()) as {
+      messages?: ChatMessage[];
+      context?: string;
+    };
     messages = body.messages ?? [];
+    scope = body.context ? String(body.context).slice(0, 4000) : null;
   } catch {
     return Response.json({ error: 'Malformed request.' }, { status: 400 });
   }
@@ -126,7 +142,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       model: env.GROQ_MODEL ?? DEFAULT_MODEL,
       temperature: 0.2,
       max_tokens: 600,
-      messages: [{ role: 'system', content: systemPrompt() }, ...clean],
+      messages: [{ role: 'system', content: systemPrompt(scope) }, ...clean],
     }),
   });
 
