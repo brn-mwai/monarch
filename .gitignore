@@ -61,3 +61,11 @@ services/inference/data/figures/*.svg
 # Partial-scan working data. The scan output lives on Kaggle as a dataset version, and
 # report figures derived from an unfinished corpus read as finished ones.
 services/inference/data/partial50/
+
+
+# Cloudflare Pages local secrets. Never committed: this file holds real API keys.
+.dev.vars
+**/.dev.vars
+
+# wrangler build scratch
+apps/web/.wrangler/
