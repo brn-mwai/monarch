@@ -17,10 +17,16 @@ Review at Physica A runs three to six months, so no date below promises publicat
 
 > **Measuring the Invisible: a sociophysics framework for quantifying emotionally
 > manipulative media content using predictive neural encoding — instrument, constraint,
-> and null**
+> and a source-confounded separation**
 
 The approved title, with the amendment carried in the subtitle rather than discovered in
 Chapter 5. Requires supervisor sign-off on `docs/amendment/PROPOSAL-AMENDMENT.pdf` first.
+
+**The subtitle changed on 2026-08-09.** It read "and null" while both prior partial runs
+pointed that way. The completed 400-item corpus separates at `eta^2 = 0.1068`, so the null
+wording would have been false. It is replaced by what the corpus actually supports, confound
+included. The amendment PDF still carries the old wording and needs this correction before it
+is sent.
 
 ---
 
@@ -52,8 +58,10 @@ coefficients derived rather than asserted; the second-order transition and the s
 numerical recovery of the exact exponents `β = 1/2`, `γ = 1`, `δ = 3` as a check on the
 solver; the bound; a screening criterion others can apply before collecting data.
 
-**Status.** `scripts/phase_boundary.py` produces all six figures and the exponent check.
-Missing: vector output for submission, and the prose.
+**Status.** Drafted at `docs/paper1/paper1.tex`, compiling to 11 pages with no undefined
+references. Figures are vector, and every number is generated from `phase_boundary.json`
+rather than typed. Unaffected by the scan. Remaining: a deeper novelty search than the four
+papers already checked.
 
 **Venue.** Physica A, European Physical Journal B, or Journal of Physics: Complexity.
 Preprint to arXiv physics.soc-ph on submission day.
@@ -63,22 +71,51 @@ Preprint to arXiv physics.soc-ph on submission day.
 ## Paper 2 — the instrument and the corpus
 
 > **A cortical-proxy observable for emotionally manipulative media: an instrument, a
-> 400-item corpus, and a null result**
+> 400-item corpus, and a source-confounded separation**
 
-**Blocked on the scan.** This is the thesis compressed, with the physics kept in front.
+**The scan is done, and it changed this paper.** The old subtitle said "a null result". The
+corpus does not give a null. It gives a separation the design was powered to detect, carried
+almost entirely by one category, inside a design where category cannot be told apart from
+source dataset.
 
-**Contents.** The field mapping `h = α·NAA`, taking the observable from predicted cortical
-activity rather than from a chosen constant; free energy at each category's measured mean,
-swept over `α` and never fitted; susceptibility across the measured range; the measured
-spread fed into Paper 1's bound, which turns a null calibration into a quantitative
-constraint; then the measurement chapter — corpus design, length matching, source balancing,
-the cortical-proxy limitation, the null with its power statement, AUC as the headline.
+**What the corpus says.** All 400 items scanned and verified. RQ II separates at
+`F = 15.779`, `p = 1.035e-09`, `eta^2 = 0.1068`, against the `0.0268` the design was powered
+to detect; power at the observed value is 1.0. RQ I gives `AUC = 0.6274` against the label
+`manipulative`, clearing the detectable `0.5916`, with power 0.961.
 
-**What makes the null publishable.** `α ≥ h_c(βJ)/ΔNAA` converts "we did not detect a
-coupling" into "the coupling would have to exceed this value, and the measurement excludes
-that range".
+**Where the separation comes from.** Welch tests against the neutral baseline:
+fear-activating `d = +0.939` at `p = 3.283e-10`, reward-hook `d = +0.319` at `p = 0.025`,
+high outrage `d = +0.030` at `p = 0.832`. Outrage does not separate at all, which is the
+category the proposal expected to separate most.
 
-**Status.** Instrument, corpus and analysis scripts done and tested. Needs `corpus_naa.csv`.
+**The confound, stated first rather than buried.** Each category is drawn from exactly one
+source: fear-activating from ISOT-fake, high outrage from SemEval-2019-Task4, reward-hook
+from Webis-Clickbait-17, neutral from PubMed and ISOT-true. So the separation is between
+corpora and cannot be distinguished from a separation between framing styles. Length is
+controlled and is not the confound: category word counts are 167.4, 163.5, 163.7 and 162.2
+with standard deviations near 11. Provenance is the uncontrolled variable.
+
+The one piece of evidence against a pure source artifact is internal: high outrage comes from
+its own distinct source and does not separate. A separation driven only by provenance would
+be expected to move every category.
+
+**What the paper can therefore claim.** That the index separates these four corpora at a
+measured effect size, with the power statement attached; that the separation is concentrated
+in one category; and that the design cannot attribute it to framing. Not that the index
+detects manipulation.
+
+**The physics still works, and now on measured numbers.** The spread over the full corpus is
+`dX = 0.1241`, giving `alpha >= 0.1693` at `beta_J = 1.102`, `1.6553` at `1.496` and `4.2938`
+at `2.000`. The bound no longer rescues a null; it states what the coupling would have to be
+for a spread of this size to move a population at all.
+
+**Every category mean is still negative.** The deliberative network leads throughout. The
+categories differ in how far below zero they sit, not in which side wins. No item set shows
+emotional dominance in absolute terms.
+
+**The ratio form fails on 69 of 400 items, 17.25%.** That is the methods note's number.
+
+**Status.** Corpus complete and verified, analysis run, figures produced. Needs writing.
 
 **Venue.** Physica A or Entropy.
 
@@ -89,7 +126,10 @@ that range".
 > **Does an average brain predict any brain? Held-out validation of the released TRIBE v2
 > average-subject checkpoint**
 
-**The one most likely to be cited, and the one nobody has published openly.**
+**The one most likely to be cited, and the one nobody has published openly. The completed
+corpus made it more load-bearing, not less:** Paper 2 now reports a detected separation, and a
+detected separation in predicted activity means nothing about brains until someone shows the
+encoder tracks cortex at all.
 
 **Why it exists.** Monarch runs the released checkpoint in its average-subject configuration,
 because `tribev2/demo_utils.py:218` forces `average_subjects = True` at load. A commercial
