@@ -1,0 +1,49 @@
+{
+  "alpha_hat": 1.017037129611521,
+  "ci_low": 0.3425006646111781,
+  "ci_high": 1.6915735946118642,
+  "slope_standardized": 3.3901237653717367,
+  "beta_j": 0.7,
+  "n": 400,
+  "n_train": 320,
+  "n_holdout": 80,
+  "r2_train": 0.02692708157990964,
+  "r2_holdout": -0.030924725259006802,
+  "p_value": 0.0032409466841913895,
+  "outcome_normalized": true,
+  "source": "calibrated",
+  "outcome_variable": "manipulative",
+  "csv": "data\\final\\corpus_naa.csv",
+  "bootstrap_replicates": 10000,
+  "bootstrap_ci_low": 0.49072516467910177,
+  "bootstrap_ci_high": 1.5525119654675072,
+  "bootstrap_median": 1.0040202209658016,
+  "fraction_negative": 0.0,
+  "sensitivity": [
+    {
+      "beta_j": 0.5,
+      "alpha_hat": 1.6713459120654475,
+      "p_value": 0.000996427943420261
+    },
+    {
+      "beta_j": 0.6,
+      "alpha_hat": 1.337076729652358,
+      "p_value": 0.000996427943420261
+    },
+    {
+      "beta_j": 0.7,
+      "alpha_hat": 1.0028075472392686,
+      "p_value": 0.000996427943420261
+    },
+    {
+      "beta_j": 0.8,
+      "alpha_hat": 0.6685383648261788,
+      "p_value": 0.000996427943420261
+    },
+    {
+      "beta_j": 0.9,
+      "alpha_hat": 0.3342691824130894,
+      "p_value": 0.000996427943420261
+    }
+  ]
+}

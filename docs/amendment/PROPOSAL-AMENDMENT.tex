@@ -113,27 +113,30 @@ carries the units of the model's standardised output, and the thesis says so.
 defence. It is recorded here as her suggestion, adopted once running the model
 showed why the ratio could not survive standardised output.
 
-\subsection{Change 3: the calibration found nothing, twice}
+\subsection{Change 3: the calibration does not generalise}
 
 \textbf{What the proposal specified.} Objective (iv): fit the coupling constant
 $\hat{\alpha}$, the number connecting the brain index to the physics model's field
 strength.
 
-\textbf{What happened.} It was fitted twice, on independent runs. Both times the
-confidence interval comfortably included zero, and the fit performed worse than
-guessing on held-out data. In plain terms: there is no evidence at this sample size
-that the connection exists at a size this study could measure.
+\textbf{What happened.} It was fitted on two partial runs and then on the
+completed 400-item corpus. On the partial runs the confidence interval comfortably
+included zero. On the full corpus it no longer does. That sounds like a result and is
+not one: the fit still performs \emph{worse than the sample mean} on held-out data, so
+it has no out-of-sample predictive value, and the estimate is not identified on its own.
+It scales inversely with the coupling $\beta J$, which no measurement in this study
+fixes, so any single value states a chosen $\beta J$ rather than anything about media.
 
-\textbf{What the project does instead.} It reports the null result and quotes no
-value for $\hat{\alpha}$ anywhere -- not in a table, not in a caption, not ``for
+\textbf{What the project does instead.} It quotes no value for $\hat{\alpha}$ anywhere -- not in a table, not in a caption, not ``for
 illustration''. The phase structure is then presented across a range of possible
 $\alpha$ values, which shows how the physics would behave for each, and states that
 the data do not pin it down.
 
-\textbf{Why this is acceptable physics.} A null result that is properly powered
-constrains what everyone working after you has to believe. It is only worthless when
-the sample is too small to have detected anything, which is why the sample size and
-the detectable effect size are both reported.
+\textbf{Why this is acceptable physics.} A properly powered measurement constrains what
+everyone working after you has to believe, whichever way it comes out. The sample size
+and the smallest detectable effect are both reported, so a reader can see what the
+design could and could not have found. Reporting an unidentified coupling as though it
+were a measured one would be the failure here, not declining to quote it.
 
 \subsection{Change 4: a named dataset was withdrawn by its authors}
 
@@ -204,7 +207,7 @@ which requires the audio and video that were dropped.
 (i)   & Build the corpus        & Delivered at 400 text items, not 1{,}500 multimodal \\
 (ii)  & Run TRIBE, compute the index & Delivered, using the signed index \\
 (iii) & Characterise the distribution & Delivered \\
-(iv)  & Calibrate $\hat{\alpha}$ & Attempted; reported as a null result \\
+(iv)  & Calibrate $\hat{\alpha}$ & Attempted; reported as unidentified, no value quoted \\
 (v)   & Derive the phase structure & Delivered across a range of $\alpha$, not at one fitted value \\
 (vi)  & Validate as a classifier & Delivered, reporting AUC as the headline figure \\
 (vii) & Deliver the instrument  & Delivered; this is the primary deliverable \\
@@ -216,9 +219,13 @@ which requires the audio and video that were dropped.
 
 A thesis that sets out a physics framework, builds the instrument the proposal
 promised, runs it on a controlled corpus, and reports honestly what it found and
-what it could not reach. The result may well be that the surface-level brain proxy
-does not separate manipulative from neutral content. If so, that is the finding,
-reported with the sample size and the smallest effect the design could have detected.
+what it could not reach. On the completed 400-item corpus the index
+\emph{does} separate the four categories, at an effect size the design was powered to
+detect. The separation is carried almost entirely by one category, and it cannot be
+attributed to framing: each category is drawn from a single source dataset, so category
+and provenance are confounded by construction. The finding is reported with that
+confound stated first, alongside the sample size and the smallest effect the design
+could have detected.
 
 \section{Decisions requested}
 
@@ -227,7 +234,7 @@ reported with the sample size and the smallest effect the design could have dete
 corresponding rewrite of the abstract, \S4.1 and Equation~(4). \emph{Blocking.}
 \item Approve reducing the corpus to 400 text items and dropping audio and video,
 with Research Question IV declared out of scope. \emph{Blocking.}
-\item Confirm that the null calibration is reported as the result, with no value of
+\item Confirm that the coupling is reported as unidentified, with no value of
 $\hat{\alpha}$ quoted anywhere. \emph{Blocking.}
 \item Note the substitution of SemEval-2019 Task 4 for the withdrawn NELA-GT-2021.
 \end{enumerate}
