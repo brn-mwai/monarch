@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
+import { Chat } from "@/components/Chat";
 import { Header } from "@/components/Header";
 import { ConvexClientProvider } from "@/lib/convex-provider";
 import { ScanProvider } from "@/lib/scan-provider";
@@ -37,6 +38,7 @@ export default function RootLayout({
         <ConvexClientProvider>
           <ScanProvider>
             <Header />
+            <Chat />
             <main className="pt-16">{children}</main>
           </ScanProvider>
         </ConvexClientProvider>
