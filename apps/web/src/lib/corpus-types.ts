@@ -16,6 +16,9 @@ export interface CorpusItem {
   preview: string;
   text?: string;
   hasVector?: boolean;
+  labelManipulative?: string;
+  labelCredibility?: string;
+  labelPartisan?: string;
   wordCount: number | null;
   source: string;
   naaSigned: number | null;

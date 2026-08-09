@@ -87,6 +87,11 @@ def items(rows: list[dict]) -> list[dict]:
             "text": text,
             "wordCount": int(row["word_count"]) if row.get("word_count") else None,
             "source": row.get("source_dataset", ""),
+            # The labels the item carried before it was ever scanned. They are the only
+            # ground truth in this dataset: the activation values have none.
+            "labelManipulative": row.get("manipulative", ""),
+            "labelCredibility": row.get("credibility", ""),
+            "labelPartisan": row.get("partisan_intensity", ""),
             "naaSigned": _float_or_none(row.get("naa_signed")),
             "naaRatio": _float_or_none(row.get("naa")),
             "aAff": _float_or_none(row.get("a_aff")),

@@ -8,6 +8,7 @@ import {
   CategoryMeans,
   SignedByCategory,
 } from '@/components/corpus/CorpusCharts';
+import { InfoHint } from '@/components/corpus/InfoHint';
 import { ItemDetail } from '@/components/corpus/ItemDetail';
 import { ItemSelect } from '@/components/corpus/ItemSelect';
 import { ItemTable } from '@/components/corpus/ItemTable';
@@ -27,16 +28,19 @@ import {
 function SectionHeading({
   index,
   title,
+  hint,
   children,
 }: {
   index: string;
   title: string;
+  hint?: string;
   children?: React.ReactNode;
 }) {
   return (
     <div className="mb-6">
-      <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/45">
+      <p className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-white/45">
         {index} / {title}
+        {hint && <InfoHint title={title} body={hint} />}
       </p>
       {children ? (
         <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-white/60">{children}</p>
@@ -173,7 +177,8 @@ export default function CorpusPage() {
       </section>
 
       <section className="mt-20">
-        <SectionHeading index="01" title="On the surface">
+        <SectionHeading index="01" title="On the surface"
+          hint="A 3D cortical surface with the predicted response painted on it. Warmer means a higher predicted value. It shows what the encoder predicts, not what any person’s brain did.">
           Items marked <span className="text-white/80">Per vertex</span> show the prediction
           at every one of the 20,484 surface points, which is what produces a graded map. The
           scan kept that map for 12 items; for the rest it stored only two region averages, so
@@ -293,7 +298,8 @@ export default function CorpusPage() {
       </section>
 
       <section className="mt-20">
-        <SectionHeading index="02" title="Every item, by category">
+        <SectionHeading index="02" title="Every item, by category"
+          hint="One dot per item, grouped by category, so you see the whole spread rather than an average. Wide overlap between groups means the categories are not cleanly separated.">
           One point per item. The dashed line is zero, where both regions respond equally.
         </SectionHeading>
         <Panel>
@@ -303,7 +309,8 @@ export default function CorpusPage() {
 
       <section className="mt-20 grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
         <div className="flex flex-col">
-          <SectionHeading index="03" title="Category averages">
+          <SectionHeading index="03" title="Category averages"
+          hint="The mean score per category with whiskers of one standard deviation. If whiskers overlap heavily, the gap between bars is small next to the variation inside each group.">
             Whiskers are one standard deviation. Read the gaps against them, not on their own.
           </SectionHeading>
           <Panel>
@@ -311,7 +318,8 @@ export default function CorpusPage() {
           </Panel>
         </div>
         <div className="flex flex-col">
-          <SectionHeading index="04" title="The two regions against each other">
+          <SectionHeading index="04" title="The two regions against each other"
+          hint="Each item plotted as emotional average against deliberate average. The dashed line is where they respond equally; points above it lean deliberate. The cloud sits above the line for almost every item.">
             Points above the dashed line are items where the deliberate side responded more.
           </SectionHeading>
           <Panel>
@@ -321,7 +329,8 @@ export default function CorpusPage() {
       </section>
 
       <section className="mt-20">
-        <SectionHeading index="05" title="What each category is">
+        <SectionHeading index="05" title="What each category is"
+          hint="How items were chosen for each category, written from the corpus design. The figures beside each description are computed from the scan.">
           Descriptions of how items were selected, written from the corpus design. The numbers
           beside them are computed from the scan.
         </SectionHeading>
@@ -381,7 +390,8 @@ export default function CorpusPage() {
       </section>
 
       <section className="mt-20">
-        <SectionHeading index="06" title="All items">
+        <SectionHeading index="06" title="All items"
+          hint="Every scanned item with its score, its two region values, and the labels it carried before scanning. Click a row to open it in full.">
           Sorted from the most emotional-leaning to the least.
         </SectionHeading>
         <div className="mb-4 flex flex-wrap gap-2">

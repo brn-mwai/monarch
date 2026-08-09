@@ -10,7 +10,7 @@ import {
   type CorpusItem,
 } from '@/lib/corpus-types';
 
-type SortKey = 'score' | 'emotional' | 'deliberate' | 'words' | 'category';
+type SortKey = 'score' | 'emotional' | 'deliberate' | 'words' | 'category' | 'label';
 
 interface Row {
   item: CorpusItem;
@@ -27,6 +27,7 @@ interface Props {
 
 const COLUMNS: { key: SortKey; label: string; numeric: boolean }[] = [
   { key: 'category', label: 'Category', numeric: false },
+  { key: 'label', label: 'Pre-scan label', numeric: false },
   { key: 'words', label: 'Words', numeric: true },
   { key: 'score', label: 'Score', numeric: true },
   { key: 'emotional', label: 'Emotional', numeric: true },
@@ -45,6 +46,8 @@ function valueOf(row: Row, key: SortKey): number | string {
       return row.item.wordCount ?? 0;
     case 'category':
       return categoryLabel(row.item.category);
+    case 'label':
+      return row.item.source ?? '';
   }
 }
 
@@ -156,6 +159,14 @@ export function ItemTable({ rows, selected, onSelect, scaleLo, scaleHi }: Props)
                       />
                       {categoryLabel(row.item.category)}
                     </span>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <span className="text-[11px] text-white/45">{row.item.source}</span>
+                    {row.item.labelManipulative && (
+                      <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.12em] text-white/30">
+                        {row.item.labelManipulative === '1' ? 'manipulative' : 'neutral'}
+                      </span>
+                    )}
                   </td>
                   <td className="px-3 py-3 text-right font-mono tabular-nums text-white/40">
                     {row.item.wordCount ?? '--'}
