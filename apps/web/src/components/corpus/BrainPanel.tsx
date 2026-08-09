@@ -150,6 +150,7 @@ export function BrainPanel({
             activation={activation}
             colorMode="activation"
             interactive
+            autoRotate
             showOverlays={chrome}
           />
         ) : (

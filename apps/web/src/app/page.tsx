@@ -12,7 +12,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { BrainViewer } from '@/components/BrainViewer';
 import { NAADistributionMini } from '@/components/charts/NAADistributionMini';
@@ -54,12 +54,15 @@ export default function HomePage() {
     left: { item: CorpusItem; map: Float32Array } | null;
     right: { item: CorpusItem; map: Float32Array } | null;
   }>({ left: null, right: null });
+  const pairRef = useRef(pair);
+  pairRef.current = pair;
 
   // Real scanned items, cycled. Each frame is one item's own predicted response, so the
   // hero shows measurements from the corpus rather than a generated field.
   useEffect(() => {
     let cancelled = false;
     let timer: ReturnType<typeof setInterval> | undefined;
+    let cleanupFrame: (() => void) | undefined;
 
     fetch('/data/corpus.json')
       .then((r) => r.json())
@@ -80,21 +83,59 @@ export default function HomePage() {
         if (usable.length < 2 || cancelled) return;
 
         let index = 0;
-        const show = () => {
-          setPair({
-            left: usable[index % usable.length],
-            right: usable[(usable.length - 1 - (index % usable.length))],
-          });
-          index += 1;
+        let frame: number | undefined;
+
+        // Ease between one item's map and the next rather than cutting. Intermediate
+        // frames are a blend of two real predictions, shown only while the transition
+        // runs; the caption names the item the view is settling on.
+        const blend = (
+          from: Float32Array | null,
+          to: Float32Array,
+          t: number,
+        ): Float32Array => {
+          if (!from || from.length !== to.length) return to;
+          const out = new Float32Array(to.length);
+          for (let i = 0; i < to.length; i++) out[i] = from[i] + (to[i] - from[i]) * t;
+          return out;
         };
+
+        const easeInOut = (t: number) =>
+          t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+
+        const show = () => {
+          const nextLeft = usable[index % usable.length];
+          const nextRight = usable[usable.length - 1 - (index % usable.length)];
+          index += 1;
+
+          const fromLeft = pairRef.current.left?.map ?? null;
+          const fromRight = pairRef.current.right?.map ?? null;
+          const start = performance.now();
+          const DURATION = 1400;
+
+          const step = (now: number) => {
+            const t = Math.min(1, (now - start) / DURATION);
+            const e = easeInOut(t);
+            setPair({
+              left: { item: nextLeft.item, map: blend(fromLeft, nextLeft.map, e) },
+              right: { item: nextRight.item, map: blend(fromRight, nextRight.map, e) },
+            });
+            if (t < 1) frame = requestAnimationFrame(step);
+          };
+          frame = requestAnimationFrame(step);
+        };
+
         show();
         timer = setInterval(show, 6000);
+        cleanupFrame = () => {
+          if (frame) cancelAnimationFrame(frame);
+        };
       })
       .catch(() => undefined);
 
     return () => {
       cancelled = true;
       if (timer) clearInterval(timer);
+      cleanupFrame?.();
     };
   }, []);
 
@@ -112,10 +153,9 @@ export default function HomePage() {
               <BrainViewer
                 activation={pair.left?.map ?? null}
                 colorMode="activation"
-                autoRotate
                 initialView="left"
                 showOverlays={false}
-                interactive
+                interactive={false}
                 className="absolute inset-0"
               />
             </div>
@@ -182,10 +222,9 @@ export default function HomePage() {
               <BrainViewer
                 activation={pair.right?.map ?? null}
                 colorMode="activation"
-                autoRotate
                 initialView="right"
                 showOverlays={false}
-                interactive
+                interactive={false}
                 className="absolute inset-0"
               />
             </div>
