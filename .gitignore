@@ -57,3 +57,7 @@ services/inference/data/paper1/*.svg
 services/inference/data/figures/*.png
 services/inference/data/figures/*.pdf
 services/inference/data/figures/*.svg
+
+# Partial-scan working data. The scan output lives on Kaggle as a dataset version, and
+# report figures derived from an unfinished corpus read as finished ones.
+services/inference/data/partial50/
