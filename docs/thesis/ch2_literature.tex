@@ -1,0 +1,91 @@
+\chapter{Literature Review}
+\label{ch:literature}
+
+This work sits between two literatures that rarely meet: the statistical physics of opinion
+dynamics, which supplies the model, and predictive neural encoding, which supplies the
+observable. The gap it addresses lies precisely at their junction.
+
+\section{Opinion dynamics as statistical physics}
+
+The programme of treating collective opinion with the tools of statistical mechanics is
+established and productive. Castellano, Fortunato and Loreto's review \cite{castellano2009}
+remains the standard survey: binary attitudes map to Ising spins, social conformity to a
+ferromagnetic coupling $J$, and external influence to a field $h$. Galam's review of his own
+models \cite{galam2008} traces the same lineage through majority-rule dynamics, and
+Sznajd-Weron and Sznajd \cite{sznajd2000} contribute the outward-influence variant that
+carries their name. Stauffer \cite{stauffer2008} gives an accessible account of why
+two-dimensional Ising models apply to social questions at all.
+
+The recent review by Mullick and Sen \cite{mullick2025} surveys a century of Ising-inspired
+sociophysics across opinion dynamics, markets, segregation and language. Notably for this
+work, it lists data-driven calibration against large-scale social datasets among the field's
+\emph{open directions} rather than among its accomplishments.
+
+\subsection{How the external field is treated}
+
+Where these models represent media explicitly, the field is assigned rather than measured.
+Crokidakis \cite{crokidakis2012} introduces mass media into the two-dimensional Sznajd model
+as a probability $p$ of following the media opinion, sweeps it, and finds the phase transition
+absent above $p \approx 0.18$. Azhari and Muslim \cite{azhari2023} apply an external field to
+majority-rule and $q$-voter dynamics on the complete graph and sweep its magnitude. Freitas,
+Vieira and Anteneodo \cite{freitas2020} study imperfect bifurcations and cusp catastrophes
+under external bias, parameterised by sensitivity and direction rather than by any measured
+quantity. The review of models with external effects by S\^{i}rbu and colleagues
+\cite{sirbu2016} surveys this class without any of them measuring the external term.
+
+In each case the swept parameter is the quantity whose real-world magnitude is at issue. The
+literature can therefore demonstrate that a population tips at some $h^\ast$ without
+establishing that any real influence attains it.
+
+\subsection{The exception, and what it leaves open}
+
+One recent study breaks the pattern. Korbel, Dahdoul and Thurner \cite{korbel2026} calibrate a
+double random-field Ising model of elections directly to campaign expenditure and extract a
+critical spending threshold from historical results, reporting it as the first time
+thermodynamic parameters and a critical threshold have been taken from election data in this
+way.
+
+Two things remain open after it, and they define the gap this work addresses. Their
+calibration is fitted from outcome data after the fact, so it cannot screen a proposed
+mechanism before data exist. And it is specific to expenditure, whereas observables proposed
+for media \emph{content} remain uncalibrated. What is missing in both cases is a necessary
+condition stated on the coupling itself, which is what Chapter~3 supplies.
+
+\section{Predictive neural encoding}
+
+The second literature concerns models that predict brain responses to naturalistic stimuli.
+The relevant instrument here is TRIBE \cite{tribe2025}, a trimodal encoder that combines
+pretrained text, audio and video representations to predict fMRI responses to film, trained on
+the Courtois NeuroMod recordings and evaluated over 1{,}000 cortical parcels.
+
+Such models make a measurement possible that was not before: rather than characterising a
+stimulus by its surface features, one can estimate the response it is predicted to elicit.
+That is the move this project makes.
+
+\subsection{What a released checkpoint does and does not guarantee}
+
+A technical report describes an architecture and a training procedure. The weights released
+under its name are a separate artifact, and their properties must be established from the
+artifact itself.
+
+Three such properties matter here and none is visible from the publication. The checkpoint
+used in this work predicts cortical surface activity only. Its loader forces an
+average-subject configuration at load time, so per-subject variation is unavailable. And its
+agreement with real cortex in that configuration is contested: a commercially published audit
+reports vertex-level anti-correlation against a measured inter-subject ceiling, across four
+subjects and all seven Yeo networks. That audit is self-published by a company selling the
+per-subject alternative, uses one stimulus, and reports small magnitudes in either direction;
+it has not been independently replicated. It should be neither accepted uncritically nor
+dismissed.
+
+\section{The gap}
+
+Placing the two literatures beside one another gives the gap directly.
+
+The sociophysics literature has a field it cannot measure. The encoding literature has a
+predicted response that has not been used as a field. Neither has stated what a candidate
+observable would have to satisfy for the mechanism to operate at all.
+
+This work supplies that condition, builds an instrument that produces a candidate observable,
+measures its spread on a controlled corpus, and reports what follows --- including the
+respects in which the design cannot support the interpretation one would prefer.

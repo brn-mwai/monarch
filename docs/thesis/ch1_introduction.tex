@@ -1,0 +1,102 @@
+\chapter{Introduction}
+\label{ch:intro}
+
+\section{The problem}
+
+Two articles can report the same event and leave a reader in entirely different states. One
+informs; the other provokes. Readers notice the difference and cannot quantify it, and the
+platforms that distribute both have no objective measure of which they are amplifying. The
+difference is real, consequential and unmeasured.
+
+Existing approaches measure the text. Sentiment analysis counts affective vocabulary;
+readability scores count syllables and clause length; stance detection classifies a position.
+None of them measures what the content is predicted to \emph{do} to the person reading it.
+
+This project takes a different route. Rather than characterising the words, it estimates the
+response: a released neural encoder predicts cortical activity from the content, and the
+measurement is taken on that prediction. The instrument is a thermometer for one specific
+property of media, and the thesis is an account of building it, running it, and stating
+carefully what its readings support.
+
+\section{The amendment, stated at the outset}
+\label{sec:amendment}
+
+Three commitments in the original proposal could not be met as written. They are set out here
+rather than disclosed in the results chapter, because a reader who meets them for the first
+time beside a result will reasonably suspect they were discovered to explain it. Each was
+identified before the measurement was taken, and each is documented in the amendment approved
+by the supervisor.
+
+\textbf{First, the observable is cortical.} The proposal framed the index around subcortical
+affective structures. The released checkpoint predicts cortical surface activity only, over
+$20{,}484$ vertices, and contains no subcortical output. The index is therefore a
+\emph{cortical proxy}: a contrast between two cortical ROI unions, one associated with
+affective salience and one with deliberative control. No claim about subcortical structures
+appears anywhere in this document.
+
+\textbf{Second, the index is a difference, not a ratio.} Equation~(4) of the proposal defines
+the index as $A_{\mathrm{aff}}/(A_{\mathrm{del}} + \delta)$. The encoder emits standardised
+activation, so an ROI mean is negative about as often as positive and the ratio sign-flips or
+diverges. On the completed corpus it is undefined for $17.25\%$ of items. The measurement uses
+the signed difference $A_{\mathrm{aff}} - A_{\mathrm{del}}$, which is defined everywhere and
+is the form the physics requires.
+
+\textbf{Third, the corpus is text-only.} The proposal specified 1{,}500 multimodal items. The
+delivered corpus is 400 text items in four balanced categories, and Research Question~IV,
+which required audio and video, is out of scope.
+
+\section{Research questions}
+
+\begin{description}
+\item[RQ I] Can predicted cortical activation serve as a quantitative signature of
+emotionally manipulative media content, and how does the resulting index perform as a
+classifier against human labels?
+
+\item[RQ II] How is the index distributed across content categories, and do the categories
+separate?
+
+\item[RQ III] What phase structure does a mean-field opinion model exhibit under a field
+derived from this observable, and what does the measured spread imply for the coupling?
+
+\item[RQ IV] How do text, audio and video contribute to the index? \emph{Out of scope under
+the amendment.}
+\end{description}
+
+\section{Objectives}
+
+\begin{enumerate}[label=(\roman*)]
+\item Build a labelled corpus of media items in balanced categories.
+\item Run the encoder over the corpus and compute the index for every item.
+\item Characterise the distribution of the index.
+\item Calibrate the coupling between the index and the model's field.
+\item Derive the phase structure of the opinion model.
+\item Validate the index as a classifier against human labels.
+\item Deliver the measurement apparatus as working open-source code.
+\end{enumerate}
+
+Objective (vii) is the primary deliverable. The proposal states this explicitly and it governs
+how the work should be assessed: the apparatus is the promise, and the empirical result is
+what the apparatus returned when it was run.
+
+\section{Contribution}
+
+Three, developed across the chapters that follow.
+
+A \textbf{bound} on the coupling between any content observable and an opinion-dynamics field,
+requiring only the observable's measured spread and the model's own spinodal, and evaluable
+before data are collected (Chapter~3).
+
+An \textbf{instrument}, delivered as open-source code, together with the documented finding
+that the released checkpoint is cortical-only and that its agreement with real cortex is
+contested (Chapter~4).
+
+A \textbf{measurement} over 400 items, reported with the design's sensitivity attached and its
+central confound stated before its interpretation (Chapters~5 and~6).
+
+\section{Structure of this document}
+
+Chapter~2 reviews the literature on opinion dynamics as statistical physics and on predictive
+neural encoding, and identifies the gap this work addresses. Chapter~3 derives the
+theoretical framework and the bound. Chapter~4 describes the instrument, the corpus and the
+analysis. Chapter~5 reports the results. Chapter~6 discusses what they support. Chapter~7
+concludes.

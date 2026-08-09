@@ -1,0 +1,162 @@
+\chapter{Theoretical Framework}
+\label{ch:framework}
+
+\section{The mean-field model}
+
+Take $N$ agents holding binary opinions $s_i = \pm 1$, coupled all-to-all with strength $J/N$,
+in an external field $h$:
+\begin{equation}
+\mathcal{H} = -\frac{J}{N}\sum_{i<j} s_i s_j - h \sum_i s_i .
+\end{equation}
+The collective polarisation is $m = N^{-1}\sum_i s_i$, and in the thermodynamic limit it
+satisfies the self-consistency condition
+\begin{equation}
+m = \tanh\!\left(\beta J m + h\right),
+\label{eq:selfcons}
+\end{equation}
+with $\beta = 1/k_B T$ and $k_B = 1$ throughout. The field $h$ absorbs the factor $\beta$, so
+it is dimensionless and directly comparable with $\beta J$.
+
+The social reading of $\beta$ is an inverse noise level. Large $\beta$ describes a population
+that copies its neighbours reliably; small $\beta$ one that decides close to at random.
+Equation~\eqref{eq:selfcons} has a single root for $\beta J < 1$ at zero field and three for
+$\beta J > 1$, of which the outer two are stable.
+
+\section{The Landau expansion, with coefficients derived}
+
+Write the free energy as a quartic in the order parameter,
+\begin{equation}
+F(m) = a\,m^2 + b\,m^4 - h\,m .
+\label{eq:landau}
+\end{equation}
+The coefficients are not free. Requiring that $\partial F/\partial m = 0$ reproduce
+\eqref{eq:selfcons} to cubic order fixes them. Inverting \eqref{eq:selfcons} gives
+$\operatorname{artanh}(m) = \beta J m + h$, and expanding
+$\operatorname{artanh}(m) = m + m^3/3 + O(m^5)$ yields
+\begin{equation}
+(1 - \beta J)\,m + \tfrac{1}{3} m^3 - h = 0 .
+\end{equation}
+Matching against $\partial F/\partial m = 2am + 4bm^3 - h$ gives
+\begin{equation}
+a = \frac{1 - \beta J}{2}, \qquad b = \frac{1}{12}.
+\label{eq:coefficients}
+\end{equation}
+
+This derivation is stated in full because coefficient forms that do not follow from the
+accompanying self-consistency condition appear in the applied literature, and the symptom is
+subtle: the free-energy curve retains the correct qualitative double well, so the figure looks
+right, while its minimum sits away from the $m^\ast$ the same work's root-finder reports. The
+double well opens when $a < 0$, that is when $\beta J > 1$, recovering the transition already
+implied by \eqref{eq:selfcons}.
+
+The susceptibility follows as
+\begin{equation}
+\chi = \frac{\beta \operatorname{sech}^2(\beta J m^\ast + h)}
+            {1 - \beta J \operatorname{sech}^2(\beta J m^\ast + h)},
+\label{eq:chi}
+\end{equation}
+which diverges where the denominator vanishes and is undefined beyond it. It is reported only
+where the denominator is positive.
+
+\section{Numerical validation of the solver}
+
+Every figure in this framework is drawn with one solver, so the solver is checked first
+against results known exactly. Mean-field theory fixes three critical exponents:
+$m^\ast \sim (\beta J - 1)^{\beta}$ with $\beta = 1/2$, $\chi \sim |1-\beta J|^{-\gamma}$ with
+$\gamma = 1$, and $m \sim h^{1/\delta}$ on the critical isotherm with $\delta = 3$.
+
+One methodological point matters. Solving \eqref{eq:selfcons} by direct iteration of
+$m_{k+1} = \tanh(\beta J m_k + h)$ is adequate away from criticality but degrades exactly at
+$\beta J = 1$, where the map's derivative reaches unity. The exponents are defined in that
+limit, so fitting them to iterated values measures truncation error rather than physics: doing
+so returns $\delta \approx 1.35$ against an exact $3$. The exponents are therefore fitted to
+roots obtained by bracketing, and the iterative solver is checked against the bracketed one
+away from criticality, where the largest absolute discrepancy over the sampled grid is
+$1.15\times10^{-9}$.
+
+Fitting within a window of $0.05$ in $|\beta J - 1|$ at 60 points recovers
+\begin{equation}
+\beta = 0.4872, \qquad \gamma = 1.0000, \qquad \delta = 3.0042,
+\end{equation}
+with absolute errors $0.0128$, $0.0000$ and $0.0042$. The residual in $\beta$ is a
+finite-window effect: the power law is asymptotic and the quartic term contaminates the slope
+as the window widens. The run fails if any exponent departs from its exact value by more than
+a stated tolerance, so a solver regression stops the analysis rather than producing plausible
+curves.
+
+\section{The spinodal field}
+
+Above $\beta J = 1$ the free energy has two minima at zero field. Raising the field deepens
+one and shallows the other; at a finite field the shallower minimum disappears. That value is
+the spinodal field $h_c(\beta J)$, and it is the field a population in the metastable state
+must experience before it is obliged to move.
+
+It is located by bisection on the presence of a second stationary point, which keeps it
+consistent with the solver used elsewhere rather than importing a closed form derived under
+different approximations. It vanishes as $\beta J \to 1^{+}$ and grows monotonically, reaching
+$0.53284$ at $\beta J = 2$.
+
+\section{The bound}
+\label{sec:bound}
+
+Let an observable $X$ be proposed as the field through a linear map
+\begin{equation}
+h = \alpha X,
+\end{equation}
+with $\alpha$ an unknown coupling carrying the units. Any real observable is bounded: across
+the content a population plausibly encounters, $X$ spans a finite range $\Delta X$, which is
+an empirical property of the observable and the corpus rather than of the model. The largest
+field the mechanism can deliver is therefore $\alpha\,\Delta X$, and requiring it to reach the
+spinodal gives
+\begin{equation}
+\alpha \Delta X \;\ge\; h_c(\beta J)
+\qquad \Longleftrightarrow \qquad
+\alpha \;\ge\; \frac{h_c(\beta J)}{\Delta X}.
+\label{eq:bound}
+\end{equation}
+
+Three properties of \eqref{eq:bound} carry the argument of this thesis.
+
+It is \textbf{necessary and not sufficient}. Clearing it does not establish that content tips
+populations; falling below it excludes the mechanism within the model's assumptions.
+
+It \textbf{requires no fit}. $\Delta X$ is obtained by measuring the observable across a
+corpus, which is far cheaper than estimating a coupling to collective behaviour, and $h_c$
+comes from the model.
+
+It \textbf{converts a null into a constraint}. A study that estimates $\alpha$ and obtains an
+interval containing zero has, alone, only the statement that no coupling was detected.
+Combined with \eqref{eq:bound}, the same interval says the coupling would have to exceed
+$h_c(\beta J)/\Delta X$ for the mechanism to operate, and that the measurement excludes that
+range.
+
+\section{A screening criterion}
+
+The bound supports a procedure that runs before data collection.
+
+\begin{enumerate}
+\item State the observable and the map $h = \alpha X$ explicitly, with units.
+\item Measure or bound $\Delta X$ on a modest sample. This needs no outcome variable.
+\item Choose the range of $\beta J$ the population plausibly occupies and read $h_c(\beta J)$.
+\item Evaluate $\alpha_{\min} = h_c(\beta J)/\Delta X$ and ask whether a coupling of that size
+is defensible on independent grounds.
+\item If it is not, the mechanism is excluded within the model and the expensive measurement
+is unnecessary. If it is, proceed, and report $\Delta X$ alongside the estimate of $\alpha$ so
+the bound can be applied to the result.
+\end{enumerate}
+
+Step 4 is the weakest link, since $\alpha$ has no independent scale in most applications. The
+criterion remains informative in relative terms: two candidate observables can be ranked by
+$\alpha_{\min}$, and an observable whose spread demands an implausibly large coupling is a poor
+choice of field regardless of how well it correlates with anything.
+
+\section{Assumptions}
+
+The framework assumes all-to-all coupling, a single homogeneous population, a static field and
+binary opinions. Network structure and heterogeneous susceptibility generally lower $h_c$, so
+\eqref{eq:bound} is a bound within this model rather than a universal one. The linear map
+$h = \alpha X$ is the simplest possible coupling and is itself an assumption; a saturating map
+would change the relation between $\Delta X$ and the maximum attainable field. Finally, the
+spinodal is the threshold relevant to a population trapped in a metastable state; a population
+at coexistence can be moved by a smaller field given enough time, so the bound demands more of
+$\alpha$ than a nucleation argument would.

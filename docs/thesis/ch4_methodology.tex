@@ -1,0 +1,131 @@
+\chapter{Methodology}
+\label{ch:methodology}
+
+\section{The apparatus}
+
+The instrument takes a passage of text and returns a predicted cortical response. Five stages
+run in sequence.
+
+\begin{enumerate}
+\item \textbf{Speech synthesis.} The passage is rendered to audio, since the encoder expects
+naturalistic audiovisual input rather than written text.
+\item \textbf{Word timings.} A forced-alignment transcriber recovers per-word timings, which
+the encoder requires to align the text stream to the audio.
+\item \textbf{Embedding.} Text and audio are embedded by the pretrained models the encoder was
+built on.
+\item \textbf{Prediction.} The encoder returns activation over $20{,}484$ fsaverage5 cortical
+surface vertices per time point.
+\item \textbf{Reduction.} The prediction is mean-pooled over time and reduced to two ROI
+means, from which the index is computed.
+\end{enumerate}
+
+\subsection{Checkpoint facts, taken from the artifact}
+
+Three properties of the released checkpoint were established by inspecting the artifact rather
+than by reading the accompanying publication, using
+\texttt{scripts/verify\_tribe\_checkpoint.py}. Its configuration declares
+\texttt{mesh: fsaverage5}, and the smoke test returns arrays of shape $(T, 20484)$, which is
+$2 \times 10242$ vertices: the output is cortical-only. Its loader sets
+\texttt{average\_subjects = True} at load time, so the subject term is unavailable. Both facts
+are recorded in the run log with the file and line that establish them.
+
+\section{The observable}
+
+Two ROI unions are defined over the cortical surface: an affective-salience set of 1{,}030
+vertices and a deliberative-control set of 851, with no overlap. For an item's mean-pooled
+prediction, $A_{\mathrm{aff}}$ and $A_{\mathrm{del}}$ are the mean activation over each set.
+
+The index is the signed difference
+\begin{equation}
+\mathrm{NAA}_{\text{signed}} = A_{\mathrm{aff}} - A_{\mathrm{del}},
+\end{equation}
+positive when the affective-salience set is predicted to lead. The ratio form is computed and
+stored alongside it, and the rate at which it is undefined is reported as a result in its own
+right (\S\ref{sec:rq1}).
+
+The observable is a \textbf{cortical proxy}. It is not a measurement of any person, and the
+regions it contrasts are cortical unions rather than the subcortical structures the original
+proposal named.
+
+\section{The corpus}
+
+400 text items in four categories of 100: fear-activating, high outrage, reward-hook, and
+neutral informational.
+
+\begin{center}
+\begin{tabular}{@{}llr@{}}
+\toprule
+\textbf{Category} & \textbf{Source} & \textbf{n} \\
+\midrule
+Fear activating       & ISOT-fake             & 100 \\
+High outrage          & SemEval-2019 Task 4   & 100 \\
+Reward hook           & Webis-Clickbait-17    & 100 \\
+Neutral informational & PubMed, ISOT-true     & 50 + 50 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Items are length-matched: category word counts are $167.4$, $163.5$, $163.7$ and $162.2$ with
+standard deviations near $11$. Each item carries the labels it held before scanning ---
+\texttt{manipulative}, \texttt{credibility}, \texttt{partisan\_intensity} and its source ---
+and these are the only ground truth in the dataset, since the predicted activations have none.
+
+NELA-GT-2021, named in the proposal, was withdrawn by its authors in January 2024. SemEval-2019
+Task~4 is substituted; it is openly licensed and labels the article rather than the publisher.
+
+\textbf{Each category is drawn from a single source.} Category and provenance are therefore
+confounded by construction. This is a property of the design, is stated here rather than
+discovered later, and bounds the interpretation throughout Chapters~5 and~6.
+
+\section{Execution}
+
+The scan is the only step requiring a GPU and the only one that cannot be repeated cheaply.
+It was executed in four sessions on a Tesla P100 at a measured 64 to 78 seconds per item.
+Every item is appended and flushed as it completes, so an interrupted session retains
+everything computed, and a resumed run skips items already present.
+
+Output was verified before any analysis using \texttt{scripts/verify\_scan\_output.py}, which
+checks every scanned row against the source corpus on text, category and identifier, requires
+distinct values, and confirms that the stored difference agrees with the two stored means to
+the precision at which they are written. All 400 rows passed.
+
+\section{Analysis}
+
+\textbf{RQ I} scores the index against the \texttt{manipulative} label by AUC, with F1,
+precision and recall reported alongside and labelled as fitted in sample.
+
+\textbf{RQ II} tests separation across the four categories by one-way ANOVA, reporting $F$,
+$p$ and $\eta^2$, with per-category descriptives and Welch contrasts against the neutral
+baseline.
+
+\textbf{RQ III} evaluates the free energy and susceptibility across a range of $\alpha$ rather
+than at a fitted value, and applies the bound of \S\ref{sec:bound} to the measured spread.
+
+\subsection{Power, computed before the analysis}
+
+The design's sensitivity was computed from the design alone, before the corpus was analysed,
+using noncentral $F$ for the ANOVA and a seeded Mann-Whitney simulation for the AUC. At
+$\alpha = 0.05$ and $80\%$ power, the smallest detectable effects are $\eta^2 = 0.0268$ and
+AUC $= 0.5916$.
+
+Computing this in advance is deliberate. A power statement produced after a result is a
+rationalisation; produced beforehand it states what the design could and could not have found,
+and it is reported alongside every result whichever way they came out.
+
+\subsection{Rules fixed before the data existed}
+
+Five, recorded in the project's post-scan runbook before the corpus was complete.
+
+AUC is the headline and F1 is not, since F1's threshold is fitted in sample. An AUC below
+$0.5$ would be reported as measured rather than sign-flipped. An AUC at or above $0.95$ would
+be treated as a leak until its source was identified. A non-significant result would be
+reported as a null with the excluded effect size attached, not as an absence of effect. And no
+value of $\hat{\alpha}$ would be quoted anywhere, whatever the calibration returned.
+
+\section{Reproducibility}
+
+Every number in this thesis is produced by a script in the repository and regenerates from the
+corpus file. The instrument, the analysis, the power calculation and the physics are open
+source. The run log records each execution with its command, its output and its failures,
+including the runs that failed and why, so that the path to the reported numbers is auditable
+rather than asserted.
