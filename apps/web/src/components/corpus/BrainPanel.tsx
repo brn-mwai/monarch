@@ -68,23 +68,47 @@ export function BrainPanel({
       </div>
 
       <div className="px-5 pt-4">
-        <p
-          className={`text-[13px] leading-relaxed text-white/70 ${
-            compact && !expanded ? 'line-clamp-3' : ''
-          }`}
-        >
-          {expanded ? (item.text ?? item.preview) : item.preview}
+        <p className="line-clamp-3 text-[13px] leading-relaxed text-white/70">
+          {item.preview}
         </p>
         {(item.text ?? '').length > item.preview.length && (
           <button
             type="button"
-            onClick={() => setExpanded((e) => !e)}
+            onClick={() => setExpanded(true)}
             className="mt-2 font-mono text-[10px] uppercase tracking-[0.15em] text-white/45 underline-offset-4 transition-colors hover:text-white hover:underline"
           >
-            {expanded ? 'Hide' : 'See more'}
+            See more
           </button>
         )}
       </div>
+
+      {expanded && (
+        <div
+          className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/80 p-4 backdrop-blur-sm sm:p-10"
+          onClick={() => setExpanded(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl rounded-xl border border-white/15 bg-[#0a0a0a] p-6 shadow-2xl"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
+                {categoryLabel(item.category)}
+              </span>
+              <button
+                type="button"
+                onClick={() => setExpanded(false)}
+                className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 transition-colors hover:text-white"
+              >
+                Hide
+              </button>
+            </div>
+            <p className="mt-4 whitespace-pre-wrap text-[14px] leading-relaxed text-white/80">
+              {item.text ?? item.preview}
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="px-3 py-3" style={{ height }}>
         {activation ? (

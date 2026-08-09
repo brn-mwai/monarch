@@ -203,20 +203,19 @@ export default function CorpusPage() {
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
                 Two items, one colour scale
               </span>
-              <span className="flex items-center gap-3">
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40">
-                  Low
+              <span className="flex flex-col items-center gap-1">
+                <span className="flex w-48 items-center justify-between text-[11px] text-white/70">
+                  <span>Low</span>
+                  <span>High</span>
                 </span>
                 <span
-                  className="h-1.5 w-40 rounded-full"
+                  className="h-2 w-48 rounded-sm"
                   style={{
                     background:
-                      'linear-gradient(90deg, #3a0a0a 0%, #b81d13 35%, #e8730c 65%, #f0c419 100%)',
+                      'linear-gradient(90deg, #000000 0%, #b81d13 35%, #e8730c 62%, #f0c419 82%, #ffffff 100%)',
                   }}
                 />
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40">
-                  High
-                </span>
+                <span className="text-[11px] text-white/60">Activity</span>
               </span>
             </div>
 
