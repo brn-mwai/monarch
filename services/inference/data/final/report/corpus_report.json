@@ -1,0 +1,129 @@
+{
+  "source_csv": "data\\final\\corpus_naa.csv",
+  "n_rows": 400,
+  "n_scored": 400,
+  "n_ratio_defined": 331,
+  "n_ratio_undefined": 69,
+  "metric": "naa_signed",
+  "beta_j": 0.7,
+  "alpha_grid": [
+    -1.0,
+    -0.5,
+    0.0,
+    0.5,
+    1.0
+  ],
+  "alpha_is_fitted": false,
+  "category_means": {
+    "fear_activating": -0.0017860699999999998,
+    "high_outrage": -0.01849725,
+    "neutral_informational": -0.019055959999999997,
+    "reward_hook": -0.012753430000000003
+  },
+  "category_n": {
+    "fear_activating": 100,
+    "high_outrage": 100,
+    "neutral_informational": 100,
+    "reward_hook": 100
+  },
+  "distribution": {
+    "baseline": "neutral_informational",
+    "per_category": {
+      "fear_activating": {
+        "n": 100,
+        "mean": -0.0017860699999999998,
+        "sd": 0.020390287071883964,
+        "median": 0.0007225,
+        "skewness": -0.9141068019837669,
+        "excess_kurtosis": 0.6533517847752157,
+        "min": -0.065613,
+        "max": 0.030939,
+        "entropy": -2.455913549932742,
+        "cohens_d_vs_baseline": 0.9389150806286535,
+        "kl_vs_baseline": 0.5856615147607575
+      },
+      "high_outrage": {
+        "n": 100,
+        "mean": -0.01849725,
+        "sd": 0.020761180637481128,
+        "median": -0.0179245,
+        "skewness": 0.018719158968682134,
+        "excess_kurtosis": -0.18611592562608825,
+        "min": -0.067307,
+        "max": 0.036831,
+        "entropy": -2.3831022324714066,
+        "cohens_d_vs_baseline": 0.030038584271955906,
+        "kl_vs_baseline": 0.13078577824968007
+      },
+      "neutral_informational": {
+        "n": 100,
+        "mean": -0.019055959999999997,
+        "sd": 0.01615160635343629,
+        "median": -0.0215675,
+        "skewness": 0.36699256927053897,
+        "excess_kurtosis": -0.31284435015531376,
+        "min": -0.053779,
+        "max": 0.023571,
+        "entropy": -2.6496783910432153
+      },
+      "reward_hook": {
+        "n": 100,
+        "mean": -0.012753430000000003,
+        "sd": 0.02281843858637797,
+        "median": -0.011311,
+        "skewness": 0.020552110493388405,
+        "excess_kurtosis": 0.40239420599885944,
+        "min": -0.069774,
+        "max": 0.054322,
+        "entropy": -2.300262077223187,
+        "cohens_d_vs_baseline": 0.3188232613406152,
+        "kl_vs_baseline": 0.3700791698938656
+      }
+    },
+    "separation": {
+      "categories": [
+        "fear_activating",
+        "high_outrage",
+        "neutral_informational",
+        "reward_hook"
+      ],
+      "n_total": 400,
+      "f_statistic": 15.779225328943525,
+      "p_value": 1.0348806227386777e-09,
+      "eta_squared": 0.10677566683558096,
+      "ss_between": 0.0192705283107875,
+      "ss_within": 0.16120624960961003,
+      "significant": true,
+      "usable": true
+    }
+  },
+  "validation": {
+    "n": 400,
+    "n_manipulative": 300,
+    "n_neutral": 100,
+    "auc": 0.6274,
+    "auc_flipped": 0.37260000000000004,
+    "threshold": -0.012047,
+    "precision": 0.8426395939086294,
+    "recall": 0.5533333333333333,
+    "f1": 0.6680080482897385,
+    "sensitivity": 0.5533333333333333,
+    "specificity": 0.69,
+    "confusion_matrix": [
+      [
+        69,
+        31
+      ],
+      [
+        134,
+        166
+      ]
+    ],
+    "threshold_fitted_in_sample": true,
+    "direction_matches_hypothesis": true,
+    "discriminates": true,
+    "leak_suspected": false,
+    "interpretation": "AUC 0.627 separates manipulative from neutral content in the direction the proposal predicts."
+  },
+  "threshold_fitted_in_sample": true
+}

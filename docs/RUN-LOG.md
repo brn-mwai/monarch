@@ -318,6 +318,83 @@ decides in either direction.
 
 ---
 
+## 2026-08-09
+
+### The corpus is complete
+
+v36 finished with status `COMPLETE`. `scripts/verify_scan_output.py` passes on all of it:
+
+```
+scanned 400 of 400 corpus rows
+  fear_activating          100
+  high_outrage             100
+  neutral_informational    100
+  reward_hook              100
+ratio NAA defined: 331  undefined: 69
+distinct texts: 400  distinct naa_signed: 400
+```
+
+The ratio form is undefined for 69 of 400 items, 17.25%, which is the rate the methods note
+reports.
+
+### RQ II: the categories separate
+
+`python scripts/analyze_corpus.py --csv data/final/corpus_naa.csv --naa-col naa_signed
+--category-col category --out data/final/rq_answers.json`
+
+```
+fear_activating        n=100  mean=-0.0018  sd=0.0204
+high_outrage           n=100  mean=-0.0185  sd=0.0208
+neutral_informational  n=100  mean=-0.0191  sd=0.0162   (baseline)
+reward_hook            n=100  mean=-0.0128  sd=0.0228
+
+separation: F=15.779  p=1.035e-09  eta^2=0.1068  (USABLE)
+```
+
+This is not the null both prior runs pointed at. The effect sits well above the 0.0268 the
+design was powered to detect, and power at the observed value is 1.0.
+
+**The separation is almost entirely one category.** Welch tests against the neutral baseline:
+
+```
+fear_activating vs neutral: t=+6.639  p=3.283e-10  d=+0.939
+reward_hook     vs neutral: t=+2.254  p=2.539e-02  d=+0.319
+high_outrage    vs neutral: t=+0.212  p=8.320e-01  d=+0.030
+```
+
+High outrage does not separate from neutral at all. The proposal predicted it would separate
+most. Fear-activating carries the result.
+
+### RQ I: modest but real
+
+```
+n=400  AUC=0.6274  F1=0.6680 (threshold fitted in sample, not the headline)
+```
+
+AUC clears the 0.5916 the design could detect, in the direction the proposal predicted. Power
+at the observed AUC is 0.961.
+
+### Every category mean is still negative
+
+The deliberative network mean exceeds the affective mean for every category, so the signed
+index never turns positive on average. The categories differ in how far below zero they sit,
+not in which network leads.
+
+### The bound, from the measured spread
+
+`python scripts/field_bound.py --scan data/final/corpus_naa.csv --report
+data/paper1/phase_boundary.json --out data/final/field_bound.json`
+
+```
+range     : -0.0698 to +0.0543
+spread dX : 0.1241
+alpha >= 0.1693 at beta_J 1.102
+alpha >= 1.6553 at beta_J 1.496
+alpha >= 4.2938 at beta_J 2.000
+```
+
+---
+
 ## Template for the next entry
 
 ```

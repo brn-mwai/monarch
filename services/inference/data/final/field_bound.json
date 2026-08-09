@@ -1,0 +1,32 @@
+{
+  "n_scanned": 400,
+  "observable": {
+    "column": "naa_signed",
+    "n_defined": 400,
+    "n_undefined": 0,
+    "min": -0.069774,
+    "max": 0.054322,
+    "spread": 0.12409600000000001
+  },
+  "bound": [
+    {
+      "beta_j_requested": 1.1,
+      "beta_j_used": 1.1017394957983193,
+      "critical_field": 0.021007765646599758,
+      "alpha_required": 0.16928640444977885
+    },
+    {
+      "beta_j_requested": 1.5,
+      "beta_j_used": 1.4963025210084033,
+      "critical_field": 0.20541434450790702,
+      "alpha_required": 1.6552857828447896
+    },
+    {
+      "beta_j_requested": 2.0,
+      "beta_j_used": 2.0,
+      "critical_field": 0.5328399431113133,
+      "alpha_required": 4.293772104752073
+    }
+  ],
+  "note": "necessary condition only; clearing it does not establish the mechanism"
+}
