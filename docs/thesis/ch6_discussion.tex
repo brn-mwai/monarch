@@ -154,6 +154,52 @@ shown to tip, without establishing that any real influence reaches the assigned 
 That inversion is the contribution most likely to be reusable by others, because it applies
 to any proposed field observable and can be evaluated before a corpus is collected.
 
+\section{Session reliability, and what it permits}
+\label{sec:reliability}
+
+A second GPU session scanned 375 of the 400 items with identical text, identical code and
+identical ROI definitions. That pair is a test-retest measurement, and it is reported here
+because every effect in Chapter~5 otherwise rests on a single session with no statement of
+how much of an item's score is the item and how much is the session.
+
+Agreement between the two sessions, on the 375 items they share:
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\hline
+& $r$ & ICC(2,1) & $\mathrm{sd}(\Delta)$ & $\mathrm{sd}(\Delta)/\mathrm{sd}_{\text{between}}$ \\
+\hline
+$\mathrm{NAA}_{\text{signed}}$ & $0.8812$ & $0.8757$ & $0.01006$ & $0.475$ \\
+$A_{\text{aff}}$ & $0.8768$ & $0.8696$ & $0.01210$ & $0.487$ \\
+$A_{\text{del}}$ & $0.8575$ & $0.8544$ & $0.01285$ & $0.520$ \\
+\hline
+\end{tabular}
+\end{center}
+
+The intraclass correlation is reported alongside $r$ because a session that shifted every
+score by a constant would still correlate perfectly, and a shift is precisely what a second
+session can produce. The two agree closely here, so the disagreement is scatter rather than
+offset.
+
+\textbf{The separation replicates.} Recomputing the four-category ANOVA on the second session
+over the same 375 items gives $\eta^2 = 0.0839$, $F = 11.328$, $p = 3.988\times10^{-7}$,
+against $\eta^2 = 0.1054$, $F = 14.576$, $p = 5.397\times10^{-9}$ for the first session
+restricted to those items. Both clear the smallest effect this design could detect,
+$\eta^2 = 0.0268$. The separation reported in Chapter~5 is therefore not an artifact of one
+session. The second session's effect is roughly a fifth smaller, which is the attenuation
+that additional measurement error produces in a ratio of between-group to total variance.
+
+\textbf{Per-item direction is not reliable.} The signed index is read as a direction, and
+$49$ of $375$ items, $13.1\%$, reverse that direction between sessions. A statement that a
+particular item is affective-leading is therefore not supportable by this instrument at this
+precision, and none is made: no per-item verdict appears in the analysis, in the figures or
+on the public interface. Group means over 100 items average this scatter down by an order of
+magnitude, which is why the category-level result survives while the item-level one does not.
+
+Both sessions are reported as measured. Neither is corrected toward the other and the two are
+not averaged, because an average of two sessions would carry a precision that neither run
+has.
+
 \section{Limitations}
 
 Stated here in full rather than distributed through the text.
@@ -161,6 +207,10 @@ Stated here in full rather than distributed through the text.
 \begin{enumerate}
 \item \textbf{Category is confounded with source dataset.} The central limitation. Discussed
 in \S\ref{sec:confound} and above.
+
+\item \textbf{Single-session scores are noisy.} Test-retest ICC is $0.8757$ and the
+session-to-session standard deviation is $47.5\%$ of the between-item standard deviation
+(\S\ref{sec:reliability}). Category-level conclusions survive this; per-item ones do not.
 
 \item \textbf{Predicted, not measured, activation.} No brain was scanned. Whether the
 encoder tracks cortex is unresolved and contested.
