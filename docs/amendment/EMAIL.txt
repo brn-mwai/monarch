@@ -30,15 +30,10 @@ Where I am. The instrument is finished, the 400-article corpus is scanned and
 analysed, and the thesis is drafted with all seven chapters. One computation
 remains, for the third paper, and it needs about an hour of machine time.
 
-Rather than propose my own schedule, I would rather work to yours. Could you
-tell me:
-
-  When are we expected to defend?
-  What is the faculty deadline for the final document?
-  When would you like the full thesis draft for comment?
-  Is there a date by which the articles need to be submitted?
-
-I will plan backwards from whatever you give me.
+On mapping the way forward, I would be guided by you on timelines. Whenever you
+have a sense of when the defence is likely and what the faculty deadline looks
+like, I will plan around it, and I can have the full draft with you well ahead of
+whatever date suits you.
 
 The attachment is a four-page amendment covering four things that changed once I
 actually ran the model. The largest is that the released brain model only sees
@@ -47,9 +42,9 @@ in it. I measure the balance between surface regions instead and never call it
 the amygdala. The other three are in the document. Three of the four block the
 write-up, so your approval is the thing I need most.
 
-One more ask. Are you able to endorse me on arXiv? New submitters need an
-endorsement from someone already publishing there, and it is the one step I
-cannot do myself.
+One thing I could use your help with, if possible. arXiv requires new submitters
+to be endorsed by someone already publishing there, so I would be grateful if you
+were able to endorse me.
 
 Could I have fifteen minutes this week, or your approval by email?
 
