@@ -154,14 +154,16 @@ export default function HomePage() {
   return (
     <div className="bg-black text-white">
       {/* === Section 1 - Hero ================================================ */}
-      <section className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 py-8">
-        <div className="grid w-full max-w-[1600px] grid-cols-1 items-center gap-10 md:grid-cols-[1fr_minmax(320px,500px)_1fr]">
+      <section className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 py-8 sm:px-6">
+        {/* On a phone the three cells stack, so the headline is ordered first: otherwise a
+            reader meets a brain canvas before being told what the page is. */}
+        <div className="grid w-full max-w-[1600px] grid-cols-1 items-center gap-8 sm:gap-10 md:grid-cols-[1fr_minmax(320px,500px)_1fr]">
           {/* LEFT brain - calm wording */}
-          <figure className="flex flex-col items-center">
+          <figure className="order-2 flex flex-col items-center md:order-none">
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-white/50">
               Predicted activity
             </p>
-            <div className="relative h-[480px] w-full max-w-[540px]">
+            <div className="relative h-[300px] w-full max-w-[540px] sm:h-[380px] md:h-[480px]">
               <BrainViewer
                 activation={pair.left?.map ?? null}
                 activationPreNormalized
@@ -178,7 +180,7 @@ export default function HomePage() {
           </figure>
 
           {/* CENTER - headline + CTAs */}
-          <div className="text-center">
+          <div className="order-1 text-center md:order-none">
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-white/45">
               Monarch
             </p>
@@ -227,11 +229,11 @@ export default function HomePage() {
           </div>
 
           {/* RIGHT brain - charged wording */}
-          <figure className="flex flex-col items-center">
+          <figure className="order-3 flex flex-col items-center md:order-none">
             <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.25em] text-white/50">
               Predicted activity
             </p>
-            <div className="relative h-[480px] w-full max-w-[540px]">
+            <div className="relative h-[300px] w-full max-w-[540px] sm:h-[380px] md:h-[480px]">
               <BrainViewer
                 activation={pair.right?.map ?? null}
                 activationPreNormalized

@@ -78,16 +78,17 @@ export function Chat() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 rounded-full border border-white/20 bg-[#0a0a0a] px-5 py-3 text-[13px] text-white shadow-2xl transition-colors hover:border-white/50"
+        className="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full border border-white/20 bg-[#0a0a0a] px-4 py-3 text-[13px] text-white shadow-2xl transition-colors hover:border-white/50 sm:bottom-6 sm:right-6 sm:px-5"
       >
         <ChatCircle size={16} weight="duotone" />
-        Ask about this project
+        <span className="sm:hidden">Ask</span>
+        <span className="hidden sm:inline">Ask about this project</span>
       </button>
     );
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex h-[560px] w-[min(420px,calc(100vw-3rem))] flex-col rounded-xl border border-white/15 bg-[#0a0a0a] shadow-2xl">
+    <div className="fixed bottom-4 right-4 left-4 z-50 flex h-[min(560px,calc(100dvh-6rem))] flex-col rounded-xl border border-white/15 bg-[#0a0a0a] shadow-2xl sm:bottom-6 sm:right-6 sm:left-auto sm:h-[560px] sm:w-[min(420px,calc(100vw-3rem))]">
       <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
           Ask about this project

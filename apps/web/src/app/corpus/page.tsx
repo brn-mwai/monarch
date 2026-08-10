@@ -132,7 +132,7 @@ export default function CorpusPage() {
 
   if (failed) {
     return (
-      <main className="mx-auto max-w-6xl px-6 py-20">
+      <main className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
         <p className="text-sm text-white/60">
           The corpus data did not load. Nothing is shown rather than a placeholder.
         </p>
@@ -142,7 +142,7 @@ export default function CorpusPage() {
 
   if (!data) {
     return (
-      <main className="mx-auto max-w-6xl px-6 py-20">
+      <main className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
         <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-white/40">
           Loading corpus
         </p>
@@ -161,7 +161,7 @@ export default function CorpusPage() {
   const right = items[secondary];
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-16">
+    <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <header>
         <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/45">
           Measured corpus
@@ -200,7 +200,7 @@ export default function CorpusPage() {
         ))}
       </section>
 
-      <section className="mt-20">
+      <section className="mt-14 sm:mt-20">
         <SectionHeading index="01" title="On the surface"
           hint="A 3D cortical surface with the predicted response painted on it. Warmer means a higher predicted value. It shows what the encoder predicts, not what any person’s brain did.">
           Items marked <span className="text-white/80">Per vertex</span> show the prediction
@@ -324,7 +324,7 @@ export default function CorpusPage() {
         )}
       </section>
 
-      <section className="mt-20">
+      <section className="mt-14 sm:mt-20">
         <SectionHeading index="02" title="Every item, by category"
           hint="One dot per item, grouped by category, so you see the whole spread rather than an average. Wide overlap between groups means the categories are not cleanly separated.">
           One point per item. The dashed line is zero, where both regions respond equally.
@@ -334,7 +334,7 @@ export default function CorpusPage() {
         </Panel>
       </section>
 
-      <section className="mt-20 grid grid-cols-1 items-stretch gap-6 lg:grid-cols-2">
+      <section className="mt-14 grid grid-cols-1 items-stretch gap-6 sm:mt-20 lg:grid-cols-2">
         <div className="flex flex-col">
           <SectionHeading index="03" title="Category averages"
           hint="The mean score per category with whiskers of one standard deviation. If whiskers overlap heavily, the gap between bars is small next to the variation inside each group.">
@@ -355,7 +355,7 @@ export default function CorpusPage() {
         </div>
       </section>
 
-      <section className="mt-20">
+      <section className="mt-14 sm:mt-20">
         <SectionHeading index="05" title="What each category is"
           hint="How items were chosen for each category, written from the corpus design. The figures beside each description are computed from the scan.">
           Descriptions of how items were selected, written from the corpus design. The numbers
@@ -416,7 +416,7 @@ export default function CorpusPage() {
         </p>
       </section>
 
-      <section className="mt-20">
+      <section className="mt-14 sm:mt-20">
         <SectionHeading index="06" title="All items"
           hint="Every scanned item with its score, its two region values, and the labels it carried before scanning. Click a row to open it in full.">
           Sorted from the most emotional-leaning to the least.

@@ -56,19 +56,19 @@ export function Header() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center border-b border-white/10 bg-black px-10">
-      {/* Left: build tag */}
+    <header className="fixed inset-x-0 top-0 z-50 flex h-16 items-center border-b border-white/10 bg-black px-4 sm:px-10">
+      {/* Left: build tag. Hidden on phones, where the centred logo would collide with it. */}
       <Link
         href="/"
-        className="font-mono text-xs uppercase tracking-[0.25em] text-white/55 transition-colors hover:text-white"
+        className="hidden font-mono text-xs uppercase tracking-[0.25em] text-white/55 transition-colors hover:text-white sm:inline"
       >
         M-V1
       </Link>
 
-      {/* Center: logo */}
+      {/* Logo. Centred once there is room for three elements across; left-aligned below that. */}
       <Link
         href="/"
-        className="group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        className="group sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2"
       >
         <Image
           src="/monarch-logo.svg"
@@ -76,13 +76,13 @@ export function Header() {
           width={160}
           height={39}
           priority
-          className="h-9 w-auto opacity-90 transition-opacity group-hover:opacity-100"
+          className="h-7 w-auto opacity-90 transition-opacity group-hover:opacity-100 sm:h-9"
         />
       </Link>
 
       {/* Right: Nav */}
-      <div className="ml-auto flex items-center gap-6">
-        <nav className="flex items-center gap-6">
+      <div className="ml-auto flex items-center">
+        <nav className="flex items-center gap-4 sm:gap-6">
           {NAV_ITEMS.map(renderNavItem)}
         </nav>
       </div>
