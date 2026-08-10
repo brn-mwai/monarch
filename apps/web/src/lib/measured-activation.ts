@@ -2,8 +2,17 @@ import { loadRoiVertices, type RoiVertices } from './roi-activation';
 
 const TOTAL_VERTS = 20484;
 
-/** Number of masked vertices used to pin the colour scale. See buildScaledRoiActivation. */
-const SCALE_ANCHORS = 400;
+// The renderer rescales whatever it is handed by robustNormalize(data, 99, twoSided), which
+// clips to [p1, p99] and stretches that to [0, 1]. Both painters below map into a fixed band
+// instead, so the band only survives if p1 and p99 land on anchors rather than on real
+// vertices. That needs strictly more than 1% of all vertices at each end: 200 anchors per end
+// against the 205 that 1% of 20484 requires is why every map came back restretched and amber.
+const RENDER_PERCENTILE = 99;
+const ANCHORS_PER_END =
+  Math.ceil((TOTAL_VERTS * (100 - RENDER_PERCENTILE)) / 100) + 64;
+
+/** Masked vertices used to pin the colour scale. See buildScaledRoiActivation. */
+const SCALE_ANCHORS = ANCHORS_PER_END * 2;
 
 // The renderer treats everything below 0.5 as inactive and paints the very top of its ramp
 // pure white, which is invisible against light grey cortex. Both painters map into this band
