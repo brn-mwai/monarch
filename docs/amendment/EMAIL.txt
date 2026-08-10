@@ -1,15 +1,26 @@
-Subject: Thesis update, and four changes I need you to approve
+Subject: Re: Proposal defence, way forward
 
 Dear Dr. Mutambi,
 
-Apologies for the slow reply and for not following up sooner. I have been away
-and heads-down on the build.
+Thank you, and apologies for the slow reply and for not following up sooner. I
+have been away and heads-down on the build.
 
-The work is done and running, and I am close to finished writing. I need your
-approval on four changes to the proposal before I finalise it. The four-page
-amendment is attached.
+Good news on the two articles. For my project they are drafted already. Two are
+complete and a third is close, waiting on one last computation:
 
-You can look at it yourself:
+  Paper 1, the theory. Complete, 12 pages. Physica A.
+  Paper 2, the instrument and the 400-article corpus. Complete, 10 pages.
+  Physica A, as the companion to the first.
+  Paper 3, on whether the brain model I use predicts real brain activity at all.
+  Drafted, 6 pages, one measurement still to run.
+
+I can send you all three whenever you would like to read them. One caveat I
+should be honest about: I can commit to submitting by a date, but acceptance
+sits with the journal and those timelines are not in my hands. So I have planned
+around submission dates and will also post preprints publicly, which are
+citable immediately.
+
+The work itself is built and running. You can see it:
 
   The tool:   https://monarch.brianmwai.com
   The corpus: https://monarch.brianmwai.com/corpus
@@ -18,57 +29,27 @@ You can look at it yourself:
 On the corpus page you can open any of the 400 articles, read it, see the score
 the tool gave it, and see the predicted brain response drawn on the surface.
 
-What we built. A pipeline that takes a piece of writing, has it read aloud, and
-runs it through a released brain model to predict how a reader's cortex would
-respond. It gives one number per article: whether the emotional side or the
-reasoning side is predicted to lead. We then built a corpus of 400 articles in
-four groups, matched for length, scanned all of them, and analysed the results.
+Proposed way forward, and please move any of these:
 
-What we found. The four groups do come out different, by a margin the study was
-designed to detect. The difference is carried almost entirely by the fear-based
-articles. The outrage ones, which I expected to stand out most, do not stand out
-at all. And since each group came from a different source, I cannot separate the
-writing style from the newspaper it came from. I say that plainly before the
-result everywhere it appears.
+  This week      Your approval on the attached amendment. Three of the four
+                 items block the write-up.
+  15 August      Last computation, for Paper 3.
+  22 August      Full thesis draft to you for comment.
+  29 August      Paper 1 submitted and posted as a preprint.
+  12 September   Paper 2 submitted.
 
-I also rescanned 375 of the articles to check the tool repeats itself. The
-group-level result held. Individual articles moved around too much to trust one
-on its own, so I make no claim about any single article.
+The attachment is a four-page amendment covering four things that changed once I
+actually ran the model. The largest is that the released brain model only sees
+the outer surface of the brain, so the amygdala my proposal was built on is not
+in it. I measure the balance between surface regions instead and never call it
+the amygdala. The other three are in the document.
 
-Two other things worth mentioning. I looked for Kenyan and African news data
-with usable labels and could not find any, so the corpus is entirely American
-and European, and I say so in the limitations. And I had to withdraw one of my
-own numbers after finding the code behind it had picked the wrong stimulus and
-flipped an array. I have written up the corrected version and the mistake.
+Two questions. What is the faculty deadline for the final document, so I can
+plan backwards from it? And are you able to endorse me on arXiv? New submitters
+need an endorsement from someone already publishing there, and it is the one
+step I cannot do myself.
 
-The four changes I need approved:
-
-1. The brain model only sees the outer surface of the brain, so the amygdala is
-   not in it. My proposal was built on the amygdala. I measure the balance
-   between surface regions instead and never call it the amygdala.
-
-2. The original formula divides by a number that is negative about half the
-   time, which made it unusable. I subtract instead. This is the point you
-   raised at the defence.
-
-3. I could not pin down the constant linking my measure to the physics model, so
-   I report that it is not pinned down and quote no value for it.
-
-4. The dataset my proposal names was withdrawn by its authors in 2024. I checked
-   directly and substituted an openly licensed one.
-
-I should be clear about scope. What we set out to build eventually is a tool
-anyone could use to tell whether media is manipulative or built to hold
-attention. This is the first phase of that, not the finished thing, and the
-thesis says so directly.
-
-What is left: about an hour of computing time on 15 August for one last check,
-and your approval. The thesis is drafted, with three short papers alongside it.
-
-Could I have fifteen minutes this week, or your approval by email? And if you
-are able to endorse me on arXiv, I can post the first paper publicly so the
-second can cite it. New submitters need an endorsement from someone already
-publishing there, and it is the one thing I cannot do myself.
+Could I have fifteen minutes this week, or your approval by email?
 
 Thank you, and sorry again for the delay.
 
