@@ -1,0 +1,205 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+\journal{Imaging Neuroscience}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{What does a released average-subject brain encoder actually predict? A measured
+noise ceiling and a replication protocol}
+
+\author{Brian Mwai}
+\address{Department of Physics, Catholic University of Eastern Africa, Nairobi, Kenya}
+
+\begin{abstract}
+Released encoding models are increasingly used as instruments: a checkpoint is downloaded,
+run on new stimuli, and its predictions treated as a proxy for cortical response. That use
+depends on a property the release does not certify, namely that the specific checkpoint, in
+the specific configuration its loader selects, predicts held-out cortex at all. A
+self-published audit reports that a widely used trimodal encoder, in the average-subject
+configuration its loader forces, is \emph{anti-correlated} with cortex at vertex level,
+$r = -0.0145$ against an inter-subject ceiling of $+0.0508$. The claim is about sign rather
+than magnitude, comes from a company selling the per-subject alternative, and has not been
+independently replicated. This paper does the part of the replication that requires no
+proprietary data and reports it separately from the part that does. From the public Algonauts
+2025 responses we measure the leave-one-subject-out noise ceiling in parcel space for the
+episode a prediction pass would target: $r_{\text{ceiling}} = 0.1517$, $95\%$ CI
+$[0.1484, 0.1551]$, over four subjects, all 1000 Schaefer parcels and 592 timepoints. This is
+the quantity any encoder must be judged against and it stands whatever the checkpoint turns
+out to do. We also report a withdrawn earlier value and the two defects that produced it,
+because both are silent failure modes that any group attempting this measurement can
+reproduce. The prediction pass itself is specified in full and marked as not yet run.
+\end{abstract}
+
+\begin{keyword}
+encoding models \sep fMRI \sep noise ceiling \sep replication \sep model auditing
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+
+A released encoding model invites a particular kind of use: treat the checkpoint as an
+instrument, run it on stimuli its authors never considered, and read its predictions as a
+stand-in for measured cortical response. The appeal is obvious, since the alternative is
+scanning people. The risk is equally obvious once stated, which is that a technical report
+describing an architecture is not a warranty about the weights released under its name, and
+that a checkpoint may be released in a configuration whose predictive validity nobody has
+established.
+
+For one widely used trimodal encoder that risk is not hypothetical. A commercial laboratory
+has published an audit of the released checkpoint in its average-subject configuration,
+reporting vertex-level $r = -0.0145$ against a measured inter-subject ceiling of $+0.0508$:
+anti-correlated with real cortex, across four subjects and all seven Yeo networks. Taken at
+face value, that would mean every downstream study using this checkpoint as an instrument is
+reading a signal with no established relationship to cortex.
+
+The audit should not be accepted uncritically. It is self-published by a company selling the
+per-subject alternative, it uses four subjects and one stimulus, and it reports magnitudes
+near $0.015$ in either direction, so it is a claim about sign rather than about effect size.
+Neither should it be dismissed. It is specific, it is falsifiable, and it concerns a
+configuration that a released loader selects by default.
+
+This paper reports the half of the replication that public data supports, and specifies the
+other half rather than estimating it.
+
+\section{The measurement that stands on its own}
+
+An encoder's predictions are meaningless without knowing how much shared signal exists to
+predict. The leave-one-subject-out noise ceiling supplies that: each subject's response is
+correlated against the mean of the others, giving a lower bound on what any encoder could
+achieve, computed from the recordings alone with no model involved.
+
+\subsection{Data and procedure}
+
+We use the publicly released Algonauts 2025 responses, four subjects viewing the same
+naturalistic episode, parcellated into 1000 Schaefer parcels in MNI152NLin2009cAsym space.
+For each subject we correlate the parcel time series against the mean of the remaining three,
+per parcel, over time. Undefined correlations stay undefined: a parcel with no variance over
+time has no Pearson correlation, and substituting zero would pull the mean toward zero with
+invented values. Confidence intervals are percentile bootstrap over subjects with a fixed
+seed, so a reported interval reproduces exactly.
+
+\subsection{Result}
+
+For episode \texttt{s01e01a}, the episode a prediction pass would target,
+\begin{equation}
+r_{\text{ceiling}} = 0.1517, \qquad 95\%\ \text{CI}\ [0.1484,\ 0.1551],
+\end{equation}
+over four subjects, 1000 of 1000 parcels defined, and 592 timepoints. Per-subject values are
+$0.1553$, $0.1548$, $0.1497$ and $0.1470$.
+
+This is larger than the audit's $+0.0508$ by construction rather than by disagreement.
+Averaging vertices within a parcel cancels independent noise and raises correlations, so a
+parcel-level ceiling and a vertex-level ceiling are not comparable numbers, and conflating
+them would manufacture an agreement or a disagreement that is really a change of spatial
+unit.
+
+\section{Two silent failures, and why they are reported}
+\label{sec:failures}
+
+An earlier version of this measurement gave $0.2247$, CI $[0.2147, 0.2363]$, described as
+covering ``482 parcels''. That value is withdrawn. Both defects that produced it changed the
+number without raising an error, which is precisely why they are worth reporting: any group
+repeating this measurement can reproduce them.
+
+\textbf{The episode was selected by position.} The analysis code carried a placeholder for
+the stimulus identifier and fell back to the first key in the response file. That key is a
+different episode from the one under prediction. Subjects do not agree on which session an
+episode is stored under, so positional selection is inconsistent across files as well. The
+ceiling was therefore measured on one episode while the prediction pass targeted another.
+
+\textbf{The array was transposed.} The correlation routine expects
+$(\text{units}, \text{timepoints})$. The recordings are stored
+$(\text{timepoints}, \text{parcels})$, and the orientation guard tested whether the first axis
+was longer than the second. For a $(482, 1000)$ array that test cannot fire, so every
+correlation ran across the parcel axis: the reported quantity was an inter-subject spatial
+similarity per timepoint, presented as a per-parcel reliability. The ``482 parcels'' in the
+withdrawn figure was the timepoint count; the atlas has 1000 parcels.
+
+Running the original code path against the same four files reproduces $0.2247$, CI
+$[0.2147, 0.2363]$ and the count of 482 exactly, which is what identifies the cause rather
+than merely fitting it.
+
+Two practices follow, and we state them as recommendations because both defects are generic.
+Select records by name, never by position. Decide array orientation against a known constant
+such as the atlas size, never by comparing axis lengths, since an acquisition with more
+timepoints than units inverts a length-based rule and still produces a plausible correlation.
+
+\section{The prediction pass, specified and not yet run}
+\label{sec:pending}
+
+The remaining half of the replication requires running the checkpoint over the same stimulus
+and correlating its predictions against the same recordings. That pass is written and is not
+yet run: the compute budget available for this work was exhausted by the corpus scan
+described in the companion paper. It is specified here in full so the claim of what remains
+is checkable rather than vague.
+
+\begin{enumerate}
+\item Load the released checkpoint in the average-subject configuration its loader forces,
+which is the configuration the audit concerns.
+\item Predict the response to episode \texttt{s01e01a}, the episode whose ceiling is reported
+above.
+\item Project predictions from the encoder's fsaverage5 vertices into the 1000 Schaefer
+parcels, rather than upsampling the recordings, since upsampling would invent within-parcel
+structure the data does not have.
+\item Match the recording to the prediction by episode name, and assert orientation against
+the parcel count, for the reasons in Section~\ref{sec:failures}.
+\item Correlate per parcel over time, and report the sign as measured. Nothing is flipped or
+absolute-valued: the sign is the finding under test.
+\end{enumerate}
+
+The comparison to state on completion is between the encoder correlation and the ceiling
+above. A negative encoder correlation against a positive ceiling would replicate the audit's
+direction in parcel space. A positive one below the ceiling would mean the checkpoint carries
+signal but less than people share with each other. Neither result is comparable with the
+audit's vertex-level $-0.0145$ without vertex-level surface derivatives that the public
+mirror does not carry.
+
+\section{Conclusion}
+
+The noise ceiling for the target episode is $0.1517$, CI $[0.1484, 0.1551]$, measured from
+public data and independent of any model. It is reported here because it stands on its own
+and because the prediction pass it exists to calibrate is not yet run. The withdrawn value
+and its two causes are reported for the same reason a null is: both are silent, both are
+reproducible by anyone attempting this measurement, and neither would have announced itself.
+
+\section*{Code and data availability}
+
+The measurement script, the withdrawn code path, and the artifact recording every value
+above are public at \url{https://github.com/brn-mwai/monarch}. The ceiling is produced by
+\texttt{scripts/paper3\_noise\_ceiling.py}, which takes the episode as an argument, matches
+the record by name and asserts orientation against the atlas size.
+
+\begin{thebibliography}{9}
+
+\bibitem{tribe2025}
+TRIBE: TRImodal Brain Encoder for whole-brain fMRI response prediction, arXiv:2507.22229
+(2025).
+
+\bibitem{algonauts2025}
+The Algonauts Project 2025 Challenge: How the Human Brain Makes Sense of Multimodal Movies,
+arXiv:2501.00504 (2025).
+
+\bibitem{schaefer2018}
+A.~Schaefer, R.~Kong, E.~M.~Gordon, T.~O.~Laumann, X.-N.~Zuo, A.~J.~Holmes, S.~B.~Eickhoff,
+B.~T.~T.~Yeo,
+Local-global parcellation of the human cerebral cortex from intrinsic functional connectivity
+MRI,
+Cereb. Cortex 28 (2018) 3095--3114.
+
+\bibitem{yeo2011}
+B.~T.~T.~Yeo et al.,
+The organization of the human cerebral cortex estimated by intrinsic functional connectivity,
+J. Neurophysiol. 106 (2011) 1125--1165.
+
+\end{thebibliography}
+
+\end{document}
