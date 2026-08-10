@@ -108,6 +108,19 @@ needs no large compute.
 measured with a cortical-only model. Training one means the full grid, the source fMRI
 corpora, and compute outside the scope of an undergraduate project.
 
+\section{Code, data and the working instrument}
+
+The pipeline, the corpus builder, the analysis scripts and the figure scripts are public at
+\url{https://github.com/brn-mwai/monarch}. Every number in this document is written by a
+named script into a JSON or CSV artifact and read from there rather than transcribed, so any
+figure or table can be regenerated from the repository alone.
+
+The instrument itself runs at \url{https://monarch.brianmwai.com}. It carries the complete
+400-item corpus with each item's text, its pre-scan labels and its measured values, and it
+draws the predicted response on the cortical surface for the items whose per-vertex maps were
+kept. It answers questions about the corpus from a generated fact sheet and declines anything
+the data does not cover, including any request for a coupling value.
+
 \section{Closing}
 
 This work set out to make an invisible property of media measurable, and to say honestly what

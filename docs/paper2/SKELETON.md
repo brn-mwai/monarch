@@ -158,6 +158,18 @@ would carry a precision neither run has.
 6. Corpus is English-language and drawn from specific sources; the spread is a property of
    that corpus, not of media in general.
 
+## 9. Code and data availability
+
+- Repository: `https://github.com/brn-mwai/monarch`. Pipeline, corpus builder, analysis,
+  figure scripts and the JSON artifacts every reported number is read from.
+- Instrument: `https://monarch.brianmwai.com`. The full 400-item corpus with per-item values
+  and, where the maps were kept, the predicted response on the cortical surface.
+
+Figures showing predicted responses are produced by `scripts/render_brain_figures.py` from
+the saved per-vertex maps, not captured from the interface, so each one states its threshold
+and is regenerable. A screenshot of the interface belongs only where the subject is the
+interface itself.
+
 ---
 
 ## Order of work

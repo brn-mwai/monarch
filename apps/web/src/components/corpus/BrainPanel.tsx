@@ -93,7 +93,7 @@ export function BrainPanel({
             }`}
             title={
               perVertex
-                ? 'Every vertex carries its own predicted value. Vertices below the stated threshold are left unpainted so the anatomy stays readable.'
+                ? 'Every vertex carries its own predicted value. Vertices below the stated threshold are left unpainted so the anatomy stays readable. The surface comes from a second scanning session that kept per-vertex maps; the index beside it comes from the primary scan, and the two sessions agree at ICC 0.876.'
                 : 'Two region averages; the per-vertex map was not kept for this item'
             }
           >

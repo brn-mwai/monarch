@@ -459,6 +459,14 @@ export default function CorpusPage() {
           falls below its baseline and a ratio then has no meaning. Those items are counted,
           never dropped or filled in.
         </p>
+        <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-white/40">
+          Where a surface is drawn per vertex it comes from a second scanning session, which
+          is the one that kept per-vertex maps; every number on this page comes from the
+          primary scan. The two sessions agree at ICC 0.876 over the 375 items both cover,
+          and the category separation replicates in each, so the surface and the index are
+          consistent at the group level but not identical item by item. Scores are not
+          reliable enough to call a single item, and no per-item verdict is given anywhere.
+        </p>
       </section>
 
       <ItemDetail

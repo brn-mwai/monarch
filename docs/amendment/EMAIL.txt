@@ -18,9 +18,12 @@ Four things changed once I actually ran the model:
    This is the change you raised at the proposal defence, and running the model
    is what showed why it was necessary.
 
-3. I tried twice to calibrate the number linking the brain measure to the
-   physics model. Both times the result was indistinguishable from zero, so I
-   report that plainly and quote no value for it.
+3. I tried to calibrate the number linking the brain measure to the physics
+   model. On the partial runs it was indistinguishable from zero; on the
+   complete corpus it no longer is, but the fit still performs worse than the
+   sample mean on data it has not seen, and the estimate scales with a quantity
+   this study does not measure. It is unidentified rather than zero, which is a
+   weaker statement than either, and I quote no value for it anywhere.
 
 4. The dataset my proposal names, NELA-GT-2021, was withdrawn by its authors in
    January 2024. I verified this against the Harvard Dataverse API with a valid
@@ -45,7 +48,10 @@ audited, and analysed. The categories do separate, at an effect size the design
 was powered to detect, though the separation is carried almost entirely by one
 category and each category comes from a single source dataset, so I cannot
 attribute it to framing rather than provenance. Section 3 states that
-confound before the result. I will send a dated plan through to submission
+confound before the result. A second scanning session over 375 of the items
+lets me report test-retest reliability: the separation replicates in that
+session, and single-item scores are too noisy to call an individual item, so
+the thesis makes category-level claims only and gives no per-item verdict. I will send a dated plan through to submission
 separately this week, including the two journal articles.
 
 Could I have fifteen minutes this week, or your approval by email?
