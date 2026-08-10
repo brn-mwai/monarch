@@ -28,8 +28,29 @@
     }
   },
   "results": {
-    "rq2_separation": {},
-    "rq1_classifier": {}
+    "rq2_separation": {
+      "f_statistic": 15.779225328943525,
+      "p_value": 1.0348806227386777e-09,
+      "eta_squared": 0.10677566683558096,
+      "n_total": 400,
+      "baseline": "neutral_informational"
+    },
+    "rq2_effect_size_vs_neutral": {
+      "fear_activating": 0.9389150806286535,
+      "high_outrage": 0.030038584271955906,
+      "reward_hook": 0.3188232613406152
+    },
+    "rq2_reading": "The separation is carried by fear-activating content. High outrage does not separate from neutral at all, and it is the category the proposal expected to separate most. Every category mean is negative, so deliberative content leads throughout.",
+    "rq1_classifier": {
+      "auc": 0.6274,
+      "n": 400,
+      "n_manipulative": 300,
+      "n_neutral": 100,
+      "threshold": -0.012047,
+      "threshold_fitted_in_sample": true,
+      "f1_fitted_in_sample": 0.6680080482897385,
+      "headline_metric": "AUC is the headline. The threshold and the F1 that follows from it were fitted in sample and must be labelled as such whenever they are quoted."
+    }
   },
   "power": {
     "min_detectable_eta_squared": 0.026789363650265394,

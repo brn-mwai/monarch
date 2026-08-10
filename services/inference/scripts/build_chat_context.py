@@ -45,6 +45,13 @@ def build() -> dict:
 
     summary = corpus["summary"]
 
+    # Indexed, not .get(..., {}). An earlier version reached for keys that no longer existed
+    # and shipped an empty results block, so the chat could not state the study's own result.
+    distribution = rq["rq2_distribution"]
+    per_category = distribution["per_category"]
+    separation = distribution["separation"]
+    validation = rq["rq1_validation"]
+
     facts = {
         "what_monarch_is": (
             "An instrument that scores how far a piece of text leans on emotion rather than "
@@ -63,8 +70,37 @@ def build() -> dict:
             "category_means": {c["category"]: c["mean"] for c in summary["categories"]},
         },
         "results": {
-            "rq2_separation": rq.get("separation", {}),
-            "rq1_classifier": rq.get("classifier", {}),
+            "rq2_separation": {
+                "f_statistic": separation["f_statistic"],
+                "p_value": separation["p_value"],
+                "eta_squared": separation["eta_squared"],
+                "n_total": separation["n_total"],
+                "baseline": distribution["baseline"],
+            },
+            "rq2_effect_size_vs_neutral": {
+                name: row["cohens_d_vs_baseline"]
+                for name, row in per_category.items()
+                if "cohens_d_vs_baseline" in row
+            },
+            "rq2_reading": (
+                "The separation is carried by fear-activating content. High outrage does not "
+                "separate from neutral at all, and it is the category the proposal expected "
+                "to separate most. Every category mean is negative, so deliberative content "
+                "leads throughout."
+            ),
+            "rq1_classifier": {
+                "auc": validation["auc"],
+                "n": validation["n"],
+                "n_manipulative": validation["n_manipulative"],
+                "n_neutral": validation["n_neutral"],
+                "threshold": validation["threshold"],
+                "threshold_fitted_in_sample": validation["threshold_fitted_in_sample"],
+                "f1_fitted_in_sample": validation["f1"],
+                "headline_metric": (
+                    "AUC is the headline. The threshold and the F1 that follows from it were "
+                    "fitted in sample and must be labelled as such whenever they are quoted."
+                ),
+            },
         },
         "power": {
             "min_detectable_eta_squared":
@@ -124,7 +160,10 @@ def main() -> int:
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(facts, indent=2), encoding="utf-8")
 
+    sep = facts["results"]["rq2_separation"]
     print(f"corpus items     : {facts['corpus']['items']}")
+    print(f"eta squared      : {sep['eta_squared']:.4f}  (p={sep['p_value']:.3e})")
+    print(f"AUC              : {facts['results']['rq1_classifier']['auc']:.4f}")
     print(f"refusal rules    : {len(facts['must_never_say'])}")
     print(f"\nWrote {args.out} ({args.out.stat().st_size / 1024:.1f} KB)")
     return 0
