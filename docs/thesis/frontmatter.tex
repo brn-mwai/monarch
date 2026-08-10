@@ -4,7 +4,12 @@
 
 \begin{titlepage}
 \centering
-\vspace*{1.2cm}
+{\setstretch{1.0}
+\vspace*{0.4cm}
+
+\includegraphics[height=3.2cm]{assets/cuea.png}
+
+\vspace{0.7cm}
 
 {\Large\bfseries THE CATHOLIC UNIVERSITY OF EASTERN AFRICA}
 
@@ -14,18 +19,18 @@
 \vspace{0.2cm}
 {\normalsize Department of Physics}
 
-\vspace{2.4cm}
+\vspace{1.6cm}
 
 {\LARGE\bfseries\scshape Dissertation}
 
-\vspace{1.2cm}
+\vspace{1.0cm}
 
 {\Large\bfseries A Cortical-Proxy Observable for\\[6pt]
 Emotionally Manipulative Media:\\[6pt]
 An Instrument, a 400-Item Corpus,\\[4pt]
 and a Field Bound}
 
-\vspace{2.4cm}
+\vspace{1.8cm}
 
 \begin{tabular}{r l}
 \textbf{Student Name:}      & Brian Mwai \\[5pt]
@@ -40,11 +45,15 @@ and a Field Bound}
 {\small A dissertation submitted in partial fulfillment of the requirements\\
 for the degree of Bachelor of Science in Physics.}
 
-\vspace{1cm}
+\vspace{0.8cm}
+\par}
 \end{titlepage}
 
 \pagenumbering{roman}
 \setcounter{page}{2}
+% Front matter carries no running head: there is no chapter or section for one to name, and a
+% stale mark left over from the title page is worse than none.
+\pagestyle{plain}
 
 \chapter*{Declaration}
 \addcontentsline{toc}{chapter}{Declaration}
@@ -162,5 +171,6 @@ TR & Repetition time, one fMRI sampling interval \\
 \end{tabular}
 
 \cleardoublepage
+\pagestyle{fancy}
 \pagenumbering{arabic}
 \setcounter{page}{1}
