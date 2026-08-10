@@ -14,10 +14,8 @@ complete and a third is close, waiting on one last computation:
   Paper 3, on whether the brain model I use predicts real brain activity at all.
   Drafted, 6 pages, one measurement still to run.
 
-I can send you all three whenever you would like to read them. One thing I
-should be honest about: I can commit to submitting by whatever date you set, but
-acceptance sits with the journal and those timelines are not in my hands. I will
-also post preprints, which are citable straight away.
+I can send you all three whenever you would like to read them, and I can submit
+by whatever date you set.
 
 The work itself is built and running. You can see it:
 
