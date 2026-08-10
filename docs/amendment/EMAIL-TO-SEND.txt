@@ -2,46 +2,50 @@ Subject: Re: Proposal defence, way forward
 
 Dear Dr. Mutambi,
 
-Thank you, and sorry for the slow reply. I have been away and deep in the build.
+Thank you, and my apologies for the slow reply. I have been away and fully
+occupied with building the project.
 
-On the two articles, mine are already drafted. Two are complete and a third is
-close, waiting on one last computation:
+On the two journal articles, I have already drafted three. Two are complete and
+the third is close, waiting on one final computation:
 
-  Paper 1, the theory. 12 pages, for Physica A.
-  Paper 2, the instrument and the 400-article corpus. 10 pages, for Physica A.
-  Paper 3, on whether the brain model actually predicts real brain activity.
-  6 pages, one measurement still to run.
+  Paper 1, the theory. 12 pages, intended for Physica A.
+  Paper 2, the instrument and the 400-article corpus. 10 pages, also for
+  Physica A.
+  Paper 3, on whether the brain model genuinely predicts real brain activity.
+  6 pages, with one measurement still to run.
 
-Happy to send you all three whenever you want to read them.
+I would be glad to send you all three whenever you would like to read them.
 
-The work is built and running:
+The project is built and running, and you are welcome to look at it:
 
   The tool:   https://monarch.brianmwai.com
   The corpus: https://monarch.brianmwai.com/corpus
   The code:   https://github.com/brn-mwai/monarch
 
 On the corpus page you can open any of the 400 articles, read it, see the score
-the tool gave it, and see the predicted brain response on the surface.
+the tool assigned to it, and see the predicted brain response on the surface.
 
-The instrument is finished, the corpus is scanned and analysed, and the thesis is
-drafted across all seven chapters. One computation is left, about an hour of
-machine time.
+The instrument is complete, the corpus has been scanned and analysed, and the
+thesis is drafted across all seven chapters. One computation remains, requiring
+about an hour of machine time.
 
-I would be guided by you on timing. Once you know when the defence is likely and
-what the faculty deadline is, I will work to it, and I can get the full draft to
-you well before then.
+I will be guided by you on timing. Once you know when the defence is likely to
+take place and what the faculty deadline is, I will work towards it, and I can
+have the full draft with you well in advance.
 
-Attached is a four-page amendment. Four things changed once I ran the model, and
-the biggest is that the brain model only sees the outer surface of the brain, so
-the amygdala my proposal was built on is not in it. I measure the balance between
-surface regions instead. The rest are in the document. Three of the four block
-the write-up, so I need your approval before I can finalise.
+I have attached a four-page amendment. Four aspects of the project changed once I
+ran the model. The most significant is that the brain model only sees the outer
+surface of the brain, so the amygdala on which my proposal was based is not
+included. I now measure the balance between surface regions instead. The
+remaining three are set out in the document. Three of the four affect the
+write-up, so I would need your approval before I can finalise it.
 
-One thing I could use your help with: arXiv needs new submitters to be endorsed
-by someone already publishing there. I would be grateful if you could endorse me.
+There is also one matter on which I would appreciate your help. arXiv requires
+new submitters to be endorsed by someone who already publishes there, and I would
+be grateful if you were able to endorse me.
 
-Your approval by email would be enough to unblock me. If you would rather talk it
-through, could we find fifteen minutes next week?
+Your approval by email would be enough for me to proceed. If you would prefer to
+discuss it, could we find fifteen minutes next week?
 
 Thank you.
 
