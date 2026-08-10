@@ -40,6 +40,14 @@ export interface CorpusData {
     max: number | null;
   };
   items: CorpusItem[];
+  /** Corpus-wide vertex colour range, present once per-vertex maps are shipped. */
+  vectorScale?: {
+    lo: number;
+    hi: number;
+    nVectors: number;
+    percentiles: number[];
+    cortexOnly: boolean;
+  };
 }
 
 const LABELS: Record<string, string> = {

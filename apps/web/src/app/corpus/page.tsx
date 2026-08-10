@@ -90,7 +90,7 @@ export default function CorpusPage() {
   useEffect(() => {
     if (ranked.length < 2) return;
     // Prefer items with a kept per-vertex map, since those are the ones worth looking at
-    // on the surface. Only 12 of 400 have one.
+    // on the surface. 375 of 400 have one; the rest fall back to the region average.
     const withVector = ranked.filter((r) => r.item.hasVector);
     const pool = withVector.length > 1 ? withVector : ranked;
     setPrimary(pool[0].index);
@@ -271,6 +271,7 @@ export default function CorpusPage() {
                     mask={mask}
                     scaleLo={scale.lo}
                     scaleHi={scale.hi}
+                    vectorScale={data.vectorScale ?? null}
                     height={340}
                     compact
                     chrome={false}
@@ -291,6 +292,7 @@ export default function CorpusPage() {
                     mask={mask}
                     scaleLo={scale.lo}
                     scaleHi={scale.hi}
+                    vectorScale={data.vectorScale ?? null}
                     height={340}
                     compact
                     chrome={false}
@@ -314,6 +316,7 @@ export default function CorpusPage() {
                 mask={mask}
                 scaleLo={scale.lo}
                 scaleHi={scale.hi}
+                    vectorScale={data.vectorScale ?? null}
                 height={460}
               />
             )}

@@ -8,6 +8,7 @@ import {
   buildScaledRoiActivation,
   loadItemVector,
   type RoiVertices,
+  type VectorScale,
 } from '@/lib/measured-activation';
 
 const BrainViewer = dynamic(
@@ -28,6 +29,8 @@ interface Props {
   mask: Uint8Array | null;
   scaleLo: number;
   scaleHi: number;
+  /** Corpus-wide vertex range, so two per-vertex maps are comparable. */
+  vectorScale?: VectorScale | null;
   height?: number;
   compact?: boolean;
   /** False inside the shared-control comparison frame, which supplies its own chrome. */
@@ -40,6 +43,7 @@ export function BrainPanel({
   mask,
   scaleLo,
   scaleHi,
+  vectorScale = null,
   height = 420,
   compact = false,
   chrome = true,
@@ -53,13 +57,13 @@ export function BrainPanel({
     let cancelled = false;
     setVector(null);
     if (!item.hasVector) return;
-    loadItemVector(item.id).then((v) => {
+    loadItemVector(item.id, vectorScale, mask).then((v) => {
       if (!cancelled) setVector(v);
     });
     return () => {
       cancelled = true;
     };
-  }, [item]);
+  }, [item, vectorScale, mask]);
 
   const fallback = useMemo(() => {
     if (!rois || item.aAff === null || item.aDel === null) return null;

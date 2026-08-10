@@ -24,6 +24,47 @@ import sys
 from pathlib import Path
 
 PREVIEW_CHARS = 180
+TOTAL_VERTS = 20484
+SCALE_PERCENTILES = (1.0, 99.0)
+
+
+def vector_scale(vectors_dir: Path, mask_path: Path | None) -> dict | None:
+    """Pool every shipped map and take one colour range for the whole corpus.
+
+    Normalising each map by its own percentiles makes every item render identically
+    saturated, so a weakly activated item and a strongly activated one look the same and a
+    comparison between two brains means nothing. The range is therefore measured once across
+    all maps, over cortex only: the medial wall carries no signal and its values would drag
+    the percentiles toward zero.
+    """
+    import numpy as np
+
+    files = sorted(vectors_dir.glob("*.f32"))
+    if not files:
+        return None
+
+    mask = None
+    if mask_path is not None and mask_path.exists():
+        raw = np.frombuffer(mask_path.read_bytes(), dtype=np.uint8)
+        if raw.size == TOTAL_VERTS:
+            mask = raw.astype(bool)
+
+    pooled = []
+    for path in files:
+        values = np.fromfile(path, dtype=np.float32)
+        if values.size != TOTAL_VERTS:
+            raise ValueError(f"{path.name}: {values.size} vertices, expected {TOTAL_VERTS}")
+        pooled.append(values[mask] if mask is not None else values)
+
+    stacked = np.concatenate(pooled)
+    low, high = (float(np.percentile(stacked, q)) for q in SCALE_PERCENTILES)
+    return {
+        "lo": low,
+        "hi": high,
+        "nVectors": len(files),
+        "percentiles": list(SCALE_PERCENTILES),
+        "cortexOnly": mask is not None,
+    }
 
 
 
@@ -110,6 +151,7 @@ def main() -> int:
     parser.add_argument("--scan", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--vectors-dir", type=Path, default=None)
+    parser.add_argument("--medial-mask", type=Path, default=None)
     parser.add_argument("--corpus-target", type=int, default=400)
     args = parser.parse_args()
 
@@ -134,6 +176,10 @@ def main() -> int:
         "summary": summary,
         "items": items(rows, args.vectors_dir),
     }
+    if args.vectors_dir is not None:
+        scale = vector_scale(args.vectors_dir, args.medial_mask)
+        if scale is not None:
+            payload["vectorScale"] = scale
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
@@ -142,6 +188,10 @@ def main() -> int:
     print(f"rows exported : {len(rows)} of {args.corpus_target}")
     print(f"complete      : {payload['complete']}")
     print(f"per-vertex map: {with_vector} of {len(rows)}")
+    if "vectorScale" in payload:
+        vs = payload["vectorScale"]
+        print(f"vertex scale  : [{vs['lo']:+.5f}, {vs['hi']:+.5f}] "
+              f"from {vs['nVectors']} maps, cortexOnly={vs['cortexOnly']}")
     print(f"ratio defined : {summary['nRatioDefined']}  undefined: {summary['nRatioUndefined']}")
     for category in summary["categories"]:
         print(f"  {category['category']:24s} n={category['n']:3d} "

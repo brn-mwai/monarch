@@ -17,8 +17,11 @@ import { useEffect, useRef, useState } from 'react';
 import { BrainViewer } from '@/components/BrainViewer';
 import { NAADistributionMini } from '@/components/charts/NAADistributionMini';
 import { Equation } from '@/components/Equation';
-import type { CorpusItem } from '@/lib/corpus-types';
-import { loadItemVector } from '@/lib/measured-activation';
+import type { CorpusData, CorpusItem } from '@/lib/corpus-types';
+
+/** Maps pulled from each end of the ranking for the hero. Bounds the hero's download. */
+const HERO_ITEMS_PER_END = 6;
+import { loadItemVector, loadMedialMask } from '@/lib/measured-activation';
 
 const FEATURES = [
   {
@@ -66,16 +69,25 @@ export default function HomePage() {
 
     fetch('/data/corpus.json')
       .then((r) => r.json())
-      .then(async (data: { items: CorpusItem[] }) => {
+      .then(async (data: CorpusData) => {
         const withMap = data.items.filter((i) => i.hasVector);
         if (withMap.length < 2 || cancelled) return;
 
         const ranked = [...withMap].sort(
           (a, b) => (b.naaSigned ?? 0) - (a.naaSigned ?? 0),
         );
+
+        // The hero pairs the highest-scoring item against the lowest, so it only ever needs
+        // the two ends of the ranking. Loading every map instead would pull one 82 KB file
+        // per item: fine at the 12 the scan had first kept, 30 MB once 375 exist.
+        const perEnd = Math.min(HERO_ITEMS_PER_END, Math.floor(ranked.length / 2));
+        const sampled = [...ranked.slice(0, perEnd), ...ranked.slice(-perEnd)];
+
+        const mask = await loadMedialMask();
+        const scale = data.vectorScale ?? null;
         const loaded = await Promise.all(
-          ranked.map(async (item) => {
-            const map = await loadItemVector(item.id);
+          sampled.map(async (item) => {
+            const map = await loadItemVector(item.id, scale, mask);
             return map ? { item, map } : null;
           }),
         );

@@ -5,6 +5,12 @@ const TOTAL_VERTS = 20484;
 /** Number of masked vertices used to pin the colour scale. See buildScaledRoiActivation. */
 const SCALE_ANCHORS = 400;
 
+// The renderer treats everything below 0.5 as inactive and paints the very top of its ramp
+// pure white, which is invisible against light grey cortex. Both painters map into this band
+// so the same colour means the same value whichever path drew it.
+const RAMP_FLOOR = 0.52;
+const RAMP_CEILING = 0.92;
+
 let cachedMask: Uint8Array | null = null;
 
 /** fsaverage5 medial-wall mask: 1 = cortex, 0 = medial wall, never painted. */
@@ -52,13 +58,9 @@ export function buildScaledRoiActivation(
   const data = new Float32Array(TOTAL_VERTS);
   const span = hi - lo;
 
-  // The renderer treats everything below 0.5 as inactive and paints the very top of its
-  // ramp pure white, which is invisible against light grey cortex. So the corpus position
-  // is mapped into the band the ramp actually uses, stopping short of white: the lowest
-  // measured value sits at the dark red end and the highest at amber. The mapping stays
-  // monotonic, so a higher value is always a warmer colour.
-  const RAMP_FLOOR = 0.52;
-  const RAMP_CEILING = 0.92;
+  // The corpus position is mapped into the band the ramp actually uses, stopping short of
+  // white: the lowest measured value sits at the dark red end and the highest at amber. The
+  // mapping stays monotonic, so a higher value is always a warmer colour.
   const position = (value: number) => {
     const t = span > 0 ? Math.min(1, Math.max(0, (value - lo) / span)) : 0.5;
     return RAMP_FLOOR + t * (RAMP_CEILING - RAMP_FLOOR);
@@ -87,20 +89,40 @@ export function buildScaledRoiActivation(
 export { loadRoiVertices };
 export type { RoiVertices };
 
+/** Corpus-wide vertex colour range, measured by export_corpus_web.py. */
+export interface VectorScale {
+  lo: number;
+  hi: number;
+}
+
 /**
  * The real per-vertex prediction for an item, when one was kept.
  *
  * A run with --save-vectors writes the (20484,) float32 map the cascade actually produced.
- * That map has genuine structure at every vertex, so the renderer's own normalisation
- * produces the graded picture; nothing here invents a gradient. Items scanned before that
- * flag existed have no map and fall back to the flat two-region fill.
+ * That map has genuine structure at every vertex, so nothing here invents a gradient. Items
+ * scanned before that flag existed have no map and fall back to the flat two-region fill.
+ *
+ * The scale is the corpus-wide one, for the reason given on buildScaledRoiActivation: a map
+ * normalised against its own percentiles renders every item equally saturated, and the
+ * measured spans across this corpus differ by nearly fourfold, so per-item scaling would
+ * show a weakly activated item and a strongly activated one as the same picture. Passing no
+ * scale falls back to the per-item range, which is honest only for a single brain shown
+ * alone.
+ *
+ * The medial wall is never painted. It carries no signal, and the fallback path masks it, so
+ * leaving it lit here would mark the per-vertex maps out with colour the data does not have.
  */
-export async function loadItemVector(id: string): Promise<Float32Array | null> {
+export async function loadItemVector(
+  id: string,
+  scale?: VectorScale | null,
+  medialMask?: Uint8Array | null,
+): Promise<Float32Array | null> {
   try {
     const res = await fetch(`/data/vectors/${id}.f32`);
     if (!res.ok) return null;
     const data = new Float32Array(await res.arrayBuffer());
-    return data.length === TOTAL_VERTS ? displayRange(data) : null;
+    if (data.length !== TOTAL_VERTS) return null;
+    return displayRange(data, scale ?? null, medialMask ?? null);
   } catch {
     return null;
   }
@@ -119,17 +141,48 @@ export async function loadItemVector(id: string): Promise<Float32Array | null> {
  * This is a display range, not a change to the data. The mapping is monotonic, so a
  * higher predicted value is always a warmer colour, and no vertex value is invented.
  */
-function displayRange(data: Float32Array): Float32Array {
-  const sorted = Float32Array.from(data).sort();
-  const at = (q: number) => sorted[Math.floor((q / 100) * (sorted.length - 1))];
-  const lo = at(1);
-  const hi = at(99);
-  const span = hi - lo;
+function displayRange(
+  data: Float32Array,
+  scale: VectorScale | null,
+  medialMask: Uint8Array | null,
+): Float32Array {
+  let lo: number;
+  let hi: number;
 
-  const out = new Float32Array(data.length);
-  for (let i = 0; i < data.length; i++) {
-    const t = span > 0 ? Math.min(1, Math.max(0, (data[i] - lo) / span)) : 0.5;
-    out[i] = 0.5 + t * 0.5;
+  if (scale && scale.hi > scale.lo) {
+    lo = scale.lo;
+    hi = scale.hi;
+  } else {
+    const cortex = medialMask
+      ? data.filter((_, i) => medialMask[i] !== 0)
+      : Float32Array.from(data);
+    const sorted = Float32Array.from(cortex).sort();
+    const at = (q: number) => sorted[Math.floor((q / 100) * (sorted.length - 1))];
+    lo = at(1);
+    hi = at(99);
   }
+
+  const span = hi - lo;
+  const out = new Float32Array(data.length);
+
+  for (let i = 0; i < data.length; i++) {
+    if (medialMask && medialMask[i] === 0) continue;
+    const t = span > 0 ? Math.min(1, Math.max(0, (data[i] - lo) / span)) : 0.5;
+    out[i] = RAMP_FLOOR + t * (RAMP_CEILING - RAMP_FLOOR);
+  }
+
+  // Same trick as buildScaledRoiActivation: pin the renderer's own percentile normalisation
+  // with anchors on masked vertices, which are forced to grey before anything is drawn.
+  // Without them the renderer restretches each map and the shared scale is undone.
+  if (medialMask) {
+    let placed = 0;
+    for (let i = 0; i < TOTAL_VERTS && placed < SCALE_ANCHORS; i++) {
+      if (medialMask[i] === 0) {
+        out[i] = placed % 2 === 0 ? 1 : 0;
+        placed++;
+      }
+    }
+  }
+
   return out;
 }
