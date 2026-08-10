@@ -76,12 +76,13 @@ def summarise(rows: list[dict]) -> dict:
     }
 
 
-def items(rows: list[dict]) -> list[dict]:
+def items(rows: list[dict], vectors_dir: Path | None) -> list[dict]:
     out = []
     for row in rows:
         text = row.get("text", "")
+        item_id = row.get("id", "")
         out.append({
-            "id": row.get("id", ""),
+            "id": item_id,
             "category": row["category"],
             "preview": text[:PREVIEW_CHARS] + ("..." if len(text) > PREVIEW_CHARS else ""),
             "text": text,
@@ -96,6 +97,10 @@ def items(rows: list[dict]) -> list[dict]:
             "naaRatio": _float_or_none(row.get("naa")),
             "aAff": _float_or_none(row.get("a_aff")),
             "aDel": _float_or_none(row.get("a_del")),
+            # Derived from what is on disk, never hand-set. The site loads {id}.f32 only
+            # when this is true, and a stale true draws a flat fill as though it were a
+            # per-vertex prediction.
+            "hasVector": bool(vectors_dir and (vectors_dir / f"{item_id}.f32").exists()),
         })
     return out
 
@@ -104,8 +109,13 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scan", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--vectors-dir", type=Path, default=None)
     parser.add_argument("--corpus-target", type=int, default=400)
     args = parser.parse_args()
+
+    if args.vectors_dir is not None and not args.vectors_dir.is_dir():
+        print(f"[FAIL] {args.vectors_dir} is not a directory", file=sys.stderr)
+        return 1
 
     if not args.scan.exists():
         print(f"[FAIL] {args.scan} not found", file=sys.stderr)
@@ -122,14 +132,16 @@ def main() -> int:
         "corpusTarget": args.corpus_target,
         "complete": len(rows) >= args.corpus_target,
         "summary": summary,
-        "items": items(rows),
+        "items": items(rows, args.vectors_dir),
     }
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
 
+    with_vector = sum(1 for item in payload["items"] if item["hasVector"])
     print(f"rows exported : {len(rows)} of {args.corpus_target}")
     print(f"complete      : {payload['complete']}")
+    print(f"per-vertex map: {with_vector} of {len(rows)}")
     print(f"ratio defined : {summary['nRatioDefined']}  undefined: {summary['nRatioUndefined']}")
     for category in summary["categories"]:
         print(f"  {category['category']:24s} n={category['n']:3d} "
