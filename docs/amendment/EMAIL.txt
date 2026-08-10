@@ -2,11 +2,14 @@ Subject: Thesis update, and four changes I need you to approve
 
 Dear Dr. Mutambi,
 
-The short version: the work is built, it runs, and I am close to done. I need
-your approval on four changes to the proposal before I finish the write-up. The
-four-page amendment is attached.
+Apologies for the slow reply and for not following up sooner. I have been away
+and heads-down on the build.
 
-You can see the whole thing here:
+The work is done and running, and I am close to finished writing. I need your
+approval on four changes to the proposal before I finalise it. The four-page
+amendment is attached.
+
+You can look at it yourself:
 
   The tool:   https://monarch.brianmwai.com
   The corpus: https://monarch.brianmwai.com/corpus
@@ -15,61 +18,59 @@ You can see the whole thing here:
 On the corpus page you can open any of the 400 articles, read it, see the score
 the tool gave it, and see the predicted brain response drawn on the surface.
 
-What we managed to build. A working pipeline that takes a piece of writing, has
-it read aloud, and passes it through a released brain model to predict how a
-reader's cortex would respond. From that it produces one number per article:
-whether the emotional side or the reasoning side is predicted to lead. We then
-built a corpus of 400 articles in four groups, matched for length, scanned all
-400 on a GPU, and analysed the result. Everything is public and every number in
-the thesis is produced by a script rather than typed in by hand.
+What we built. A pipeline that takes a piece of writing, has it read aloud, and
+runs it through a released brain model to predict how a reader's cortex would
+respond. It gives one number per article: whether the emotional side or the
+reasoning side is predicted to lead. We then built a corpus of 400 articles in
+four groups, matched for length, scanned all of them, and analysed the results.
 
 What we found. The four groups do come out different, by a margin the study was
-designed to detect. But the difference is carried almost entirely by one group,
-the fear-based articles. The outrage articles, which I expected to stand out
-most, do not stand out at all. And because each group came from a different
-source, I cannot separate "this is the writing style" from "this is the
-newspaper it came from". I say that plainly before the result everywhere it
-appears, rather than hiding it at the back.
+designed to detect. The difference is carried almost entirely by the fear-based
+articles. The outrage ones, which I expected to stand out most, do not stand out
+at all. And since each group came from a different source, I cannot separate the
+writing style from the newspaper it came from. I say that plainly before the
+result everywhere it appears.
 
-I also scanned 375 of the articles a second time to check the tool repeats
-itself. The group-level result held up. Individual articles moved around too
-much to trust one on its own, so I make no claim about any single article
-anywhere in the thesis or on the site.
+I also rescanned 375 of the articles to check the tool repeats itself. The
+group-level result held. Individual articles moved around too much to trust one
+on its own, so I make no claim about any single article.
 
-One thing I could not do. I looked for Kenyan and African news data with usable
-labels and could not find any. Everything openly available and labelled is
-American or European. So the corpus is English-language from international
-sources, and I say in the limitations that the numbers describe that corpus and
-not media in general. Building a labelled Kenyan set is the obvious next
-project, and I would like to talk about it.
+Two other things worth mentioning. I looked for Kenyan and African news data
+with usable labels and could not find any, so the corpus is entirely American
+and European, and I say so in the limitations. And I had to withdraw one of my
+own numbers after finding the code behind it had picked the wrong stimulus and
+flipped an array. I have written up the corrected version and the mistake.
 
-The four changes I need approved, in brief:
+The four changes I need approved:
 
-1. The brain model I use only sees the outer surface of the brain. The amygdala
-   is deeper, so it is not in there. My proposal was built on it. I measure the
-   balance between surface regions instead, and I never call it the amygdala.
+1. The brain model only sees the outer surface of the brain, so the amygdala is
+   not in it. My proposal was built on the amygdala. I measure the balance
+   between surface regions instead and never call it the amygdala.
 
-2. The original formula divides by a number that turns out to be negative about
-   half the time, which made it unusable. I subtract instead. This is the point
-   you raised at the defence.
+2. The original formula divides by a number that is negative about half the
+   time, which made it unusable. I subtract instead. This is the point you
+   raised at the defence.
 
-3. I could not pin down the constant linking my measure to the physics model.
-   The estimate does not hold up on data it has not seen, so I report that it is
-   not pinned down and quote no value for it.
+3. I could not pin down the constant linking my measure to the physics model, so
+   I report that it is not pinned down and quote no value for it.
 
 4. The dataset my proposal names was withdrawn by its authors in 2024. I checked
-   this directly. I substituted an openly licensed one.
+   directly and substituted an openly licensed one.
 
-What is left. About an hour of GPU time on 15 August for one last check, and
-your approval on the amendment. The thesis itself is drafted, and there are
-three short papers alongside it, two finished and one waiting on that hour.
+I should be clear about scope. What we set out to build eventually is a tool
+anyone could use to tell whether media is manipulative or built to hold
+attention. This is the first phase of that, not the finished thing, and the
+thesis says so directly.
 
-Two asks. Could I have fifteen minutes this week, or your approval by email? And
-if you are able to endorse me on arXiv, I can post the first paper publicly so
-the second one can cite it. New submitters need an endorsement from someone
-already publishing there, and it is the one thing I cannot do myself.
+What is left: about an hour of computing time on 15 August for one last check,
+and your approval. The thesis is drafted, with three short papers alongside it.
 
-Thank you,
+Could I have fifteen minutes this week, or your approval by email? And if you
+are able to endorse me on arXiv, I can post the first paper publicly so the
+second can cite it. New submitters need an endorsement from someone already
+publishing there, and it is the one thing I cannot do myself.
+
+Thank you, and sorry again for the delay.
 
 Brian Mwai
 1050555
