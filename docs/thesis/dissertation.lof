@@ -1,16 +1,16 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Free energy \eqref {eq:landau} at zero field with the derived coefficients \eqref {eq:coefficients}, at $\beta J = 0.8$, $1.0$ and $1.4$. The second minimum appears only above the critical coupling.}}{13}{figure.caption.8}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Order parameter across the transition. The fitted exponent is $0.4872$ against an exact $1/2$.}}{14}{figure.caption.9}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Phase diagram in $(\beta J, h)$. The shaded region is where two opinion states coexist; its upper boundary is the spinodal $h_c(\beta J)$.}}{14}{figure.caption.10}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Coupling required before a content observable of spread $\Delta X$ can drive the population across the spinodal.}}{16}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Free energy \eqref {eq:landau} at zero field with the derived coefficients \eqref {eq:coefficients}, at $\beta J = 0.8$, $1.0$ and $1.4$. The second minimum appears only above the critical coupling.}}{13}{figure.caption.9}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Order parameter across the transition. The fitted exponent is $0.4872$ against an exact $1/2$.}}{14}{figure.caption.10}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Phase diagram in $(\beta J, h)$. The shaded region is where two opinion states coexist; its upper boundary is the spinodal $h_c(\beta J)$.}}{14}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Coupling required before a content observable of spread $\Delta X$ can drive the population across the spinodal.}}{16}{figure.caption.12}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces The two ROI unions on the fsaverage5 surface: affective-salience in orange (1{,}030 vertices) and deliberative-control in blue (851). This figure is a definition and carries no data.}}{20}{figure.caption.12}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces The two ROI unions on the fsaverage5 surface: affective-salience in orange (1{,}030 vertices) and deliberative-control in blue (851). This figure is a definition and carries no data.}}{20}{figure.caption.13}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Distribution of the signed index by category over all 400 items.}}{28}{figure.caption.17}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Every item ranked by the signed index, coloured by category.}}{28}{figure.caption.18}%
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Predicted response for one fear-activating item at every one of the $20{,}484$ cortical vertices, on the pial surface. Vertices below the map's 70th percentile are left unpainted so the anatomy remains readable; the threshold is stated in the figure. This is the encoder's own output and not a smoothed or interpolated field.}}{30}{figure.caption.19}%
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Free energy at each category's measured mean, swept over $\alpha $. The coupling is swept and never fitted, and no value of $\hat {\alpha }$ is quoted.}}{31}{figure.caption.20}%
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Distribution of the signed index by category over all 400 items.}}{28}{figure.caption.18}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Every item ranked by the signed index, coloured by category.}}{28}{figure.caption.19}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Predicted response for one fear-activating item at every one of the $20{,}484$ cortical vertices, on the pial surface. Vertices below the map's 70th percentile are left unpainted so the anatomy remains readable; the threshold is stated in the figure. This is the encoder's own output and not a smoothed or interpolated field.}}{30}{figure.caption.20}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Free energy at each category's measured mean, swept over $\alpha $. The coupling is swept and never fitted, and no value of $\hat {\alpha }$ is quoted.}}{31}{figure.caption.21}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
