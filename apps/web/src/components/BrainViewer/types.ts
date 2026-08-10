@@ -70,6 +70,11 @@ export interface ROILabel {
 export interface BrainViewerProps {
   /** Predicted cortical activation: Float32Array of length 20484. */
   activation?: Float32Array | null;
+  /**
+   * The activation is already in [0, 1] on a scale the caller fixed, so skip the robust
+   * percentile rescale. Required whenever one scale has to hold across several items.
+   */
+  activationPreNormalized?: boolean;
   /** Optional comparison activation for side-by-side or A/B mode. */
   comparisonActivation?: Float32Array | null;
   /** Three-channel modality activation for multimodal RGB visualization. */

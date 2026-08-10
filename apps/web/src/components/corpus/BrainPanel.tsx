@@ -156,6 +156,7 @@ export function BrainPanel({
         {activation ? (
           <BrainViewer
             activation={activation}
+            activationPreNormalized
             colorMode="activation"
             interactive
             autoRotate

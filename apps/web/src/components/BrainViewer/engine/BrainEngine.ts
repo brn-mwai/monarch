@@ -57,6 +57,7 @@ export class BrainEngine {
   private disposed = false;
   private activationActive = false;
   private activationData: Float32Array | null = null;
+  private activationPreNormalized = false;
   private multimodalData: MultimodalActivation | null = null;
   private currentColorMode: ColorMode = 'activation';
 
@@ -213,7 +214,11 @@ export class BrainEngine {
     void fetch('/mesh/medial_mask.bin')
       .then((r) => (r.ok ? r.arrayBuffer() : null))
       .then((buf) => {
-        if (buf) this.activationMapper?.setMedialMask(new Uint8Array(buf));
+        if (!buf) return;
+        this.activationMapper?.setMedialMask(new Uint8Array(buf));
+        // The fetch can land after the first paint, and nothing repainted, so whatever was
+        // drawn kept its unmasked colours for the life of the view.
+        if (this.activationActive) this.reapplyColors();
       })
       .catch(() => {});
 
@@ -380,16 +385,28 @@ export class BrainEngine {
   // Public API
   // ------------------------------------------------------------------
 
-  setActivation(data: Float32Array): void {
+  /**
+   * Paint an activation.
+   *
+   * ``preNormalized`` means the caller has already put the values in [0, 1] against a scale
+   * it chose, so the robust percentile rescale is skipped. A caller that fixes its own scale
+   * across items has to skip it: rescaling per item is what makes two surfaces incomparable.
+   */
+  setActivation(data: Float32Array, preNormalized = false): void {
     if (!this.loaded || !this.activationMapper) return;
     const left = this.meshLoader.getLeftMesh();
     const right = this.meshLoader.getRightMesh();
     // Cache a copy so mid-morph refreshes can re-blend against the live
     // sulcal palette without depending on React props staying stable.
     this.activationData = new Float32Array(data);
+    this.activationPreNormalized = preNormalized;
     this.multimodalData = null;
     this.currentColorMode = 'activation';
-    this.activationMapper.applyActivation(left, right, this.activationData);
+    if (preNormalized) {
+      this.activationMapper.applyNormalized(left, right, this.activationData);
+    } else {
+      this.activationMapper.applyActivation(left, right, this.activationData);
+    }
     this.activationActive = true;
   }
 
@@ -437,7 +454,11 @@ export class BrainEngine {
     if (this.currentColorMode === 'multimodal' && this.multimodalData) {
       this.activationMapper.applyMultimodalActivation(left, right, this.multimodalData);
     } else if (this.activationData) {
-      this.activationMapper.applyActivation(left, right, this.activationData);
+      if (this.activationPreNormalized) {
+        this.activationMapper.applyNormalized(left, right, this.activationData);
+      } else {
+        this.activationMapper.applyActivation(left, right, this.activationData);
+      }
     } else {
       this.activationMapper.clearActivation(left, right);
     }

@@ -30,6 +30,7 @@ export * from './types';
  */
 export function BrainViewer({
   activation = null,
+  activationPreNormalized = false,
   multimodalActivation = null,
   autoRotate = false,
   colorMode = 'activation',
@@ -189,11 +190,11 @@ export function BrainViewer({
       return;
     }
     if (activation && activation.length > 0) {
-      engine.setActivation(activation);
+      engine.setActivation(activation, activationPreNormalized);
       return;
     }
     engine.clearActivation();
-  }, [activation, multimodalActivation, colorMode, isLoaded]);
+  }, [activation, activationPreNormalized, multimodalActivation, colorMode, isLoaded]);
 
   useEffect(() => {
     const engine = engineRef.current;

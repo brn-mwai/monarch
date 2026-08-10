@@ -164,6 +164,7 @@ export default function HomePage() {
             <div className="relative h-[480px] w-full max-w-[540px]">
               <BrainViewer
                 activation={pair.left?.map ?? null}
+                activationPreNormalized
                 colorMode="activation"
                 initialView="left"
                 showOverlays={false}
@@ -233,6 +234,7 @@ export default function HomePage() {
             <div className="relative h-[480px] w-full max-w-[540px]">
               <BrainViewer
                 activation={pair.right?.map ?? null}
+                activationPreNormalized
                 colorMode="activation"
                 initialView="right"
                 showOverlays={false}

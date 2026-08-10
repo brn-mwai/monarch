@@ -2,22 +2,16 @@ import { loadRoiVertices, type RoiVertices } from './roi-activation';
 
 const TOTAL_VERTS = 20484;
 
-// The renderer rescales whatever it is handed by robustNormalize(data, 99, twoSided), which
-// clips to [p1, p99] and stretches that to [0, 1]. Both painters below map into a fixed band
-// instead, so the band only survives if p1 and p99 land on anchors rather than on real
-// vertices. That needs strictly more than 1% of all vertices at each end: 200 anchors per end
-// against the 205 that 1% of 20484 requires is why every map came back restretched and amber.
-const RENDER_PERCENTILE = 99;
+// Both painters output values already in [0, 1] on a corpus-wide scale and are handed to the
+// viewer with activationPreNormalized, so its own percentile rescale is skipped. An earlier
+// version instead planted anchor vertices at 0 and 1 to force that rescale into an identity.
+// Anchors have to live somewhere, and the medial wall only hides them while the mask happens
+// to be loaded, so they surfaced as a white speckled patch as soon as a medial view was used.
 
 /** Fallback paint threshold when no corpus-wide one is shipped. Matches Figure 5.3. */
 const THRESHOLD_PERCENTILE = 70;
-const ANCHORS_PER_END =
-  Math.ceil((TOTAL_VERTS * (100 - RENDER_PERCENTILE)) / 100) + 64;
 
-/** Masked vertices used to pin the colour scale. See buildScaledRoiActivation. */
-const SCALE_ANCHORS = ANCHORS_PER_END * 2;
-
-// The renderer treats everything below 0.5 as inactive and paints the very top of its ramp
+// Everything at or below 0.5 is inactive to the renderer, and the very top of its ramp is
 // pure white, which is invisible against light grey cortex. Both painters map into this band
 // so the same colour means the same value whichever path drew it.
 const RAMP_FLOOR = 0.52;
@@ -83,16 +77,6 @@ export function buildScaledRoiActivation(
   }
   for (const vertex of rois.affective) {
     if (vertex >= 0 && vertex < TOTAL_VERTS) data[vertex] = position(aAff);
-  }
-
-  if (medialMask) {
-    let placed = 0;
-    for (let i = 0; i < TOTAL_VERTS && placed < SCALE_ANCHORS; i++) {
-      if (medialMask[i] === 0) {
-        data[i] = placed % 2 === 0 ? 1 : 0;
-        placed++;
-      }
-    }
   }
 
   return data;
@@ -181,19 +165,6 @@ function displayRange(
     if (data[i] < floor) continue;
     const t = span > 0 ? Math.min(1, (data[i] - floor) / span) : 1;
     out[i] = RAMP_FLOOR + t * (RAMP_CEILING - RAMP_FLOOR);
-  }
-
-  // Same trick as buildScaledRoiActivation: pin the renderer's own percentile normalisation
-  // with anchors on masked vertices, which are forced to grey before anything is drawn.
-  // Without them the renderer restretches each map and the shared scale is undone.
-  if (medialMask) {
-    let placed = 0;
-    for (let i = 0; i < TOTAL_VERTS && placed < SCALE_ANCHORS; i++) {
-      if (medialMask[i] === 0) {
-        out[i] = placed % 2 === 0 ? 1 : 0;
-        placed++;
-      }
-    }
   }
 
   return out;
