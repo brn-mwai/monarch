@@ -108,10 +108,16 @@ should not be accepted uncritically, and it cannot be dismissed either.
 
 Work toward replicating it was begun within this project. Using the publicly released
 Algonauts~2025 responses, the leave-one-subject-out noise ceiling was measured directly from
-four subjects across 482 parcels:
+four subjects over all 1000 Schaefer parcels of episode \texttt{s01e01a}, 592 timepoints:
 \begin{equation}
-r_{\text{ceiling}} = 0.2247, \qquad 95\%\ \text{CI}\ [0.2147,\ 0.2363].
+r_{\text{ceiling}} = 0.1517, \qquad 95\%\ \text{CI}\ [0.1484,\ 0.1551].
 \end{equation}
+An earlier figure of $0.2247$ is withdrawn. It was produced by a notebook cell that selected
+the first key in the response file, which is a different episode from the one under
+prediction, and whose orientation test could not fire on an array with fewer timepoints than
+parcels, so the correlation ran across the parcel axis and the reported count of 482
+``parcels'' was in fact the number of timepoints. The measurement now lives in a script that
+takes the episode as an argument and asserts orientation against the atlas size.
 This is the quantity any encoder must be judged against, and it is measured here rather than
 quoted. It is larger than the audit's $+0.0508$ by construction and not by disagreement:
 averaging vertices within a parcel cancels independent noise and raises correlations, so a

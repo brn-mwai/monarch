@@ -1,15 +1,25 @@
 {
+  "episode": "s01e01a",
   "n_subjects": 4,
-  "n_parcels_defined": 482,
-  "mean_ceiling": 0.22469459912669704,
-  "ci_low": 0.21466150828917327,
-  "ci_high": 0.2363001210426896,
+  "n_parcels_total": 1000,
+  "n_parcels_defined": 1000,
+  "n_timepoints": 592,
+  "mean_ceiling": 0.15173307503995034,
+  "ci_low": 0.14837066390784398,
+  "ci_high": 0.1550954861720567,
   "per_subject": [
-    0.21172937609959566,
-    0.240804684310736,
-    0.22345790485790615,
-    0.22278643123855035
+    0.15534252937844067,
+    0.15484844296567274,
+    0.14971574799418352,
+    0.1470255798215044
   ],
   "space": "Schaefer 1000 parcels, MNI152NLin2009cAsym",
+  "orientation": "(parcels, timepoints); correlation is over time within each parcel",
+  "sources": [
+    "sub-01_task-friends_space-MNI152NLin2009cAsym_atlas-Schaefer18_parcel-1000Par7Net_desc-s123456_bold.h5",
+    "sub-02_task-friends_space-MNI152NLin2009cAsym_atlas-Schaefer18_parcel-1000Par7Net_desc-s123456_bold.h5",
+    "sub-03_task-friends_space-MNI152NLin2009cAsym_atlas-Schaefer18_parcel-1000Par7Net_desc-s123456_bold.h5",
+    "sub-05_task-friends_space-MNI152NLin2009cAsym_atlas-Schaefer18_parcel-1000Par7Net_desc-s123456_bold.h5"
+  ],
   "note": "parcel level, not vertex level; averaging within a parcel raises r"
 }
