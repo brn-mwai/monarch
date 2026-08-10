@@ -1,0 +1,48 @@
+Subject: Re: Proposal defence, way forward
+
+Dear Dr. Mutambi,
+
+Thank you, and sorry for the slow reply. I have been away and deep in the build.
+
+On the two articles, mine are already drafted. Two are complete and a third is
+close, waiting on one last computation:
+
+  Paper 1, the theory. 12 pages, for Physica A.
+  Paper 2, the instrument and the 400-article corpus. 10 pages, for Physica A.
+  Paper 3, on whether the brain model actually predicts real brain activity.
+  6 pages, one measurement still to run.
+
+Happy to send you all three whenever you want to read them.
+
+The work is built and running:
+
+  The tool:   https://monarch.brianmwai.com
+  The corpus: https://monarch.brianmwai.com/corpus
+  The code:   https://github.com/brn-mwai/monarch
+
+On the corpus page you can open any of the 400 articles, read it, see the score
+the tool gave it, and see the predicted brain response on the surface.
+
+The instrument is finished, the corpus is scanned and analysed, and the thesis is
+drafted across all seven chapters. One computation is left, about an hour of
+machine time.
+
+I would be guided by you on timing. Once you know when the defence is likely and
+what the faculty deadline is, I will work to it, and I can get the full draft to
+you well before then.
+
+Attached is a four-page amendment. Four things changed once I ran the model, and
+the biggest is that the brain model only sees the outer surface of the brain, so
+the amygdala my proposal was built on is not in it. I measure the balance between
+surface regions instead. The rest are in the document. Three of the four block
+the write-up, so I need your approval before I can finalise.
+
+One thing I could use your help with: arXiv needs new submitters to be endorsed
+by someone already publishing there. I would be grateful if you could endorse me.
+
+Could I have fifteen minutes this week, or your approval by email?
+
+Thank you.
+
+Brian Mwai
+1050555
