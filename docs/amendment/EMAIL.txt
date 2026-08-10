@@ -1,9 +1,9 @@
-Subject: Thesis: four changes needing your approval before I write up
+Subject: Thesis: amendment for your approval, and where the write-up stands
 
 Dear Dr. Mutambi,
 
 Attached is a four-page amendment to my proposal. I need your approval on it
-before I write the thesis. The working tool is at https://monarch.brianmwai.com
+before I finalise the thesis. The working tool is at https://monarch.brianmwai.com
 if you would like to see what the project delivers.
 
 Four things changed once I actually ran the model:
@@ -30,31 +30,58 @@ Four things changed once I actually ran the model:
    account. I have substituted SemEval-2019 Task 4, which is openly licensed and
    labels the article rather than the publisher.
 
-One further development I would like your view on. A commercial lab has
-published an audit of the same released checkpoint, in the same average-subject
-configuration my instrument uses, reporting that its predictions are
-anti-correlated with real cortex across four subjects. It is not peer reviewed,
-it comes from a company selling the alternative, and I have not replicated it.
-If it holds, it would explain why the coupling in point 3 has no predictive
-value out of sample, and I think replicating it is the strongest piece of work
-available to me after submission.
+Where the work stands. The apparatus is built and tested and the 400-item corpus
+is complete, verified row by row, and analysed. The categories separate at an
+effect size the design was powered to detect, though the separation is carried
+almost entirely by one category, and each category comes from a single source
+dataset, so I cannot attribute it to framing rather than provenance. Section 3
+of the attachment states that confound before the result.
 
-Section 3 of the attachment sets out what the thesis delivers with these changes
-applied, and what it will not claim. Section 4 lists the decisions I need, three
-of which block the write-up.
+Two things I did that were not in the plan, both because the result would not be
+honest without them. A second scanning session over 375 of the items gives me a
+test-retest measurement: the separation replicates, but individual item scores
+are too noisy to call a single item, so the thesis makes category-level claims
+only and gives no per-item verdict anywhere. And I withdrew one of my own
+numbers, a noise ceiling I had reported earlier, after finding that the code
+producing it had selected the wrong stimulus and transposed an array. Both
+defects changed the value without raising an error. The corrected measurement
+and the two failure modes are written up, since they are the kind of thing that
+is easy for anyone repeating this to reproduce.
 
-The apparatus is built and tested, and the 400-item corpus is complete,
-audited, and analysed. The categories do separate, at an effect size the design
-was powered to detect, though the separation is carried almost entirely by one
-category and each category comes from a single source dataset, so I cannot
-attribute it to framing rather than provenance. Section 3 states that
-confound before the result. A second scanning session over 375 of the items
-lets me report test-retest reliability: the separation replicates in that
-session, and single-item scores are too noisy to call an individual item, so
-the thesis makes category-level claims only and gives no per-item verdict. I will send a dated plan through to submission
-separately this week, including the two journal articles.
+What I am writing. The dissertation is drafted at seven chapters with the front
+matter, and compiles to a bound-ready document. Alongside it are three papers:
 
-Could I have fifteen minutes this week, or your approval by email?
+  Paper 1, the theory, complete at 12 pages. It states what any content
+  observable must satisfy for media to drive a transition in a mean-field model,
+  which can be checked before any data is collected. Intended for Physica A.
+
+  Paper 2, the instrument and the corpus, complete at 10 pages. It supplies the
+  measured quantity Paper 1 cannot, and reports the confound and the reliability
+  openly. Intended for Physica A as the companion.
+
+  Paper 3, on whether the released encoder predicts real cortex at all, drafted
+  at 6 pages with one measurement still to run. Intended for Imaging
+  Neuroscience.
+
+I am close to done. What remains is the final prediction run for Paper 3, which
+needs about an hour of GPU time that becomes available on 15 August, and your
+approval on the amendment.
+
+Two things I would value your view on.
+
+First, an audit published by a commercial lab reports that the released
+checkpoint I use, in the same configuration, is anti-correlated with real
+cortex. It is not peer reviewed and it comes from a company selling the
+alternative, and I have not replicated it. If it holds it would explain why the
+coupling in point 3 has no predictive value out of sample. Paper 3 is my attempt
+to settle it.
+
+Second, if you are able to endorse me for arXiv in physics.soc-ph, I can post
+Paper 1 as a preprint so that Paper 2 can cite it properly. Endorsement is
+required for a first-time submitter and it is the longest-lead item I have.
+
+Section 4 of the attachment lists the decisions I need, three of which block the
+write-up. Could I have fifteen minutes this week, or your approval by email?
 
 Brian Mwai
 1050555
