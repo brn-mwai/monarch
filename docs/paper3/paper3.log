@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.24)  10 AUG 2026 19:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.24)  10 AUG 2026 19:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -399,47 +399,47 @@ Package hyperref Info: Link coloring OFF on input line 11.
 \@outlinefile=\write4
 \openout4 = `paper3.out'.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 28.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 30.
 
 
 (C:\Users\Windows\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 28.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 30.
 
 
 (C:\Users\Windows\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-[1
-
-
-{C:/Users/Windows/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}] [2]
-LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 9
-2.
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 4
+7.
 
 (C:\Users\Windows\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
-Overfull \hbox (41.4668pt too wide) in paragraph at lines 119--126
+[1
+
+
+{C:/Users/Windows/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}] [2]
+Overfull \hbox (41.4668pt too wide) in paragraph at lines 121--128
 []\T1/cmr/bx/n/12 The ar-ray was trans-posed. \T1/cmr/m/n/12 The cor-re-la-tion
  rou-tine ex-pects $\OT1/cmr/m/n/12 ([]\OML/cmm/m/it/12 ; []\OT1/cmr/m/n/12 )$\
 T1/cmr/m/n/12 .
  []
 
 [3] [4]
-Overfull \hbox (3.52899pt too wide) in paragraph at lines 176--180
+Overfull \hbox (3.52899pt too wide) in paragraph at lines 178--182
 []\T1/cmr/m/n/12 The mea-sure-ment script, the with-drawn code path, and the ar
 -ti-fact record-
  []
 
 
-Overfull \hbox (4.08444pt too wide) in paragraph at lines 176--180
+Overfull \hbox (4.08444pt too wide) in paragraph at lines 178--182
 \T1/cmr/m/n/12 ing ev-ery value above are pub-lic at []$\T1/cmtt/m/n/12 https :
  / / github . com / brn-[]mwai / monarch$[]\T1/cmr/m/n/12 .
  []
 
-[5] (paper3.aux)
+[5] [6] (paper3.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
@@ -448,28 +448,31 @@ Package rerunfilecheck Info: File `paper3.out' has not changed.
 (rerunfilecheck)             Checksum: 36A8E3FC870975C0F0F6FBFD7DA34298;1275.
  ) 
 Here is how much of TeX's memory you used:
- 10712 strings out of 474486
- 163546 string characters out of 5742810
+ 10735 strings out of 474486
+ 163770 string characters out of 5742810
  1933542 words of memory out of 5000000
- 32835 multiletter control sequences out of 15000+600000
- 568998 words of font info for 63 fonts, out of 8000000 for 9000
+ 32847 multiletter control sequences out of 15000+600000
+ 572465 words of font info for 74 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,6n,79p,337b,444s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,7n,79p,337b,608s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Windows\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ec
 tt1200.pk> <C:\Users\Windows\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/d
-pi600\ecrm0800.pk> <C:\Users\Windows\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
-pen/ec/dpi600\ecti1200.pk> <C:\Users\Windows\AppData\Local\MiKTeX\fonts/pk/ljfo
-ur/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\Windows\AppData\Local\MiKTeX\fonts
-/pk/ljfour/jknappen/ec/dpi600\ecti1000.pk> <C:\Users\Windows\AppData\Local\MiKT
-eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\Windows\AppData\Lo
-cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk><C:/Users/Windows/App
-Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/
-Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-<C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
-cmsy10.pfb>
-Output written on paper3.pdf (5 pages, 124795 bytes).
+pi600\ecrm1000.pk> <C:\Users\Windows\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
+pen/ec/dpi600\ectt1000.pk> <C:\Users\Windows\AppData\Local\MiKTeX\fonts/pk/ljfo
+ur/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\Windows\AppData\Local\MiKTeX\fonts
+/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\Windows\AppData\Local\MiKT
+eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1000.pk> <C:\Users\Windows\AppData\Lo
+cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti0700.pk> <C:\Users\Windows\Ap
+pData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\Wi
+ndows\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\
+Users\Windows\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.
+pk><C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
+cm/cmmi12.pfb><C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/publi
+c/amsfonts/cm/cmr12.pfb><C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/t
+ype1/public/amsfonts/cm/cmsy10.pfb>
+Output written on paper3.pdf (6 pages, 144959 bytes).
 PDF statistics:
- 332 PDF objects out of 1000 (max. 8388607)
- 25 named destinations out of 1000 (max. 500000)
+ 404 PDF objects out of 1000 (max. 8388607)
+ 31 named destinations out of 1000 (max. 500000)
  57 words of extra memory for PDF output out of 10000 (max. 10000000)
 
