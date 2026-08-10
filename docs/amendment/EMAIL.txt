@@ -1,87 +1,75 @@
-Subject: Thesis: amendment for your approval, and where the write-up stands
+Subject: Thesis update, and four changes I need you to approve
 
 Dear Dr. Mutambi,
 
-Attached is a four-page amendment to my proposal. I need your approval on it
-before I finalise the thesis. The working tool is at https://monarch.brianmwai.com
-if you would like to see what the project delivers.
+The short version: the work is built, it runs, and I am close to done. I need
+your approval on four changes to the proposal before I finish the write-up. The
+four-page amendment is attached.
 
-Four things changed once I actually ran the model:
+You can see the whole thing here:
 
-1. The released TRIBE v2 checkpoint only predicts activity on the outer surface
-   of the brain, 20,484 points. The amygdala sits deep inside, so it is not
-   included. My proposal's main measurement was built on it. I now measure the
+  The tool:   https://monarch.brianmwai.com
+  The corpus: https://monarch.brianmwai.com/corpus
+  The code:   https://github.com/brn-mwai/monarch
+
+On the corpus page you can open any of the 400 articles, read it, see the score
+the tool gave it, and see the predicted brain response drawn on the surface.
+
+What we managed to build. A working pipeline that takes a piece of writing, has
+it read aloud, and passes it through a released brain model to predict how a
+reader's cortex would respond. From that it produces one number per article:
+whether the emotional side or the reasoning side is predicted to lead. We then
+built a corpus of 400 articles in four groups, matched for length, scanned all
+400 on a GPU, and analysed the result. Everything is public and every number in
+the thesis is produced by a script rather than typed in by hand.
+
+What we found. The four groups do come out different, by a margin the study was
+designed to detect. But the difference is carried almost entirely by one group,
+the fear-based articles. The outrage articles, which I expected to stand out
+most, do not stand out at all. And because each group came from a different
+source, I cannot separate "this is the writing style" from "this is the
+newspaper it came from". I say that plainly before the result everywhere it
+appears, rather than hiding it at the back.
+
+I also scanned 375 of the articles a second time to check the tool repeats
+itself. The group-level result held up. Individual articles moved around too
+much to trust one on its own, so I make no claim about any single article
+anywhere in the thesis or on the site.
+
+One thing I could not do. I looked for Kenyan and African news data with usable
+labels and could not find any. Everything openly available and labelled is
+American or European. So the corpus is English-language from international
+sources, and I say in the limitations that the numbers describe that corpus and
+not media in general. Building a labelled Kenyan set is the obvious next
+project, and I would like to talk about it.
+
+The four changes I need approved, in brief:
+
+1. The brain model I use only sees the outer surface of the brain. The amygdala
+   is deeper, so it is not in there. My proposal was built on it. I measure the
    balance between surface regions instead, and I never call it the amygdala.
 
-2. The original formula divides by a number that is negative about half the
-   time, which made it unusable on real content. I subtract instead of dividing.
-   This is the change you raised at the proposal defence, and running the model
-   is what showed why it was necessary.
+2. The original formula divides by a number that turns out to be negative about
+   half the time, which made it unusable. I subtract instead. This is the point
+   you raised at the defence.
 
-3. I tried to calibrate the number linking the brain measure to the physics
-   model. On the partial runs it was indistinguishable from zero; on the
-   complete corpus it no longer is, but the fit still performs worse than the
-   sample mean on data it has not seen, and the estimate scales with a quantity
-   this study does not measure. It is unidentified rather than zero, which is a
-   weaker statement than either, and I quote no value for it anywhere.
+3. I could not pin down the constant linking my measure to the physics model.
+   The estimate does not hold up on data it has not seen, so I report that it is
+   not pinned down and quote no value for it.
 
-4. The dataset my proposal names, NELA-GT-2021, was withdrawn by its authors in
-   January 2024. I verified this against the Harvard Dataverse API with a valid
-   account. I have substituted SemEval-2019 Task 4, which is openly licensed and
-   labels the article rather than the publisher.
+4. The dataset my proposal names was withdrawn by its authors in 2024. I checked
+   this directly. I substituted an openly licensed one.
 
-Where the work stands. The apparatus is built and tested and the 400-item corpus
-is complete, verified row by row, and analysed. The categories separate at an
-effect size the design was powered to detect, though the separation is carried
-almost entirely by one category, and each category comes from a single source
-dataset, so I cannot attribute it to framing rather than provenance. Section 3
-of the attachment states that confound before the result.
+What is left. About an hour of GPU time on 15 August for one last check, and
+your approval on the amendment. The thesis itself is drafted, and there are
+three short papers alongside it, two finished and one waiting on that hour.
 
-Two things I did that were not in the plan, both because the result would not be
-honest without them. A second scanning session over 375 of the items gives me a
-test-retest measurement: the separation replicates, but individual item scores
-are too noisy to call a single item, so the thesis makes category-level claims
-only and gives no per-item verdict anywhere. And I withdrew one of my own
-numbers, a noise ceiling I had reported earlier, after finding that the code
-producing it had selected the wrong stimulus and transposed an array. Both
-defects changed the value without raising an error. The corrected measurement
-and the two failure modes are written up, since they are the kind of thing that
-is easy for anyone repeating this to reproduce.
+Two asks. Could I have fifteen minutes this week, or your approval by email? And
+if you are able to endorse me on arXiv, I can post the first paper publicly so
+the second one can cite it. New submitters need an endorsement from someone
+already publishing there, and it is the one thing I cannot do myself.
 
-What I am writing. The dissertation is drafted at seven chapters with the front
-matter, and compiles to a bound-ready document. Alongside it are three papers:
-
-  Paper 1, the theory, complete at 12 pages. It states what any content
-  observable must satisfy for media to drive a transition in a mean-field model,
-  which can be checked before any data is collected. Intended for Physica A.
-
-  Paper 2, the instrument and the corpus, complete at 10 pages. It supplies the
-  measured quantity Paper 1 cannot, and reports the confound and the reliability
-  openly. Intended for Physica A as the companion.
-
-  Paper 3, on whether the released encoder predicts real cortex at all, drafted
-  at 6 pages with one measurement still to run. Intended for Imaging
-  Neuroscience.
-
-I am close to done. What remains is the final prediction run for Paper 3, which
-needs about an hour of GPU time that becomes available on 15 August, and your
-approval on the amendment.
-
-Two things I would value your view on.
-
-First, an audit published by a commercial lab reports that the released
-checkpoint I use, in the same configuration, is anti-correlated with real
-cortex. It is not peer reviewed and it comes from a company selling the
-alternative, and I have not replicated it. If it holds it would explain why the
-coupling in point 3 has no predictive value out of sample. Paper 3 is my attempt
-to settle it.
-
-Second, if you are able to endorse me for arXiv in physics.soc-ph, I can post
-Paper 1 as a preprint so that Paper 2 can cite it properly. Endorsement is
-required for a first-time submitter and it is the longest-lead item I have.
-
-Section 4 of the attachment lists the decisions I need, three of which block the
-write-up. Could I have fifteen minutes this week, or your approval by email?
+Thank you,
 
 Brian Mwai
 1050555
