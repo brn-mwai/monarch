@@ -8,6 +8,9 @@ const TOTAL_VERTS = 20484;
 // vertices. That needs strictly more than 1% of all vertices at each end: 200 anchors per end
 // against the 205 that 1% of 20484 requires is why every map came back restretched and amber.
 const RENDER_PERCENTILE = 99;
+
+/** Fallback paint threshold when no corpus-wide one is shipped. Matches Figure 5.3. */
+const THRESHOLD_PERCENTILE = 70;
 const ANCHORS_PER_END =
   Math.ceil((TOTAL_VERTS * (100 - RENDER_PERCENTILE)) / 100) + 64;
 
@@ -98,10 +101,11 @@ export function buildScaledRoiActivation(
 export { loadRoiVertices };
 export type { RoiVertices };
 
-/** Corpus-wide vertex colour range, measured by export_corpus_web.py. */
+/** Corpus-wide vertex colour range and paint threshold, measured by export_corpus_web.py. */
 export interface VectorScale {
   lo: number;
   hi: number;
+  threshold?: number;
 }
 
 /**
@@ -155,28 +159,27 @@ function displayRange(
   scale: VectorScale | null,
   medialMask: Uint8Array | null,
 ): Float32Array {
-  let lo: number;
-  let hi: number;
+  const cortex = medialMask
+    ? data.filter((_, i) => medialMask[i] !== 0)
+    : Float32Array.from(data);
+  const sorted = Float32Array.from(cortex).sort();
+  const at = (q: number) => sorted[Math.floor((q / 100) * (sorted.length - 1))];
 
-  if (scale && scale.hi > scale.lo) {
-    lo = scale.lo;
-    hi = scale.hi;
-  } else {
-    const cortex = medialMask
-      ? data.filter((_, i) => medialMask[i] !== 0)
-      : Float32Array.from(data);
-    const sorted = Float32Array.from(cortex).sort();
-    const at = (q: number) => sorted[Math.floor((q / 100) * (sorted.length - 1))];
-    lo = at(1);
-    hi = at(99);
-  }
+  const usable = scale && scale.hi > scale.lo;
+  const hi = usable ? scale.hi : at(99);
+  // Figure 5.3's rule: paint the top of the map and leave the rest bare so the anatomy stays
+  // readable. Without it every vertex carries colour and the surface reads as one lit blob,
+  // which is what happens when the whole range is mapped above the renderer's COLOR_VMIN.
+  const floor =
+    usable && scale.threshold !== undefined ? scale.threshold : at(THRESHOLD_PERCENTILE);
 
-  const span = hi - lo;
+  const span = hi - floor;
   const out = new Float32Array(data.length);
 
   for (let i = 0; i < data.length; i++) {
     if (medialMask && medialMask[i] === 0) continue;
-    const t = span > 0 ? Math.min(1, Math.max(0, (data[i] - lo) / span)) : 0.5;
+    if (data[i] < floor) continue;
+    const t = span > 0 ? Math.min(1, (data[i] - floor) / span) : 1;
     out[i] = RAMP_FLOOR + t * (RAMP_CEILING - RAMP_FLOOR);
   }
 

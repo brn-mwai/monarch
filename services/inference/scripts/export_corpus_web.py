@@ -27,6 +27,11 @@ PREVIEW_CHARS = 180
 TOTAL_VERTS = 20484
 SCALE_PERCENTILES = (1.0, 99.0)
 
+# Figure 5.3 paints only vertices above the map's 70th percentile and leaves the rest bare so
+# the anatomy stays readable. The site uses the same threshold, taken once across the corpus
+# rather than per item, so two surfaces shown side by side are still comparable.
+THRESHOLD_PERCENTILE = 70.0
+
 
 def vector_scale(vectors_dir: Path, mask_path: Path | None) -> dict | None:
     """Pool every shipped map and take one colour range for the whole corpus.
@@ -61,6 +66,8 @@ def vector_scale(vectors_dir: Path, mask_path: Path | None) -> dict | None:
     return {
         "lo": low,
         "hi": high,
+        "threshold": float(np.percentile(stacked, THRESHOLD_PERCENTILE)),
+        "thresholdPercentile": THRESHOLD_PERCENTILE,
         "nVectors": len(files),
         "percentiles": list(SCALE_PERCENTILES),
         "cortexOnly": mask is not None,
@@ -192,6 +199,8 @@ def main() -> int:
         vs = payload["vectorScale"]
         print(f"vertex scale  : [{vs['lo']:+.5f}, {vs['hi']:+.5f}] "
               f"from {vs['nVectors']} maps, cortexOnly={vs['cortexOnly']}")
+        print(f"paint above   : {vs['threshold']:+.5f} "
+              f"(p{vs['thresholdPercentile']:.0f}, pooled)")
     print(f"ratio defined : {summary['nRatioDefined']}  undefined: {summary['nRatioUndefined']}")
     for category in summary["categories"]:
         print(f"  {category['category']:24s} n={category['n']:3d} "

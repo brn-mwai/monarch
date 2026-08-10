@@ -93,11 +93,15 @@ export function BrainPanel({
             }`}
             title={
               perVertex
-                ? 'Every vertex carries its own predicted value'
+                ? 'Every vertex carries its own predicted value. Vertices below the stated threshold are left unpainted so the anatomy stays readable.'
                 : 'Two region averages; the per-vertex map was not kept for this item'
             }
           >
-            {perVertex ? 'Per vertex' : 'Region average'}
+            {perVertex
+              ? vectorScale?.threshold === undefined
+                ? 'Per vertex'
+                : `Per vertex, above ${signed(vectorScale.threshold)}`
+              : 'Region average'}
           </span>
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
             {leads === null ? 'no values' : `${leads} leads`}
