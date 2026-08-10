@@ -61,7 +61,8 @@ data.}
 400 text items in four categories of 100: fear-activating, high outrage, reward-hook, and
 neutral informational.
 
-\begin{center}
+\begin{table}[htbp]
+\centering
 \begin{tabular}{@{}llr@{}}
 \toprule
 \textbf{Category} & \textbf{Source} & \textbf{n} \\
@@ -72,7 +73,9 @@ Reward hook           & Webis-Clickbait-17    & 100 \\
 Neutral informational & PubMed, ISOT-true     & 50 + 50 \\
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{Corpus composition. Each category is drawn from exactly one source dataset, which is the confound discussed throughout: category and provenance cannot be separated.}
+\label{tab:corpus-design}
+\end{table}
 
 Items are length-matched: category word counts are $167.4$, $163.5$, $163.7$ and $162.2$ with
 standard deviations near $11$. Each item carries the labels it held before scanning ---

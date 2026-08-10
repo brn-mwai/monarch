@@ -17,7 +17,8 @@ The corpus is 400 text items in four categories of 100. All 400 were scanned; th
 verified row for row against the source corpus on text, category and identifier before any
 analysis was run, using \texttt{scripts/verify\_scan\_output.py}.
 
-\begin{center}
+\begin{table}[htbp]
+\centering
 \begin{tabular}{@{}lrrr@{}}
 \toprule
 \textbf{Category} & \textbf{n} & \textbf{Mean} & \textbf{SD} \\
@@ -28,7 +29,9 @@ Neutral informational  & 100 & $-0.0191$ & $0.0162$ \\
 Reward hook            & 100 & $-0.0128$ & $0.0228$ \\
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{Signed index by category over all 400 scanned items. Every category mean is negative, so deliberative activation leads throughout.}
+\label{tab:category-descriptives}
+\end{table}
 
 Two features of this table matter before any test is applied. Every category mean is
 negative, so the deliberative-control network is predicted to respond more strongly than the
@@ -63,7 +66,8 @@ becomes two bands.
 Scored against the \texttt{manipulative} label the items carried before they were ever
 scanned, over 300 labelled manipulative and 100 labelled neutral:
 
-\begin{center}
+\begin{table}[htbp]
+\centering
 \begin{tabular}{@{}lr@{}}
 \toprule
 \textbf{Metric} & \textbf{Value} \\
@@ -72,7 +76,9 @@ AUC (headline)              & $0.6274$ \\
 F1 (threshold fitted in sample) & $0.6680$ \\
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{Classifier performance against the pre-scan manipulative label. AUC is the headline figure; the threshold behind F1 was fitted in sample and F1 is labelled accordingly.}
+\label{tab:classifier}
+\end{table}
 
 \textbf{AUC is the headline and F1 is not.} The threshold that produces F1 is chosen on the
 same data it is scored on, which inflates it; AUC is threshold-free and does not reward that
@@ -99,7 +105,8 @@ both partial runs pointed toward.
 The separation is not evenly distributed. Welch tests of each category against the neutral
 baseline give:
 
-\begin{center}
+\begin{table}[htbp]
+\centering
 \begin{tabular}{@{}lrrr@{}}
 \toprule
 \textbf{Category vs neutral} & \textbf{t} & \textbf{p} & \textbf{Cohen's d} \\
@@ -109,7 +116,9 @@ Reward hook     & $+2.254$ & $2.539\times 10^{-2}$  & $+0.319$ \\
 High outrage    & $+0.212$ & $8.320\times 10^{-1}$  & $+0.030$ \\
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{Welch comparisons of each category against neutral informational. The separation is carried by fear-activating content; high outrage does not separate, and it is the category the proposal expected to separate most.}
+\label{tab:welch}
+\end{table}
 
 High outrage does not separate from neutral at all. That is the category the proposal
 expected to separate most strongly. Fear-activating content carries the result almost
@@ -203,7 +212,8 @@ range $-0.0698$ to $+0.0543$. Chapter~3's bound,
 \end{equation}
 converts that spread into a statement about what the coupling would have to be:
 
-\begin{center}
+\begin{table}[htbp]
+\centering
 \begin{tabular}{@{}lrr@{}}
 \toprule
 $\beta J$ & $h_c(\beta J)$ & $\alpha$ required \\
@@ -213,7 +223,9 @@ $1.496$ & $0.20541$ & $1.6553$ \\
 $2.000$ & $0.53284$ & $4.2938$ \\
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{The field bound at three values of the reduced coupling. The measured spread $\Delta X = 0.1241$ converts each critical field into the coupling any proposal of this mechanism would require.}
+\label{tab:field-bound}
+\end{table}
 
 This is a necessary condition and not a sufficient one. Clearing it would not establish that
 media of this measured spread moves populations; falling below it excludes the mechanism
@@ -229,7 +241,8 @@ alongside every result above, so that a reader can see what this study could and
 have found. At $\alpha = 0.05$ and $80\%$ power, with four categories of 100 and 300 against
 100 for the classifier:
 
-\begin{center}
+\begin{table}[htbp]
+\centering
 \begin{tabular}{@{}lr@{}}
 \toprule
 \textbf{Smallest detectable effect} & \textbf{Value} \\
@@ -240,7 +253,9 @@ Classifier AUC                 & $0.5916$ \\
 Equivalent separation $d$      & $0.3277$ \\
 \bottomrule
 \end{tabular}
-\end{center}
+\caption{Smallest effects this design could detect at $\alpha = 0.05$ and power $0.80$, fixed before the corpus was scanned.}
+\label{tab:power}
+\end{table}
 
 Both observed effects clear these thresholds, and power at the observed values is $1.0$ for
 the separation and $0.961$ for the AUC. Had either fallen below, the correct reading would

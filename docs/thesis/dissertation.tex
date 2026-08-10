@@ -1,0 +1,43 @@
+% The submission document. build_check.tex stays as the fast chapter-only compile; this is
+% the one that carries the front matter, the numbering and the format the university wants.
+\documentclass[12pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[margin=1in,left=1.5in]{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+% Binding edge takes the wider margin; 1.5 line spacing is the usual requirement for a
+% submitted dissertation and leaves room for an examiner's annotations.
+\setstretch{1.5}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\textit{B.Sc.\ Physics -- Dissertation}}
+\fancyhead[R]{\footnotesize\textit{Brian Mwai -- 1050555}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\input{frontmatter.tex}
+
+\input{ch1_introduction.tex}
+\input{ch2_literature.tex}
+\input{ch3_framework.tex}
+\input{ch4_methodology.tex}
+\input{ch5_results.tex}
+\input{ch6_discussion.tex}
+\input{ch7_conclusion.tex}
+
+\input{bibliography.tex}
+
+\end{document}
