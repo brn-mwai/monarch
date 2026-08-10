@@ -271,3 +271,62 @@ large compute.
 \textbf{A subcortical checkpoint} would let the original proposal's question be asked as
 posed. That means the training grid, the four source fMRI corpora and compute well outside
 the scope of an undergraduate project, and it is recorded as future work rather than a plan.
+
+\section{Screening media designed to hold attention}
+\label{sec:screening-application}
+
+The proposal defence raised a specific use for an instrument of this kind: scan a piece of
+media and say whether it is built to stimulate rather than to inform, with children's
+programming named as the case where it would matter most. The suggestion is worth answering
+directly, because the instrument built here is a partial answer and the gap between it and
+that application is concrete rather than vague.
+
+\textbf{What already carries over.} The pipeline accepts video natively:
+\texttt{InferenceService.predict\_video} takes a file, extracts the encoder's own event
+representation and returns predictions per repetition time. That matters because the encoder
+was trained on naturalistic audiovisual material, so a children's programme is closer to its
+training distribution than the synthesised speech from news text used throughout this thesis,
+which is an out-of-distribution stimulus (\S\ref{sec:standing}). The instrument would be on
+firmer ground there, not weaker.
+
+The nearest evidence this corpus offers is the reward-hook category, which is clickbait, the
+closest available proxy for content engineered to capture attention. It separates from
+neutral at $d = +0.319$, $p = 0.025$: real, modest, and subject to the same source confound
+as everything else here.
+
+\textbf{What is missing, and it is not compute.} Three things stand between this instrument
+and that application.
+
+\begin{enumerate}
+\item \textbf{The time axis is discarded.} \texttt{predict\_video} returns an
+$(\text{TRs} \times \text{vertices})$ array which is then mean-pooled to a single map, and
+every result in this thesis is computed from that pooled map. Content designed to hold
+attention is a claim about \emph{structure over time}: pacing, the timing of reward events,
+how quickly a lull is resolved. A single averaged value cannot express it, and averaging is
+exactly the operation that destroys it. The data is already produced and thrown away, so this
+is an analysis change rather than a new measurement.
+\item \textbf{Behavioural ground truth.} ``Designed to be addictive'' is a statement about
+what content does to viewing behaviour, and this instrument predicts cortical response, not
+behaviour. Establishing the link needs retention or watch-time data alongside the media, so
+the predicted response can be validated against something outside the model. Without it the
+instrument produces a number with no established relationship to the property being claimed.
+\item \textbf{Per-item reliability.} \S\ref{sec:reliability} showed $13.1\%$ of items reverse
+direction between sessions. Judging a single programme is precisely a per-item claim, and
+this instrument cannot support one at present. Group comparisons, for instance between
+platform-optimised and public-service children's programming, are within reach; a verdict on
+one show is not.
+\end{enumerate}
+
+\textbf{A study that would work.} Two matched sets of children's programming differing on a
+single axis, drawn where possible from the same producers so provenance does not stand in for
+the property of interest; video passed through the encoder directly; the observable computed
+over time rather than pooled; and validation against retention data. That design answers the
+question the defence asked, and each of its four requirements is a direct response to a
+limitation established in this chapter.
+
+Two cautions belong with it. Asserting that a specific programme is engineered to be
+addictive is a serious accusation about identifiable producers, and it needs an evidentiary
+bar far above what a predicted cortical asymmetry currently supplies. And the instrument
+would need the validation of \S\ref{sec:standing} settled first: an unvalidated encoder
+applied to children's media would produce confident numbers about a sensitive subject with
+nothing underwriting them.
