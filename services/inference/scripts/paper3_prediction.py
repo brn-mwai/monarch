@@ -26,7 +26,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 import numpy as np
@@ -44,6 +47,24 @@ DEFAULT_LABELS = Path(__file__).resolve().parents[1] / "data" / "schaefer1000_fs
 def episode_of(stimulus: Path) -> str:
     """``friends_s01e01a.mkv`` -> ``s01e01a``, the token the h5 keys end with."""
     return stimulus.stem.split("_")[-1]
+
+
+def stage(stimulus: Path, work_dir: Path) -> Path:
+    """Return a copy of the stimulus somewhere writable, or the original if it already is.
+
+    tribev2 extracts the audio track by writing a ``.wav`` beside the video, so a stimulus on
+    a read-only mount fails inside moviepy with a broken pipe and an ffmpeg message about the
+    filesystem. Kaggle mounts every dataset read-only, which is where this was found.
+    """
+    if os.access(stimulus.parent, os.W_OK):
+        return stimulus
+
+    work_dir.mkdir(parents=True, exist_ok=True)
+    staged = work_dir / stimulus.name
+    if not staged.exists() or staged.stat().st_size != stimulus.stat().st_size:
+        print(f"staging {stimulus.name} ({stimulus.stat().st_size / 1e6:.0f} MB) to {work_dir}")
+        shutil.copy2(stimulus, staged)
+    return staged
 
 
 def predict(stimulus: Path, prediction_out: Path | None) -> np.ndarray:
@@ -72,12 +93,15 @@ def main() -> int:
                         help="one Schaefer parcel label per fsaverage5 vertex")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--prediction-out", type=Path, default=None)
+    parser.add_argument("--work-dir", type=Path,
+                        default=Path(tempfile.gettempdir()) / "monarch-stimulus",
+                        help="where to stage the stimulus when its own directory is read-only")
     args = parser.parse_args()
 
     episode = args.episode or episode_of(args.stimulus)
     print(f"stimulus {args.stimulus.name}, episode {episode}")
 
-    prediction = predict(args.stimulus, args.prediction_out)
+    prediction = predict(stage(args.stimulus, args.work_dir), args.prediction_out)
 
     labels = np.load(args.labels)
     # The checkpoint emits fsaverage5 vertices and the recordings are parcels. The prediction
