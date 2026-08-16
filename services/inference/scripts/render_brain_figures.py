@@ -9,8 +9,12 @@ what the index compares.
 **ROI-mean maps** paint each network with the single mean the scan produced for it, per
 category or per item. They are flat by construction and must stay flat. Smooth shading would
 draw vertex-level structure from two scalars, which is drawing structure that was never
-measured. The scan discards the per-vertex vector after reducing it, so that structure does
-not exist on disk and cannot be recovered by rendering.
+measured.
+
+**Per-vertex maps** are the third kind and the only one that can be shaded, because the
+vector behind them exists on disk. They appear only when ``--vectors`` points at maps written
+by ``batch_naa.py --save-vectors``. Without that directory the run says so rather than
+implying the structure is unavailable in principle.
 
 Every caption states which kind it is. A figure that does not say whether it is a definition
 or a measurement is one somebody will read as the wrong one.
@@ -19,6 +23,8 @@ Usage
 -----
     python scripts/render_brain_figures.py --out-dir data/figures
     python scripts/render_brain_figures.py --out-dir data/figures --scan data/corpus_naa.csv
+    python scripts/render_brain_figures.py --out-dir data/figures \
+        --scan data/final/corpus_naa.csv --vectors data/final/vectors
 """
 
 from __future__ import annotations
@@ -91,6 +97,26 @@ def category_means(rows: list[dict]) -> dict[str, dict]:
             "a_del_sd": float(dele.std(ddof=1)) if len(pairs) > 1 else float("nan"),
         }
     return out
+
+
+def _spread_across_categories(paths: list[Path], by_id: dict, category_col: str) -> list[Path]:
+    """Interleave the maps so a short run covers every category.
+
+    Taking the first N alphabetically drew four fear-activating items and nothing else, which
+    illustrates one category rather than the contrast the corpus is built around. Order within
+    a category is unchanged, so the selection stays reproducible.
+    """
+    grouped: dict[str, list[Path]] = {}
+    for path in paths:
+        category = by_id.get(path.stem, {}).get(category_col, "")
+        grouped.setdefault(category, []).append(path)
+
+    interleaved: list[Path] = []
+    for index in range(max((len(v) for v in grouped.values()), default=0)):
+        for category in sorted(grouped):
+            if index < len(grouped[category]):
+                interleaved.append(grouped[category][index])
+    return interleaved
 
 
 def _two_colour_map():
@@ -235,7 +261,9 @@ def main() -> int:
     if args.vectors and args.vectors.exists():
         by_id = {row.get("id"): row for row in rows}
         drawn = 0
-        for path in sorted(args.vectors.glob("*.f32")):
+        for path in _spread_across_categories(
+            sorted(args.vectors.glob("*.f32")), by_id, args.category_col
+        ):
             if drawn >= args.vector_items:
                 break
             vector = np.fromfile(path, dtype=np.float32)
@@ -260,9 +288,11 @@ def main() -> int:
             )
             drawn += 1
             print(f"  per-vertex {path.stem:32s} {vector.min():+.4f} to {vector.max():+.4f}")
-        print(f"rendered {drawn} per-vertex maps")
-
-    print("their captions say so, because the per-vertex vectors are not retained by the scan.")
+        print(f"rendered {drawn} per-vertex maps, spread across categories")
+        print("their captions say so. The per-vertex maps beside them are the shaded kind.")
+    else:
+        print("their captions say so. No --vectors directory was given, so no per-vertex map")
+        print("was drawn; pass one written by batch_naa.py --save-vectors to get them.")
     return 0
 
 
