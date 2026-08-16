@@ -1,55 +1,55 @@
 {
-  "n_paired": 375,
+  "n_paired": 400,
   "n_run_a_total": 400,
-  "n_run_b_total": 375,
+  "n_run_b_total": 400,
   "agreement": {
     "naa_signed": {
-      "pearson_r": 0.8811868932430474,
-      "icc_2_1": 0.8756961944584116,
-      "mean_difference": -0.001696576,
-      "sd_difference": 0.010055407940198522,
-      "loa_low": -0.021405175562789105,
-      "loa_high": 0.018012023562789102,
+      "pearson_r": 0.8762841394336199,
+      "icc_2_1": 0.8724854201809836,
+      "mean_difference": -0.0011031225,
+      "sd_difference": 0.010294759482839682,
+      "loa_low": -0.02128085108636578,
+      "loa_high": 0.019074606086365777,
       "max_abs_difference": 0.052404000000000006,
-      "between_item_sd_run_a": 0.02118246849042842,
-      "noise_to_signal": 0.47470425577369285
+      "between_item_sd_run_a": 0.02126788075197419,
+      "noise_to_signal": 0.4840519656329214
     },
     "a_aff": {
-      "pearson_r": 0.876818780517216,
-      "icc_2_1": 0.869624261366986,
-      "mean_difference": -0.0029700666666666667,
-      "sd_difference": 0.012103028893598784,
-      "loa_low": -0.02669200329812028,
-      "loa_high": 0.020751869964786947,
+      "pearson_r": 0.8759079259901168,
+      "icc_2_1": 0.8713484461132607,
+      "mean_difference": -0.0023181499999999997,
+      "sd_difference": 0.012131551409919871,
+      "loa_low": -0.026095990763442947,
+      "loa_high": 0.02145969076344295,
       "max_abs_difference": 0.065832,
-      "between_item_sd_run_a": 0.024855090708302812,
-      "noise_to_signal": 0.48694366219133456
+      "between_item_sd_run_a": 0.02479873358865724,
+      "noise_to_signal": 0.48920044108497357
     },
     "a_del": {
-      "pearson_r": 0.8574569233885942,
-      "icc_2_1": 0.8544200762895744,
-      "mean_difference": -0.0012735599999999998,
-      "sd_difference": 0.01284702408729217,
-      "loa_low": -0.026453727211092654,
-      "loa_high": 0.023906607211092654,
+      "pearson_r": 0.8576054298769711,
+      "icc_2_1": 0.855044571054811,
+      "mean_difference": -0.0012150874999999996,
+      "sd_difference": 0.012705651400207813,
+      "loa_low": -0.026118164244407313,
+      "loa_high": 0.023687989244407313,
       "max_abs_difference": 0.044074,
-      "between_item_sd_run_a": 0.024712396839507447,
-      "noise_to_signal": 0.5198615160935652
+      "between_item_sd_run_a": 0.024406475132775562,
+      "noise_to_signal": 0.5205852680932749
     }
   },
-  "direction_flips": 49,
-  "direction_flip_rate": 0.13066666666666665,
+  "direction_flips": 51,
+  "direction_flip_rate": 0.1275,
   "separation_run_a_shared_items": {
-    "f_statistic": 14.57624458946634,
-    "p_value": 5.397368576774694e-09,
-    "eta_squared": 0.10543936363188881,
-    "n": 375
+    "f_statistic": 15.77922532894352,
+    "p_value": 1.0348806227386777e-09,
+    "eta_squared": 0.10677566683558096,
+    "n": 400
   },
   "separation_run_b_shared_items": {
-    "f_statistic": 11.328034142962812,
-    "p_value": 3.9878084464440077e-07,
-    "eta_squared": 0.08391465794600106,
-    "n": 375
+    "f_statistic": 12.861077025515776,
+    "p_value": 4.917766107355844e-08,
+    "eta_squared": 0.08878214417286455,
+    "n": 400
   },
   "note": "Two GPU sessions over identical text with identical code and ROI definitions. Neither run is corrected or averaged into the other."
 }

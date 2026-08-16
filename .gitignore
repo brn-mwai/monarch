@@ -62,6 +62,10 @@ services/inference/data/figures/*.svg
 # report figures derived from an unfinished corpus read as finished ones.
 services/inference/data/partial50/
 
+# The 400 per-vertex maps, 82 KB each. Same rule as the scan output: they live on Kaggle as a
+# dataset version rather than in git, and the figures and web export read them from disk.
+services/inference/data/final/vectors/
+
 
 # Cloudflare Pages local secrets. Never committed: this file holds real API keys.
 .dev.vars

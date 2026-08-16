@@ -409,3 +409,44 @@ Numbers, or the error verbatim.
 ### What it means
 One or two sentences. If nothing, write "nothing yet".
 ```
+
+---
+
+## 2026-08-16
+
+### What was run
+
+`monarch-corpus-scan` v39, the last 25 items of the vector rescan, resumed from the 375-row
+partial published as `brianmwa/monarch-corpus-naa-partial`.
+
+`python scripts/test_retest.py --run-a data/final/corpus_naa.csv
+--run-b data/final/corpus_naa_run_b.csv --out data/final/test_retest.json`
+
+### What came back
+
+The run completed. `rows scanned: 400 / 400`, 25 new per-vertex maps, and
+`verify_scan_output.py` exits 0 against the corpus. The 375 rows carried in from the previous
+session are byte-identical in the new file, so the resume added items rather than rewriting
+them. All 400 maps are 20484 vertices and every row has one.
+
+```
+paired items      : 400
+naa_signed  r=0.8763  ICC=0.8725  sd(diff)=0.01029  noise/signal=0.484
+a_aff       r=0.8759  ICC=0.8713  sd(diff)=0.01213  noise/signal=0.489
+a_del       r=0.8576  ICC=0.8550  sd(diff)=0.01271  noise/signal=0.521
+direction flips   : 51 of 400 (12.8%)
+separation_run_a_shared_items   eta^2=0.1068  F=15.779  p=1.035e-09
+separation_run_b_shared_items   eta^2=0.0888  F=12.861  p=4.918e-08
+```
+
+### What it means
+
+Test-retest is now measured over the whole corpus rather than 375 of it, and nothing turns.
+Reliability is a shade lower than the partial reported (ICC 0.8725 against 0.8757), the flip
+rate a shade lower too (12.8% against 13.1%), and the second session's separation a shade
+higher (0.0888 against 0.0839). Every conclusion drawn from the partial holds: group-level
+claims are supportable, per-item ones are not. Paper 2, the dissertation front matter and
+chapters 1 and 6 were corrected to the 400-item values.
+
+The per-vertex maps exist for the full corpus for the first time, which is what the run was
+for. They are the input the brain figures and the web export read.
