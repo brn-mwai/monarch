@@ -71,7 +71,10 @@ def _as_parcels_by_time(data: np.ndarray, path: str) -> np.ndarray:
 
 
 def load_responses(h5_dir: Path, episode: str) -> tuple[list[np.ndarray], list[str]]:
-    paths = sorted(glob.glob(str(h5_dir / "*task-friends*.h5")))
+    # Recursive, because the public mirror nests the recordings under fmri/sub-XX/func while
+    # a local copy of the same files is flat. ``**`` matches zero directories, so the flat
+    # layout this was first run against still resolves to exactly the same file list.
+    paths = sorted(glob.glob(str(h5_dir / "**" / "*task-friends*.h5"), recursive=True))
     if not paths:
         raise FileNotFoundError(f"no friends h5 files under {h5_dir}")
 
