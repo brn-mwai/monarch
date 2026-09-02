@@ -184,7 +184,7 @@ If the four-category contrast also comes back null, that is still a complete and
 
 ## 6. Corrections already applied
 
-- **`apps/web/src/components/explainers/ScientificDisclaimer.tsx`** (public site, monarch.brianmwai.com) claimed *"Validation is convergent (SemEval-2020 Task 11)"* and *"alpha-hat is a heuristic field-scale estimate calibrated on NELA-GT-2021 source-level credibility scores."* **Neither is true**, no validation code exists, and `alpha_hat` is the 0.5 fallback. Corrected on 2026-07-16 to state the cortical-only limitation, the uncalibrated `alpha_hat`, and the null. **Not yet redeployed.**
+- **`apps/web/src/components/explainers/ScientificDisclaimer.tsx`** (public site, monarch-4iy.pages.dev) claimed *"Validation is convergent (SemEval-2020 Task 11)"* and *"alpha-hat is a heuristic field-scale estimate calibrated on NELA-GT-2021 source-level credibility scores."* **Neither is true**, no validation code exists, and `alpha_hat` is the 0.5 fallback. Corrected on 2026-07-16 to state the cortical-only limitation, the uncalibrated `alpha_hat`, and the null. **Not yet redeployed.**
 
 ## 7. Outstanding corrections
 

@@ -162,7 +162,7 @@ would carry a precision neither run has.
 
 - Repository: `https://github.com/brn-mwai/monarch`. Pipeline, corpus builder, analysis,
   figure scripts and the JSON artifacts every reported number is read from.
-- Instrument: `https://monarch.brianmwai.com`. The full 400-item corpus with per-item values
+- Instrument: `https://monarch-4iy.pages.dev`. The full 400-item corpus with per-item values
   and, where the maps were kept, the predicted response on the cortical surface.
 
 Figures showing predicted responses are produced by `scripts/render_brain_figures.py` from
