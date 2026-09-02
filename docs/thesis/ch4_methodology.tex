@@ -19,6 +19,36 @@ surface vertices per time point.
 means, from which the index is computed.
 \end{enumerate}
 
+\subsection{The instrument as published}
+
+The apparatus is not described only in this chapter. It runs publicly at
+\url{https://monarch-4iy.pages.dev}, and the corpus page there reads the same measurement
+file this dissertation reports from, so the figures a reader sees on the page are the
+figures in Chapter~5 rather than a summary written about them.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{assets/monarch-corpus.png}
+\caption[The published corpus page]{The corpus page of the instrument at
+\url{https://monarch-4iy.pages.dev/corpus/}, on 2 September 2026. The four values it reports
+are the ones this dissertation reports: 400 items scanned, 331 of 400 with the ratio form
+defined, a spread of $\Delta X = 0.1241$, and a range of $-0.070$ to $+0.054$. The page reads
+\texttt{data/corpus.json}, exported from the same
+\texttt{corpus\_naa.csv} the analysis scripts read, so the two cannot drift apart.}
+\label{fig:site-corpus}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.86\textwidth]{assets/monarch-corpus-brain.png}
+\caption[A per-vertex map on the published page]{One item's predicted response on the same
+page, painted at every one of the $20{,}484$ vertices and thresholded at $+0.1043$, with the
+two region means and their difference printed beneath it. The map is the encoder's stored
+output for that item; the page renders no activation it did not scan, and shows an explicit
+failure notice rather than a substitute when a prediction is unavailable.}
+\label{fig:site-brain}
+\end{figure}
+
 \subsection{Checkpoint facts, taken from the artifact}
 
 Three properties of the released checkpoint were established by inspecting the artifact rather
