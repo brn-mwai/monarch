@@ -3,9 +3,12 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{mathpazo}
+\usepackage[expansion=false]{microtype}
 \usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
 
 \graphicspath{%
   {../../services/inference/data/figures/}%
@@ -14,386 +17,671 @@
   {../thesis/assets/}%
 }
 
+% ---------------------------------------------------------------- palette
+\definecolor{ink}{HTML}{14181F}
+\definecolor{slate}{HTML}{5A6472}
+\definecolor{mist}{HTML}{E4E8EE}
+\definecolor{paper}{HTML}{FBFBFD}
+\definecolor{cobalt}{HTML}{0047AB}
+\definecolor{ember}{HTML}{C0392B}
+\definecolor{moss}{HTML}{2E7D5B}
+
 \usetheme{default}
-\usecolortheme{default}
-\setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{itemize items}[circle]
-\setbeamercolor{frametitle}{fg=black}
-\setbeamercolor{structure}{fg=black!75}
+\usefonttheme{serif}
+% Display type is set ragged and unhyphenated: a broken word in 34pt reads as a defect.
+\newcommand{\display}{\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\relax}
+\setbeamercolor{background canvas}{bg=paper}
+\setbeamercolor{normal text}{fg=ink}
+\setbeamercolor{frametitle}{fg=ink}
+\setbeamercolor{structure}{fg=cobalt}
+\setbeamercolor{alerted text}{fg=ember}
 \setbeamerfont{frametitle}{series=\bfseries,size=\large}
-\setbeamerfont{title}{series=\bfseries}
-\setbeamertemplate{footline}{%
-  \hfill\usebeamerfont{footline}\color{black!45}\scriptsize\insertframenumber\hspace{2em}\vspace{1em}%
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}{\color{cobalt}\textbf{--}}
+
+\newlength{\slidemargin}
+\setlength{\slidemargin}{1.15cm}
+\setbeamersize{text margin left=\slidemargin,text margin right=\slidemargin}
+
+% Frame title with a hairline under it, so every slide has the same anchor.
+\setbeamertemplate{frametitle}{%
+  \vspace{0.9em}%
+  \begin{minipage}{\dimexpr\paperwidth-2\slidemargin\relax}
+    \raggedright\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle%
+    \par\vspace{0.35em}%
+    {\color{mist}\hrule height 1.2pt}%
+  \end{minipage}%
 }
 
+\setbeamertemplate{footline}{%
+  \hspace{\slidemargin}%
+  {\color{slate}\scriptsize\insertsection}%
+  \hfill
+  {\color{slate}\scriptsize\insertframenumber}%
+  \hspace{\slidemargin}\vspace{0.9em}%
+}
+
+% ---------------------------------------------------------------- helpers
 \newcommand{\naa}{\mathrm{NAA}}
 
+% A slide that is one number and one line about it.
+\newcommand{\heroslide}[3]{%
+  \begin{frame}[plain]
+    \vfill
+    \begin{center}
+      {\color{slate}\small\MakeUppercase{#1}}\\[0.9em]
+      {\color{cobalt}\fontsize{52}{52}\selectfont\bfseries #2}\\[1.1em]
+      \begin{minipage}{0.76\textwidth}\centering\large #3\end{minipage}
+    \end{center}
+    \vfill
+  \end{frame}%
+}
+
+% Act divider.
+\newcommand{\act}[3]{%
+  \begin{frame}[plain]
+    \vfill
+    \hspace{0.10\textwidth}%
+    \begin{minipage}{0.8\textwidth}
+      \display
+      {\color{cobalt}\fontsize{40}{40}\selectfont\bfseries #1}\\[0.5em]
+      {\fontsize{26}{30}\selectfont\bfseries #2}\\[0.7em]
+      {\color{slate}\large #3}
+    \end{minipage}
+    \vfill
+  \end{frame}%
+}
+
 \title{Measuring the External Field}
-\subtitle{A cortical-proxy content observable and the mean-field bound on
-media-driven opinion change}
-\author{Brian Mwai \quad 1050555}
-\institute{B.Sc. Physics \quad$\cdot$\quad Department of Natural Sciences\\
-The Catholic University of Eastern Africa\\[0.6em]
-\small Supervisor: Dr.\ Songa Mutambi}
+\author{Brian Mwai}
 \date{3 September 2026}
 
 \begin{document}
 
+% ================================================================ TITLE
 \begin{frame}[plain]
-\titlepage
+\vfill
+\hspace{0.08\textwidth}%
+\begin{minipage}{0.84\textwidth}
+\display
+{\color{slate}\small B.Sc.\ PHYSICS \quad$\cdot$\quad DEPARTMENT OF NATURAL SCIENCES \quad$\cdot$\quad CUEA}
+
+\vspace{1.2em}
+{\fontsize{36}{42}\selectfont\bfseries Measuring the External Field}
+
+\vspace{0.7em}
+{\color{slate}\fontsize{16}{22}\selectfont A cortical-proxy content observable and the
+mean-field bound on media-driven opinion change}
+
+\vspace{1.6em}
+{\color{mist}\hrule height 1.4pt}
+\vspace{1.1em}
+
+{\large\bfseries Brian Mwai} \quad{\color{slate} 1050555}\hfill
+{\color{slate} Supervisor: Dr.\ Songa Mutambi}
+
+\vspace{0.4em}
+{\color{slate}\small 3 September 2026}
+\end{minipage}
+\vfill
 \end{frame}
 
-\begin{frame}{The gap this project addresses}
+% ================================================================ THE ONE SENTENCE
+\begin{frame}[plain]
+\vfill
+\hspace{0.10\textwidth}%
+\begin{minipage}{0.80\textwidth}
+\display
+{\fontsize{16}{23}\selectfont
+Physics has always modelled media as a \textbf{field} pushing on a population.
 
-Statistical physics models media as an \textbf{external field} $h$ acting on a population of
-coupled opinion states.
+\vspace{0.45em}
+Nobody measures the field. They assume it.\par}
 
-\vspace{1em}
-In that literature the field is \textbf{assigned by hand}. A population is shown to tip,
-without establishing that any real influence is strong enough to tip it.
+\vspace{1.0em}
+{\color{mist}\hrule height 1.2pt}
+\vspace{1.0em}
 
-\vspace{1.5em}
-\begin{block}{The two questions that follow}
-\begin{enumerate}
-\item Can a field be \emph{measured} from content itself, rather than assumed?
-\item How strong would the coupling have to be for a measured spread to matter?
-\end{enumerate}
-\end{block}
-
+{\fontsize{16}{23}\selectfont\color{cobalt}\bfseries
+I built an instrument that measures one, ran it on 400 articles, and worked out how strong
+the coupling would have to be for a spread that size to move anyone.\par}
+\end{minipage}
+\vfill
 \end{frame}
 
-\begin{frame}{The instrument}
+% ================================================================ ACT I
+\section{The problem}
+\act{01}{The problem}{Two articles, one event, two different readers.}
 
-Text in, predicted cortical response out. Five stages.
-
-\vspace{1em}
-\begin{enumerate}
-\item \textbf{Speech synthesis} --- the encoder expects naturalistic audiovisual input.
-\item \textbf{Word timings} --- forced alignment recovers per-word timing.
-\item \textbf{Embedding} --- text and audio through the pretrained backbones.
-\item \textbf{Prediction} --- TRIBE v2 returns $20{,}484$ fsaverage5 cortical vertices per
-time point.
-\item \textbf{Reduction} --- mean-pooled over time, reduced to two ROI means.
-\end{enumerate}
-
-\vspace{1em}
-Public and running: \texttt{monarch-4iy.pages.dev}
-
-\end{frame}
-
-\begin{frame}{Three things the released model turned out to be}
-
-Established by inspecting the artifact, not by reading the paper about it.
-
-\vspace{1em}
-\begin{enumerate}
-\item \textbf{Cortical only.} Config declares \texttt{mesh: fsaverage5}; output is
-$(T, 20484) = 2\times 10242$. There is no subcortical head. \textbf{The amygdala is not
-predicted}, so the proposal's Eq.~(4) cannot be computed at all.
-
-\vspace{0.6em}
-\item \textbf{Averaged over subjects.} The loader forces
-\texttt{average\_subjects = True}. The subject term is unavailable.
-
-\vspace{0.6em}
-\item \textbf{Output is standardised.} ROI means sit near zero, so a ratio observable
-sign-flips or explodes. Undefined for $69$ of $400$ items, $17.25\%$.
-\end{enumerate}
+\begin{frame}{The difference everybody notices and nobody measures}
+\vspace{0.4em}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  \node[draw=mist,line width=1.2pt,rounded corners=2pt,fill=white,
+        text width=5.1cm,inner sep=10pt,align=left] (a) at (0,0)
+       {{\color{slate}\scriptsize WIRE REPORT}\\[0.4em]
+        Federal Reserve holds interest rates steady, citing a stable inflation outlook.};
+  \node[draw=mist,line width=1.2pt,rounded corners=2pt,fill=white,
+        text width=5.1cm,inner sep=10pt,align=left] (b) at (7.4,0)
+       {{\color{slate}\scriptsize THE SAME EVENT}\\[0.4em]
+        \textbf{FED DESTROYS AMERICA.} Your savings are GONE. The collapse they hid from
+        you!};
+  \node[below=0.5em of a,text width=5.1cm,align=center,slate] {informs};
+  \node[below=0.5em of b,text width=5.1cm,align=center,ember] {provokes};
+\end{tikzpicture}
+\end{center}
 
 \vspace{0.8em}
-Each is a property of the instrument, found by testing it.
+Sentiment analysis counts affective words. Readability counts syllables. Stance detection
+classifies a position.
 
+\vspace{0.4em}
+\textbf{None of them measures what the content is predicted to \emph{do} to the person
+reading it.}
+\end{frame}
+
+\begin{frame}{So measure the response, not the words}
+\vspace{1.2em}
+\begin{center}
+\begin{tikzpicture}[font=\small,>=Stealth]
+  \node[text width=4.4cm,align=center,draw=mist,line width=1.2pt,rounded corners=2pt,
+        fill=white,inner sep=12pt] (old) at (0,0)
+       {{\color{slate}\scriptsize THE USUAL ROUTE}\\[0.5em] characterise \textbf{the words}};
+  \node[text width=4.4cm,align=center,draw=cobalt,line width=1.4pt,rounded corners=2pt,
+        fill=white,inner sep=12pt] (new) at (8.2,0)
+       {{\color{cobalt}\scriptsize THIS PROJECT}\\[0.5em] estimate \textbf{the response}};
+  \draw[-{Stealth[length=6pt,width=5pt]},line width=1.2pt,cobalt] (old) -- (new);
+\end{tikzpicture}
+\end{center}
+
+\vspace{1.4em}
+A released neural encoder predicts cortical activity from the content. The measurement is
+taken \emph{on that prediction}.
+
+\vspace{0.8em}
+{\color{slate} The instrument is a thermometer for one specific property of media. This
+project is an account of building it, running it, and saying carefully what its readings
+support.}
+\end{frame}
+
+% ================================================================ ACT II
+\section{The instrument}
+\act{02}{The instrument}{From a passage of text to a single number.}
+
+\begin{frame}{The cascade}
+\vspace{1.1em}
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize,
+    box/.style={draw=mist,line width=1pt,rounded corners=2pt,fill=white,
+                text width=1.75cm,align=center,inner sep=7pt,minimum height=1.4cm},
+    hot/.style={draw=cobalt,line width=1.4pt,rounded corners=2pt,fill=white,
+                text width=1.75cm,align=center,inner sep=7pt,minimum height=1.4cm},
+    flow/.style={-{Stealth[length=7pt,width=6pt]},line width=1.3pt,slate}]
+  \node[box] (t)  at (0,0)    {\textbf{Text}\\[0.2em]{\color{slate}one article}};
+  \node[box] (s)  at (2.55,0) {\textbf{Speech}\\[0.2em]{\color{slate}synthesised}};
+  \node[box] (w)  at (5.10,0) {\textbf{Timings}\\[0.2em]{\color{slate}per word}};
+  \node[box] (e)  at (7.65,0) {\textbf{Embeddings}\\[0.2em]{\color{slate}text + audio}};
+  \node[hot] (m)  at (10.20,0){\textbf{TRIBE v2}\\[0.2em]{\color{slate}encoder}};
+  \node[hot] (v)  at (12.75,0){\textbf{20,484}\\[0.2em]{\color{slate}vertices}};
+  \foreach \a/\b in {t/s,s/w,w/e,e/m,m/v} \draw[flow] (\a) -- (\b);
+
+  \node[box,text width=2.5cm,minimum height=1.25cm] (aff) at (3.4,-2.7)
+       {\textbf{Affective}\\[0.2em]{\color{slate}1,030 vertices}};
+  \node[box,text width=2.5cm,minimum height=1.25cm] (del) at (7.4,-2.7)
+       {\textbf{Deliberative}\\[0.2em]{\color{slate}851 vertices}};
+  \node[hot,text width=2.5cm,minimum height=1.25cm] (out) at (11.9,-2.7)
+       {\textbf{One number}\\[0.2em]{\color{slate}per article}};
+
+  \draw[flow] (v.south) -- ++(0,-0.85) -| (aff.north);
+  \draw[flow] (v.south) ++(0,-0.85) -| (del.north);
+  \node[slate,font=\normalsize] at (5.4,-2.7) {$-$};
+  \node[cobalt,font=\normalsize] at (9.65,-2.7) {$=$};
+\end{tikzpicture}}
+\end{center}
+
+\vspace{0.4em}
+\begin{center}{\color{slate}\small Running publicly at
+\texttt{monarch-4iy.pages.dev}}\end{center}
+\end{frame}
+
+\begin{frame}{The two regions it reduces over}
+\vspace{-0.3em}
+\begin{center}
+\includegraphics[width=0.92\textwidth,trim=0 0 0 22,clip]{B1_roi_definition.pdf}
+\end{center}
+\vspace{-0.6em}
+\begin{center}
+{\color{slate}\small Affective salience in orange, deliberative control in blue. Resolved
+once into vertex index sets and cached, so every one of the 400 items is averaged over
+identical regions.}
+\end{center}
 \end{frame}
 
 \begin{frame}{The observable}
-
-Two cortical unions, resolved once into vertex index sets and cached:
-
-\vspace{0.5em}
+\vspace{1.6em}
 \begin{center}
-\begin{tabular}{lr}
-\toprule
-affective salience & $1{,}030$ vertices \\
-deliberative control & $851$ vertices \\
-\bottomrule
-\end{tabular}
+{\fontsize{30}{34}\selectfont $\naa_{\text{signed}} \;=\; A_{\text{aff}} - A_{\text{del}}$}
 \end{center}
 
-\vspace{1em}
-The index is the signed difference, always defined:
-\[
-\naa_{\text{signed}} \;=\; A_{\text{aff}} - A_{\text{del}}
-\]
+\vspace{1.8em}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  \draw[line width=1.4pt,mist] (-5.2,0) -- (5.2,0);
+  \draw[line width=1.4pt,ink] (0,-0.22) -- (0,0.22);
+  \node[below=0.35em] at (0,-0.2) {\color{slate}0};
+  \node[above=0.5em,ember] at (-3.4,0) {\textbf{reasoning leads}};
+  \node[above=0.5em,cobalt] at (3.4,0) {\textbf{emotion leads}};
+\end{tikzpicture}
+\end{center}
 
-\vspace{0.5em}
-Positive means the affective set is predicted to lead.
-
-\vspace{1em}
-It is a \textbf{cortical proxy}. Not a measurement of any person, and never called the
+\vspace{1.6em}
+A \textbf{cortical proxy}. It rates content, never a person, and is never called the
 amygdala.
-
 \end{frame}
 
-\begin{frame}{The two regions}
-\begin{center}
-\includegraphics[width=0.82\textwidth]{B1_roi_definition.pdf}
-\end{center}
-\end{frame}
-
-\begin{frame}{The corpus}
-
-$400$ items, four categories of $100$, matched on length.
-
-\vspace{0.8em}
-\begin{center}
-\begin{tabular}{llr}
-\toprule
-category & source & mean words \\
-\midrule
-fear-activating & ISOT-fake & $167.4$ \\
-high outrage & SemEval-2019 Task 4 & $163.5$ \\
-reward hook & Webis-Clickbait-17 & $163.7$ \\
-neutral informational & PubMed, ISOT-true & $162.2$ \\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{frame}{Three things the released model turned out to be}
+\vspace{0.5em}
+{\color{slate}\small Established by inspecting the artifact, not by reading the paper about
+it.}
 
 \vspace{1em}
-Standard deviations near $11$. Every row verified against the source corpus on text,
-category and identifier before any analysis ran.
-
-\vspace{0.8em}
-Power computed \emph{before} the analysis: smallest detectable $\eta^2 = 0.0268$, smallest
-detectable AUC $= 0.5916$.
-
-\end{frame}
-
-\begin{frame}{Result: the categories separate}
-
 \begin{columns}[T]
-\begin{column}{0.46\textwidth}
-\vspace{1em}
-Four-category ANOVA, $n = 400$:
-\[
-\eta^2 = 0.1068
-\]
-\[
-F = 15.779,\quad p = 1.03\times10^{-9}
-\]
+\begin{column}{0.315\textwidth}
+{\color{cobalt}\bfseries\large 01}\\[0.3em]
+\textbf{Cortical only}\\[0.4em]
+{\small Output is $(T, 20484)$. There is no subcortical head.
 
-\vspace{0.8em}
-Against a design powered to detect $0.0268$. Power at the observed value is $1.0$.
-
-\vspace{1em}
-Against the pre-scan \texttt{manipulative} label: $\mathrm{AUC} = 0.6274$, clearing the
-detectable $0.5916$.
+\vspace{0.5em}
+\alert{The amygdala is not predicted}, so the proposal's central equation cannot be computed
+at all.}
 \end{column}
-\begin{column}{0.52\textwidth}
-\includegraphics[width=\textwidth]{fig_violin.png}
+\begin{column}{0.315\textwidth}
+{\color{cobalt}\bfseries\large 02}\\[0.3em]
+\textbf{Averaged over subjects}\\[0.4em]
+{\small The loader forces \texttt{average\_subjects}.
+
+\vspace{0.5em}
+It predicts a typical viewer. Whether that carries signal at all is the third paper's
+question.}
+\end{column}
+\begin{column}{0.315\textwidth}
+{\color{cobalt}\bfseries\large 03}\\[0.3em]
+\textbf{Standardised output}\\[0.4em]
+{\small Region means sit near zero, so a \emph{ratio} sign-flips or explodes.
+
+\vspace{0.5em}
+Undefined for 69 of 400 items. Replaced by the difference.}
 \end{column}
 \end{columns}
 
+\vspace{1.0em}
+{\color{slate} Each is a property of the instrument, found by testing it, and each is stated
+in the abstract rather than the limitations.}
 \end{frame}
 
-\begin{frame}{Where the separation comes from, and the confound}
+% ================================================================ ACT III
+\section{The measurement}
+\act{03}{The measurement}{400 articles, scanned twice.}
 
-Welch tests against the neutral baseline:
-
-\vspace{0.5em}
+\begin{frame}{The corpus}
+\vspace{0.6em}
 \begin{center}
-\begin{tabular}{lrr}
-\toprule
-category & $d$ & $p$ \\
-\midrule
-fear-activating & $+0.939$ & $3.3\times10^{-10}$ \\
-reward hook & $+0.319$ & $0.025$ \\
-high outrage & $+0.030$ & $0.832$ \\
-\bottomrule
-\end{tabular}
+\begin{tikzpicture}[font=\small]
+  \foreach \i/\name/\src in {%
+    0/{fear-activating}/{ISOT-fake},
+    1/{high outrage}/{SemEval-2019 Task 4},
+    2/{reward hook}/{Webis-Clickbait-17},
+    3/{neutral informational}/{PubMed + ISOT-true}}
+  {
+    \node[draw=mist,line width=1.2pt,rounded corners=2pt,fill=white,
+          text width=2.75cm,align=center,inner sep=10pt,minimum height=2.2cm]
+          at ({\i*3.1},0)
+         {{\color{cobalt}\bfseries\large 100}\\[0.35em]\textbf{\name}\\[0.35em]
+          {\color{slate}\scriptsize \src}};
+  }
+\end{tikzpicture}
 \end{center}
 
-\vspace{1em}
-\textbf{Outrage does not separate at all} --- the category the proposal expected to separate
-most.
-
-\vspace{0.8em}
-\alert{Each category is drawn from exactly one source dataset.} So the separation is between
-corpora and cannot be attributed to framing. Length is controlled; provenance is not. This is
-stated before the result, not in limitations.
+\vspace{1.3em}
+\textbf{Matched on length.} Mean word counts 167.4, 163.5, 163.7, 162.2, standard deviations
+near 11. Length is controlled and is not what drives any result.
 
 \vspace{0.5em}
-One piece of evidence against a pure source artifact: outrage has its own distinct source and
-does not separate.
+\textbf{Powered before the scan.} Smallest detectable $\eta^2 = 0.0268$; smallest detectable
+AUC $= 0.5916$. Both fixed before a single item was run.
 
+\vspace{0.5em}
+\textbf{Verified row by row} against the source corpus before any analysis.
 \end{frame}
 
-\begin{frame}{Reliability: measured, not assumed}
+\heroslide{the four categories separate at}{$\eta^{2} = 0.1068$}%
+{$F = 15.779$, \; $p = 1.03\times10^{-9}$, \; $n = 400$ \\[0.5em]
+{\color{slate} against a design powered to detect $0.0268$}}
 
-A second GPU session rescanned all $400$ items with identical text, code and regions.
-
-\vspace{0.8em}
+\begin{frame}{Every item, by category}
+\vspace{-0.2em}
 \begin{center}
-\begin{tabular}{lrrr}
-\toprule
-& $r$ & ICC(2,1) & $\mathrm{sd}(\Delta)/\mathrm{sd}_{\text{between}}$ \\
-\midrule
-$\naa_{\text{signed}}$ & $0.8763$ & $0.8725$ & $0.484$ \\
-$A_{\text{aff}}$ & $0.8759$ & $0.8713$ & $0.489$ \\
-$A_{\text{del}}$ & $0.8576$ & $0.8550$ & $0.521$ \\
-\bottomrule
-\end{tabular}
+\includegraphics[width=0.80\textwidth]{fig_violin.png}
+\end{center}
+\vspace{-0.4em}
+\begin{center}
+{\color{slate}\small A shift between overlapping distributions, not a clean split. Every
+category mean is negative: the deliberative network leads throughout.}
+\end{center}
+\end{frame}
+
+\begin{frame}{The separation is one category}
+\vspace{0.3em}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  % axis
+  \draw[mist,line width=1.2pt] (0,-0.6) -- (0,3.2);
+  \foreach \x in {0,2,4,6,8} \node[below,slate,font=\scriptsize] at (\x,-0.65) {};
+  % bars: d scaled 1.0 -> 8cm
+  \node[left] at (-0.25,2.6) {fear-activating};
+  \fill[cobalt] (0,2.35) rectangle (7.51,2.85);
+  \node[right,cobalt] at (7.7,2.6) {\textbf{$d = 0.939$}};
+
+  \node[left] at (-0.25,1.5) {reward hook};
+  \fill[cobalt!55] (0,1.25) rectangle (2.55,1.75);
+  \node[right,slate] at (2.75,1.5) {$d = 0.319$};
+
+  \node[left] at (-0.25,0.4) {high outrage};
+  \fill[ember] (0,0.15) rectangle (0.24,0.65);
+  \node[right,ember] at (0.44,0.4) {\textbf{$d = 0.030$} \; {\color{slate}$p = 0.832$}};
+\end{tikzpicture}
 \end{center}
 
-\vspace{1em}
-\textbf{The separation replicates}: $\eta^2 = 0.0888$ on session two, against $0.1068$ on
-session one. Both clear the detectable floor.
+\vspace{0.9em}
+Cohen's $d$ against the neutral baseline. Fear-activating content carries almost the whole
+effect.
 
-\vspace{0.6em}
-\textbf{Per-item direction does not.} $51$ of $400$ items, $12.8\%$, reverse sign between
-sessions.
-
-\vspace{0.6em}
-Group-level claims are supportable. \textbf{No per-item verdict appears anywhere} --- not in
-the analysis, the figures, or the public interface.
-
+\vspace{0.4em}
+\alert{High outrage does not separate at all} --- the category the proposal expected to
+separate \emph{most}.
 \end{frame}
 
-\begin{frame}{What one item's prediction looks like}
+\begin{frame}{The confound, said before the result}
+\vspace{0.5em}
 \begin{center}
-\includegraphics[width=0.72\textwidth]{B3_per_vertex_fear_activating-0000.pdf}
+\begin{tikzpicture}[font=\scriptsize,>=Stealth,
+   c/.style={draw=mist,line width=1pt,rounded corners=2pt,fill=white,text width=3.1cm,
+             align=center,inner sep=6pt},
+   s/.style={draw=mist,line width=1pt,rounded corners=2pt,fill=white,text width=3.4cm,
+             align=center,inner sep=6pt}]
+  \node[c] (c1) at (0,2.55) {fear-activating};
+  \node[c] (c2) at (0,1.70) {high outrage};
+  \node[c] (c3) at (0,0.85) {reward hook};
+  \node[c] (c4) at (0,0.00) {neutral informational};
+  \node[s] (s1) at (6.4,2.55) {ISOT-fake};
+  \node[s] (s2) at (6.4,1.70) {SemEval-2019 Task 4};
+  \node[s] (s3) at (6.4,0.85) {Webis-Clickbait-17};
+  \node[s] (s4) at (6.4,0.00) {PubMed + ISOT-true};
+  \foreach \i in {1,2,3,4} \draw[-{Stealth[length=5pt,width=4pt]},line width=1.1pt,ember] (c\i) -- (s\i);
+  \node[above,slate] at (0,3.0) {\textbf{CATEGORY}};
+  \node[above,slate] at (6.4,3.0) {\textbf{SOURCE DATASET}};
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.9em}
+Each category is drawn from \textbf{exactly one} source. So the separation is between
+\emph{corpora} and cannot be told apart from a separation between \emph{framing styles}.
+
+\vspace{0.5em}
+{\color{slate} Length is controlled; provenance is not. The one piece of evidence against a
+pure source artifact is internal: high outrage has its own source and does not separate.}
+\end{frame}
+
+\begin{frame}{Scanned twice, so reliability is measured}
+\vspace{0.8em}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{center}
+{\color{moss}\fontsize{40}{40}\selectfont\bfseries 0.8725}\\[0.5em]
+{\color{slate}ICC between two GPU sessions}
+\end{center}
+\vspace{0.9em}
+{\small The separation replicates: $\eta^2 = 0.0888$ on the second session against $0.1068$
+on the first. Both clear the detectable floor.}
+
+\vspace{0.5em}
+{\small\bfseries Group-level claims hold.}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{center}
+{\color{ember}\fontsize{40}{40}\selectfont\bfseries 12.8\%}\\[0.5em]
+{\color{slate}of items reverse direction}
+\end{center}
+\vspace{0.9em}
+{\small 51 of 400 items flip sign between sessions. A statement that one particular article
+is affective-leading is not supportable at this precision.}
+
+\vspace{0.5em}
+{\small\bfseries No per-item verdict appears anywhere} --- not in the analysis, the figures,
+or the public site.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{One article, at every vertex}
+\vspace{-0.4em}
+\begin{center}
+\includegraphics[width=0.74\textwidth,trim=0 0 0 20,clip]{B3_per_vertex_fear_activating-0000.pdf}
 \end{center}
 \vspace{-0.5em}
 \begin{center}
-\small All $20{,}484$ vertices, thresholded at the map's 70th percentile so the anatomy stays
-readable.
+{\color{slate}\small The encoder's own output for one fear-activating item, all 20,484
+vertices, painted above the map's 70th percentile so the anatomy stays readable. Nothing is
+smoothed, interpolated or simulated.}
 \end{center}
 \end{frame}
 
-\begin{frame}{The physics: mean-field, with coefficients derived}
+% ================================================================ ACT IV
+\section{The physics}
+\act{04}{The physics}{What a measured field is worth.}
 
-Self-consistency for a coupled population under field $h$:
+\begin{frame}{Media as a field on a coupled population}
+\vspace{0.9em}
+Each person holds an opinion $s_i = \pm 1$, is pulled toward their neighbours with strength
+$J$, and is pushed by media with field $h$. Mean-field self-consistency:
 \[
-m = \tanh(\beta J m + h)
+m = \tanh(\beta J m + h), \qquad h = \alpha X
 \]
+where $X$ is the measured observable and $\alpha$ is the unknown coupling.
 
+\vspace{0.9em}
 Expanding $\operatorname{artanh}(m) \approx m + m^3/3$ gives the Landau free energy
 \[
-F(m) = a m^2 + b m^4 - hm, \qquad a = \frac{1 - \beta J}{2}, \quad b = \frac{1}{12}
+F(m) = a m^2 + b m^4 - hm, \qquad a = \frac{1-\beta J}{2}, \qquad b = \frac{1}{12}
 \]
 
-\vspace{0.8em}
-Coefficients \textbf{derived from the self-consistency condition}, not asserted. The proposal
-carried $a = 1-\beta J$, $b = (\beta J)^3/3$, which do not follow from it. Corrected.
-
-\vspace{0.8em}
-Solver checked against the exact exponents: $\beta = 1/2$, $\gamma = 1$, $\delta = 3$.
-
+\vspace{0.7em}
+{\color{slate} Coefficients \textbf{derived} from the self-consistency condition. The
+proposal carried $a = 1-\beta J$, $b = (\beta J)^3/3$, which do not follow from it. The
+solver is checked against the exact exponents $\beta = 1/2$, $\gamma = 1$, $\delta = 3$.}
 \end{frame}
 
-\begin{frame}{The bound, and why no $\hat{\alpha}$ is quoted}
-
+\begin{frame}{Fitting the coupling fails, and that is informative}
+\vspace{1.0em}
 \begin{columns}[T]
-\begin{column}{0.5\textwidth}
-\vspace{0.8em}
-Calibrating $\alpha$ against the corpus \textbf{does not identify it}: the fit performs worse
-than the sample mean out of sample, and the estimate scales with an unmeasured $\beta J$.
+\begin{column}{0.52\textwidth}
+\textbf{What was tried.} Regress the outcome on the measured index and read off $\alpha$.
 
 \vspace{0.8em}
-So no value is quoted. Anywhere. Not in a table, not in a caption.
+\textbf{What happened.} The fit performs \emph{worse than the sample mean} out of sample, and
+the estimate scales inversely with a coupling $\beta J$ that no measurement here fixes.
 
-\vspace{1em}
-What survives is a \textbf{necessary condition} on any content observable used as a field:
-\[
-\alpha \;\ge\; \frac{h_c(\beta J)}{\Delta X}
-\]
+\vspace{0.8em}
+\alert{So no value of $\hat{\alpha}$ is quoted. Anywhere.} Not in a table, not in a caption,
+not for illustration.
 \end{column}
-\begin{column}{0.5\textwidth}
+\begin{column}{0.44\textwidth}
+\vspace{0.4em}
+{\color{slate}\small Reporting an unidentified coupling as though it were a measured one
+would be the failure here. Declining to quote it is not.}
+
+\vspace{1.2em}
+{\color{slate}\small What replaces it is a statement that does not need the fit at all.}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{The bound: what any content observable must satisfy}
+\vspace{0.3em}
+\begin{columns}[T]
+\begin{column}{0.46\textwidth}
+\vspace{0.9em}
+\begin{center}
+{\fontsize{24}{28}\selectfont $\alpha \;\ge\; \dfrac{h_c(\beta J)}{\Delta X}$}
+\end{center}
+
+\vspace{1.0em}
+{\small No transition is possible unless the coupling clears this. Rather than fitting
+$\alpha$ and hoping it clears zero, it states what $\alpha$ \emph{would have to be} for the
+mechanism to work at all --- for \textbf{any} candidate observable, before a corpus exists.}
+\end{column}
+\begin{column}{0.50\textwidth}
 \includegraphics[width=\textwidth]{F6_alpha_required.pdf}
 \end{column}
 \end{columns}
 
 \vspace{0.5em}
-Measured spread $\Delta X = 0.1241$ gives $\alpha \ge 0.169$ at $\beta J = 1.10$, $1.655$ at
-$1.50$, and $4.294$ at $2.00$.
-
+\begin{center}
+\small Measured spread $\Delta X = 0.1241$ \;$\Rightarrow$\;
+$\alpha \ge 0.169$ at $\beta J = 1.10$, \; $1.655$ at $1.50$, \; $\mathbf{4.294}$ at $2.00$
+\end{center}
 \end{frame}
 
-\begin{frame}{Paper 3: does the encoder track real cortex?}
+% ================================================================ ACT V
+\section{Standing}
+\act{05}{Standing}{What holds, and what is still open.}
 
-A commercial lab reports the released checkpoint, in the averaged configuration this project
-runs, is \textbf{anti-correlated} with real cortex. Four subjects, one stimulus, not
+\begin{frame}{Does the encoder track real cortex at all?}
+\vspace{0.8em}
+A commercial lab reports that the released checkpoint, in the averaged configuration this
+project runs, is \textbf{anti-correlated} with real cortex. Four subjects, one stimulus, not
 independently replicated.
 
-\vspace{1em}
-\textbf{Measured here}, from public data: inter-subject noise ceiling
-$= 0.1517$, CI $[0.1484, 0.1551]$, four subjects, $1000$ of $1000$ Schaefer parcels, episode
-\texttt{s01e01a}.
+\vspace{1.0em}
+\begin{center}
+\begin{tikzpicture}[font=\small]
+  \node[draw=mist,line width=1.2pt,rounded corners=2pt,fill=white,inner sep=11pt,
+        text width=4.6cm,align=center] (a) at (0,0)
+       {{\color{moss}\bfseries\Large 0.1517}\\[0.35em] measured noise ceiling\\[0.2em]
+        {\color{slate}\scriptsize CI [0.1484, 0.1551], 4 subjects, 1000 parcels}};
+  \node[draw=mist,line width=1.2pt,rounded corners=2pt,fill=white,inner sep=11pt,
+        text width=4.6cm,align=center] (b) at (6.6,0)
+       {{\color{ember}\bfseries\Large 0.2247}\\[0.35em] withdrawn\\[0.2em]
+        {\color{slate}\scriptsize an episode picked by position, and a guard that could not
+        fire}};
+\end{tikzpicture}
+\end{center}
 
-\vspace{1em}
-\textbf{A first value of $0.2247$ was withdrawn.} Two silent defects: an episode selected by
-position rather than name, and an orientation guard that could not fire. Replaying the old
-path reproduces the wrong number exactly, which is what proved the cause.
+\vspace{1.0em}
+Replaying the old code path reproduces the wrong number \emph{exactly}, which is what proved
+the cause. Both defects were silent: nothing crashed.
 
-\vspace{0.8em}
-The prediction pass is specified in the paper and is \textbf{on its final run}.
-
+\vspace{0.5em}
+\textbf{The prediction pass is specified in the paper and is on its final run.}
 \end{frame}
 
 \begin{frame}{What is claimed, and what is not}
+\vspace{0.8em}
+\begin{columns}[T]
+\begin{column}{0.47\textwidth}
+{\color{moss}\bfseries CLAIMED}
+\vspace{0.4em}
+{\color{moss}\hrule height 1.2pt}
+\vspace{0.8em}
+{\small
+$\bullet$\; A content observable that can actually be measured, with its reliability stated
+rather than assumed.
 
-\textbf{Claimed}
-\begin{itemize}
-\item A content observable that can be measured, with its reliability stated.
-\item That it separates these four corpora at $\eta^2 = 0.1068$, power attached.
-\item A bound any candidate field observable must satisfy, applicable before data is
+\vspace{0.6em}
+$\bullet$\; That it separates these four corpora at $\eta^2 = 0.1068$, with the power
+statement attached.
+
+\vspace{0.6em}
+$\bullet$\; A bound any candidate field observable must satisfy, usable before data is
 collected.
-\end{itemize}
+}
+\end{column}
+\begin{column}{0.47\textwidth}
+{\color{ember}\bfseries NOT CLAIMED}
+\vspace{0.4em}
+{\color{ember}\hrule height 1.2pt}
+\vspace{0.8em}
+{\small
+$\bullet$\; That the index detects manipulation. Category is confounded with source.
 
-\vspace{1em}
-\textbf{Not claimed}
-\begin{itemize}
-\item That the index detects manipulation. Category is confounded with source.
-\item Anything about the amygdala. The checkpoint does not predict it.
-\item Any value of the coupling $\alpha$. The corpus does not identify it.
-\item Any verdict on an individual item. $12.8\%$ reverse between sessions.
-\end{itemize}
+\vspace{0.6em}
+$\bullet$\; Anything about the amygdala. The checkpoint does not predict it.
 
+\vspace{0.6em}
+$\bullet$\; Any value of the coupling $\alpha$. The corpus does not identify it.
+
+\vspace{0.6em}
+$\bullet$\; Any verdict on one article. 12.8\% reverse between sessions.
+}
+\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}{Output}
+\begin{frame}{What comes out of it}
+\vspace{0.9em}
+\begin{columns}[T]
+\begin{column}{0.235\textwidth}
+{\color{cobalt}\bfseries 72 pp}\\[0.3em]
+\textbf{Dissertation}\\[0.4em]
+{\color{slate}\scriptsize Complete draft.}
+\end{column}
+\begin{column}{0.235\textwidth}
+{\color{cobalt}\bfseries 12 pp}\\[0.3em]
+\textbf{Paper 1}\\[0.4em]
+{\color{slate}\scriptsize The bound and the screening criterion. \emph{Physica A}.
+Independent of the scan.}
+\end{column}
+\begin{column}{0.235\textwidth}
+{\color{cobalt}\bfseries 12 pp}\\[0.3em]
+\textbf{Paper 2}\\[0.4em]
+{\color{slate}\scriptsize The instrument, the corpus, the field bound. \emph{Physica A}.}
+\end{column}
+\begin{column}{0.235\textwidth}
+{\color{cobalt}\bfseries 6 pp}\\[0.3em]
+\textbf{Paper 3}\\[0.4em]
+{\color{slate}\scriptsize The measured ceiling and the replication. \emph{Imaging
+Neuroscience}. One computation on its final run.}
+\end{column}
+\end{columns}
 
-\begin{itemize}
-\item \textbf{Dissertation}, 72 pages. Complete draft.
+\vspace{1.4em}
+{\color{mist}\hrule height 1.2pt}
+\vspace{0.9em}
 
-\vspace{0.5em}
-\item \textbf{Paper 1} --- the bound and the screening criterion it yields. 12 pages, for
-\emph{Physica A}. Independent of the scan.
+Every number in all four comes from a re-runnable script. Nothing is transcribed by hand.
 
-\vspace{0.5em}
-\item \textbf{Paper 2} --- the instrument, the 400-item corpus, the field bound. 12 pages,
-for \emph{Physica A}.
-
-\vspace{0.5em}
-\item \textbf{Paper 3} --- the measured noise ceiling and the replication. 6 pages, for
-\emph{Imaging Neuroscience}. One computation on its final run.
-\end{itemize}
-
-\vspace{1em}
-Every number in all four comes from a re-runnable script. The instrument, the corpus and the
-analysis are public at \texttt{github.com/brn-mwai/monarch}.
-
+\vspace{0.35em}
+{\color{slate} Public at \texttt{github.com/brn-mwai/monarch} and
+\texttt{monarch-4iy.pages.dev}.}
 \end{frame}
 
 \begin{frame}[plain]
-\vspace{2.5em}
-\begin{center}
-{\Large\bfseries Thank you}
+\vfill
+\hspace{0.10\textwidth}%
+\begin{minipage}{0.80\textwidth}
+{\fontsize{30}{34}\selectfont\bfseries Thank you}
 
-\vspace{1.5em}
-\normalsize
-Brian Mwai \quad$\cdot$\quad 1050555\\[0.4em]
-\texttt{monarch-4iy.pages.dev}
-\end{center}
+\vspace{1.2em}
+{\color{mist}\hrule height 1.4pt}
+\vspace{1.0em}
+
+{\large Brian Mwai} \quad{\color{slate} 1050555}
+
+\vspace{0.4em}
+{\color{slate}\texttt{monarch-4iy.pages.dev}}
+\end{minipage}
+\vfill
 \end{frame}
 
 \end{document}

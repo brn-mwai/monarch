@@ -1,0 +1,5 @@
+\beamer@sectionintoc {1}{The problem}{3}{0}{1}
+\beamer@sectionintoc {2}{The instrument}{6}{0}{2}
+\beamer@sectionintoc {3}{The measurement}{11}{0}{3}
+\beamer@sectionintoc {4}{The physics}{19}{0}{4}
+\beamer@sectionintoc {5}{Standing}{23}{0}{5}
