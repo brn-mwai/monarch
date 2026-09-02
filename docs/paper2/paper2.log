@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.24)  10 AUG 2026 20:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.24)  2 SEP 2026 11:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -350,24 +350,24 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 ) (paper2.aux)
 \openout1 = `paper2.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
 
 (C:\Users\Windows\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.
 mkii
@@ -394,25 +394,25 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 .cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 11.
+Package hyperref Info: Link coloring OFF on input line 13.
  (paper2.out) (paper2.out)
 \@outlinefile=\write4
 \openout4 = `paper2.out'.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 26.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 28.
 
 
 (C:\Users\Windows\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 26.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 28.
 
 
 (C:\Users\Windows\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 5
-3.
+5.
 
 (C:\Users\Windows\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
@@ -421,26 +421,65 @@ File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 
 
 {C:/Users/Windows/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}] [2]
-[3] [4]
-Overfull \hbox (5.36183pt too wide) in paragraph at lines 209--214
+<../../services/inference/data/figures/B1_roi_definition.pdf, id=98, 867.24pt x
+ 390.25798pt>
+File: ../../services/inference/data/figures/B1_roi_definition.pdf Graphic file 
+(type pdf)
+<use ../../services/inference/data/figures/B1_roi_definition.pdf>
+Package pdftex.def Info: ../../services/inference/data/figures/B1_roi_definitio
+n.pdf  used on input line 129.
+(pdftex.def)             Requested size: 350.99762pt x 157.95238pt.
+
+[3] [4 <../../services/inference/data/figures/B1_roi_definition.pdf>]
+<../../services/inference/data/final/report/fig_violin.png, id=125, 542.025pt x
+ 303.534pt>
+File: ../../services/inference/data/final/report/fig_violin.png Graphic file (t
+ype png)
+<use ../../services/inference/data/final/report/fig_violin.png>
+Package pdftex.def Info: ../../services/inference/data/final/report/fig_violin.
+png  used on input line 221.
+(pdftex.def)             Requested size: 350.99762pt x 196.56297pt.
+
+Overfull \hbox (5.36183pt too wide) in paragraph at lines 230--235
 []\T1/cmr/m/n/12 Against the \T1/cmtt/m/n/12 manipulative \T1/cmr/m/n/12 la-bel
  car-ried by each item be-fore it was scanned,
  []
 
-[5] [6] [7]
-Overfull \hbox (25.74689pt too wide) in paragraph at lines 345--348
-\T1/cmr/m/n/12 stan-dard de-vi-a-tion $\OT1/cmr/m/n/12 47\OML/cmm/m/it/12 :\OT1
-/cmr/m/n/12 5%$ \T1/cmr/m/n/12 of the between-item stan-dard de-vi-a-tion. Cate
+[5]
+<../../services/inference/data/figures/B3_per_vertex_fear_activating-0000.pdf, 
+id=134, 867.24pt x 390.25798pt>
+File: ../../services/inference/data/figures/B3_per_vertex_fear_activating-0000.
+pdf Graphic file (type pdf)
+<use ../../services/inference/data/figures/B3_per_vertex_fear_activating-0000.p
+df>
+Package pdftex.def Info: ../../services/inference/data/figures/B3_per_vertex_fe
+ar_activating-0000.pdf  used on input line 238.
+(pdftex.def)             Requested size: 370.49881pt x 166.72388pt.
+ [6 <../../services/inference/data/final/report/fig_violin.png>] [7 <../../serv
+ices/inference/data/figures/B3_per_vertex_fear_activating-0000.pdf>]
+<../../services/inference/data/final/report/fig_free_energy_atlas.png, id=160, 
+1120.185pt x 245.718pt>
+File: ../../services/inference/data/final/report/fig_free_energy_atlas.png Grap
+hic file (type png)
+<use ../../services/inference/data/final/report/fig_free_energy_atlas.png>
+Package pdftex.def Info: ../../services/inference/data/final/report/fig_free_en
+ergy_atlas.png  used on input line 319.
+(pdftex.def)             Requested size: 350.99762pt x 76.99289pt.
+
+[8] [9 <../../services/inference/data/final/report/fig_free_energy_atlas.png>]
+Overfull \hbox (25.74689pt too wide) in paragraph at lines 386--389
+\T1/cmr/m/n/12 stan-dard de-vi-a-tion $\OT1/cmr/m/n/12 48\OML/cmm/m/it/12 :\OT1
+/cmr/m/n/12 4%$ \T1/cmr/m/n/12 of the between-item stan-dard de-vi-a-tion. Cate
 gory-
  []
 
-[8]
-Overfull \hbox (3.24254pt too wide) in paragraph at lines 376--383
+[10]
+Overfull \hbox (3.24254pt too wide) in paragraph at lines 417--424
 \T1/cmtt/m/n/12 github . com / brn-[]mwai / monarch$[]\T1/cmr/m/n/12 . The in-s
 tru-ment runs at []$\T1/cmtt/m/n/12 https : / / monarch .
  []
 
-[9] [10] (paper2.aux)
+[11] [12] (paper2.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
@@ -449,13 +488,13 @@ Package rerunfilecheck Info: File `paper2.out' has not changed.
 (rerunfilecheck)             Checksum: 9957CCB41A26BB31DC4EC03F3368472B;2592.
  ) 
 Here is how much of TeX's memory you used:
- 10795 strings out of 474486
- 164622 string characters out of 5742810
+ 10843 strings out of 474486
+ 167080 string characters out of 5742810
  1935542 words of memory out of 5000000
- 32880 multiletter control sequences out of 15000+600000
+ 32922 multiletter control sequences out of 15000+600000
  572465 words of font info for 74 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,13n,79p,382b,604s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,13n,79p,471b,604s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\Windows\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ec
 tt1200.pk> <C:\Users\Windows\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/d
 pi600\ecti1200.pk> <C:\Users\Windows\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
@@ -477,9 +516,9 @@ a/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Windo
 ws/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/
 Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy
 8.pfb>
-Output written on paper2.pdf (10 pages, 243556 bytes).
+Output written on paper2.pdf (12 pages, 2356194 bytes).
 PDF statistics:
- 594 PDF objects out of 1000 (max. 8388607)
- 58 named destinations out of 1000 (max. 500000)
- 137 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 638 PDF objects out of 1000 (max. 8388607)
+ 64 named destinations out of 1000 (max. 500000)
+ 157 words of extra memory for PDF output out of 10000 (max. 10000000)
 

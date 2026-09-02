@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1786381146.85722 "paper3.tex" "paper3.pdf" "paper3" 1786381148.10086 0
+["pdflatex"] 1788337130.41347 "paper3.tex" "paper3.pdf" "paper3" 1788337132.10345 0
   "C:/Users/Windows/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1786375698.25981 876020 e5d544b63472f1681abfa54d59bbe0ed ""
   "C:/Users/Windows/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1200.pk" 1767713318.97719 31952 288a26c04e43999759b422458376d425 ""
   "C:/Users/Windows/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm0800.pk" 1767714842.22409 19080 51c2ecfcc29311e2f129bcd9540b67f7 ""
@@ -102,10 +102,10 @@
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/tex/latex/refcount/refcount.sty" 1576433952 9878 9e94e8fa600d95f9c7731bb21dfb67a4 ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1751104012 9684 a33a14b82ce60d6e77cb9be689d79ee6 ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
-  "paper3.aux" 1786381147.74314 1485 00e695afede8130a1e5e462eefd9ff51 "pdflatex"
-  "paper3.out" 1786381147.74643 1275 36a8e3fc870975c0f0f6fbfd7da34298 "pdflatex"
-  "paper3.spl" 1786381147.38067 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "paper3.tex" 1786381112.89931 12191 afec5e5c618b38c912d2cae862341b80 ""
+  "paper3.aux" 1788337131.6855 1485 00e695afede8130a1e5e462eefd9ff51 "pdflatex"
+  "paper3.out" 1788337131.70467 1275 36a8e3fc870975c0f0f6fbfd7da34298 "pdflatex"
+  "paper3.spl" 1788337131.15341 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "paper3.tex" 1786429341.41924 12209 630f1490e94c8935447e83d06b4a3058 ""
   (generated)
   "paper3.aux"
   "paper3.log"

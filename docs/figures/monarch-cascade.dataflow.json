@@ -1,0 +1,272 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Monarch Cascade",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "text-path",
+        "label": "Text path",
+        "focus": [
+          "media",
+          "gtts",
+          "whisperx",
+          "events"
+        ],
+        "note": "Written text becomes synthesised speech before anything else, which is where text items leave the training distribution."
+      },
+      {
+        "id": "encoders",
+        "label": "Three encoders",
+        "focus": [
+          "events",
+          "encoders",
+          "tribe"
+        ],
+        "note": "Text, audio and video are encoded separately, then fused by the released TRIBE v2 checkpoint."
+      },
+      {
+        "id": "readout",
+        "label": "Observable and physics",
+        "focus": [
+          "vertices",
+          "roi",
+          "naa",
+          "landau"
+        ],
+        "note": "20484 vertices reduce to two region means, one signed index, and the field the mean-field model reads."
+      }
+    ],
+    "viewBox": [
+      1140,
+      540
+    ],
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "dashed": {
+          "label": "text-only path"
+        },
+        "emphasis": {
+          "label": "main cascade"
+        }
+      }
+    }
+  },
+  "stages": [
+    {
+      "label": "Input"
+    },
+    {
+      "label": "Align"
+    },
+    {
+      "label": "Encode"
+    },
+    {
+      "label": "Fuse"
+    },
+    {
+      "label": "Readout"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "media",
+      "type": "external",
+      "label": "Media Item",
+      "sublabel": "text, audio or video",
+      "stage": 0,
+      "row": 1,
+      "tag": "one item"
+    },
+    {
+      "id": "gtts",
+      "type": "backend",
+      "label": "gTTS",
+      "sublabel": "speech synthesis",
+      "stage": 0,
+      "row": 0,
+      "tag": "text only"
+    },
+    {
+      "id": "whisperx",
+      "type": "backend",
+      "label": "WhisperX",
+      "sublabel": "large-v3 + aligner",
+      "stage": 1,
+      "row": 0,
+      "tag": "subprocess"
+    },
+    {
+      "id": "events",
+      "type": "database",
+      "label": "Events Table",
+      "sublabel": "word, sentence, audio, video",
+      "stage": 1,
+      "row": 1,
+      "tag": "timeline"
+    },
+    {
+      "id": "encoders",
+      "type": "backend",
+      "label": "Trimodal Encoders",
+      "sublabel": "LLaMA-3.2-3B, Wav2Vec2-BERT, V-JEPA",
+      "stage": 2,
+      "row": 1,
+      "tag": "3 streams",
+      "width": 160
+    },
+    {
+      "id": "tribe",
+      "type": "cloud",
+      "label": "TRIBE v2",
+      "sublabel": "fusion transformer",
+      "stage": 3,
+      "row": 1,
+      "tag": "average subject"
+    },
+    {
+      "id": "vertices",
+      "type": "database",
+      "label": "Prediction",
+      "sublabel": "(T, 20484) cortical vertices",
+      "stage": 3,
+      "row": 2,
+      "tag": "TR = 1 s"
+    },
+    {
+      "id": "roi",
+      "type": "backend",
+      "label": "ROI Reduction",
+      "sublabel": "1030 and 851 vertices",
+      "stage": 4,
+      "row": 0,
+      "tag": "cached"
+    },
+    {
+      "id": "naa",
+      "type": "backend",
+      "label": "NAA",
+      "sublabel": "A_aff minus A_del",
+      "stage": 4,
+      "row": 1,
+      "tag": "observable"
+    },
+    {
+      "id": "landau",
+      "type": "backend",
+      "label": "Landau / Ising",
+      "sublabel": "mean-field opinion model",
+      "stage": 4,
+      "row": 2,
+      "tag": "h = alpha X"
+    }
+  ],
+  "flows": [
+    {
+      "id": "synthesise",
+      "from": "media",
+      "to": "gtts",
+      "label": "written text",
+      "classification": "text path only",
+      "variant": "dashed"
+    },
+    {
+      "id": "synth-audio",
+      "from": "gtts",
+      "to": "whisperx",
+      "label": "wav",
+      "classification": "16 kHz",
+      "variant": "dashed",
+      "route": "straight",
+      "labelDx": -28
+    },
+    {
+      "id": "native-audio",
+      "from": "media",
+      "to": "whisperx",
+      "label": "audio track",
+      "classification": "ffmpeg extract",
+      "variant": "emphasis"
+    },
+    {
+      "id": "timings",
+      "from": "whisperx",
+      "to": "events",
+      "label": "word timings",
+      "classification": "start and duration",
+      "variant": "emphasis"
+    },
+    {
+      "id": "to-encoders",
+      "from": "events",
+      "to": "encoders",
+      "label": "aligned events",
+      "classification": "per TR",
+      "variant": "emphasis"
+    },
+    {
+      "id": "features",
+      "from": "encoders",
+      "to": "tribe",
+      "label": "features",
+      "classification": "text, speech and visual",
+      "variant": "emphasis",
+      "labelDy": -45
+    },
+    {
+      "id": "predict",
+      "from": "tribe",
+      "to": "vertices",
+      "label": "predicted response",
+      "classification": "100-TR windows",
+      "variant": "emphasis"
+    },
+    {
+      "id": "reduce",
+      "from": "vertices",
+      "to": "roi",
+      "label": "two region unions",
+      "classification": "vertex index sets",
+      "variant": "emphasis"
+    },
+    {
+      "id": "index",
+      "from": "roi",
+      "to": "naa",
+      "label": "A_aff and A_del",
+      "classification": "region means",
+      "variant": "emphasis"
+    },
+    {
+      "id": "field",
+      "from": "naa",
+      "to": "landau",
+      "label": "signed index as field",
+      "classification": "coupling unidentified",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Main path",
+      "items": [
+        "One item in, one cortical prediction out",
+        "20484 fsaverage5 vertices per TR",
+        "Observable is a difference of two region means"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Not established here",
+      "items": [
+        "Text becomes gTTS speech before encoding",
+        "Cortical only, average-subject configuration",
+        "Encoder validity is Paper 3's open question"
+      ]
+    }
+  ]
+}

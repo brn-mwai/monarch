@@ -157,12 +157,12 @@ to any proposed field observable and can be evaluated before a corpus is collect
 \section{Session reliability, and what it permits}
 \label{sec:reliability}
 
-A second GPU session scanned 375 of the 400 items with identical text, identical code and
+A second GPU session scanned all 400 items with identical text, identical code and
 identical ROI definitions. That pair is a test-retest measurement, and it is reported here
 because every effect in Chapter~5 otherwise rests on a single session with no statement of
 how much of an item's score is the item and how much is the session.
 
-Agreement between the two sessions, on the 375 items they share:
+Agreement between the two sessions, over all 400 items:
 
 \begin{table}[htbp]
 \centering
@@ -170,12 +170,12 @@ Agreement between the two sessions, on the 375 items they share:
 \hline
 & $r$ & ICC(2,1) & $\mathrm{sd}(\Delta)$ & $\mathrm{sd}(\Delta)/\mathrm{sd}_{\text{between}}$ \\
 \hline
-$\mathrm{NAA}_{\text{signed}}$ & $0.8812$ & $0.8757$ & $0.01006$ & $0.475$ \\
-$A_{\text{aff}}$ & $0.8768$ & $0.8696$ & $0.01210$ & $0.487$ \\
-$A_{\text{del}}$ & $0.8575$ & $0.8544$ & $0.01285$ & $0.520$ \\
+$\mathrm{NAA}_{\text{signed}}$ & $0.8763$ & $0.8725$ & $0.01029$ & $0.484$ \\
+$A_{\text{aff}}$ & $0.8759$ & $0.8713$ & $0.01213$ & $0.489$ \\
+$A_{\text{del}}$ & $0.8576$ & $0.8550$ & $0.01271$ & $0.521$ \\
 \hline
 \end{tabular}
-\caption{Agreement between the two scanning sessions over the 375 items both cover. ICC is reported beside $r$ because a session that shifted every score by a constant would still correlate perfectly.}
+\caption{Agreement between the two scanning sessions over all 400 items. ICC is reported beside $r$ because a session that shifted every score by a constant would still correlate perfectly.}
 \label{tab:test-retest}
 \end{table}
 
@@ -185,15 +185,15 @@ session can produce. The two agree closely here, so the disagreement is scatter 
 offset.
 
 \textbf{The separation replicates.} Recomputing the four-category ANOVA on the second session
-over the same 375 items gives $\eta^2 = 0.0839$, $F = 11.328$, $p = 3.988\times10^{-7}$,
-against $\eta^2 = 0.1054$, $F = 14.576$, $p = 5.397\times10^{-9}$ for the first session
-restricted to those items. Both clear the smallest effect this design could detect,
+over the same 400 items gives $\eta^2 = 0.0888$, $F = 12.861$, $p = 4.918\times10^{-8}$,
+against $\eta^2 = 0.1068$, $F = 15.779$, $p = 1.035\times10^{-9}$ for the first session
+over those items. Both clear the smallest effect this design could detect,
 $\eta^2 = 0.0268$. The separation reported in Chapter~5 is therefore not an artifact of one
 session. The second session's effect is roughly a fifth smaller, which is the attenuation
 that additional measurement error produces in a ratio of between-group to total variance.
 
 \textbf{Per-item direction is not reliable.} The signed index is read as a direction, and
-$49$ of $375$ items, $13.1\%$, reverse that direction between sessions. A statement that a
+$51$ of $400$ items, $12.8\%$, reverse that direction between sessions. A statement that a
 particular item is affective-leading is therefore not supportable by this instrument at this
 precision, and none is made: no per-item verdict appears in the analysis, in the figures or
 on the public interface. Group means over 100 items average this scatter down by an order of
@@ -222,8 +222,8 @@ Stated here in full rather than distributed through the text.
 \item \textbf{Category is confounded with source dataset.} The central limitation. Discussed
 in \S\ref{sec:confound} and above.
 
-\item \textbf{Single-session scores are noisy.} Test-retest ICC is $0.8757$ and the
-session-to-session standard deviation is $47.5\%$ of the between-item standard deviation
+\item \textbf{Single-session scores are noisy.} Test-retest ICC is $0.8725$ and the
+session-to-session standard deviation is $48.4\%$ of the between-item standard deviation
 (\S\ref{sec:reliability}). Category-level conclusions survive this; per-item ones do not.
 
 \item \textbf{Predicted, not measured, activation.} No brain was scanned. Whether the
@@ -310,7 +310,7 @@ what content does to viewing behaviour, and this instrument predicts cortical re
 behaviour. Establishing the link needs retention or watch-time data alongside the media, so
 the predicted response can be validated against something outside the model. Without it the
 instrument produces a number with no established relationship to the property being claimed.
-\item \textbf{Per-item reliability.} \S\ref{sec:reliability} showed $13.1\%$ of items reverse
+\item \textbf{Per-item reliability.} \S\ref{sec:reliability} showed $12.8\%$ of items reverse
 direction between sessions. Judging a single programme is precisely a per-item claim, and
 this instrument cannot support one at present. Group comparisons, for instance between
 platform-optimised and public-service children's programming, are within reach; a verdict on

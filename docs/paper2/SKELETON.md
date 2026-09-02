@@ -124,17 +124,17 @@ content from neutral content.
 ## 7b. Session reliability
 
 Reported before the limitations, not inside them, because it is a measurement rather than a
-caveat. A second GPU session rescanned 375 of the 400 items with identical text, code and ROI
+caveat. A second GPU session rescanned all 400 items with identical text, code and ROI
 definitions. Source: `scripts/test_retest.py` into `data/final/test_retest.json`.
 
-- Agreement on `NAA_signed`: `r = 0.8812`, `ICC(2,1) = 0.8757`, `sd of differences = 0.01006`,
-  which is 47.5% of the between-item sd. ICC is quoted alongside `r` because a session that
+- Agreement on `NAA_signed`: `r = 0.8763`, `ICC(2,1) = 0.8725`, `sd of differences = 0.01029`,
+  which is 48.4% of the between-item sd. ICC is quoted alongside `r` because a session that
   shifted every score by a constant would still correlate perfectly.
-- **The separation replicates.** Second session on the shared items: `eta^2 = 0.0839`,
-  `F = 11.328`, `p = 3.988e-07`. First session on the same items: `eta^2 = 0.1054`,
-  `F = 14.576`, `p = 5.397e-09`. Both clear the detectable floor of `0.0268`. The second is
+- **The separation replicates.** Second session: `eta^2 = 0.0888`,
+  `F = 12.861`, `p = 4.918e-08`. First session on the same items: `eta^2 = 0.1068`,
+  `F = 15.779`, `p = 1.035e-09`. Both clear the detectable floor of `0.0268`. The second is
   about a fifth smaller, the attenuation additional measurement error produces.
-- **Direction flips for 49 of 375 items, 13.1%.** No per-item verdict is therefore stated
+- **Direction flips for 51 of 400 items, 12.8%.** No per-item verdict is therefore stated
   anywhere in the paper.
 
 Neither session is corrected toward the other and they are not averaged, since an average
@@ -145,7 +145,7 @@ would carry a precision neither run has.
 1. Cortical proxy, not a subcortical measurement. The checkpoint cannot speak to the
    structure the proposal originally named.
 
-2. Single-session scores are noisy: ICC `0.8757`, session sd 47.5% of between-item sd.
+2. Single-session scores are noisy: ICC `0.8725`, session sd 48.4% of between-item sd.
    Category-level conclusions survive this, per-item ones do not.
 2. Predicted activation is not measured activation. Whether the encoder tracks real cortex is
    Paper 3's question, and until it is answered this instrument measures a model's output.

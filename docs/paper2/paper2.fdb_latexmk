@@ -1,5 +1,9 @@
 # Fdb version 4
-["pdflatex"] 1786381525.85717 "paper2.tex" "paper2.pdf" "paper2" 1786381527.00817 0
+["pdflatex"] 1788337127.04132 "paper2.tex" "paper2.pdf" "paper2" 1788337129.49667 0
+  "../../services/inference/data/figures/B1_roi_definition.pdf" 1786897544.45328 917859 c0ef1a9a0290bdc8840dcf512c9a4f3b ""
+  "../../services/inference/data/figures/B3_per_vertex_fear_activating-0000.pdf" 1786897656.38644 978792 d2f63bf9ba555b3e9bcdf20c90d2e8a6 ""
+  "../../services/inference/data/final/report/fig_free_energy_atlas.png" 1786273275.11717 167485 277dcc9399dd0813454bdb09325dd47e ""
+  "../../services/inference/data/final/report/fig_violin.png" 1786273274.69172 100275 1fd3fd01517d82c917de623c31541755 ""
   "C:/Users/Windows/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1786375698.25981 876020 e5d544b63472f1681abfa54d59bbe0ed ""
   "C:/Users/Windows/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1200.pk" 1767713318.97719 31952 288a26c04e43999759b422458376d425 ""
   "C:/Users/Windows/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm0800.pk" 1767714842.22409 19080 51c2ecfcc29311e2f129bcd9540b67f7 ""
@@ -107,10 +111,10 @@
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/tex/latex/refcount/refcount.sty" 1576433952 9878 9e94e8fa600d95f9c7731bb21dfb67a4 ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1751104012 9684 a33a14b82ce60d6e77cb9be689d79ee6 ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
-  "paper2.aux" 1786381526.65498 5298 b664ee1634f836fa7d94e78c4db6407a "pdflatex"
-  "paper2.out" 1786381526.65777 2592 9957ccb41a26bb31dc4ec03f3368472b "pdflatex"
-  "paper2.spl" 1786381526.34581 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "paper2.tex" 1786381490.35752 22363 5ea78adfb6f6187cd1ae4cd74a3456f6 ""
+  "paper2.aux" 1788337128.9148 8179 4b9d4a13d870ee8ffcd4eabb0baadfbc "pdflatex"
+  "paper2.out" 1788337128.9178 2592 9957ccb41a26bb31dc4ec03f3368472b "pdflatex"
+  "paper2.spl" 1788337127.76014 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "paper2.tex" 1788337094.12099 23716 16d7eb2851ddcc608296076a95270421 ""
   (generated)
   "paper2.aux"
   "paper2.log"

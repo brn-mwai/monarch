@@ -6,6 +6,8 @@
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
 
+\graphicspath{{../../services/inference/data/final/report/}{../../services/inference/data/figures/}}
+
 \journal{Physica A}
 
 \begin{document}
@@ -17,7 +19,7 @@
 
 \author[cuea]{Brian Mwai}
 \ead{mwaibryn@gmail.com}
-\address[cuea]{Department of Physics, Faculty of Science, The Catholic University of
+\address[cuea]{Department of Natural Sciences, Faculty of Science, The Catholic University of
 Eastern Africa, P.O. Box 62157-00200, Nairobi, Kenya}
 
 \begin{abstract}
@@ -35,8 +37,8 @@ design powered to detect $\eta^2 = 0.0268$. The separation is carried by fear-ac
 content, $d = 0.9389$ against neutral, while high-outrage content does not separate,
 $d = 0.0300$. Each category is drawn from one source dataset, so the separation is between
 corpora and cannot be attributed to framing; we state this before the result rather than in
-limitations. A second scanning session gives test-retest $\mathrm{ICC} = 0.8757$ and
-replicates the separation at $\eta^2 = 0.0839$, while $13.1\%$ of individual items reverse
+limitations. A second scanning session gives test-retest $\mathrm{ICC} = 0.8725$ and
+replicates the separation at $\eta^2 = 0.0888$, while $12.8\%$ of individual items reverse
 direction, so the instrument supports category-level statements and no per-item verdict.
 Calibrating the coupling does not identify it: the fit performs worse than the sample mean
 out of sample and scales with an unmeasured $\beta J$, so no value is quoted. What the
@@ -122,6 +124,16 @@ average-subject configuration its own loader forces. Regions of interest are res
 into vertex index sets and cached, so every item is reduced over identical regions: 1030
 vertices for the affective union and 851 for the deliberative union.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{B1_roi_definition.pdf}
+\caption{The two regions the observable is reduced over, on the cortical surface. The
+affective-salience union covers 1030 vertices and the deliberative-control union 851. Both
+are resolved once into vertex index sets and cached, so every item is averaged over identical
+regions.}
+\label{fig:roi}
+\end{figure}
+
 \subsection{Corpus design}
 
 The corpus is 400 items in four categories of 100, matched on length. Mean word counts are
@@ -204,6 +216,15 @@ not entirely a corpus artifact, and it is not decisive.
 Every category mean is negative, so deliberative activation is predicted to lead throughout.
 The instrument finds no affective dominance anywhere in this corpus.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_violin.png}
+\caption{Distribution of the signed observable within each category, all 400 items. Every
+category mean is negative, so deliberative activation is predicted to lead throughout, and
+the separation is a shift between overlapping distributions rather than a clean split.}
+\label{fig:violin}
+\end{figure}
+
 \subsection{Discrimination against the pre-scan label}
 
 Against the \texttt{manipulative} label carried by each item before it was scanned, the
@@ -212,10 +233,20 @@ $0.5916$. AUC is the headline because it is threshold-free. An $F_1$ of $0.6680$
 obtainable, but its threshold was chosen on the same data it is evaluated on, and it is
 labelled as fitted in sample wherever it appears.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{B3_per_vertex_fear_activating-0000.pdf}
+\caption{Predicted response for one fear-activating item at every one of the 20{,}484
+cortical vertices, on the pial surface. Vertices below the map's 70th percentile are left
+unpainted so the anatomy remains readable, and the threshold is stated in the figure. This is
+the encoder's own output, not a smoothed or interpolated field.}
+\label{fig:pervertex}
+\end{figure}
+
 \subsection{Session reliability}
 \label{sec:reliability}
 
-A second GPU session rescanned 375 of the 400 items with identical text, identical code and
+A second GPU session rescanned all 400 items with identical text, identical code and
 identical region definitions. That pair is a test-retest measurement, and without it every
 effect above would rest on a single session with no statement of how much of an item's score
 is the item and how much is the session.
@@ -226,12 +257,12 @@ is the item and how much is the session.
 \toprule
 & $r$ & ICC(2,1) & $\mathrm{sd}(\Delta)$ & $\mathrm{sd}(\Delta)/\mathrm{sd}_{\text{between}}$ \\
 \midrule
-$\mathrm{NAA}_{\text{signed}}$ & $0.8812$ & $0.8757$ & $0.01006$ & $0.475$ \\
-$A_{\text{aff}}$ & $0.8768$ & $0.8696$ & $0.01210$ & $0.487$ \\
-$A_{\text{del}}$ & $0.8575$ & $0.8544$ & $0.01285$ & $0.520$ \\
+$\mathrm{NAA}_{\text{signed}}$ & $0.8763$ & $0.8725$ & $0.01029$ & $0.484$ \\
+$A_{\text{aff}}$ & $0.8759$ & $0.8713$ & $0.01213$ & $0.489$ \\
+$A_{\text{del}}$ & $0.8576$ & $0.8550$ & $0.01271$ & $0.521$ \\
 \bottomrule
 \end{tabular}
-\caption{Agreement between two scanning sessions over the 375 items both cover. ICC is
+\caption{Agreement between two scanning sessions over all 400 items. ICC is
 reported beside $r$ because a session that shifted every score by a constant would still
 correlate perfectly.}
 \label{tab:retest}
@@ -240,12 +271,12 @@ correlate perfectly.}
 Three consequences follow, and they cut in different directions.
 
 \textbf{The separation replicates.} On the second session the four-category ANOVA gives
-$\eta^2 = 0.0839$, $F = 11.328$, $p = 3.988\times10^{-7}$, against $\eta^2 = 0.1054$,
-$F = 14.576$ for the first session restricted to the same items. Both clear the detectable
+$\eta^2 = 0.0888$, $F = 12.861$, $p = 4.918\times10^{-8}$, against $\eta^2 = 0.1068$,
+$F = 15.779$ for the first session over the same items. Both clear the detectable
 floor. The result is not an artifact of one session, and the roughly one-fifth attenuation is
 what additional measurement error does to a ratio of between-group to total variance.
 
-\textbf{Per-item direction is not reliable.} Of 375 paired items, 49, or $13.1\%$, reverse
+\textbf{Per-item direction is not reliable.} Of 400 paired items, 51, or $12.8\%$, reverse
 sign between sessions. A statement that a particular item is affective-leading is therefore
 not supportable at this precision, and no per-item verdict appears anywhere in this paper or
 in the public interface described in Section~\ref{sec:availability}. Group means over 100
@@ -282,6 +313,16 @@ statement about a chosen $\beta J$ rather than about media.
 The coupling is therefore \emph{unidentified}, which is a weaker claim than either a
 detection or a null. \textbf{No value of $\hat{\alpha}$ is quoted in this paper}, in text,
 table or caption.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{fig_free_energy_atlas.png}
+\caption{Free energy swept across a range of couplings, evaluated at each category's measured
+mean. The sweep is not a fit: no value of $\alpha$ is estimated from the data anywhere in
+this paper, and the panels show how the physics would behave for each coupling rather than
+which coupling holds.}
+\label{fig:freeenergy}
+\end{figure}
 
 \subsection{What the spread does yield}
 
@@ -342,8 +383,8 @@ present result into an interpretable one. Neither requires new instrumentation.
 \begin{enumerate}
 \item Category is confounded with source dataset. The dominant limitation, stated in
 Section~\ref{sec:results} as well as here.
-\item Single-session scores are noisy: $\mathrm{ICC} = 0.8757$, with session-to-session
-standard deviation $47.5\%$ of the between-item standard deviation. Category-level
+\item Single-session scores are noisy: $\mathrm{ICC} = 0.8725$, with session-to-session
+standard deviation $48.4\%$ of the between-item standard deviation. Category-level
 conclusions survive this; per-item ones do not.
 \item Predicted activation is not measured activation. Whether the encoder tracks real cortex
 is unresolved and contested; a published audit reports the released average-subject
@@ -400,7 +441,7 @@ not-for-profit sectors. Computation was carried out on publicly available free-t
 
 \section*{Acknowledgements}
 
-The author thanks Dr.\ Songa Mutambi of the Department of Physics, The Catholic University of
+The author thanks Dr.\ Songa Mutambi of the Department of Natural Sciences, The Catholic University of
 Eastern Africa, for supervising the project of which this work forms part. The supervision was
 academic guidance and approval; the author is solely responsible for the content.
 
