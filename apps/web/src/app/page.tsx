@@ -634,7 +634,7 @@ export default function HomePage() {
             <Link href="/corpus" className="hover:text-white">Corpus</Link>
           </nav>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">
-            (c) 2026 Brian Mwai / CUEA Department of Physics
+            (c) 2026 Brian Mwai / CUEA Department of Natural Sciences
           </p>
         </div>
       </footer>
