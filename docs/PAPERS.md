@@ -15,18 +15,27 @@ Review at Physica A runs three to six months, so no date below promises publicat
 
 ## The dissertation
 
-> **Measuring the Invisible: a sociophysics framework for quantifying emotionally
-> manipulative media content using predictive neural encoding — instrument, constraint,
-> and a source-confounded separation**
+> **Measuring the External Field: a cortical-proxy content observable and the mean-field
+> bound on media-driven opinion change — an instrument, a 400-item corpus, and a
+> source-confounded separation**
 
-The approved title, with the amendment carried in the subtitle rather than discovered in
-Chapter 5. Requires supervisor sign-off on `docs/amendment/PROPOSAL-AMENDMENT.pdf` first.
+**The title changed on 2026-09-02, and the change is a decision in the amendment.** The
+proposal title was "Measuring the Invisible: a sociophysics framework for quantifying
+emotionally manipulative media content using predictive neural encoding". It promises a
+quantification of manipulative content, and the corpus does not deliver one: the four
+categories separate, but each is drawn from a single source dataset, so the separation
+cannot be told apart from provenance. A title that promises what the confound blocks is the
+one thing an examiner reads first.
+
+The replacement names the three things the chapters actually contain — a measured field
+observable, the mean-field bound the theory yields from it, and the corpus that supplies the
+spread — and carries the confound on the cover. Requires supervisor sign-off on
+`docs/amendment/PROPOSAL-AMENDMENT.pdf`, where it is decision 5.
 
 **The subtitle changed on 2026-08-09.** It read "and null" while both prior partial runs
 pointed that way. The completed 400-item corpus separates at `eta^2 = 0.1068`, so the null
 wording would have been false. It is replaced by what the corpus actually supports, confound
-included. The amendment PDF still carries the old wording and needs this correction before it
-is sent.
+included.
 
 ---
 

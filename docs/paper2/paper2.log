@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.24)  2 SEP 2026 11:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.24)  2 SEP 2026 12:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -474,9 +474,9 @@ gory-
  []
 
 [10]
-Overfull \hbox (3.24254pt too wide) in paragraph at lines 417--424
+Overfull \hbox (28.43651pt too wide) in paragraph at lines 417--424
 \T1/cmtt/m/n/12 github . com / brn-[]mwai / monarch$[]\T1/cmr/m/n/12 . The in-s
-tru-ment runs at []$\T1/cmtt/m/n/12 https : / / monarch .
+tru-ment runs at []$\T1/cmtt/m/n/12 https : / / monarch-[]4iy .
  []
 
 [11] [12] (paper2.aux)
@@ -516,9 +516,9 @@ a/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Windo
 ws/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/
 Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy
 8.pfb>
-Output written on paper2.pdf (12 pages, 2356194 bytes).
+Output written on paper2.pdf (12 pages, 2356544 bytes).
 PDF statistics:
- 638 PDF objects out of 1000 (max. 8388607)
+ 639 PDF objects out of 1000 (max. 8388607)
  64 named destinations out of 1000 (max. 500000)
  157 words of extra memory for PDF output out of 10000 (max. 10000000)
 
