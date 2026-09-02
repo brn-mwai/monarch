@@ -1,0 +1,399 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\graphicspath{%
+  {../../services/inference/data/figures/}%
+  {../../services/inference/data/final/report/}%
+  {../../services/inference/data/paper1/}%
+  {../thesis/assets/}%
+}
+
+\usetheme{default}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamercolor{frametitle}{fg=black}
+\setbeamercolor{structure}{fg=black!75}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamerfont{title}{series=\bfseries}
+\setbeamertemplate{footline}{%
+  \hfill\usebeamerfont{footline}\color{black!45}\scriptsize\insertframenumber\hspace{2em}\vspace{1em}%
+}
+
+\newcommand{\naa}{\mathrm{NAA}}
+
+\title{Measuring the External Field}
+\subtitle{A cortical-proxy content observable and the mean-field bound on
+media-driven opinion change}
+\author{Brian Mwai \quad 1050555}
+\institute{B.Sc. Physics \quad$\cdot$\quad Department of Natural Sciences\\
+The Catholic University of Eastern Africa\\[0.6em]
+\small Supervisor: Dr.\ Songa Mutambi}
+\date{3 September 2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+\begin{frame}{The gap this project addresses}
+
+Statistical physics models media as an \textbf{external field} $h$ acting on a population of
+coupled opinion states.
+
+\vspace{1em}
+In that literature the field is \textbf{assigned by hand}. A population is shown to tip,
+without establishing that any real influence is strong enough to tip it.
+
+\vspace{1.5em}
+\begin{block}{The two questions that follow}
+\begin{enumerate}
+\item Can a field be \emph{measured} from content itself, rather than assumed?
+\item How strong would the coupling have to be for a measured spread to matter?
+\end{enumerate}
+\end{block}
+
+\end{frame}
+
+\begin{frame}{The instrument}
+
+Text in, predicted cortical response out. Five stages.
+
+\vspace{1em}
+\begin{enumerate}
+\item \textbf{Speech synthesis} --- the encoder expects naturalistic audiovisual input.
+\item \textbf{Word timings} --- forced alignment recovers per-word timing.
+\item \textbf{Embedding} --- text and audio through the pretrained backbones.
+\item \textbf{Prediction} --- TRIBE v2 returns $20{,}484$ fsaverage5 cortical vertices per
+time point.
+\item \textbf{Reduction} --- mean-pooled over time, reduced to two ROI means.
+\end{enumerate}
+
+\vspace{1em}
+Public and running: \texttt{monarch-4iy.pages.dev}
+
+\end{frame}
+
+\begin{frame}{Three things the released model turned out to be}
+
+Established by inspecting the artifact, not by reading the paper about it.
+
+\vspace{1em}
+\begin{enumerate}
+\item \textbf{Cortical only.} Config declares \texttt{mesh: fsaverage5}; output is
+$(T, 20484) = 2\times 10242$. There is no subcortical head. \textbf{The amygdala is not
+predicted}, so the proposal's Eq.~(4) cannot be computed at all.
+
+\vspace{0.6em}
+\item \textbf{Averaged over subjects.} The loader forces
+\texttt{average\_subjects = True}. The subject term is unavailable.
+
+\vspace{0.6em}
+\item \textbf{Output is standardised.} ROI means sit near zero, so a ratio observable
+sign-flips or explodes. Undefined for $69$ of $400$ items, $17.25\%$.
+\end{enumerate}
+
+\vspace{0.8em}
+Each is a property of the instrument, found by testing it.
+
+\end{frame}
+
+\begin{frame}{The observable}
+
+Two cortical unions, resolved once into vertex index sets and cached:
+
+\vspace{0.5em}
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+affective salience & $1{,}030$ vertices \\
+deliberative control & $851$ vertices \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+The index is the signed difference, always defined:
+\[
+\naa_{\text{signed}} \;=\; A_{\text{aff}} - A_{\text{del}}
+\]
+
+\vspace{0.5em}
+Positive means the affective set is predicted to lead.
+
+\vspace{1em}
+It is a \textbf{cortical proxy}. Not a measurement of any person, and never called the
+amygdala.
+
+\end{frame}
+
+\begin{frame}{The two regions}
+\begin{center}
+\includegraphics[width=0.82\textwidth]{B1_roi_definition.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}{The corpus}
+
+$400$ items, four categories of $100$, matched on length.
+
+\vspace{0.8em}
+\begin{center}
+\begin{tabular}{llr}
+\toprule
+category & source & mean words \\
+\midrule
+fear-activating & ISOT-fake & $167.4$ \\
+high outrage & SemEval-2019 Task 4 & $163.5$ \\
+reward hook & Webis-Clickbait-17 & $163.7$ \\
+neutral informational & PubMed, ISOT-true & $162.2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+Standard deviations near $11$. Every row verified against the source corpus on text,
+category and identifier before any analysis ran.
+
+\vspace{0.8em}
+Power computed \emph{before} the analysis: smallest detectable $\eta^2 = 0.0268$, smallest
+detectable AUC $= 0.5916$.
+
+\end{frame}
+
+\begin{frame}{Result: the categories separate}
+
+\begin{columns}[T]
+\begin{column}{0.46\textwidth}
+\vspace{1em}
+Four-category ANOVA, $n = 400$:
+\[
+\eta^2 = 0.1068
+\]
+\[
+F = 15.779,\quad p = 1.03\times10^{-9}
+\]
+
+\vspace{0.8em}
+Against a design powered to detect $0.0268$. Power at the observed value is $1.0$.
+
+\vspace{1em}
+Against the pre-scan \texttt{manipulative} label: $\mathrm{AUC} = 0.6274$, clearing the
+detectable $0.5916$.
+\end{column}
+\begin{column}{0.52\textwidth}
+\includegraphics[width=\textwidth]{fig_violin.png}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Where the separation comes from, and the confound}
+
+Welch tests against the neutral baseline:
+
+\vspace{0.5em}
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+category & $d$ & $p$ \\
+\midrule
+fear-activating & $+0.939$ & $3.3\times10^{-10}$ \\
+reward hook & $+0.319$ & $0.025$ \\
+high outrage & $+0.030$ & $0.832$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\textbf{Outrage does not separate at all} --- the category the proposal expected to separate
+most.
+
+\vspace{0.8em}
+\alert{Each category is drawn from exactly one source dataset.} So the separation is between
+corpora and cannot be attributed to framing. Length is controlled; provenance is not. This is
+stated before the result, not in limitations.
+
+\vspace{0.5em}
+One piece of evidence against a pure source artifact: outrage has its own distinct source and
+does not separate.
+
+\end{frame}
+
+\begin{frame}{Reliability: measured, not assumed}
+
+A second GPU session rescanned all $400$ items with identical text, code and regions.
+
+\vspace{0.8em}
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+& $r$ & ICC(2,1) & $\mathrm{sd}(\Delta)/\mathrm{sd}_{\text{between}}$ \\
+\midrule
+$\naa_{\text{signed}}$ & $0.8763$ & $0.8725$ & $0.484$ \\
+$A_{\text{aff}}$ & $0.8759$ & $0.8713$ & $0.489$ \\
+$A_{\text{del}}$ & $0.8576$ & $0.8550$ & $0.521$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\textbf{The separation replicates}: $\eta^2 = 0.0888$ on session two, against $0.1068$ on
+session one. Both clear the detectable floor.
+
+\vspace{0.6em}
+\textbf{Per-item direction does not.} $51$ of $400$ items, $12.8\%$, reverse sign between
+sessions.
+
+\vspace{0.6em}
+Group-level claims are supportable. \textbf{No per-item verdict appears anywhere} --- not in
+the analysis, the figures, or the public interface.
+
+\end{frame}
+
+\begin{frame}{What one item's prediction looks like}
+\begin{center}
+\includegraphics[width=0.72\textwidth]{B3_per_vertex_fear_activating-0000.pdf}
+\end{center}
+\vspace{-0.5em}
+\begin{center}
+\small All $20{,}484$ vertices, thresholded at the map's 70th percentile so the anatomy stays
+readable.
+\end{center}
+\end{frame}
+
+\begin{frame}{The physics: mean-field, with coefficients derived}
+
+Self-consistency for a coupled population under field $h$:
+\[
+m = \tanh(\beta J m + h)
+\]
+
+Expanding $\operatorname{artanh}(m) \approx m + m^3/3$ gives the Landau free energy
+\[
+F(m) = a m^2 + b m^4 - hm, \qquad a = \frac{1 - \beta J}{2}, \quad b = \frac{1}{12}
+\]
+
+\vspace{0.8em}
+Coefficients \textbf{derived from the self-consistency condition}, not asserted. The proposal
+carried $a = 1-\beta J$, $b = (\beta J)^3/3$, which do not follow from it. Corrected.
+
+\vspace{0.8em}
+Solver checked against the exact exponents: $\beta = 1/2$, $\gamma = 1$, $\delta = 3$.
+
+\end{frame}
+
+\begin{frame}{The bound, and why no $\hat{\alpha}$ is quoted}
+
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\vspace{0.8em}
+Calibrating $\alpha$ against the corpus \textbf{does not identify it}: the fit performs worse
+than the sample mean out of sample, and the estimate scales with an unmeasured $\beta J$.
+
+\vspace{0.8em}
+So no value is quoted. Anywhere. Not in a table, not in a caption.
+
+\vspace{1em}
+What survives is a \textbf{necessary condition} on any content observable used as a field:
+\[
+\alpha \;\ge\; \frac{h_c(\beta J)}{\Delta X}
+\]
+\end{column}
+\begin{column}{0.5\textwidth}
+\includegraphics[width=\textwidth]{F6_alpha_required.pdf}
+\end{column}
+\end{columns}
+
+\vspace{0.5em}
+Measured spread $\Delta X = 0.1241$ gives $\alpha \ge 0.169$ at $\beta J = 1.10$, $1.655$ at
+$1.50$, and $4.294$ at $2.00$.
+
+\end{frame}
+
+\begin{frame}{Paper 3: does the encoder track real cortex?}
+
+A commercial lab reports the released checkpoint, in the averaged configuration this project
+runs, is \textbf{anti-correlated} with real cortex. Four subjects, one stimulus, not
+independently replicated.
+
+\vspace{1em}
+\textbf{Measured here}, from public data: inter-subject noise ceiling
+$= 0.1517$, CI $[0.1484, 0.1551]$, four subjects, $1000$ of $1000$ Schaefer parcels, episode
+\texttt{s01e01a}.
+
+\vspace{1em}
+\textbf{A first value of $0.2247$ was withdrawn.} Two silent defects: an episode selected by
+position rather than name, and an orientation guard that could not fire. Replaying the old
+path reproduces the wrong number exactly, which is what proved the cause.
+
+\vspace{0.8em}
+The prediction pass is specified in the paper and is \textbf{on its final run}.
+
+\end{frame}
+
+\begin{frame}{What is claimed, and what is not}
+
+\textbf{Claimed}
+\begin{itemize}
+\item A content observable that can be measured, with its reliability stated.
+\item That it separates these four corpora at $\eta^2 = 0.1068$, power attached.
+\item A bound any candidate field observable must satisfy, applicable before data is
+collected.
+\end{itemize}
+
+\vspace{1em}
+\textbf{Not claimed}
+\begin{itemize}
+\item That the index detects manipulation. Category is confounded with source.
+\item Anything about the amygdala. The checkpoint does not predict it.
+\item Any value of the coupling $\alpha$. The corpus does not identify it.
+\item Any verdict on an individual item. $12.8\%$ reverse between sessions.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Output}
+
+\begin{itemize}
+\item \textbf{Dissertation}, 72 pages. Complete draft.
+
+\vspace{0.5em}
+\item \textbf{Paper 1} --- the bound and the screening criterion it yields. 12 pages, for
+\emph{Physica A}. Independent of the scan.
+
+\vspace{0.5em}
+\item \textbf{Paper 2} --- the instrument, the 400-item corpus, the field bound. 12 pages,
+for \emph{Physica A}.
+
+\vspace{0.5em}
+\item \textbf{Paper 3} --- the measured noise ceiling and the replication. 6 pages, for
+\emph{Imaging Neuroscience}. One computation on its final run.
+\end{itemize}
+
+\vspace{1em}
+Every number in all four comes from a re-runnable script. The instrument, the corpus and the
+analysis are public at \texttt{github.com/brn-mwai/monarch}.
+
+\end{frame}
+
+\begin{frame}[plain]
+\vspace{2.5em}
+\begin{center}
+{\Large\bfseries Thank you}
+
+\vspace{1.5em}
+\normalsize
+Brian Mwai \quad$\cdot$\quad 1050555\\[0.4em]
+\texttt{monarch-4iy.pages.dev}
+\end{center}
+\end{frame}
+
+\end{document}
