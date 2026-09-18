@@ -1,0 +1,72 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\setlist{itemsep=2pt,topsep=3pt}
+\pagestyle{empty}
+
+\begin{document}
+
+\noindent{\large\bfseries Dissertation submission note}\\[2pt]
+Brian Mwai, 1050555, B.Sc.\ Physics \hfill For Dr.\ Songa Mutambi, 21 September 2026
+
+\vspace{6pt}\hrule\vspace{8pt}
+
+\noindent\textbf{Measuring the External Field: A Cortical-Proxy Content Observable and the
+Mean-Field Bound on Media-Driven Opinion Change.} 81 pages, seven chapters, 21 references.
+The title and scope follow the amendment you approved.
+
+\subsection*{Changes since your last review}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Baselines (Chapter 5).} On the same 400 items and label, TF-IDF with logistic
+regression reaches AUC $0.9758$ against the index's $0.6274$; VADER sentiment does not clear
+chance. The thesis states that the index is a field observable, not a competitive classifier.
+\item \textbf{Leave-one-source-out (Chapter 5).} Not computable: every source dataset carries
+exactly one class. The 150 ISOT items, the one source with both classes, are used instead;
+TF-IDF still reaches $0.9724$ there.
+\item \textbf{The outrage result (Chapters 5 and 6).} High outrage raises both networks
+almost equally ($d = +0.507$ and $+0.491$), so its flat index is a symmetric response, not an
+absent one. The earlier argument that this argues against pure source detection is withdrawn.
+\item \textbf{Sign reversals (Chapter 6).} 51 of 400 items reverse between sessions; the
+measured session noise predicts $55.3$, 95\% interval $[44, 67]$. No per-item claim is made.
+\item \textbf{Citations and wording.} Every dataset, model and atlas is now cited where it is
+used. The bound $\alpha \ge h_c(\beta J)/\Delta X$ is stated as a result for the all-to-all
+mean-field model, since network structure lowers $h_c$.
+\end{enumerate}
+
+\subsection*{Results as submitted}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Category separation & $\eta^2 = 0.1068$, $p = 1.035\times10^{-9}$ (detectable $0.0268$) \\
+Second session & ICC $0.8725$, separation replicates at $\eta^2 = 0.0888$ \\
+Main confound & each category comes from one source dataset, stated before every result \\
+Coupling $\alpha$ & unidentified; no value quoted \\
+Field bound & $\Delta X = 0.1241$ gives $\alpha \ge 4.2938$ at $\beta J = 2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Stated as limitations, not claimed}
+
+Whether the encoder's predictions track measured cortex (the noise ceiling, $0.1517$, is
+measured; the prediction pass against it is not yet run). A corpus that crosses sources with
+categories. Any subcortical structure, which the released checkpoint does not predict.
+
+\subsection*{What I am asking for}
+
+\begin{enumerate}[leftmargin=*]
+\item Any corrections you require before the thesis is final.
+\item Your signature on the supervisor's declaration (page iii).
+\item Clearance to deposit the thesis with the University Library.
+\end{enumerate}
+
+\vspace{4pt}
+\noindent Code, data and every script behind each number: \texttt{github.com/brn-mwai/monarch}.
+The three journal papers from this work will follow separately.
+
+\end{document}
