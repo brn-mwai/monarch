@@ -35,11 +35,15 @@ is replaced by that difference. On 400 items across four categories, matched on 
 categories separate at $\eta^2 = 0.1068$, $F = 15.779$, $p = 1.035\times10^{-9}$, against a
 design powered to detect $\eta^2 = 0.0268$. The separation is carried by fear-activating
 content, $d = 0.9389$ against neutral, while high-outrage content does not separate,
-$d = 0.0300$. Each category is drawn from one source dataset, so the separation is between
-corpora and cannot be attributed to framing; we state this before the result rather than in
-limitations. A second scanning session gives test-retest $\mathrm{ICC} = 0.8725$ and
+$d = 0.0300$, because it raises both networks by nearly equal amounts. Each category is drawn
+from one source dataset, so the separation is between corpora and cannot be attributed to
+framing; we state this before the result rather than in limitations. Against the pre-scan
+manipulative label the observable reaches $\mathrm{AUC} = 0.6274$, and a TF-IDF baseline on
+the same rows reaches $0.9758$, so the observable is offered as a field quantity and not as a
+classifier. A second scanning session gives test-retest $\mathrm{ICC} = 0.8725$ and
 replicates the separation at $\eta^2 = 0.0888$, while $12.8\%$ of individual items reverse
-direction, so the instrument supports category-level statements and no per-item verdict.
+direction, a count that additive noise at the measured session error predicts, so the
+instrument supports category-level statements and no per-item verdict.
 Calibrating the coupling does not identify it: the fit performs worse than the sample mean
 out of sample and scales with an unmeasured $\beta J$, so no value is quoted. What the
 measurement does yield is the spread, $\Delta X = 0.1241$, which converts the companion
@@ -206,12 +210,9 @@ study's hypothesis expected to separate most.}
 \end{table}
 
 Two features of Table~\ref{tab:welch} deserve emphasis. First, the effect is one category:
-remove fear-activating items and little remains. Second, high outrage does not separate at
-all despite being drawn from its own distinct source. If the instrument were simply detecting
-provenance, every category drawn from a different corpus should move away from the baseline.
-Three of four moving, in an order consistent with the hypothesis, is a weaker pattern than
-pure source detection predicts. This is the strongest available argument that the effect is
-not entirely a corpus artifact, and it is not decisive.
+remove fear-activating items and little remains. Second, high outrage does not separate on
+the observable despite being drawn from its own distinct source. Section~\ref{sec:components}
+shows why, and the answer is not that outrage content leaves the encoder unmoved.
 
 Every category mean is negative, so deliberative activation is predicted to lead throughout.
 The instrument finds no affective dominance anywhere in this corpus.
@@ -225,6 +226,55 @@ the separation is a shift between overlapping distributions rather than a clean 
 \label{fig:violin}
 \end{figure}
 
+\subsection{The two components, taken separately}
+\label{sec:components}
+
+The observable is a difference, and a difference cannot tell a large symmetric response from
+no response. Both components are recorded per item, so each can be compared against neutral
+content on its own.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+\textbf{Category vs neutral} & \textbf{Component} & \textbf{t} & \textbf{p} & \textbf{Cohen's d} \\
+\midrule
+Fear activating & $A_{\text{aff}}$ & $+4.333$ & $2.365\times 10^{-5}$  & $+0.613$ \\
+Fear activating & $A_{\text{del}}$ & $-0.696$ & $4.875\times 10^{-1}$  & $-0.098$ \\
+\midrule
+High outrage    & $A_{\text{aff}}$ & $+3.584$ & $4.263\times 10^{-4}$  & $+0.507$ \\
+High outrage    & $A_{\text{del}}$ & $+3.468$ & $6.521\times 10^{-4}$  & $+0.491$ \\
+\midrule
+Reward hook     & $A_{\text{aff}}$ & $+1.842$ & $6.691\times 10^{-2}$  & $+0.261$ \\
+Reward hook     & $A_{\text{del}}$ & $-0.063$ & $9.501\times 10^{-1}$  & $-0.009$ \\
+\bottomrule
+\end{tabular}
+\caption{Welch comparisons of each component against neutral informational content. High
+outrage moves both components by nearly the same amount; fear-activating content moves one.}
+\label{tab:component-welch}
+\end{table}
+
+High outrage raises $A_{\text{aff}}$ by $d = +0.507$ and $A_{\text{del}}$ by $d = +0.491$, both
+at $p < 10^{-3}$, and the difference between them by $d = +0.030$. The category that fails to
+separate on the observable is the one that moves both networks together. Fear-activating
+content raises $A_{\text{aff}}$ by $d = +0.613$ and leaves $A_{\text{del}}$ flat, so its whole
+effect on the observable is one-sided. A one-way ANOVA on each component alone gives
+$F = 7.451$ for $A_{\text{aff}}$ and $F = 6.399$ for $A_{\text{del}}$, both $p < 10^{-3}$.
+
+This weakens an argument we would otherwise make. If outrage had moved neither component, its
+failure to separate would count against the instrument simply detecting provenance. It moves
+both, so every category drawn from a distinct source does move away from the baseline on at
+least one component, which is what source detection predicts. The components do not resolve
+the confound in either direction.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{fig_components.png}
+\caption{$A_{\text{aff}}$, $A_{\text{del}}$ and their signed difference by category over all
+400 items. High outrage is elevated on both components and flat on the difference.}
+\label{fig:components}
+\end{figure}
+
 \subsection{Discrimination against the pre-scan label}
 
 Against the \texttt{manipulative} label carried by each item before it was scanned, the
@@ -232,6 +282,43 @@ observable discriminates at $\mathrm{AUC} = 0.6274$, above the smallest detectab
 $0.5916$. AUC is the headline because it is threshold-free. An $F_1$ of $0.6680$ is
 obtainable, but its threshold was chosen on the same data it is evaluated on, and it is
 labelled as fitted in sample wherever it appears.
+
+An AUC has no meaning without a baseline, so two were run on the same rows and label by
+\texttt{scripts/baselines.py}: TF-IDF over unigrams and bigrams with logistic regression,
+scored out of fold under five-fold stratified cross-validation, and the VADER compound
+sentiment score used directly with nothing fitted. Intervals are $2{,}000$-draw bootstrap
+percentiles.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}llrrl@{}}
+\toprule
+\textbf{Model} & \textbf{Split} & \textbf{n} & \textbf{AUC} & \textbf{95\% CI} \\
+\midrule
+Observable $X$     & nothing fitted    & 400 & $0.6274$ & $[0.5702, 0.6867]$ \\
+VADER compound     & nothing fitted    & 400 & $0.5392$ & $[0.4757, 0.6035]$ \\
+TF-IDF + logistic  & 5-fold stratified & 400 & $0.9758$ & $[0.9601, 0.9879]$ \\
+\midrule
+Observable $X$     & ISOT only         & 150 & $0.7290$ & $[0.6431, 0.8132]$ \\
+VADER compound     & ISOT only         & 150 & $0.4019$ & $[0.3098, 0.4943]$ \\
+TF-IDF + logistic  & ISOT only, 5-fold & 150 & $0.9724$ & $[0.9483, 0.9901]$ \\
+\bottomrule
+\end{tabular}
+\caption{Baselines against the same label. The lower block keeps only the 150 items from the
+ISOT collection, the one origin corpus contributing both classes.}
+\label{tab:baselines}
+\end{table}
+
+\textbf{The lexical baseline wins by a wide margin.} Sentiment does not clear chance. The
+observable is not a better detector of manipulative content than counting words, and no such
+claim is made. Leave-one-source-out, the natural correction for the confound, is unavailable
+because every source contributes exactly one class, so a held-out source leaves a single-class
+test fold. The ISOT-only block is the substitute, and TF-IDF holds at $0.9724$ there. Both
+TF-IDF figures nonetheless sit above $0.95$, where near-ceiling lexical performance on a small
+split points to residual stylistic markers, and a probe on the same features recovers the
+source dataset at $66.25\%$ against $25\%$ chance. Much of what the lexical model separates is
+provenance. The observable is carried forward as the field quantity Eq.~\eqref{eq:bound}
+consumes, not as a competing classifier.
 
 \begin{figure}[htbp]
 \centering
@@ -282,6 +369,16 @@ not supportable at this precision, and no per-item verdict appears anywhere in t
 in the public interface described in Section~\ref{sec:availability}. Group means over 100
 items average this scatter down by an order of magnitude, which is why the category-level
 result survives.
+
+\textbf{The reversal count is the measured noise, not an extra defect.} The paired differences
+give a per-session error $\sigma = \mathrm{sd}(\Delta)/\sqrt{2} = 0.00728$, against a
+between-item standard deviation of $0.01913$ once that error is removed. Under additive error
+at that $\sigma$, with each item's value shrunk toward the grand mean so that no item's own
+noise predicts its own reversal, $20{,}000$ simulations give $55.3$ expected reversals, $95\%$
+interval $[44, 67]$. The observed $51$ sits inside it. Reversing items sit near zero, mean
+$|X| = 0.00320$ against $0.02159$ ($p = 1.4\times10^{-25}$), and spread evenly across
+categories ($\chi^2 = 2.764$, $p = 0.429$). Per-item direction is therefore out of reach at
+this $\sigma$, rather than awaiting a fix.
 
 \textbf{Scan order does not carry the separation.} Because the corpus took more than one
 session, position in the scan is a candidate explanation for the category effect. It is not
@@ -360,17 +457,17 @@ media moves populations; falling below it excludes the mechanism within the mode
 It is worth separating the claims this study can defend from those it cannot, because the two
 are easy to conflate.
 
-\emph{Not supported.} That the instrument detects manipulation. That framing rather than
-provenance drives the separation. Any value for the coupling. Any statement about an
+\emph{Not supported.} That the instrument detects manipulation, or does so better than a
+lexical model. That framing rather than provenance drives the separation. Any value for the coupling. Any statement about an
 individual item. Any claim about subcortical structures, or about measured rather than
 predicted activity.
 
 \emph{Supported.} That the observable attains a measured spread of $0.1241$ on real content,
 which is what the bound consumes and which does not depend on why the spread arises. That the
 categories separate at an effect four times the detectable floor, and that the separation
-replicates in an independent session. That high-outrage content does not separate from
-neutral at this power, which is a clean negative result about the category the hypothesis
-favoured most. And that the coupling is unidentified on this data, which constrains what a
+replicates in an independent session. That high-outrage content, the category the
+hypothesis favoured most, raises both networks together and so leaves the observable where
+neutral content puts it. And that the coupling is unidentified on this data, which constrains what a
 successor may assume.
 
 The confound is removable by design rather than by analysis. Drawing all four categories from
