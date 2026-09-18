@@ -13,8 +13,8 @@ naturalistic audiovisual input rather than written text.
 the encoder requires to align the text stream to the audio.
 \item \textbf{Embedding.} Text and audio are embedded by the pretrained models the encoder was
 built on.
-\item \textbf{Prediction.} The encoder returns activation over $20{,}484$ fsaverage5 cortical
-surface vertices per time point.
+\item \textbf{Prediction.} The encoder, TRIBE v2 \cite{tribe2025}, returns activation over
+$20{,}484$ fsaverage5 cortical surface vertices per time point.
 \item \textbf{Reduction.} The prediction is mean-pooled over time and reduced to two ROI
 means, from which the index is computed.
 \end{enumerate}
@@ -111,6 +111,10 @@ Items are length-matched: category word counts are $167.4$, $163.5$, $163.7$ and
 standard deviations near $11$. Each item carries the labels it held before scanning ---
 \texttt{manipulative}, \texttt{credibility}, \texttt{partisan\_intensity} and its source ---
 and these are the only ground truth in the dataset, since the predicted activations have none.
+The sources are the ISOT fake and true news collections \cite{ahmed2017}, SemEval-2019
+Task~4 \cite{kiesel2019}, Webis-Clickbait-17 \cite{potthast2018}, and PubMed abstracts
+retrieved through the NCBI utilities \cite{pubmed}. The \texttt{manipulative} label is
+derived from the source dataset rather than annotated per item.
 
 NELA-GT-2021, named in the proposal, was withdrawn by its authors in January 2024. SemEval-2019
 Task~4 is substituted; it is openly licensed and labels the article rather than the publisher.
@@ -126,8 +130,8 @@ It was executed in four sessions on a Tesla P100 at a measured 64 to 78 seconds 
 Every item is appended and flushed as it completes, so an interrupted session retains
 everything computed, and a resumed run skips items already present.
 
-Output was verified before any analysis using \texttt{scripts/verify\_scan\_output.py}, which
-checks every scanned row against the source corpus on text, category and identifier, requires
+Output was verified before any analysis. The verification script,
+\texttt{scripts/verify\_scan\_output.py}, checks every scanned row against the source corpus on text, category and identifier, requires
 distinct values, and confirms that the stored difference agrees with the two stored means to
 the precision at which they are written. All 400 rows passed.
 

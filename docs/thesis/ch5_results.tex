@@ -74,6 +74,8 @@ scanned, over 300 labelled manipulative and 100 labelled neutral:
 \midrule
 AUC (headline)              & $0.6274$ \\
 F1 (threshold fitted in sample) & $0.6680$ \\
+Precision at that threshold & $0.8426$ \\
+Recall at that threshold    & $0.5533$ \\
 \bottomrule
 \end{tabular}
 \caption{Classifier performance against the pre-scan manipulative label. AUC is the headline figure; the threshold behind F1 was fitted in sample and F1 is labelled accordingly.}
@@ -100,7 +102,7 @@ It does, and by a wide margin.
 
 Two baselines were run with \texttt{scripts/baselines.py}: TF-IDF over unigrams and bigrams
 with logistic regression, scored on out-of-fold predictions from five-fold stratified
-cross-validation, and a sentiment score, the VADER compound valence, used directly as a score
+cross-validation, and a sentiment score, the VADER compound valence \cite{hutto2014}, used directly as a score
 with nothing fitted. Confidence intervals are $2{,}000$-draw bootstrap percentile intervals on
 the same rows.
 
@@ -126,8 +128,8 @@ TF-IDF + logistic    & ISOT only, 5-fold    & 150 & $0.9724$ & $[0.9483, 0.9901]
 
 \textbf{The lexical baseline wins, and the sentiment baseline does not.} TF-IDF reaches
 $0.9758$ against the index's $0.6274$, and the two intervals are nowhere near overlapping. The
-sentiment score does not clear chance: its interval spans $0.5$ in both blocks and runs below
-it on the restricted set. No claim that the index is a better detector of manipulative content
+sentiment score does not clear chance: its interval spans $0.5$ on the full corpus, and on the
+restricted set it lies wholly below $0.5$, so there it ranks the label the wrong way round. No claim that the index is a better detector of manipulative content
 than counting words is made anywhere in this thesis, and this table is here so that the claim
 cannot be read in by implication.
 
@@ -395,7 +397,7 @@ Classifier AUC                 & $0.5916$ \\
 Equivalent separation $d$      & $0.3277$ \\
 \bottomrule
 \end{tabular}
-\caption{Smallest effects this design could detect at $\alpha = 0.05$ and power $0.80$, fixed before the corpus was scanned.}
+\caption{Smallest effects this design could detect at $\alpha = 0.05$ and power $0.80$, fixed before the corpus was analysed.}
 \label{tab:power}
 \end{table}
 
@@ -416,7 +418,7 @@ attempted and reported thinly.
 
 \begin{enumerate}
 \item \textbf{RQ I.} The ratio form of the index is undefined for $17.25\%$ of real content
-and is replaced by the signed difference. Against pre-scan human labels the index achieves
+and is replaced by the signed difference. Against the pre-scan dataset-derived label the index achieves
 AUC $0.6274$, above the detectable floor and in the predicted direction, but modest. A TF-IDF
 baseline on the same rows reaches $0.9758$, so the index is not the better detector; a
 sentiment baseline does not clear chance.
@@ -424,7 +426,7 @@ sentiment baseline does not clear chance.
 \item \textbf{RQ II.} The four categories separate, $F = 15.779$, $p = 1.035 \times 10^{-9}$,
 $\eta^2 = 0.1068$. The effect is concentrated in fear-activating content
 ($d = +0.939$); high outrage does not separate on the index at all, but raises both component
-activations by almost the same amount ($d = +0.507$ and $d = +0.491$), so its null is a
+activations by almost the same amount ($d = +0.507$ and $d = +0.491$), so its flat difference is a
 symmetric response rather than an absence of one. Category is confounded with source dataset,
 so the separation cannot be attributed to framing.
 

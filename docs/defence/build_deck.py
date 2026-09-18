@@ -795,7 +795,7 @@ footer(s, "Standing", num())
 # ----------------------------------------------------------------- 26 output
 s = slide()
 action_title(s, "The work yields a dissertation and three papers", "books")
-items = [("78 pp", "Dissertation", "Complete, review answered."),
+items = [("81 pp", "Dissertation", "Complete, review answered."),
          ("12 pp", "Paper 1", "The bound and the screening criterion. Physica A. "
                               "Independent of the scan."),
          ("15 pp", "Paper 2", "The instrument, the corpus, the field bound. "
@@ -853,8 +853,9 @@ refs = [
     "cortex. Nature 536, 171–178.",
     "Kiesel, J. et al. (2019). SemEval-2019 Task 4: hyperpartisan news "
     "detection. SemEval.",
-    "Korbel, J., Dahdoul, R., Thurner, S. (2026). Critical campaign spending in "
-    "a double-random field Ising model of elections. Phys. Rev. Lett. 136, "
+    "Korbel, J., Dahdoul, R., Thurner, S. (2026). Empirical validation of the "
+    "polarization transition in a double-random field model of elections. "
+    "Phys. Rev. Lett. 136, "
     "127402.",
     "Potthast, M. et al. (2018). The Webis clickbait challenge 2017. ECIR.",
     "Schaefer, A. et al. (2018). Local-global parcellation of the human cerebral "

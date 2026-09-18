@@ -10,10 +10,10 @@
 \contentsline {figure}{\numberline {4.2}{\ignorespaces A per-vertex map on the published page}}{20}{figure.caption.14}%
 \contentsline {figure}{\numberline {4.3}{\ignorespaces The two ROI unions on the fsaverage5 surface: affective-salience in orange (1{,}030 vertices) and deliberative-control in blue (851). This figure is a definition and carries no data.}}{22}{figure.caption.15}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Distribution of the signed index by category over all 400 items.}}{29}{figure.caption.21}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Every item ranked by the signed index, coloured by category.}}{30}{figure.caption.22}%
-\contentsline {figure}{\numberline {5.3}{\ignorespaces $A_{\mathrm {aff}}$, $A_{\mathrm {del}}$ and their signed difference by category over all 400 items. High outrage is elevated on both components and flat on the difference.}}{31}{figure.caption.25}%
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Predicted response for one fear-activating item at every one of the $20{,}484$ cortical vertices, on the pial surface. Vertices below the map's 70th percentile are left unpainted so the anatomy remains readable; the threshold is stated in the figure. This is the encoder's own output and not a smoothed or interpolated field.}}{33}{figure.caption.26}%
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Free energy at each category's measured mean, swept over $\alpha $. The coupling is swept and never fitted, and no value of $\hat {\alpha }$ is quoted.}}{34}{figure.caption.27}%
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Distribution of the signed index by category over all 400 items.}}{31}{figure.caption.21}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Every item ranked by the signed index, coloured by category.}}{32}{figure.caption.22}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces $A_{\mathrm {aff}}$, $A_{\mathrm {del}}$ and their signed difference by category over all 400 items. High outrage is elevated on both components and flat on the difference.}}{33}{figure.caption.25}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Predicted response for one fear-activating item at every one of the $20{,}484$ cortical vertices, on the pial surface. Vertices below the map's 70th percentile are left unpainted so the anatomy remains readable; the threshold is stated in the figure. This is the encoder's own output and not a smoothed or interpolated field.}}{35}{figure.caption.26}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Free energy at each category's measured mean, swept over $\alpha $. The coupling is swept and never fitted, and no value of $\hat {\alpha }$ is quoted.}}{36}{figure.caption.27}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

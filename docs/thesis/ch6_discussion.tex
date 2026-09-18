@@ -135,7 +135,7 @@ The released checkpoint is loaded in its average-subject configuration, which
 \texttt{tribev2/demo\_utils.py} forces at load time. A commercial laboratory has published an
 audit of that configuration reporting vertex-level $r = -0.0145$ against a measured
 inter-subject ceiling of $+0.0508$: anti-correlated with real cortex, across four subjects
-and all seven Yeo networks.
+and all seven Yeo networks \cite{sapient2026, yeo2011}.
 
 That audit is self-published by a company selling the per-subject alternative, uses four
 subjects and one stimulus, and reports magnitudes near $0.015$ in either direction. It is a
@@ -143,8 +143,9 @@ claim about sign, not about effect size, and it has not been independently repli
 should not be accepted uncritically, and it cannot be dismissed either.
 
 Work toward replicating it was begun within this project. Using the publicly released
-Algonauts~2025 responses, the leave-one-subject-out noise ceiling was measured directly from
-four subjects over all 1000 Schaefer parcels of episode \texttt{s01e01a}, 592 timepoints:
+Algonauts~2025 responses \cite{algonauts2025}, the leave-one-subject-out noise ceiling was
+measured directly from four subjects over all 1000 Schaefer parcels \cite{schaefer2018} of
+episode \texttt{s01e01a}, 592 timepoints:
 \begin{equation}
 r_{\text{ceiling}} = 0.1517, \qquad 95\%\ \text{CI}\ [0.1484,\ 0.1551].
 \end{equation}
@@ -182,8 +183,8 @@ on a $\beta J$ that nothing in this study measures. Reporting a value would repo
 
 The bound is what survives. Because it requires only the observable's measured spread and the
 model's own spinodal, $\alpha \ge h_c(\beta J)/\Delta X$ converts $\Delta X = 0.1241$ into a
-statement no fit is needed to make: a coupling below $4.2938$ at $\beta J = 2$ cannot drive
-the transition regardless of how the calibration is performed. This inverts the usual
+statement no fit is needed to make: a coupling below $4.2938$ at $\beta J = 2$ cannot push an
+all-to-all mean-field population across its spinodal, however the calibration is performed. This inverts the usual
 practice in the sociophysics literature, where the field is assigned and the population is
 shown to tip, without establishing that any real influence reaches the assigned magnitude.
 
@@ -225,8 +226,8 @@ over the same 400 items gives $\eta^2 = 0.0888$, $F = 12.861$, $p = 4.918\times1
 against $\eta^2 = 0.1068$, $F = 15.779$, $p = 1.035\times10^{-9}$ for the first session
 over those items. Both clear the smallest effect this design could detect,
 $\eta^2 = 0.0268$. The separation reported in Chapter~5 is therefore not an artifact of one
-session. The second session's effect is roughly a fifth smaller, which is the attenuation
-that additional measurement error produces in a ratio of between-group to total variance.
+session. The second session's effect is roughly a fifth smaller. Both sessions carry the same
+error, so the difference is within what sampling variation between two noisy runs produces.
 
 \textbf{Per-item direction is not reliable.} The signed index is read as a direction, and
 $51$ of $400$ items, $12.8\%$, reverse that direction between sessions. A statement that a
@@ -325,8 +326,9 @@ Kenyan reader actually encounters is untested, and assembling a labelled local c
 most obvious extension of this work.
 
 \item \textbf{Mean-field physics.} All-to-all coupling, one homogeneous population, a static
-field, binary opinions. Network structure and heterogeneity generally lower $h_c$, so the
-bound is conservative within the model and is not a universal statement.
+field, binary opinions. Network structure and heterogeneity generally lower $h_c$, so on a
+real network the bound can overstate the coupling required. It is a statement about the
+all-to-all model and not a universal one.
 
 \item \textbf{The interpretation is a reverse inference.} Naming the two ROI unions
 affective-salience and deliberative-control, and reading their difference as a statement about
