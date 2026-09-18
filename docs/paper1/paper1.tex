@@ -30,8 +30,8 @@ every case the external field representing that content is assigned by hand. The
 therefore demonstrate that \emph{a} field of sufficient magnitude tips the population, while
 saying nothing about whether any real content observable reaches that magnitude. We close
 that gap from the theory side. Writing the field as $h = \alpha X$ for an arbitrary content
-observable $X$ with attainable range $\Delta X$, we show that no media-driven transition is
-possible unless the coupling satisfies $\alpha \ge h_c(\beta J)/\Delta X$, where
+observable $X$ with attainable range $\Delta X$, we show that in all-to-all mean-field theory no
+media-driven transition across the spinodal is possible unless the coupling satisfies $\alpha \ge h_c(\beta J)/\Delta X$, where
 $h_c(\beta J)$ is the spinodal field at which the metastable minimum disappears. The bound
 inverts the usual procedure: instead of fitting $\alpha$ and hoping the estimate clears zero,
 it states what $\alpha$ would have to be for the mechanism to operate at all, and it can be
@@ -54,7 +54,8 @@ phase transition
 The statistical physics of social dynamics has a standard move: identify a binary attitude
 with an Ising spin, identify social conformity with a ferromagnetic coupling $J$, identify
 media or propaganda with an external field $h$, and study when the population's average
-opinion $m$ jumps between consensus states \cite{castellano2009,galam2008}. The move is
+opinion $m$ jumps between consensus states
+\cite{castellano2009,galam2008,sznajd2000,stauffer2008}. The move is
 productive. It supplies an order parameter, a control parameter and a transition, and it
 explains why small changes in influence can produce disproportionate changes in collective
 opinion near a critical point.
@@ -66,7 +67,8 @@ models media explicitly: Crokidakis \cite{crokidakis2012} introduces mass media 
 two-dimensional Sznajd model as a probability $p$ of following the media opinion and sweeps
 it, finding the phase transition absent above $p \approx 0.18$; Azhari and
 Muslim \cite{azhari2023} apply an external field to majority-rule and $q$-voter dynamics and
-sweep its magnitude; the review by S\^{i}rbu et al. \cite{sirbu2016} surveys models combining
+sweep its magnitude; Freitas, Vieira and Anteneodo \cite{freitas2020} show that a
+field turns the transition into an imperfect bifurcation; the review by S\^{i}rbu et al. \cite{sirbu2016} surveys models combining
 peer interaction with external information without any of them measuring the external term.
 In each case the swept parameter is the quantity whose real-world magnitude is at issue.
 
@@ -191,7 +193,7 @@ only where the denominator is positive.
 \label{sec:numerics}
 
 Every later figure is drawn with the same solver, so the solver is checked first against
-results that are known exactly. Mean-field theory fixes
+results that are known exactly. Mean-field theory fixes \cite{goldenfeld1992}
 \begin{equation}
 \beta = \tfrac{1}{2}, \qquad \gamma = 1, \qquad \delta = 3,
 \end{equation}
@@ -294,7 +296,8 @@ Three properties of \eqref{eq:bound} are worth drawing out.
 
 First, it is a necessary condition, not a sufficient one. Clearing the bound does not
 establish that content tips populations; it only fails to rule it out. Falling below it,
-however, is decisive within the model's assumptions.
+however, excludes the mechanism within the model's assumptions, for a population that must
+cross the spinodal.
 
 Second, it does not require the field to be estimated. $\Delta X$ is obtained by measuring
 the observable across a corpus, which is ordinarily far cheaper than estimating a coupling to
@@ -342,8 +345,8 @@ The linear map $h = \alpha X$ is the simplest possible coupling and is an assump
 own right; a saturating map would change the relationship between $\Delta X$ and the maximum
 attainable field. Finally, the spinodal is the relevant threshold for a population trapped in
 a metastable state; a population at the coexistence field can be moved by a smaller field
-given enough time, so \eqref{eq:bound} is conservative in the sense of demanding more of
-$\alpha$ than a nucleation argument would.
+given enough time, so \eqref{eq:bound} demands more of $\alpha$ than a nucleation argument
+would, and on a real network it can overstate the coupling required.
 
 \section{Reproducibility}
 \label{sec:repro}
