@@ -343,8 +343,7 @@ Potthast et al.\ (Webis-Clickbait-17); PubMed open abstracts.}
 
 \heroslide{the four categories separate at}{$\eta^{2} = 0.1068$}%
 {$F = 15.779$, \; $p = 1.03\times10^{-9}$, \; $n = 400$ \\[0.5em]
-{\color{slate} against a design powered to detect $0.0268$; AUC against the pre-scan label is
-$0.6274$}}
+{\color{slate} against a design powered to detect $0.0268$}}
 
 \begin{frame}{Categories shift against each other, but the distributions overlap}
 \vspace{-0.2em}
@@ -358,7 +357,7 @@ throughout, and the categories differ in how far below zero they sit.}
 \end{center}
 \end{frame}
 
-\begin{frame}{Fear-activating content carries the effect; outrage does not separate}
+\begin{frame}{Fear-activating content carries the effect; outrage moves both networks equally}
 \vspace{0.2em}
 \begin{center}
 \begin{tikzpicture}[font=\small]
@@ -379,7 +378,8 @@ throughout, and the categories differ in how far below zero they sit.}
 
 \vspace{0.8em}
 Cohen's $d$ against the neutral baseline. \alert{Outrage is the category the proposal expected
-to separate most,} and it does not separate at all.
+to separate most,} and on the index it does not. Taken apart, it raises both networks:
+affective $d = +0.507$, deliberative $d = +0.491$. Fear raises one only.
 \end{frame}
 
 \begin{frame}{Category cannot be told apart from source dataset}
@@ -410,6 +410,34 @@ One source per category, so the separation is between \emph{corpora} and cannot 
 to \emph{framing}. Length is controlled; provenance is not.
 \end{frame}
 
+\begin{frame}{A bag of words beats the index on the label, so the index is not a classifier}
+\vspace{0.6em}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{center}
+{\color{slate}\fontsize{38}{38}\selectfont\bfseries 0.6274}\\[0.5em]
+{\color{slate}AUC, the index, nothing fitted}
+\end{center}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{center}
+{\color{ember}\fontsize{38}{38}\selectfont\bfseries 0.9758}\\[0.5em]
+{\color{slate}AUC, TF-IDF + logistic, 5-fold}
+\end{center}
+\end{column}
+\end{columns}
+
+\vspace{1.2em}
+{\small Same 400 rows, same pre-scan label. Sentiment (VADER) does not clear chance, $0.5392$.
+On the 150 ISOT items, the one source carrying both classes, TF-IDF still reaches $0.9724$.
+A probe on the same words recovers the source dataset at $66.25\%$ against $25\%$ chance, so
+much of the lexical win is provenance.}
+
+\vspace{0.8em}
+\alert{The index is carried forward as the field observable the physics needs, not as a
+detector.}
+\end{frame}
+
 \begin{frame}{Group-level claims hold at this precision; per-item claims do not}
 \vspace{0.6em}
 \begin{columns}[T]
@@ -434,8 +462,8 @@ anywhere in the analysis, the figures or the public site.}
 \end{columns}
 
 \vspace{1.0em}
-{\color{slate} A second session scanned all 400 items with identical text, code and regions.
-Neither run is corrected toward the other, and they are not averaged.}
+{\color{slate} Additive noise at the measured session error predicts 55.3 reversals, 95\% [44, 67];
+51 are observed. Reversing items sit near zero and spread evenly across categories.}
 \end{frame}
 
 \begin{frame}{The encoder returns a full cortical map, not a summary statistic}
@@ -581,7 +609,7 @@ $\bullet$\; A measured noise ceiling for the checkpoint on public data.
 \vspace{0.8em}
 
 {\small
-$\bullet$\; That the index detects manipulation. Category is confounded with source.
+$\bullet$\; That the index detects manipulation. Source is confounded; TF-IDF scores $0.9758$.
 
 \vspace{0.6em}
 $\bullet$\; Anything about the amygdala. The checkpoint does not predict it.
@@ -600,9 +628,9 @@ $\bullet$\; Any verdict on one article. 12.8\% reverse between sessions.
 \vspace{0.8em}
 \begin{columns}[T]
 \begin{column}{0.235\textwidth}
-{\color{midblue}\bfseries 72 pp}\\[0.3em]
+{\color{midblue}\bfseries 78 pp}\\[0.3em]
 \textbf{Dissertation}\\[0.4em]
-{\color{slate}\scriptsize Complete draft.}
+{\color{slate}\scriptsize Complete, review answered.}
 \end{column}
 \begin{column}{0.235\textwidth}
 {\color{midblue}\bfseries 12 pp}\\[0.3em]
@@ -611,7 +639,7 @@ $\bullet$\; Any verdict on one article. 12.8\% reverse between sessions.
 Independent of the scan.}
 \end{column}
 \begin{column}{0.235\textwidth}
-{\color{midblue}\bfseries 12 pp}\\[0.3em]
+{\color{midblue}\bfseries 15 pp}\\[0.3em]
 \textbf{Paper 2}\\[0.4em]
 {\color{slate}\scriptsize The instrument, the corpus, the field bound. \emph{Physica A}.}
 \end{column}

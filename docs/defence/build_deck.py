@@ -14,7 +14,7 @@ from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.util import Emu, Inches, Pt
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ICONS = os.path.join(HERE, "icon_png")
+ICONS = os.path.join(HERE, "assets", "icons")
 REPO = r"C:\Users\Windows\Downloads\monarch"
 FIG = os.path.join(REPO, "services", "inference", "data", "figures")
 REPORT = os.path.join(REPO, "services", "inference", "data", "final", "report")
@@ -487,8 +487,7 @@ footer(s, "The measurement", num())
 s = slide()
 hero(s, "the four categories separate at", "η² = 0.1068",
      [("F = 15.779    p = 1.03 × 10⁻⁹    n = 400", BLACK),
-      ("against a design powered to detect 0.0268; AUC against the pre-scan "
-       "label is 0.6274", SLATE)])
+      ("against a design powered to detect 0.0268", SLATE)])
 num()
 
 # ----------------------------------------------------------------- 14 violin
@@ -505,8 +504,8 @@ footer(s, "The measurement", num())
 
 # ----------------------------------------------------------------- 15 effect sizes
 s = slide()
-action_title(s, "Fear-activating content carries the effect; outrage does not "
-                "separate", "chart-bar")
+action_title(s, "Fear-activating content carries the effect; outrage moves "
+                "both networks equally", "chart-bar")
 axis = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(3.55), Inches(1.75),
                           Pt(1.5), Inches(2.55))
 axis.fill.solid()
@@ -539,9 +538,10 @@ for i, (label, d, colour, dlabel, plabel) in enumerate(bars):
 tf = textbox(s, M, 4.80, W - 2 * M, 1.4)
 para(tf, "Cohen's d against the neutral baseline.", size=20, colour=BLACK,
      first=True, space_after=8)
-para(tf, "Outrage is the category the proposal expected to separate most, and "
-         "it does not separate at all.", size=20, bold=True, colour=EMBER,
-     space_after=0)
+para(tf, "Outrage is the category the proposal expected to separate most. "
+         "Taken apart, it raises both networks: affective d = +0.507, "
+         "deliberative d = +0.491. Fear raises one only.", size=19, bold=True,
+     colour=EMBER, space_after=0)
 footer(s, "The measurement", num())
 
 # ----------------------------------------------------------------- 16 confound
@@ -576,6 +576,35 @@ para(tf, "One source per category, so the separation is between corpora and "
          "not.", size=20, colour=BLACK, first=True, space_after=0)
 footer(s, "The measurement", num())
 
+# ----------------------------------------------------------------- 16b baselines
+s = slide()
+action_title(s, "A bag of words beats the index on the label, so the index is "
+                "not a classifier", "warning")
+tf = textbox(s, M, 1.70, 5.6, 1.1, align=PP_ALIGN.CENTER)
+para(tf, "0.6274", size=54, bold=True, colour=SLATE, first=True,
+     align=PP_ALIGN.CENTER, space_after=0)
+tf = textbox(s, M, 2.85, 5.6, 0.45, align=PP_ALIGN.CENTER)
+para(tf, "AUC, the index, nothing fitted", size=16, colour=SLATE, first=True,
+     align=PP_ALIGN.CENTER, space_after=0)
+tf = textbox(s, 7.1, 1.70, 5.5, 1.1, align=PP_ALIGN.CENTER)
+para(tf, "0.9758", size=54, bold=True, colour=EMBER, first=True,
+     align=PP_ALIGN.CENTER, space_after=0)
+tf = textbox(s, 7.1, 2.85, 5.5, 0.45, align=PP_ALIGN.CENTER)
+para(tf, "AUC, TF-IDF + logistic, 5-fold", size=16, colour=SLATE, first=True,
+     align=PP_ALIGN.CENTER, space_after=0)
+tf = textbox(s, M, 3.55, W - 2 * M, 1.6)
+para(tf, "Same 400 rows, same pre-scan label. Sentiment (VADER) does not clear "
+         "chance, 0.5392. On the 150 ISOT items, the one source carrying both "
+         "classes, TF-IDF still reaches 0.9724. A probe on the same words "
+         "recovers the source dataset at 66.25% against 25% chance, so much of "
+         "the lexical win is provenance.", size=17, colour=BLACK, first=True,
+     space_after=0)
+tf = textbox(s, M, 5.30, W - 2 * M, 0.8)
+para(tf, "The index is carried forward as the field observable the physics "
+         "needs, not as a detector.", size=19, bold=True, colour=EMBER,
+     first=True, space_after=0)
+footer(s, "The measurement", num())
+
 # ----------------------------------------------------------------- 17 reliability
 s = slide()
 action_title(s, "Group-level claims hold at this precision; per-item claims do "
@@ -602,9 +631,10 @@ para(tf, "51 of 400 items flip sign between sessions, so no verdict on one "
          "article appears anywhere in the analysis, the figures or the public "
          "site.", size=17, colour=BLACK, first=True, space_after=0)
 tf = textbox(s, M, 5.35, W - 2 * M, 0.9)
-para(tf, "A second session scanned all 400 items with identical text, code and "
-         "regions. Neither run is corrected toward the other, and they are not "
-         "averaged.", size=17, colour=SLATE, first=True, space_after=0)
+para(tf, "Additive noise at the measured session error predicts 55.3 "
+         "reversals, 95% [44, 67]; 51 are observed. Reversing items sit near "
+         "zero and spread evenly across categories.", size=17, colour=SLATE,
+     first=True, space_after=0)
 footer(s, "The measurement", num())
 
 # ----------------------------------------------------------------- 18 per-vertex
@@ -752,7 +782,8 @@ para(tf, "NOT SUPPORTED", size=17, bold=True, colour=EMBER, first=True,
      space_after=0)
 tf = textbox(s, 7.1, 2.10, 5.5, 3.6)
 for text in [
-    "That the index detects manipulation. Category is confounded with source.",
+    "That the index detects manipulation. Source is confounded; TF-IDF "
+    "scores 0.9758.",
     "Anything about the amygdala. The checkpoint does not predict it.",
     "Any value of the coupling α. The corpus does not identify it.",
     "Any verdict on one article. 12.8% reverse between sessions.",
@@ -764,10 +795,10 @@ footer(s, "Standing", num())
 # ----------------------------------------------------------------- 26 output
 s = slide()
 action_title(s, "The work yields a dissertation and three papers", "books")
-items = [("72 pp", "Dissertation", "Complete draft."),
+items = [("78 pp", "Dissertation", "Complete, review answered."),
          ("12 pp", "Paper 1", "The bound and the screening criterion. Physica A. "
                               "Independent of the scan."),
-         ("12 pp", "Paper 2", "The instrument, the corpus, the field bound. "
+         ("15 pp", "Paper 2", "The instrument, the corpus, the field bound. "
                               "Physica A."),
          ("6 pp", "Paper 3", "The measured ceiling and the replication. Imaging "
                              "Neuroscience. One computation on its final run.")]
