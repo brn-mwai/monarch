@@ -210,7 +210,7 @@ rule(s, M + 0.15, 4.45, 11.0)
 tf = textbox(s, M + 0.15, 4.70, 6.0, 0.9)
 rich(tf, [("Brian Mwai", True, BLACK), ("   1050555", False, SLATE)],
      size=19, first=True, space_after=4)
-para(tf, "3 September 2026", size=14, colour=SLATE, space_after=0)
+para(tf, "September 2026", size=14, colour=SLATE, space_after=0)
 tf = textbox(s, 7.6, 4.70, 5.0, 0.6, align=PP_ALIGN.RIGHT)
 para(tf, "Supervisor: Dr. Songa Mutambi", size=15, colour=SLATE, first=True,
      space_after=0)
@@ -423,16 +423,14 @@ action_title(s, "Inspecting the checkpoint changed what the project could claim"
              "magnifying-glass")
 findings = [
     ("01", "Cortical only",
-     "Output is (T, 20484). There is no subcortical head.",
-     "The amygdala is not predicted, so the proposal's central equation cannot "
-     "be computed.", True),
+     "No subcortical output.",
+     "No amygdala, so the proposal's equation cannot be computed.", True),
     ("02", "Averaged over subjects",
-     "The loader forces average_subjects.",
-     "It predicts a typical viewer. Whether that carries signal is the third "
-     "paper's question.", False),
+     "The loader forces it.",
+     "It predicts a typical viewer, which Paper 3 tests.", False),
     ("03", "Standardised output",
-     "Region means sit near zero, so a ratio sign-flips or explodes.",
-     "Undefined for 69 of 400 items. Replaced by the difference.", False),
+     "Means sit near zero, so a ratio breaks.",
+     "Undefined for 69 of 400 items; the difference replaces it.", False),
 ]
 cw = 3.75
 for i, (idx, head, body, tail, alert) in enumerate(findings):
@@ -443,8 +441,8 @@ for i, (idx, head, body, tail, alert) in enumerate(findings):
     para(tf, body, size=16, colour=BLACK, space_after=8)
     para(tf, tail, size=16, colour=EMBER if alert else BLACK, space_after=0)
 tf = textbox(s, M, 5.35, W - 2 * M, 0.8)
-para(tf, "Each was found by testing the artifact, and each is stated in the "
-         "abstract rather than the limitations.", size=17, colour=SLATE,
+para(tf, "All three were found by testing the checkpoint, before any result.",
+     size=17, colour=SLATE,
      first=True, space_after=0)
 footer(s, "The instrument", num())
 
@@ -528,7 +526,7 @@ for i, (label, d, colour, dlabel, plabel) in enumerate(bars):
     shp.fill.fore_color.rgb = colour
     shp.line.fill.background()
     shp.shadow.inherit = False
-    tf = textbox(s, 3.57 + bw + 0.14, y - 0.06, 3.2, 0.45)
+    tf = textbox(s, 3.57 + bw + 0.14, y - 0.06, 2.9, 0.45)
     if plabel:
         rich(tf, [(dlabel + "   ", True, colour), (plabel, False, SLATE)],
              size=17, first=True, space_after=0)
@@ -593,16 +591,14 @@ tf = textbox(s, 7.1, 2.85, 5.5, 0.45, align=PP_ALIGN.CENTER)
 para(tf, "AUC, TF-IDF + logistic, 5-fold", size=16, colour=SLATE, first=True,
      align=PP_ALIGN.CENTER, space_after=0)
 tf = textbox(s, M, 3.55, W - 2 * M, 1.6)
-para(tf, "Same 400 rows, same pre-scan label. Sentiment (VADER) does not clear "
-         "chance, 0.5392. On the 150 ISOT items, the one source carrying both "
-         "classes, TF-IDF still reaches 0.9724. A probe on the same words "
-         "recovers the source dataset at 66.25% against 25% chance, so much of "
-         "the lexical win is provenance.", size=17, colour=BLACK, first=True,
-     space_after=0)
-tf = textbox(s, M, 5.30, W - 2 * M, 0.8)
-para(tf, "The index is carried forward as the field observable the physics "
-         "needs, not as a detector.", size=19, bold=True, colour=EMBER,
+para(tf, "Same 400 rows, same label. Sentiment (VADER) sits at chance, 0.5392. "
+         "The same words guess the source 66% of the time against 25% chance, "
+         "so much of the lexical win is provenance.", size=18, colour=BLACK,
      first=True, space_after=0)
+tf = textbox(s, M, 5.10, W - 2 * M, 0.8)
+para(tf, "The index is a field observable for the physics, not a detector.",
+     size=19, bold=True, colour=EMBER, first=True, space_after=0)
+source(s, "Hutto & Gilbert (2014), VADER.")
 footer(s, "The measurement", num())
 
 # ----------------------------------------------------------------- 17 reliability
@@ -616,8 +612,7 @@ tf = textbox(s, M, 2.85, 5.6, 0.45, align=PP_ALIGN.CENTER)
 para(tf, "ICC between two GPU sessions", size=16, colour=SLATE, first=True,
      align=PP_ALIGN.CENTER, space_after=0)
 tf = textbox(s, M, 3.45, 5.6, 1.5)
-para(tf, "The separation replicates: 0.0888 on the second session against "
-         "0.1068 on the first. Both clear the detectable floor.", size=17,
+para(tf, "The separation replicates: η² = 0.0888 against 0.1068.", size=18,
      colour=BLACK, first=True, space_after=0)
 
 tf = textbox(s, 7.1, 1.70, 5.5, 1.1, align=PP_ALIGN.CENTER)
@@ -627,14 +622,8 @@ tf = textbox(s, 7.1, 2.85, 5.5, 0.45, align=PP_ALIGN.CENTER)
 para(tf, "of items reverse direction", size=16, colour=SLATE, first=True,
      align=PP_ALIGN.CENTER, space_after=0)
 tf = textbox(s, 7.1, 3.45, 5.5, 1.5)
-para(tf, "51 of 400 items flip sign between sessions, so no verdict on one "
-         "article appears anywhere in the analysis, the figures or the public "
-         "site.", size=17, colour=BLACK, first=True, space_after=0)
-tf = textbox(s, M, 5.35, W - 2 * M, 0.9)
-para(tf, "Additive noise at the measured session error predicts 55.3 "
-         "reversals, 95% [44, 67]; 51 are observed. Reversing items sit near "
-         "zero and spread evenly across categories.", size=17, colour=SLATE,
-     first=True, space_after=0)
+para(tf, "51 of 400. Noise alone predicts 55, so no verdict on one article is "
+         "ever made.", size=18, colour=BLACK, first=True, space_after=0)
 footer(s, "The measurement", num())
 
 # ----------------------------------------------------------------- 18 per-vertex
@@ -659,49 +648,38 @@ s = slide()
 action_title(s, "Media enters the mean-field model as a field on the measured "
                 "observable", "atom")
 tf = textbox(s, M, 1.60, W - 2 * M, 1.0)
-para(tf, "Each person holds an opinion ±1, is pulled toward their neighbours "
-         "with strength J, and is pushed by media with field h:", size=19,
-     colour=BLACK, first=True, space_after=0)
-tf = textbox(s, M, 2.45, W - 2 * M, 0.7, align=PP_ALIGN.CENTER)
-para(tf, "m  =  tanh( βJ m + h ),        h  =  α X", size=26, bold=True,
+para(tf, "Each person holds an opinion ±1, is pulled toward neighbours by J, "
+         "and pushed by media with field h = αX, where X is the measured "
+         "observable:", size=19, colour=BLACK, first=True, space_after=0)
+tf = textbox(s, M, 2.60, W - 2 * M, 0.7, align=PP_ALIGN.CENTER)
+para(tf, "m  =  tanh( βJ m + h )", size=26, bold=True,
      colour=NAVY, first=True, align=PP_ALIGN.CENTER, space_after=0)
-tf = textbox(s, M, 3.25, W - 2 * M, 0.8)
-para(tf, "where X is the measured observable and α the unknown coupling. "
-         "Expanding artanh(m) ≈ m + m³/3:", size=19, colour=BLACK, first=True,
-     space_after=0)
-tf = textbox(s, M, 4.00, W - 2 * M, 0.7, align=PP_ALIGN.CENTER)
+tf = textbox(s, M, 3.50, W - 2 * M, 0.7, align=PP_ALIGN.CENTER)
 para(tf, "F(m) = a m² + b m⁴ − h m,        a = (1 − βJ)/2,        b = 1/12",
      size=24, bold=True, colour=NAVY, first=True, align=PP_ALIGN.CENTER,
      space_after=0)
-tf = textbox(s, M, 4.85, W - 2 * M, 1.2)
-rich(tf, [("Coefficients derived from the self-consistency condition. ",
-           True, SLATE),
-          ("The proposal carried a = 1 − βJ, b = (βJ)³/3, which do not follow "
-           "from it. The solver reproduces the exact exponents 1/2, 1 and 3.",
-           False, SLATE)], size=17, first=True, space_after=0)
+tf = textbox(s, M, 4.65, W - 2 * M, 1.2)
+para(tf, "Coefficients derived, not assumed; this corrects the proposal's a and "
+         "b. The solver recovers the mean-field exponents.", size=18,
+     colour=SLATE, first=True, space_after=0)
 footer(s, "The physics", num())
 
 # ----------------------------------------------------------------- 21 no alpha
 s = slide()
 action_title(s, "The corpus does not identify the coupling, so no value is "
                 "quoted", "x-circle")
-tf = textbox(s, M, 1.75, 6.6, 3.6)
-rich(tf, [("What was tried. ", True, BLACK),
-          ("Regress the outcome on the measured index and read off α.",
-           False, BLACK)], size=20, first=True, space_after=14)
-rich(tf, [("What happened. ", True, BLACK),
-          ("The fit performs worse than the sample mean out of sample, and the "
-           "estimate scales inversely with a coupling βJ that no measurement "
-           "here fixes.", False, BLACK)], size=20, space_after=14)
-para(tf, "So no value of α-hat appears anywhere — not in a table, a caption, or "
-         "\u201cfor illustration\u201d.", size=20, bold=True, colour=EMBER,
-     space_after=0)
-tf = textbox(s, 8.05, 1.85, 4.55, 3.0)
-para(tf, "Reporting an unidentified coupling as though it were measured would "
-         "be the failure here. Declining to quote it is not.", size=17,
-     colour=SLATE, first=True, space_after=14)
-para(tf, "What replaces it is a statement that does not need the fit at all.",
-     size=17, colour=SLATE, space_after=0)
+tf = textbox(s, M, 1.75, W - 2 * M, 3.8)
+rich(tf, [("Tried. ", True, BLACK),
+          ("Fit the outcome to the measured index and read off α.",
+           False, BLACK)], size=20, first=True, space_after=16)
+rich(tf, [("Result. ", True, BLACK),
+          ("Out of sample the fit does worse than the average, and the estimate "
+           "depends on βJ, which nothing here measures.", False, BLACK)],
+     size=20, space_after=16)
+para(tf, "So no value of α is quoted anywhere.", size=20, bold=True,
+     colour=EMBER, space_after=20)
+para(tf, "What replaces it needs no fit at all: the bound on the next slide.",
+     size=18, colour=SLATE, space_after=0)
 footer(s, "The physics", num())
 
 # ----------------------------------------------------------------- 22 the bound
@@ -709,18 +687,15 @@ s = slide()
 action_title(s, "Any content observable must clear a bound to drive a "
                 "transition", "ruler")
 s.shapes.add_picture(os.path.join(PAPER1, "F6_alpha_required.png"),
-                     Inches(M), Inches(1.60), height=Inches(3.45))
-tf = textbox(s, 7.35, 1.90, 5.25, 0.9, align=PP_ALIGN.CENTER)
+                     Inches(M), Inches(1.45), height=Inches(4.4))
+tf = textbox(s, 7.6, 1.90, 5.0, 0.9, align=PP_ALIGN.CENTER)
 formula(tf, [("α  ≥  h", 0), ("c", -1), ("(βJ) / ΔX", 0)], size=32, first=True)
-tf = textbox(s, 7.35, 2.95, 5.25, 2.1)
-para(tf, "Rather than fitting α and hoping it clears zero, this states what α "
-         "would have to be for the mechanism to work at all — for any candidate "
-         "observable, before a corpus exists.", size=18, colour=BLACK,
-     first=True, space_after=0)
-tf = textbox(s, M, 5.35, W - 2 * M, 0.7, align=PP_ALIGN.CENTER)
-rich(tf, [("Measured spread ΔX = 0.1241  ⇒  α ≥ 0.169 at βJ = 1.10,   "
-           "1.655 at 1.50,   ", False, BLACK), ("4.294 at 2.00", True, NAVY)],
-     size=18, first=True, align=PP_ALIGN.CENTER, space_after=0)
+tf = textbox(s, 7.6, 3.00, 5.0, 2.6)
+para(tf, "What α would have to be for media to tip opinion, for any "
+         "observable, before any data. Within the mean-field model.", size=18,
+     colour=BLACK, first=True, space_after=14)
+rich(tf, [("Measured ΔX = 0.1241 gives ", False, BLACK),
+          ("α ≥ 4.29 at βJ = 2.", True, EMBER)], size=18, space_after=0)
 footer(s, "The physics", num())
 
 # ----------------------------------------------------------------- 23 divider
@@ -730,31 +705,30 @@ num()
 
 # ----------------------------------------------------------------- 24 paper 3
 s = slide()
-action_title(s, "Whether the encoder tracks real cortex is measurable, and one "
-                "pass remains", "target")
+action_title(s, "Against real brains the encoder is weakly positive, not "
+                "anti-correlated", "target")
 tf = textbox(s, M, 1.60, W - 2 * M, 1.0)
-para(tf, "A commercial lab reports the released checkpoint, in the averaged "
-         "configuration this project runs, is anti-correlated with real cortex. "
-         "Four subjects, one stimulus, not independently replicated.", size=19,
+para(tf, "A company audit says the checkpoint this project runs is "
+         "anti-correlated with real cortex. Tested here on public fMRI:", size=19,
      colour=BLACK, first=True, space_after=0)
-for x, value, label, note, colour in [
-    (1.75, "0.1517", "measured noise ceiling",
-     "CI [0.1484, 0.1551], 4 subjects, 1000 parcels", NAVY),
-    (7.05, "0.2247", "withdrawn",
-     "an episode picked by position, and a guard that could not fire", EMBER)]:
-    shp = card(s, x, 2.75, 4.5, 1.55)
+for x, value, label, note, colour, line in [
+    (0.9, "0.1517", "noise ceiling", "full episode, 4 subjects", NAVY, MIST),
+    (4.9, "+0.028", "encoder vs brains",
+     "ceiling 0.096 on the same 80 scans, p = 0.048", NAVY, NAVY),
+    (8.9, "3 bugs", "silent, found, fixed",
+     "wrong episode, flipped array, two clocks", EMBER, MIST)]:
+    shp = card(s, x, 2.75, 3.55, 1.65, line=line)
     tf = shp.text_frame
     tf.vertical_anchor = MSO_ANCHOR.MIDDLE
     para(tf, value, size=30, bold=True, colour=colour, first=True,
          align=PP_ALIGN.CENTER, space_after=2)
     para(tf, label, size=16, colour=BLACK, align=PP_ALIGN.CENTER, space_after=2)
     para(tf, note, size=12, colour=SLATE, align=PP_ALIGN.CENTER, space_after=0)
-tf = textbox(s, M, 4.55, W - 2 * M, 1.0)
-para(tf, "Replaying the old code path reproduces the wrong number exactly, "
-         "which proved the cause. Both defects were silent: nothing crashed.",
+tf = textbox(s, M, 4.75, W - 2 * M, 1.0)
+para(tf, "Positive, weak, and not yet decisive on two minutes of film.",
      size=19, colour=BLACK, first=True, space_after=0)
-source(s, "Schaefer et al. (2018); Algonauts 2025 (CC0); audit self-published, "
-          "Sapient (2026).")
+source(s, "Algonauts 2025; Schaefer et al. (2018); audit: The Sapient Company "
+          "(2026).")
 footer(s, "Standing", num())
 
 # ----------------------------------------------------------------- 25 claims
@@ -770,7 +744,8 @@ for text in [
     "A content observable that can be measured, with its reliability stated.",
     "That it separates these four corpora at 0.1068, power attached.",
     "A bound any candidate observable must satisfy, usable before data exists.",
-    "A measured noise ceiling for the checkpoint on public data.",
+    "A noise ceiling on public fMRI, and a first check of the encoder "
+    "against it.",
 ]:
     para(tf, "•  " + text, size=17, colour=BLACK,
          first=(text.startswith("A content")), space_after=12)
@@ -798,10 +773,10 @@ action_title(s, "The work yields a dissertation and three papers", "books")
 items = [("81 pp", "Dissertation", "Complete, review answered."),
          ("12 pp", "Paper 1", "The bound and the screening criterion. Physica A. "
                               "Independent of the scan."),
-         ("15 pp", "Paper 2", "The instrument, the corpus, the field bound. "
+         ("16 pp", "Paper 2", "The instrument, the corpus, the field bound. "
                               "Physica A."),
-         ("6 pp", "Paper 3", "The measured ceiling and the replication. Imaging "
-                             "Neuroscience. One computation on its final run.")]
+         ("8 pp", "Paper 3", "The noise ceiling and a check of the encoder "
+                             "against real brains. Imaging Neuroscience.")]
 cw = 2.85
 for i, (pages, name, body) in enumerate(items):
     x = M + i * (cw + 0.32)
@@ -828,8 +803,8 @@ conclusions = [
     ("The coupling is unidentified, so the thesis reports a bound instead. ",
      "With ΔX = 0.1241, α ≥ 4.294 at βJ = 2 — a constraint on any future "
      "proposal of this mechanism."),
-    ("The instrument's own validity is now a measurable question. ",
-     "The noise ceiling is 0.1517; one prediction pass remains."),
+    ("The encoder is weakly positive against real brains, not anti-correlated. ",
+     "r = +0.028 against a ceiling of 0.096 on the same scans; not yet decisive."),
 ]
 for i, (head, body) in enumerate(conclusions):
     rich(tf, [("%d.  " % (i + 1), True, MIDBLUE), (head, True, BLACK),
@@ -849,22 +824,28 @@ refs = [
     "n-gram analysis and machine learning. ISDDC.",
     "d'Ascoli, S. et al. (2025). TRIBE: a trimodal brain encoder for whole-brain "
     "fMRI response prediction. Meta FAIR. arXiv:2507.22229.",
+    "Gifford, A. T. et al. (2025). The Algonauts Project 2025 Challenge. "
+    "arXiv:2501.00504.",
     "Glasser, M. F. et al. (2016). A multi-modal parcellation of human cerebral "
     "cortex. Nature 536, 171–178.",
+    "Hutto, C. J., Gilbert, E. (2014). VADER: a parsimonious rule-based model "
+    "for sentiment analysis of social media text. ICWSM.",
     "Kiesel, J. et al. (2019). SemEval-2019 Task 4: hyperpartisan news "
     "detection. SemEval.",
     "Korbel, J., Dahdoul, R., Thurner, S. (2026). Empirical validation of the "
     "polarization transition in a double-random field model of elections. "
     "Phys. Rev. Lett. 136, "
     "127402.",
-    "Potthast, M. et al. (2018). The Webis clickbait challenge 2017. ECIR.",
+    "Potthast, M. et al. (2018). Crowdsourcing a large corpus of clickbait on "
+    "Twitter. COLING, 1498–1507.",
+    "The Sapient Company (2026). The Faceless Brain. Self-published technical "
+    "report.",
     "Schaefer, A. et al. (2018). Local-global parcellation of the human cerebral "
     "cortex. Cereb. Cortex 28, 3095–3114.",
-    "The Algonauts Project 2025 Challenge. arXiv:2501.00504.",
 ]
-tf = textbox(s, M, 1.55, W - 2 * M, 5.0)
+tf = textbox(s, M, 1.45, W - 2 * M, 5.2)
 for i, ref in enumerate(refs):
-    para(tf, ref, size=14, colour=BLACK, first=(i == 0), space_after=10)
+    para(tf, ref, size=13, colour=BLACK, first=(i == 0), space_after=6)
 footer(s, "Standing", num())
 
 prs.save(OUT)

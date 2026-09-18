@@ -91,7 +91,7 @@
 
 \title{Measuring the External Field}
 \author{Brian Mwai}
-\date{3 September 2026}
+\date{September 2026}
 
 \begin{document}
 
@@ -118,7 +118,7 @@ mean-field bound on media-driven opinion change}
 {\color{slate} Supervisor: Dr.\ Songa Mutambi}
 
 \vspace{0.4em}
-{\color{slate}\small 3 September 2026}
+{\color{slate}\small September 2026}
 \end{minipage}
 \vfill
 \end{frame}
@@ -278,32 +278,31 @@ A \textbf{cortical proxy}: it rates content, never a person, and is never called
 \begin{column}{0.315\textwidth}
 {\color{midblue}\bfseries\large 01}\\[0.3em]
 \textbf{Cortical only}\\[0.4em]
-{\small Output is $(T, 20484)$. There is no subcortical head.
+{\small No subcortical output.
 
 \vspace{0.5em}
-\alert{The amygdala is not predicted}, so the proposal's central equation cannot be computed.}
+\alert{No amygdala}, so the proposal's equation cannot be computed.}
 \end{column}
 \begin{column}{0.315\textwidth}
 {\color{midblue}\bfseries\large 02}\\[0.3em]
 \textbf{Averaged over subjects}\\[0.4em]
-{\small The loader forces \texttt{average\_subjects}.
+{\small The loader forces it.
 
 \vspace{0.5em}
-It predicts a typical viewer. Whether that carries signal is the third paper's question.}
+It predicts a typical viewer, which Paper 3 tests.}
 \end{column}
 \begin{column}{0.315\textwidth}
 {\color{midblue}\bfseries\large 03}\\[0.3em]
 \textbf{Standardised output}\\[0.4em]
-{\small Region means sit near zero, so a \emph{ratio} sign-flips or explodes.
+{\small Means sit near zero, so a \emph{ratio} breaks.
 
 \vspace{0.5em}
-Undefined for 69 of 400 items. Replaced by the difference.}
+Undefined for 69 of 400 items; the difference replaces it.}
 \end{column}
 \end{columns}
 
 \vspace{1.0em}
-{\color{slate} Each was found by testing the artifact, and each is stated in the abstract
-rather than the limitations.}
+{\color{slate} All three were found by testing the checkpoint, before any result.}
 \end{frame}
 
 % ================================================================ ACT III
@@ -318,7 +317,7 @@ rather than the limitations.}
     0/{fear-activating}/{ISOT-fake},
     1/{high outrage}/{SemEval-2019 T4},
     2/{reward hook}/{Webis-Clickbait-17},
-    3/{neutral informational}/{PubMed + ISOT-true}}
+    3/{neutral\\informational}/{PubMed + ISOT-true}}
   {
     \node[draw=mist,line width=1.2pt,rounded corners=2pt,fill=white,
           text width=2.7cm,align=center,inner sep=9pt,minimum height=2.1cm]
@@ -428,14 +427,13 @@ to \emph{framing}. Length is controlled; provenance is not.
 \end{columns}
 
 \vspace{1.2em}
-{\small Same 400 rows, same pre-scan label. Sentiment (VADER) does not clear chance, $0.5392$.
-On the 150 ISOT items, the one source carrying both classes, TF-IDF still reaches $0.9724$.
-A probe on the same words recovers the source dataset at $66.25\%$ against $25\%$ chance, so
-much of the lexical win is provenance.}
+{\small Same 400 rows, same label. Sentiment (VADER) sits at chance, $0.5392$. The same
+words guess the \emph{source} 66\% of the time against 25\% chance, so much of the lexical
+win is provenance.}
 
 \vspace{0.8em}
-\alert{The index is carried forward as the field observable the physics needs, not as a
-detector.}
+\alert{The index is a field observable for the physics, not a detector.}
+\source{Hutto \& Gilbert (2014), VADER.}
 \end{frame}
 
 \begin{frame}{Group-level claims hold at this precision; per-item claims do not}
@@ -447,8 +445,7 @@ detector.}
 {\color{slate}ICC between two GPU sessions}
 \end{center}
 \vspace{0.8em}
-{\small The separation replicates: $\eta^2 = 0.0888$ on the second session against $0.1068$
-on the first. Both clear the detectable floor.}
+{\small The separation replicates: $\eta^2 = 0.0888$ against $0.1068$.}
 \end{column}
 \begin{column}{0.48\textwidth}
 \begin{center}
@@ -456,14 +453,9 @@ on the first. Both clear the detectable floor.}
 {\color{slate}of items reverse direction}
 \end{center}
 \vspace{0.8em}
-{\small 51 of 400 items flip sign between sessions, so no verdict on one article appears
-anywhere in the analysis, the figures or the public site.}
+{\small 51 of 400. Noise alone predicts 55, so no verdict on one article is ever made.}
 \end{column}
 \end{columns}
-
-\vspace{1.0em}
-{\color{slate} Additive noise at the measured session error predicts 55.3 reversals, 95\% [44, 67];
-51 are observed. Reversing items sit near zero and spread evenly across categories.}
 \end{frame}
 
 \begin{frame}{The encoder returns a full cortical map, not a summary statistic}
@@ -484,104 +476,88 @@ anywhere in the analysis, the figures or the public site.}
 
 \begin{frame}{Media enters the mean-field model as a field on the measured observable}
 \vspace{0.7em}
-Each person holds an opinion $s_i = \pm 1$, is pulled toward their neighbours with strength
-$J$, and is pushed by media with field $h$:
+Each person holds an opinion $\pm 1$, is pulled toward neighbours by $J$, and pushed by media
+with field $h = \alpha X$, where $X$ is the measured observable:
 \[
-m = \tanh(\beta J m + h), \qquad h = \alpha X
+m = \tanh(\beta J m + h)
 \]
-where $X$ is the measured observable and $\alpha$ the unknown coupling. Expanding
-$\operatorname{artanh}(m) \approx m + m^3/3$:
 \[
 F(m) = a m^2 + b m^4 - hm, \qquad a = \frac{1-\beta J}{2}, \qquad b = \frac{1}{12}
 \]
 
 \vspace{0.4em}
-{\color{slate} Coefficients \textbf{derived} from the self-consistency condition. The proposal
-carried $a = 1-\beta J$, $b = (\beta J)^3/3$, which do not follow from it. The solver
-reproduces the exact exponents $\beta = 1/2$, $\gamma = 1$, $\delta = 3$.}
+{\color{slate} Coefficients derived, not assumed; this corrects the proposal's $a$ and $b$.
+The solver recovers the mean-field exponents.}
 \end{frame}
 
 \begin{frame}{The corpus does not identify the coupling, so no value is quoted}
-\vspace{1.0em}
-\begin{columns}[T]
-\begin{column}{0.52\textwidth}
-\textbf{What was tried.} Regress the outcome on the measured index and read off $\alpha$.
+\vspace{1.2em}
+\textbf{Tried.} Fit the outcome to the measured index and read off $\alpha$.
 
-\vspace{0.8em}
-\textbf{What happened.} The fit performs \emph{worse than the sample mean} out of sample, and
-the estimate scales inversely with a coupling $\beta J$ that no measurement here fixes.
+\vspace{0.9em}
+\textbf{Result.} Out of sample the fit does \emph{worse than the average}, and the estimate
+depends on $\beta J$, which nothing here measures.
 
-\vspace{0.8em}
-\alert{So no value of $\hat{\alpha}$ appears anywhere} --- not in a table, a caption, or
-``for illustration''.
-\end{column}
-\begin{column}{0.44\textwidth}
-\vspace{0.3em}
-{\color{slate}\small Reporting an unidentified coupling as though it were measured would be
-the failure here. Declining to quote it is not.
+\vspace{0.9em}
+\alert{So no value of $\alpha$ is quoted anywhere.}
 
-\vspace{1.0em}
-What replaces it is a statement that does not need the fit at all.}
-\end{column}
-\end{columns}
+\vspace{1.2em}
+{\color{slate} What replaces it needs no fit at all: the bound on the next slide.}
 \end{frame}
 
 \begin{frame}{Any content observable must clear a bound to drive a transition}
 \vspace{0.2em}
 \begin{columns}[T]
-\begin{column}{0.50\textwidth}
+\begin{column}{0.56\textwidth}
 \includegraphics[width=\textwidth]{F6_alpha_required.pdf}
 \end{column}
-\begin{column}{0.46\textwidth}
-\vspace{0.5em}
+\begin{column}{0.40\textwidth}
+\vspace{1.2em}
 \begin{center}
 {\fontsize{23}{27}\selectfont\color{navy}
 $\alpha \;\ge\; \dfrac{h_c(\beta J)}{\Delta X}$}
 \end{center}
 
-\vspace{0.9em}
-{\small Rather than fitting $\alpha$ and hoping it clears zero, this states what $\alpha$
-\emph{would have to be} for the mechanism to work at all --- for \textbf{any} candidate
-observable, before a corpus exists.}
+\vspace{1.0em}
+{\small What $\alpha$ \emph{would have to be} for media to tip opinion, for any observable,
+before any data. Within the mean-field model.}
+
+\vspace{1.0em}
+{\small Measured $\Delta X = 0.1241$ gives \\ \alert{$\alpha \ge 4.29$ at $\beta J = 2$}.}
 \end{column}
 \end{columns}
-
-\vspace{0.4em}
-\begin{center}
-\small Measured spread $\Delta X = 0.1241$ \;$\Rightarrow$\;
-$\alpha \ge 0.169$ at $\beta J = 1.10$, \; $1.655$ at $1.50$, \; $\mathbf{4.294}$ at $2.00$
-\end{center}
 \end{frame}
 
 % ================================================================ ACT V
 \section{Standing}
 \act{05}{Standing}{What holds, and what is still open.}
 
-\begin{frame}{Whether the encoder tracks real cortex is measurable, and one pass remains}
-\vspace{0.6em}
-A commercial lab reports the released checkpoint, in the averaged configuration this project
-runs, is \textbf{anti-correlated} with real cortex. Four subjects, one stimulus, not
-independently replicated.
+\begin{frame}{Against real brains the encoder is weakly positive, not anti-correlated}
+\vspace{0.4em}
+A company audit says the checkpoint this project runs is \textbf{anti-correlated} with real
+cortex. Tested here on public fMRI:
 
-\vspace{0.9em}
+\vspace{0.8em}
 \begin{center}
 \begin{tikzpicture}[font=\small]
-  \node[draw=mist,line width=1.2pt,rounded corners=2pt,fill=white,inner sep=10pt,
-        text width=4.6cm,align=center] (a) at (0,0)
-       {{\color{navy}\bfseries\Large 0.1517}\\[0.35em] measured noise ceiling\\[0.2em]
-        {\color{slate}\scriptsize CI [0.1484, 0.1551], 4 subjects, 1000 parcels}};
-  \node[draw=mist,line width=1.2pt,rounded corners=2pt,fill=white,inner sep=10pt,
-        text width=4.6cm,align=center] (b) at (6.6,0)
-       {{\color{ember}\bfseries\Large 0.2247}\\[0.35em] withdrawn\\[0.2em]
-        {\color{slate}\scriptsize an episode picked by position, and a guard that could not
-        fire}};
+  \node[draw=mist,line width=1.2pt,rounded corners=2pt,fill=white,inner sep=9pt,
+        text width=3.3cm,align=center] at (0,0)
+       {{\color{navy}\bfseries\Large 0.1517}\\[0.35em] noise ceiling\\[0.2em]
+        {\color{slate}\scriptsize full episode, 4 subjects}};
+  \node[draw=navy,line width=1.4pt,rounded corners=2pt,fill=white,inner sep=9pt,
+        text width=3.3cm,align=center] at (4.3,0)
+       {{\color{navy}\bfseries\Large +0.028}\\[0.35em] encoder vs brains\\[0.2em]
+        {\color{slate}\scriptsize ceiling 0.096 on the same 80 scans, $p = 0.048$}};
+  \node[draw=mist,line width=1.2pt,rounded corners=2pt,fill=white,inner sep=9pt,
+        text width=3.3cm,align=center] at (8.6,0)
+       {{\color{ember}\bfseries\Large 3 bugs}\\[0.35em] silent, found, fixed\\[0.2em]
+        {\color{slate}\scriptsize wrong episode, flipped array, two clocks}};
 \end{tikzpicture}
 \end{center}
 
-\vspace{0.7em}
-Replaying the old code path reproduces the wrong number \emph{exactly}, which proved the
-cause. Both defects were silent: nothing crashed.
-\source{Schaefer et al.\ (2018); Algonauts 2025 (CC0); audit self-published, Sapient (2026).}
+\vspace{0.8em}
+Positive, weak, and not yet decisive on two minutes of film.
+\source{Algonauts 2025; Schaefer et al.\ (2018); audit: The Sapient Company (2026).}
 \end{frame}
 
 \begin{frame}{Four claims the work supports, and four it does not}
@@ -601,7 +577,7 @@ $\bullet$\; That it separates these four corpora at $\eta^2 = 0.1068$, power att
 $\bullet$\; A bound any candidate observable must satisfy, usable before data exists.
 
 \vspace{0.6em}
-$\bullet$\; A measured noise ceiling for the checkpoint on public data.
+$\bullet$\; A noise ceiling on public fMRI, and a first check of the encoder against it.
 }
 \end{column}
 \begin{column}{0.47\textwidth}
@@ -639,15 +615,15 @@ $\bullet$\; Any verdict on one article. 12.8\% reverse between sessions.
 Independent of the scan.}
 \end{column}
 \begin{column}{0.235\textwidth}
-{\color{midblue}\bfseries 15 pp}\\[0.3em]
+{\color{midblue}\bfseries 16 pp}\\[0.3em]
 \textbf{Paper 2}\\[0.4em]
 {\color{slate}\scriptsize The instrument, the corpus, the field bound. \emph{Physica A}.}
 \end{column}
 \begin{column}{0.235\textwidth}
-{\color{midblue}\bfseries 6 pp}\\[0.3em]
+{\color{midblue}\bfseries 8 pp}\\[0.3em]
 \textbf{Paper 3}\\[0.4em]
-{\color{slate}\scriptsize The measured ceiling and the replication. \emph{Imaging
-Neuroscience}. One computation on its final run.}
+{\color{slate}\scriptsize The noise ceiling and a check of the encoder against real brains.
+\emph{Imaging Neuroscience}.}
 \end{column}
 \end{columns}
 
@@ -675,8 +651,8 @@ $\Delta X = 0.1241$, $\alpha \ge 4.294$ at $\beta J = 2$ --- a constraint on any
 proposal of this mechanism.
 
 \vspace{0.45em}
-\item \textbf{The instrument's own validity is now a measurable question.} The noise ceiling
-is $0.1517$; one prediction pass remains.
+\item \textbf{The encoder is weakly positive against real brains, not anti-correlated.}
+$r = +0.028$ against a ceiling of $0.096$ on the same scans; not yet decisive.
 \end{enumerate}
 
 \vspace{1.0em}
@@ -698,6 +674,9 @@ d'Ascoli, S. et al.\ (2025). TRIBE: a trimodal brain encoder for whole-brain fMR
 prediction. Meta FAIR. arXiv:2507.22229.
 
 \vspace{0.35em}
+Gifford, A. T. et al.\ (2025). The Algonauts Project 2025 Challenge. arXiv:2501.00504.
+
+\vspace{0.35em}
 Glasser, M. F. et al.\ (2016). A multi-modal parcellation of human cerebral cortex.
 \emph{Nature} 536, 171--178.
 
@@ -710,14 +689,19 @@ Korbel, J., Dahdoul, R., Thurner, S. (2026). Empirical validation of the polariz
 transition in a double-random field model of elections. \emph{Phys. Rev. Lett.} 136, 127402.
 
 \vspace{0.35em}
-Potthast, M. et al.\ (2018). The Webis clickbait challenge 2017. \emph{ECIR}.
+Hutto, C. J., Gilbert, E. (2014). VADER: a parsimonious rule-based model for sentiment
+analysis of social media text. \emph{ICWSM}.
+
+\vspace{0.35em}
+Potthast, M. et al.\ (2018). Crowdsourcing a large corpus of clickbait on Twitter.
+\emph{COLING}, 1498--1507.
+
+\vspace{0.35em}
+The Sapient Company (2026). The Faceless Brain. Self-published technical report.
 
 \vspace{0.35em}
 Schaefer, A. et al.\ (2018). Local-global parcellation of the human cerebral cortex.
 \emph{Cereb. Cortex} 28, 3095--3114.
-
-\vspace{0.35em}
-The Algonauts Project 2025 Challenge. arXiv:2501.00504.
 }
 \end{frame}
 
