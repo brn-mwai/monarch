@@ -1,0 +1,52 @@
+{
+  "stimulus": null,
+  "prediction_source": "data\\final\\paper3\\prediction_s01e01a_first120s.npy",
+  "episode": "s01e01a",
+  "max_seconds": 120.0,
+  "encoder": {
+    "point": 0.02827907749972906,
+    "low": 0.004465602897035466,
+    "high": 0.04850452716946272,
+    "n": 4,
+    "n_resamples": 10000,
+    "confidence": 0.95,
+    "seed": 0
+  },
+  "ceiling": {
+    "point": 0.0959106211186688,
+    "low": 0.08849480461977222,
+    "high": 0.10250167052767306,
+    "n": 4,
+    "n_resamples": 10000,
+    "confidence": 0.95,
+    "seed": 0
+  },
+  "per_subject_mean_r": [
+    -0.0047660213435208034,
+    0.03157372924667372,
+    0.05414812647705905,
+    0.032160475618704276
+  ],
+  "n_parcels_defined": [
+    1000,
+    1000,
+    1000,
+    1000
+  ],
+  "n_timepoints": 80,
+  "alignment": {
+    "prediction_step_s": 0.5,
+    "response_delay_s": 5.0,
+    "recording_tr_s": 1.49,
+    "first_scan": 4,
+    "last_scan": 83
+  },
+  "sources": [
+    "sub-01_task-friends_space-MNI152NLin2009cAsym_atlas-Schaefer18_parcel-1000Par7Net_desc-s123456_bold.h5",
+    "sub-02_task-friends_space-MNI152NLin2009cAsym_atlas-Schaefer18_parcel-1000Par7Net_desc-s123456_bold.h5",
+    "sub-03_task-friends_space-MNI152NLin2009cAsym_atlas-Schaefer18_parcel-1000Par7Net_desc-s123456_bold.h5",
+    "sub-05_task-friends_space-MNI152NLin2009cAsym_atlas-Schaefer18_parcel-1000Par7Net_desc-s123456_bold.h5"
+  ],
+  "space": "Schaefer 1000 parcels",
+  "note": "parcel level; not comparable with the audit's vertex-level r"
+}

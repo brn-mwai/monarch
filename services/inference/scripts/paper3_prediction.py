@@ -20,10 +20,16 @@ Two things this script learned from a run that spent twelve GPU-hours and report
 inside the loader, not the forward pass. A run that cannot say which chunk it is on is a run
 whose remaining time cannot be estimated, and the only honest thing to do with it is kill it.
 
-**``--max-seconds`` trims the stimulus.** The comparison needs the same timepoints on both
-sides, not all of them: ``shortest`` already truncates the recordings to the prediction. A
-window that finishes and reports its own ``n_timepoints`` is worth more than a full episode
-that hits the session cap and reports nothing.
+**``--max-seconds`` trims the stimulus.** A window that finishes and reports its own
+``n_timepoints`` is worth more than a full episode that hits the session cap and reports
+nothing.
+
+**Prediction and recording are put on one clock.** The checkpoint emits a sample per 0.5 s
+and the recordings a scan per 1.49 s. The first completed run truncated both to the shorter
+length and correlated them index by index, which compares moments up to four minutes apart;
+its result is withdrawn. ``align_to_recording`` maps each scan to the stimulus time it
+responds to, and the noise ceiling is measured on the same scans. ``--prediction`` reuses a
+saved prediction, so the correction needs no GPU.
 
 Usage
 -----
@@ -57,6 +63,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.services.encoder_validation import bootstrap_ci, noise_ceiling, vertex_correlation  # noqa: E402
 from app.services.inference import TribeInferenceService  # noqa: E402
 from app.services.parcellation import project_to_parcels  # noqa: E402
+from app.services.temporal_alignment import align_to_recording  # noqa: E402
 from scripts.paper3_noise_ceiling import N_PARCELS, load_responses  # noqa: E402
 
 DEFAULT_LABELS = Path(__file__).resolve().parents[1] / "data" / "schaefer1000_fsaverage5.npy"
@@ -137,7 +144,9 @@ def predict(stimulus: Path, prediction_out: Path | None) -> np.ndarray:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stimulus", type=Path, required=True)
+    parser.add_argument("--stimulus", type=Path, default=None)
+    parser.add_argument("--prediction", type=Path, default=None,
+                        help="a saved (samples, vertices) prediction; skips the GPU pass")
     parser.add_argument("--h5-dir", type=Path, required=True)
     parser.add_argument("--episode", default=None,
                         help="defaults to the trailing token of the stimulus filename")
@@ -149,17 +158,25 @@ def main() -> int:
                         default=Path(tempfile.gettempdir()) / "monarch-stimulus",
                         help="where to stage the stimulus when its own directory is read-only")
     parser.add_argument("--max-seconds", type=float, default=None,
-                        help="predict only the first N seconds; the recordings are truncated "
-                             "to match, so the comparison stays on the same timepoints")
+                        help="predict only the first N seconds; only the scans that respond "
+                             "to that window are compared")
     args = parser.parse_args()
 
-    episode = args.episode or episode_of(args.stimulus)
-    say(f"stimulus {args.stimulus.name}, episode {episode}")
+    if args.stimulus is None and args.prediction is None:
+        parser.error("give --stimulus to predict, or --prediction to reuse a saved one")
+    if args.prediction is not None and args.episode is None:
+        parser.error("--prediction needs --episode, since there is no stimulus to name it")
 
-    staged = stage(args.stimulus, args.work_dir)
-    if args.max_seconds is not None:
-        staged = trim(staged, args.max_seconds, args.work_dir)
-    prediction = predict(staged, args.prediction_out)
+    episode = args.episode or episode_of(args.stimulus)
+    if args.prediction is not None:
+        say(f"reusing saved prediction {args.prediction}, episode {episode}")
+        prediction = np.load(args.prediction)
+    else:
+        say(f"stimulus {args.stimulus.name}, episode {episode}")
+        staged = stage(args.stimulus, args.work_dir)
+        if args.max_seconds is not None:
+            staged = trim(staged, args.max_seconds, args.work_dir)
+        prediction = predict(staged, args.prediction_out)
 
     say("projecting to parcels")
     labels = np.load(args.labels)
@@ -172,10 +189,17 @@ def main() -> int:
     say(f"loading recordings for {episode}, oriented (parcels, timepoints)")
     responses, paths = load_responses(args.h5_dir, episode)
 
-    shortest = min([projected.shape[1]] + [r.shape[1] for r in responses])
-    projected = projected[:, :shortest]
-    responses = [r[:, :shortest] for r in responses]
-    say(f"subjects {len(responses)}, parcels {responses[0].shape[0]}, timepoints {shortest}")
+    # The prediction is one sample per 0.5 s of stimulus and the recordings one scan per
+    # 1.49 s, so they are put on one clock before anything is correlated. Truncating both to
+    # the shorter length, which the first pass did, compares moments minutes apart.
+    n_recorded = min(r.shape[1] for r in responses)
+    alignment = align_to_recording(projected, n_recorded)
+    projected = alignment["aligned"]
+    scans = alignment["scan_indices"]
+    responses = [r[:, scans] for r in responses]
+    shortest = int(scans.size)
+    say(f"subjects {len(responses)}, parcels {responses[0].shape[0]}, "
+        f"scans {shortest} (recording indices {scans[0]}..{scans[-1]})")
 
     say("correlating and bootstrapping")
     per_subject = [vertex_correlation(projected, observed) for observed in responses]
@@ -199,7 +223,8 @@ def main() -> int:
         print(f"  subject {index + 1}: {value:+.4f}")
 
     result = {
-        "stimulus": args.stimulus.name,
+        "stimulus": args.stimulus.name if args.stimulus else None,
+        "prediction_source": str(args.prediction) if args.prediction else "this run",
         "episode": episode,
         "max_seconds": args.max_seconds,
         "encoder": encoder,
@@ -207,6 +232,13 @@ def main() -> int:
         "per_subject_mean_r": means.tolist(),
         "n_parcels_defined": [int(r["n_defined"]) for r in per_subject],
         "n_timepoints": int(shortest),
+        "alignment": {
+            "prediction_step_s": alignment["prediction_step"],
+            "response_delay_s": alignment["response_delay"],
+            "recording_tr_s": alignment["recording_tr"],
+            "first_scan": int(scans[0]),
+            "last_scan": int(scans[-1]),
+        },
         "sources": [Path(p).name for p in paths],
         "space": "Schaefer 1000 parcels",
         "note": "parcel level; not comparable with the audit's vertex-level r",
