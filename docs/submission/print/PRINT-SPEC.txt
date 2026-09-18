@@ -1,0 +1,36 @@
+PRINT AND BINDING SPECIFICATION
+Brian Mwai, 1050555, B.Sc. Physics, The Catholic University of Eastern Africa
+
+FILE
+  Mwai_1050555_dissertation.pdf   (81 pages, A4)
+
+PRINTING
+  Paper:        A4, 80 gsm white
+  Sides:        DOUBLE-SIDED (duplex, flip on long edge)
+  Scaling:      100% / actual size. Do NOT "fit to page".
+  Colour:       10 pages in colour, the rest black and white.
+                Colour pages (PDF page numbers): 1, 33, 34, 36, 40, 42, 51, 52, 53, 55
+  Blank pages:  11 pages are intentionally blank so each chapter starts on a
+                right-hand page. Print them. Do not remove them.
+
+SIGNED PAGE
+  PDF page 3 (Declaration, numbered iii) is signed by hand by the student and
+  the supervisor. Replace page 3 of the print run with the signed original
+  before binding.
+
+BINDING
+  Type:         Hardcover  (confirm with department: colour of cover and lettering)
+  Front cover lettering:
+      THE CATHOLIC UNIVERSITY OF EASTERN AFRICA
+      MEASURING THE EXTERNAL FIELD:
+      A CORTICAL-PROXY CONTENT OBSERVABLE AND THE
+      MEAN-FIELD BOUND ON MEDIA-DRIVEN OPINION CHANGE
+      BRIAN MWAI
+      BACHELOR OF SCIENCE IN PHYSICS
+      2026
+  Spine lettering (top to bottom):
+      B. MWAI     MEASURING THE EXTERNAL FIELD     B.Sc. PHYSICS 2026
+
+COPIES
+  ______ hardbound  (confirm number with department / library)
+  1 soft copy PDF (same file) for the library
