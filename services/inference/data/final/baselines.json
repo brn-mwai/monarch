@@ -1,0 +1,91 @@
+{
+  "corpus": "data\\final\\corpus_naa.csv",
+  "n_items": 400,
+  "seed": 42,
+  "bootstrap_draws": 2000,
+  "single_class_sources": [
+    "ISOT-fake",
+    "ISOT-true",
+    "PubMed",
+    "SemEval-2019-Task4",
+    "Webis-Clickbait-17"
+  ],
+  "leave_one_source_out": "undefined: every source contributes exactly one class",
+  "source_identity_probe": {
+    "accuracy": 0.6625,
+    "n_sources": 5,
+    "chance": 0.25
+  },
+  "results": [
+    {
+      "model": "NAA signed index",
+      "split": "none",
+      "n": 400,
+      "auc": 0.6274,
+      "ci95": [
+        0.5701746714395463,
+        0.6866836280153509
+      ]
+    },
+    {
+      "model": "VADER compound",
+      "split": "none",
+      "n": 400,
+      "auc": 0.5391666666666667,
+      "ci95": [
+        0.4757137775992696,
+        0.603519432780022
+      ]
+    },
+    {
+      "model": "VADER |compound|",
+      "split": "none",
+      "n": 400,
+      "auc": 0.5299666666666667,
+      "ci95": [
+        0.4692555688255982,
+        0.5923203063142938
+      ]
+    },
+    {
+      "model": "TF-IDF + logistic",
+      "split": "stratified",
+      "n": 400,
+      "auc": 0.9758,
+      "ci95": [
+        0.9600777007688249,
+        0.987876973060463
+      ]
+    },
+    {
+      "model": "TF-IDF + logistic",
+      "split": "ISOT only, stratified",
+      "n": 150,
+      "auc": 0.9723999999999999,
+      "ci95": [
+        0.9483017649971704,
+        0.9900995741671431
+      ]
+    },
+    {
+      "model": "VADER compound",
+      "split": "ISOT only",
+      "n": 150,
+      "auc": 0.40190000000000003,
+      "ci95": [
+        0.3097635391850817,
+        0.494344300086455
+      ]
+    },
+    {
+      "model": "NAA signed index",
+      "split": "ISOT only",
+      "n": 150,
+      "auc": 0.729,
+      "ci95": [
+        0.6430750077808901,
+        0.8131537711347033
+      ]
+    }
+  ]
+}

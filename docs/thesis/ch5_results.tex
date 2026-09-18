@@ -91,6 +91,68 @@ It is nonetheless a modest separation, and no per-item verdict is derived from i
 work: at this AUC, a correct-or-incorrect label on individual items would overstate what the
 measurement supports.
 
+\subsection{What a bag of words does on the same label}
+\label{sec:baselines}
+
+An AUC has no meaning in isolation. The first question a reader should ask is whether a
+lexical model, costing no GPU time at all, does better on the same rows and the same label.
+It does, and by a wide margin.
+
+Two baselines were run with \texttt{scripts/baselines.py}: TF-IDF over unigrams and bigrams
+with logistic regression, scored on out-of-fold predictions from five-fold stratified
+cross-validation, and a sentiment score, the VADER compound valence, used directly as a score
+with nothing fitted. Confidence intervals are $2{,}000$-draw bootstrap percentile intervals on
+the same rows.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}llrrl@{}}
+\toprule
+\textbf{Model} & \textbf{Split} & \textbf{n} & \textbf{AUC} & \textbf{95\% CI} \\
+\midrule
+NAA signed index     & none, nothing fitted & 400 & $0.6274$ & $[0.5702, 0.6867]$ \\
+VADER compound       & none, nothing fitted & 400 & $0.5392$ & $[0.4757, 0.6035]$ \\
+VADER $|$compound$|$ & none, nothing fitted & 400 & $0.5300$ & $[0.4693, 0.5923]$ \\
+TF-IDF + logistic    & 5-fold stratified    & 400 & $0.9758$ & $[0.9601, 0.9879]$ \\
+\midrule
+NAA signed index     & ISOT only            & 150 & $0.7290$ & $[0.6431, 0.8132]$ \\
+VADER compound       & ISOT only            & 150 & $0.4019$ & $[0.3098, 0.4943]$ \\
+TF-IDF + logistic    & ISOT only, 5-fold    & 150 & $0.9724$ & $[0.9483, 0.9901]$ \\
+\bottomrule
+\end{tabular}
+\caption{Baselines against the same manipulative label. The lower block restricts the corpus to the 150 items drawn from the ISOT collection, the only origin corpus contributing both classes.}
+\label{tab:baselines}
+\end{table}
+
+\textbf{The lexical baseline wins, and the sentiment baseline does not.} TF-IDF reaches
+$0.9758$ against the index's $0.6274$, and the two intervals are nowhere near overlapping. The
+sentiment score does not clear chance: its interval spans $0.5$ in both blocks and runs below
+it on the restricted set. No claim that the index is a better detector of manipulative content
+than counting words is made anywhere in this thesis, and this table is here so that the claim
+cannot be read in by implication.
+
+Two qualifications belong with the number rather than after it. The first is that
+leave-one-source-out, the obvious correction for the confound of \S\ref{sec:confound}, is not
+available: every source dataset in the corpus contributes exactly one class, so a held-out
+source leaves a single-class test fold and no per-fold AUC exists. The restricted block is the
+available substitute. ISOT-true and ISOT-fake come from one collection, so a model scored on
+those 150 items cannot win by recognising which corpus a row came from, and TF-IDF stays at
+$0.9724$ there. Its advantage over the index is therefore not only the cross-corpus confound.
+
+The second is that both TF-IDF figures sit above $0.95$, the level at which this project's own
+validation module flags a result as more likely a leak than a discovery
+(\texttt{app/services/validation.py}). The ISOT true/fake split is known to carry a wire-service
+dateline artifact, which the corpus builder strips and verifies, and a near-ceiling lexical
+result on a 150-item split is the signature that some residual stylistic marker survives it. A
+probe trained on the same features to recover \texttt{source\_dataset} itself, rather than the
+label, reaches $66.25\%$ accuracy against a $25\%$ chance rate, which confirms the vocabulary
+is substantially source-diagnostic.
+
+What the comparison establishes is therefore narrow, and it is the honest reading: on this
+corpus a lexical model separates the label far better than the index does, and a good part of
+what it separates is provenance. The index is carried forward here as the field observable
+Chapter~3 requires, not as a competitive classifier.
+
 \section{RQ II: distribution across categories}
 \label{sec:rq2}
 
@@ -138,6 +200,83 @@ entirely, with reward-hook content contributing a small effect.
 \label{fig:ranked}
 \end{figure}
 
+\subsection{The two components, taken separately}
+\label{sec:components}
+
+The signed index is a difference, and a difference discards information the corpus already
+holds. $A_{\mathrm{aff}}$ and $A_{\mathrm{del}}$ are recorded per item, so each can be compared
+against the neutral baseline on its own. This matters for high outrage in particular, where a
+large symmetric response and no response are indistinguishable in a difference.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Category} & $A_{\mathrm{aff}}$ & $A_{\mathrm{del}}$ & \textbf{signed} \\
+\midrule
+Fear activating       & $0.03206$ & $0.03385$ & $-0.00179$ \\
+High outrage          & $0.02869$ & $0.04719$ & $-0.01850$ \\
+Neutral informational & $0.01699$ & $0.03605$ & $-0.01906$ \\
+Reward hook           & $0.02310$ & $0.03585$ & $-0.01275$ \\
+\bottomrule
+\end{tabular}
+\caption{Category means of each component and of their difference, over all 400 items.}
+\label{tab:components}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+\textbf{Category vs neutral} & \textbf{Component} & \textbf{t} & \textbf{p} & \textbf{Cohen's d} \\
+\midrule
+Fear activating & $A_{\mathrm{aff}}$ & $+4.333$ & $2.365\times 10^{-5}$  & $+0.613$ \\
+Fear activating & $A_{\mathrm{del}}$ & $-0.696$ & $4.875\times 10^{-1}$  & $-0.098$ \\
+Fear activating & signed             & $+6.639$ & $3.283\times 10^{-10}$ & $+0.939$ \\
+\midrule
+High outrage    & $A_{\mathrm{aff}}$ & $+3.584$ & $4.263\times 10^{-4}$  & $+0.507$ \\
+High outrage    & $A_{\mathrm{del}}$ & $+3.468$ & $6.521\times 10^{-4}$  & $+0.491$ \\
+High outrage    & signed             & $+0.212$ & $8.320\times 10^{-1}$  & $+0.030$ \\
+\midrule
+Reward hook     & $A_{\mathrm{aff}}$ & $+1.842$ & $6.691\times 10^{-2}$  & $+0.261$ \\
+Reward hook     & $A_{\mathrm{del}}$ & $-0.063$ & $9.501\times 10^{-1}$  & $-0.009$ \\
+Reward hook     & signed             & $+2.254$ & $2.539\times 10^{-2}$  & $+0.319$ \\
+\bottomrule
+\end{tabular}
+\caption{Welch comparisons of each component against neutral informational. High outrage moves both components by nearly the same amount and the difference between them by nothing; fear-activating content moves one component only.}
+\label{tab:component-welch}
+\end{table}
+
+\textbf{High outrage is not a null in the components.} It raises $A_{\mathrm{aff}}$ by
+$d = +0.507$ and $A_{\mathrm{del}}$ by $d = +0.491$, both at $p < 10^{-3}$, and it moves the
+difference between them by $d = +0.030$ at $p = 0.832$. The two effects sit within four
+hundredths of a standard deviation of each other. The category that fails to separate on the
+index is the category that moves both networks together.
+
+Fear-activating content behaves differently in exactly the way that reading predicts. It
+raises $A_{\mathrm{aff}}$ by $d = +0.613$ and leaves $A_{\mathrm{del}}$ where it was
+($d = -0.098$, $p = 0.488$), so the whole of its $d = +0.939$ on the index is a one-sided
+movement. Reward-hook content sits between the two, with a small one-sided lift that does not
+reach significance on its component alone.
+
+The pattern holds at the level of the whole design. A one-way analysis of variance on each
+component separately gives $F = 7.451$, $p = 7.276\times 10^{-5}$ for $A_{\mathrm{aff}}$ and
+$F = 6.399$, $p = 3.052\times 10^{-4}$ for $A_{\mathrm{del}}$, against $F = 15.779$,
+$p = 1.035\times 10^{-9}$ for the difference. Both components vary by category; the difference
+varies more, because for two of the four categories one component moves while the other holds
+still.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{../../services/inference/data/final/report/fig_components.png}
+\caption{$A_{\mathrm{aff}}$, $A_{\mathrm{del}}$ and their signed difference by category over all 400 items. High outrage is elevated on both components and flat on the difference.}
+\label{fig:components}
+\end{figure}
+
+This does not resolve the confound below, and it says nothing about whether the encoder tracks
+cortex. What it does is remove one of the three readings of the outrage null from the list of
+things this design cannot distinguish, which \S\ref{sec:outrage} takes up.
+
 \subsection{The confound, stated before the interpretation}
 \label{sec:confound}
 
@@ -153,9 +292,12 @@ $163.5$, $163.7$ and $162.2$ with standard deviations near $11$, which the corpu
 achieved deliberately. Provenance is the variable that was not controlled.
 
 One piece of internal evidence argues against a pure source artifact. High outrage is drawn
-from its own distinct source and does not separate from neutral. An effect driven only by
-provenance would be expected to move every category away from the baseline, not three of four
-in an ordered way. This is suggestive, not decisive.
+from its own distinct source and does not separate from neutral on the index. An effect driven
+only by provenance would be expected to move every category away from the baseline, not three
+of four in an ordered way. The evidence is weaker than that sentence alone suggests:
+\S\ref{sec:components} shows high outrage moving on both components and only the difference
+staying flat, so a provenance effect is excluded only if it is assumed to act on one ROI union
+at a time. This is suggestive, not decisive.
 
 The design that would settle it is a corpus in which framing varies within a single source,
 or in which one source appears in more than one category. Neither exists here, so the
@@ -275,12 +417,16 @@ attempted and reported thinly.
 \begin{enumerate}
 \item \textbf{RQ I.} The ratio form of the index is undefined for $17.25\%$ of real content
 and is replaced by the signed difference. Against pre-scan human labels the index achieves
-AUC $0.6274$, above the detectable floor and in the predicted direction, but modest.
+AUC $0.6274$, above the detectable floor and in the predicted direction, but modest. A TF-IDF
+baseline on the same rows reaches $0.9758$, so the index is not the better detector; a
+sentiment baseline does not clear chance.
 
 \item \textbf{RQ II.} The four categories separate, $F = 15.779$, $p = 1.035 \times 10^{-9}$,
 $\eta^2 = 0.1068$. The effect is concentrated in fear-activating content
-($d = +0.939$); high outrage does not separate at all. Category is confounded with source
-dataset, so the separation cannot be attributed to framing.
+($d = +0.939$); high outrage does not separate on the index at all, but raises both component
+activations by almost the same amount ($d = +0.507$ and $d = +0.491$), so its null is a
+symmetric response rather than an absence of one. Category is confounded with source dataset,
+so the separation cannot be attributed to framing.
 
 \item \textbf{RQ III.} The coupling is unidentified and no value is quoted. The measured
 spread $\Delta X = 0.1241$ yields a lower bound on any coupling capable of driving a

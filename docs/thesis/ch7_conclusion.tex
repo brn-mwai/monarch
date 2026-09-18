@@ -49,7 +49,14 @@ $0.5916$ and in the predicted direction.
 
 The separation is carried almost entirely by fear-activating content ($d = +0.939$). High
 outrage, the category the proposal expected to separate most, does not separate at all
-($d = +0.030$, $p = 0.832$).
+($d = +0.030$, $p = 0.832$). Split into the two activations the index differences, high
+outrage raises both against neutral by nearly the same amount ($d = +0.507$ and $d = +0.491$,
+both $p < 10^{-3}$), so what looks like an absent response is a symmetric one that a
+difference cannot see.
+
+A TF-IDF baseline on the same rows and the same label reaches AUC $0.9758$. The index is not
+the better classifier and is not offered as one; it is offered as the field observable
+Chapter~3 requires.
 
 Every category mean is negative. The deliberative-control network is predicted to respond
 more strongly than the affective-salience network for all four categories; they differ in how
@@ -63,7 +70,8 @@ design was powered to detect, with the power statement reported alongside. That 
 spread $\Delta X = 0.1241$ places a lower bound on any coupling capable of driving a
 transition, reaching $\alpha \ge 4.2938$ at $\beta J = 2$.
 
-\textbf{Not claimed.} That the index detects manipulation. That the separation is due to
+\textbf{Not claimed.} That the index detects manipulation, or detects it better than
+counting words does: it does not. That the separation is due to
 framing rather than to source dataset: category and provenance are confounded by construction
 and this design cannot distinguish them. That the coupling has been measured: it is
 unidentified, and no value of $\hat{\alpha}$ appears anywhere in this document. That anything

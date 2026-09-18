@@ -26,10 +26,18 @@ items assembled this way can attribute the difference to framing.
 
 Three observations bear on it, none decisive.
 
-First, high outrage does not separate ($d = +0.030$, $p = 0.832$) despite coming from its own
-distinct source, SemEval-2019 Task~4. If the index were simply detecting provenance, every
-category drawn from a different corpus should move away from the baseline. Three of four
-moving, in an ordered way, is a weaker pattern than pure source detection predicts.
+First, high outrage does not separate on the index ($d = +0.030$, $p = 0.832$) despite coming
+from its own distinct source, SemEval-2019 Task~4. If the index were simply detecting
+provenance, every category drawn from a different corpus should move away from the baseline.
+Three of four moving, in an ordered way, is a weaker pattern than pure source detection
+predicts. This argument has to be stated more carefully than it was before the components were
+split. Section~\ref{sec:components} shows that high outrage does move away from the baseline on
+both $A_{\mathrm{aff}}$ and $A_{\mathrm{del}}$ taken separately; what it does not move is the
+difference. A pure provenance effect is therefore not excluded, but to produce the observed
+pattern it would have to shift both ROI unions by nearly identical amounts for one source while
+shifting only one union for another. That is a structured artifact rather than a generic one,
+and the observation is correspondingly weaker evidence than a flat outrage null would have
+been.
 
 Second, length is controlled. Word counts sit at $167.4$, $163.5$, $163.7$ and $162.2$ with
 standard deviations near $11$. The most obvious surface confound was designed out.
@@ -60,14 +68,17 @@ Either would convert the present result from a suggestive to an interpretable on
 requires new instrumentation; both require rebuilding the corpus.
 
 \section{Why high outrage does not separate}
+\label{sec:outrage}
 
 The proposal expected outrage to separate most strongly, and it separated least. Three
-readings deserve stating.
+readings deserve stating, and unlike the confound of \S\ref{sec:confound} the corpus can
+partly adjudicate between them.
 
-The first is that it is correct. Outrage framing may engage deliberative and affective
-systems in more balanced measure than threat framing does, in which case a signed difference
-between the two networks is precisely the wrong instrument for detecting it: a large
-symmetric response and no response are indistinguishable in a difference.
+The first is that the null is a property of the instrument rather than of the content.
+Outrage framing may engage deliberative and affective systems in more balanced measure than
+threat framing does, in which case a signed difference between the two networks is precisely
+the wrong instrument for detecting it: a large symmetric response and no response are
+indistinguishable in a difference.
 
 The second is a property of the source. SemEval-2019 Task~4 labels hyperpartisan publishing
 at the article level. Hyperpartisan is not synonymous with outrage-framed, and a corpus
@@ -78,7 +89,32 @@ The third is the encoder. TRIBE was trained on naturalistic film and podcast vie
 being asked to predict responses to synthesised speech from news text. There is no reason to
 expect its sensitivity to be uniform across framing styles that were absent from training.
 
-These are not ranked, because the data does not rank them.
+\textbf{The first reading is the one the data supports.} Section~\ref{sec:components} splits
+the index into the two activations it differences. High outrage raises $A_{\mathrm{aff}}$
+against neutral at $d = +0.507$ and $A_{\mathrm{del}}$ at $d = +0.491$, both at $p < 10^{-3}$,
+and moves their difference by $d = +0.030$ at $p = 0.832$. That is the symmetric-response
+signature stated exactly: two effects of the same sign, of nearly the same size, cancelling in
+a difference. The comparison with fear-activating content makes the point sharper still, since
+fear moves $A_{\mathrm{aff}}$ at $d = +0.613$ and leaves $A_{\mathrm{del}}$ untouched
+($d = -0.098$). The same instrument that registers a one-sided response registers nothing when
+the response is two-sided, which is the behaviour a difference is supposed to have.
+
+This demotes the second and third readings rather than eliminating them. Neither predicts what
+was found. A corpus of merely argumentative items should look like the neutral baseline on
+both components, and it does not: both are elevated, and $A_{\mathrm{del}}$ is elevated more
+for high outrage than for any other category. An encoder blind to the framing style should
+likewise leave both components near baseline. Each remains available as a partial account,
+since a source effect or an encoder effect could in principle raise both unions together, but
+neither is required to explain the null once the components are read separately, and the
+symmetric-response account explains it without further assumption.
+
+What this does not do is rescue the design. The two components are computed from the same
+predicted activation over the same cortical proxy, so a common artifact would move them
+together and produce the same picture. The reading is supported, not established, and it is
+supported to the extent the encoder is trusted, which \S\ref{sec:standing} takes up. It
+nonetheless changes what \S\ref{sec:components} permits to be said: the outrage null is a
+measured property of a difference between two responses that both moved, not an absence of
+response, and reporting it as an absence would have been wrong.
 
 \section{The instrument's standing}
 \label{sec:standing}
@@ -199,6 +235,41 @@ precision, and none is made: no per-item verdict appears in the analysis, in the
 on the public interface. Group means over 100 items average this scatter down by an order of
 magnitude, which is why the category-level result survives while the item-level one does not.
 
+\textbf{The reversal rate is the reported scatter, not a separate defect.} A reversal count
+means little until it is compared against what the measured noise already predicts, so the
+comparison is made here. Three mechanisms could move an item between sessions: the text is
+re-synthesised to speech each run, with a documented fallback to a different TTS model when
+the primary service is unreachable; the audio is force-aligned to obtain word events; and the
+encoder runs on a GPU. Separating those three requires a controlled re-run and is not possible
+from the two session files. What is possible is asking whether they need separating at all.
+
+The paired standard deviation gives a per-session error of
+$\sigma = \mathrm{sd}(\Delta)/\sqrt{2} = 0.00728$, against a between-item standard deviation of
+$0.01913$ once that error variance is removed from the variance of the session means. Under a
+plain additive-error model at that $\sigma$, with each item's session-free value estimated by
+shrinking its session mean toward the grand mean so that no item's own noise is used to predict
+its own reversal, the expected number of reversals over 400 items is $55.3$, with a $95\%$
+interval of $[44, 67]$ across $20{,}000$ simulations. The observed $51$ sits inside it, at
+$P(\text{simulated} \ge \text{observed}) = 0.79$
+(\texttt{scripts/reversal\_diagnosis.py}).
+
+The reversals are also where that model says they should be. Items that reverse have a mean
+absolute index of $0.00320$ against $0.02159$ for items that do not
+($p = 1.4\times10^{-25}$), and they are distributed evenly across the four categories
+($\chi^2 = 2.764$, $p = 0.429$). The pattern is items whose value sits close enough to zero
+that the sign is undetermined at this precision, not a subset of content the instrument
+handles badly.
+
+This changes what the controlled re-run is for. It is not a search for a defect, because the
+reversal count does not exceed what a single noise scale already explains; it is a measurement
+of how $\sigma$ divides between synthesis, alignment and GPU nondeterminism, which decides
+whether $\sigma$ can be reduced at all. It also settles the standing of per-item claims within
+this design rather than deferring them: with $\sigma = 0.00728$ against a between-item spread
+of $0.01913$, a per-item direction is unavailable at any level of engineering care that leaves
+$\sigma$ where it is. Reaching it needs either a lower-variance pipeline or repeated scans per
+item, and repeated scans are the cheaper of the two, since averaging $k$ sessions divides
+$\sigma$ by $\sqrt{k}$.
+
 Both sessions are reported as measured. Neither is corrected toward the other and the two are
 not averaged, because an average of two sessions would carry a precision that neither run
 has.
@@ -224,7 +295,9 @@ in \S\ref{sec:confound} and above.
 
 \item \textbf{Single-session scores are noisy.} Test-retest ICC is $0.8725$ and the
 session-to-session standard deviation is $48.4\%$ of the between-item standard deviation
-(\S\ref{sec:reliability}). Category-level conclusions survive this; per-item ones do not.
+(\S\ref{sec:reliability}). Category-level conclusions survive this; per-item ones do not, and
+the $12.8\%$ sign-reversal rate is what that noise scale predicts rather than an additional
+fault, so per-item direction is out of reach at this $\sigma$ rather than pending a fix.
 
 \item \textbf{Predicted, not measured, activation.} No brain was scanned. Whether the
 encoder tracks cortex is unresolved and contested.
@@ -254,6 +327,27 @@ most obvious extension of this work.
 \item \textbf{Mean-field physics.} All-to-all coupling, one homogeneous population, a static
 field, binary opinions. Network structure and heterogeneity generally lower $h_c$, so the
 bound is conservative within the model and is not a universal statement.
+
+\item \textbf{The interpretation is a reverse inference.} Naming the two ROI unions
+affective-salience and deliberative-control, and reading their difference as a statement about
+which mode of processing a text engages, runs the inference backwards: from a spatial pattern
+to a cognitive process. Regions do not map one-to-one onto processes. Amygdala, insula and
+anterior cingulate activate across threat, reward, interoception, salience of any valence and
+plain physiological arousal; prefrontal and parietal control regions activate across working
+memory, task switching, conflict and effort of every kind. The same difference between the two
+unions is therefore consistent with a great many things other than a reader being manipulated,
+and this study has no independent behavioural or self-report measure to break the tie. The
+limitation compounds with the third and fourth entries above: the pattern being interpreted is
+predicted rather than measured, over a cortical proxy for structures the naming invokes. What
+the index can be said to measure without reverse inference is narrow and is what Chapter~5
+claims: a signed difference between two predicted ROI-union activations, which separates four
+content categories and correlates with a pre-existing label.
+
+\item \textbf{A lexical baseline separates the label better.} Section~\ref{sec:baselines}
+reports TF-IDF with logistic regression at AUC $0.9758$ against the index's $0.6274$ on the
+same rows and the same label. Nothing in this thesis argues that the index is a better
+detector of manipulative content than counting words, and any use of it as a screening tool
+would have to justify itself on something other than classification accuracy.
 \end{enumerate}
 
 \section{What would be required next}
@@ -268,6 +362,14 @@ about brains. The noise ceiling is measured and the evaluation code is written a
 what remains is running the checkpoint over a held-out stimulus and correlating. It needs no
 large compute.
 
+\textbf{A variance decomposition of the scanning pipeline} would say whether $\sigma$ can be
+lowered. One item re-scanned ten times with the text fixed and the synthesised audio held
+constant, then ten more with synthesis free, separates the contribution of speech synthesis
+from that of alignment and GPU nondeterminism. Section~\ref{sec:reliability} establishes that
+this is a question about the size of $\sigma$ rather than a search for a defect, since the
+reversal rate is already accounted for. It is the cheapest experiment on this list, needing
+twenty scans of one item.
+
 \textbf{A subcortical checkpoint} would let the original proposal's question be asked as
 posed. That means the training grid, the four source fMRI corpora and compute well outside
 the scope of an undergraduate project, and it is recorded as future work rather than a plan.
@@ -281,8 +383,8 @@ programming named as the case where it would matter most. The suggestion is wort
 directly, because the instrument built here is a partial answer and the gap between it and
 that application is concrete rather than vague.
 
-\textbf{What already carries over.} The pipeline accepts video natively:
-\texttt{InferenceService.predict\_video} takes a file, extracts the encoder's own event
+\textbf{What already carries over.} The pipeline accepts video natively. Its video
+entry point, \texttt{InferenceService.predict\_video}, takes a file, extracts the encoder's own event
 representation and returns predictions per repetition time. That matters because the encoder
 was trained on naturalistic audiovisual material, so a children's programme is closer to its
 training distribution than the synthesised speech from news text used throughout this thesis,

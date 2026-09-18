@@ -114,15 +114,19 @@ with any subcortical structure.
 A corpus of 400 items across four categories, matched on length, was scanned on a GPU. The
 categories separate at $\eta^2 = 0.1068$, $F = 15.779$, $p = 1.035\times10^{-9}$, against a
 design powered to detect $\eta^2 = 0.0268$, and the index discriminates the pre-scan
-manipulative label at $\mathrm{AUC} = 0.6274$. The separation is carried almost entirely by
-fear-activating content, $d = 0.9389$ against neutral, while high-outrage content does not
-separate at all, $d = 0.0300$, though it is the category the proposal expected to separate
-most. Each category is drawn from a single source dataset, so the separation is between
+manipulative label at $\mathrm{AUC} = 0.6274$, against $0.9758$ for a TF-IDF baseline on the
+same rows, so the index is reported as a field observable and not as a competitive classifier.
+The separation is carried almost entirely by fear-activating content, $d = 0.9389$ against
+neutral, while high-outrage content does not separate at all, $d = 0.0300$, though it is the
+category the proposal expected to separate most; splitting the index into the two activations
+it differences shows high outrage raising both by almost the same amount, $d = 0.507$ and
+$d = 0.491$, so the null is a symmetric response rather than an absent one. Each category is drawn from a single source dataset, so the separation is between
 corpora and cannot be attributed to framing rather than provenance; this confound is stated
 before the result wherever the result appears. A second scanning session over all 400 items
 gives test-retest $\mathrm{ICC} = 0.8725$ and replicates the separation at $\eta^2 = 0.0888$,
-while $12.8\%$ of individual items reverse direction between sessions, so the instrument supports
-category-level claims and no per-item verdict is made.
+while $12.8\%$ of individual items reverse direction between sessions, a rate the measured
+session noise predicts on its own, so the instrument supports category-level claims and no
+per-item verdict is made.
 
 The physics is a mean-field treatment in which media enters as a field $h = \alpha X$ on the
 measured observable. Calibrating $\alpha$ against the corpus does not identify it: the fit
@@ -187,7 +191,7 @@ how the corpus was scanned.
 \chapter*{Abbreviations and Symbols}
 \addcontentsline{toc}{chapter}{Abbreviations and Symbols}
 
-\begin{tabular}{@{}l l@{}}
+\begin{tabular}{@{}l p{0.72\textwidth}@{}}
 \textbf{NAA} & Network Activation Asymmetry, the observable this work measures \\
 $A_{\text{aff}}$ & Mean predicted activation across affective-salience regions \\
 $A_{\text{del}}$ & Mean predicted activation across deliberative-control regions \\

@@ -1,0 +1,44 @@
+{
+  "n_items": 400,
+  "sd_difference": 0.010294759482839682,
+  "sigma_per_session": 0.007279494241000454,
+  "between_item_sd": 0.01912678909827194,
+  "observed_reversals": 51,
+  "observed_rate": 0.1275,
+  "expected_reversals": 55.30414116130069,
+  "expected_interval95": [
+    44.0,
+    67.0
+  ],
+  "tail_probability_at_least_observed": 0.7924,
+  "mean_abs_value_reversed": 0.003201049019607843,
+  "mean_abs_value_stable": 0.021592782234957017,
+  "magnitude_test": {
+    "u": 885.0,
+    "p": 1.3580958419966227e-25
+  },
+  "by_category": {
+    "fear_activating": {
+      "n": 100,
+      "reversed": 16
+    },
+    "high_outrage": {
+      "n": 100,
+      "reversed": 15
+    },
+    "neutral_informational": {
+      "n": 100,
+      "reversed": 10
+    },
+    "reward_hook": {
+      "n": 100,
+      "reversed": 10
+    }
+  },
+  "category_homogeneity": {
+    "chi2": 2.764200235968313,
+    "p": 0.42942715174247936
+  },
+  "seed": 42,
+  "draws": 20000
+}
