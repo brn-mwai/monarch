@@ -1,0 +1,53 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{mathpazo}
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\pagestyle{empty}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+{\large\bfseries Measuring the External Field: A Cortical-Proxy Content Observable and the
+Mean-Field Bound on Media-Driven Opinion Change}
+
+\vspace{4pt}
+Brian Mwai, 1050555, B.Sc.\ Physics, Department of Natural Sciences, The Catholic University
+of Eastern Africa. Supervisor: Dr.\ Songa Mutambi.
+
+\vspace{2pt}\hrule\vspace{8pt}
+
+\textbf{Abstract}
+
+Media is routinely modelled in statistical physics as an external field acting on a
+population of coupled opinion states, and that field is almost never measured. This
+dissertation builds an instrument that measures a candidate observable from content itself,
+applies it to a corpus, and reports what the measurement can and cannot support.
+
+The observable is a cortical proxy. Text is spoken, transcribed, embedded, and passed to
+TRIBE v2, a released encoder that predicts cortical response; two networks are averaged from
+that prediction, one associated with affective salience and one with deliberative control,
+and the index is their signed difference. No participant was scanned, and the observable is
+never identified with any subcortical structure.
+
+A corpus of 400 items across four categories, matched on length, was scanned on a GPU. The
+categories separate at $\eta^2 = 0.1068$, $p = 1.035\times10^{-9}$, against a design powered to
+detect $\eta^2 = 0.0268$. The index discriminates the pre-scan manipulative label at
+$\mathrm{AUC} = 0.6274$, against $0.9758$ for a TF-IDF baseline on the same rows, so it is
+reported as a field observable and not as a classifier. The separation is carried by
+fear-activating content; high-outrage content raises both networks almost equally and does not
+separate. Each category is drawn from a single source dataset, so the separation cannot be
+attributed to framing rather than provenance. A second scanning session gives test-retest
+$\mathrm{ICC} = 0.8725$ and replicates the separation, so the instrument supports
+category-level claims and no per-item verdict.
+
+In the mean-field treatment media enters as a field $h = \alpha X$ on the measured observable.
+Calibrating $\alpha$ against the corpus does not identify it, so no value is quoted. What
+survives is a necessary condition, $\alpha \ge h_c(\beta J)/\Delta X$: the measured spread
+$\Delta X = 0.1241$ gives $\alpha \ge 4.2938$ at $\beta J = 2$, a constraint on any future
+proposal of this mechanism within the mean-field model.
+
+\textbf{Keywords:} sociophysics, opinion dynamics, mean-field Ising model, external field,
+encoding models.
+
+\end{document}
