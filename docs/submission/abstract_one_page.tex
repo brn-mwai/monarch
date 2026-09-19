@@ -1,6 +1,7 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[T1]{fontenc}
 \usepackage{mathpazo}
+\usepackage{amsmath}
 \usepackage[a4paper,margin=2.5cm]{geometry}
 \pagestyle{empty}
 \setlength{\parskip}{8pt}
@@ -20,29 +21,32 @@ of Eastern Africa. Supervisor: Dr.\ Songa Mutambi.
 
 \textbf{Abstract}
 
-Physicists often model how opinions spread through a society with the Ising model, the same
-mathematics that describes how tiny magnets in a metal line up with each other. In these
-models, news and other media act as an outside push on the population. The strength of that
-push is always assumed and never measured. This project asks whether it can be measured from
-the content itself.
+Physicists model opinion formation with the Ising model, the same mathematics that describes
+how magnetic spins in a metal align. In its mean-field version, each person holds one of two
+opinions, is pulled toward the majority by a coupling $J$, and media acts as an external field
+$h$ pushing everyone the same way. Studies choose the value of $h$ by hand; it is never
+measured. This project asks whether it can be measured from the content itself.
 
 Each news article was converted to speech and passed through TRIBE v2, a published AI model
-from Meta that predicts how the human brain would respond to it. From that prediction, the
-project compares activity in brain regions linked to emotion with activity in regions linked
-to careful reasoning, which gives one number per article. No person was scanned: every value
-is a prediction made by the model.
+from Meta that predicts the brain's response. The project compares predicted activity in
+regions linked to emotion with regions linked to careful reasoning, giving one number $X$ per
+article. No person was scanned; every value is a model prediction.
 
 Four hundred articles in four groups (fear-driven, outrage, clickbait and neutral) were
-measured twice. Fear-driven articles scored clearly higher than neutral ones, and the result
-repeated on the second run. However, each group came from a different source, so the
-difference cannot be credited to the writing style alone. A simple word-counting method also
-sorted manipulative from neutral articles better than this measure, so the measure is not a
-detector of manipulation.
+measured twice. The groups differ clearly ($\eta^2 = 0.107$, $p < 10^{-8}$), led by
+fear-driven articles, and the result repeated on the second run. Each group came from a
+different source, however, so the difference cannot be credited to writing style alone, and a
+simple word-counting method sorted manipulative from neutral articles better than this
+measure. The measure is therefore offered as a physical quantity, not a manipulation detector.
 
-The main physics result is a formula for the smallest push media must have before it can
-flip a population's majority opinion in this type of model. Using the spread of scores
-measured here, the formula sets a minimum that any future model of media influence must meet.
+Writing the field as $h = \alpha X$, the strength $\alpha$ with which content pushes opinion
+could not be pinned down from the data, so no value is claimed. Instead, the thesis derives a
+condition that holds regardless: media can flip a population's majority only if
+$\alpha \ge h_c(\beta J)/\Delta X$, where $h_c$ is the critical field and $\Delta X$ the spread
+of the measure. With the measured $\Delta X = 0.124$, this requires $\alpha \ge 4.29$ at
+$\beta J = 2$, a minimum any future media-influence model of this kind must meet.
 
-\textbf{Keywords:} opinion dynamics, Ising model, media influence, brain-response prediction.
+\textbf{Keywords:} opinion dynamics, mean-field Ising model, external field, media influence,
+brain-response prediction.
 
 \end{document}
