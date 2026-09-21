@@ -34,22 +34,31 @@ SLIDES = [
      "end with what I need from you.",
      ["About 15 minutes", "End with the four requests"], []),
     ("The idea", "The idea", 1,
-     "Physicists model a group forming an opinion the same way they model tiny "
-     "magnets lining up. The equation is m equals tanh of beta J m plus h. m is "
-     "the group's average opinion, from minus one, everyone against, to plus "
-     "one, everyone for. J is how strongly each person is pulled toward the "
-     "people around them. Beta is how firmly they follow that pull instead of "
-     "acting at random. And h is the push from media, the same on everyone. In "
-     "every study I read, h is chosen by hand. My question: can we measure h "
-     "from the content itself?",
-     ["m: average opinion, -1 to +1", "J: pull toward neighbours",
-      "beta: how firmly people follow the pull", "h: media's push"], []),
+     "Physicists model a group forming an opinion with the Ising model, the "
+     "same maths as tiny magnets lining up. In a magnet each atom's spin points "
+     "up or down; here each person holds one of two opinions. The equation "
+     "says the magnetisation equals tanh of the reduced coupling times the "
+     "magnetisation, plus the external field. The magnetisation, m, is not "
+     "mass: it is the average direction of all the spins, so here it is the "
+     "group's average opinion, from minus one, everyone against, to plus one, "
+     "everyone for. The coupling, J, is how strongly each person is pulled "
+     "toward the people around them. Beta is the inverse temperature: in a "
+     "magnet, one over the temperature; here, how firmly people follow that "
+     "pull instead of acting at random. The external field, h, is in a magnet "
+     "an outside magnetic field; here it is the push from media, the same on "
+     "everyone. In every study I read, the external field is chosen by hand. "
+     "My question: can we measure it from the content itself?",
+     ["m = magnetisation (not mass) = average opinion, -1 to +1",
+      "J = coupling = pull toward neighbours",
+      "beta = inverse temperature = how firmly people follow the pull",
+      "h = external field = media's push on everyone"], []),
     ("Plan vs reality", "The idea", 1.5,
      "Before the results, here is what changed from the proposal once we tested "
      "the tools. Five things. We planned to measure the amygdala, but the model "
      "only sees the brain's surface. The ratio score broke, so we used a "
-     "difference. Outrage didn't stand out; fear did. We couldn't measure alpha, "
-     "so we derived the minimum instead. And the score turned out to be a "
+     "difference. Outrage didn't stand out; fear did. We couldn't measure the "
+     "coupling constant alpha, which turns our score into a push, so we derived "
+     "its minimum instead. And the score turned out to be a "
      "measurement, not a detector. All of this is in the amendment you approved.",
      ["5 changes, all in the approved amendment", "Ratio broke on 69 of 400"],
      [7]),
@@ -60,7 +69,8 @@ SLIDES = [
      "model from Meta's research lab trained on brain scans of adult volunteers "
      "watching TV, predicts activity at 20,484 points on the brain's surface. A "
      "standard brain map picks 1,030 points linked to emotion and 851 linked to "
-     "reasoning. The score X is the emotion average minus the reasoning average. "
+     "reasoning. The score, which we call the observable X, is the emotion "
+     "average minus the reasoning average. "
      "Nobody was scanned: every value is a prediction.",
      ["20,484 points on the brain surface", "1,030 emotion, 851 reasoning",
       "About 70 seconds per article on a free Kaggle GPU"], [3, 6, 12]),
@@ -73,7 +83,8 @@ SLIDES = [
      ["4 groups x 100", "About 164 words each", "Smallest detectable 0.027",
       "Scanned twice"], [11]),
     ("Result 1", "The results", 1,
-     "First result: the groups really differ. The measure is eta squared, 0.107. "
+     "First result: the groups really differ. The measure is eta squared, the "
+     "share of the variation explained by group: 0.107. "
      "The ring shows what that means: about 11 percent of the differences "
      "between articles come from which group they are in, and the rest is "
      "article to article. The chance this is luck is about one in a billion, and "
@@ -112,20 +123,30 @@ SLIDES = [
      "the opposite, so we tested it on public brain scans of people watching "
      "Friends. Real people agree with each other at 0.152 over the episode; "
      "that's the ceiling. On a two-minute clip, the best possible is 0.096 and "
-     "the model reaches 0.028, about 30 percent of the way, with p of 0.048. "
+     "the model reaches 0.028, about 30 percent of the way. The p-value, the "
+     "chance this match is luck, is 0.048. "
      "Weak but positive. We also found and fixed three hidden bugs. This is "
      "Paper 3.",
      ["Ceiling 0.152 (full episode)", "Clip: model 0.028 vs best 0.096",
       "p = 0.048", "3 bugs fixed"], []),
     ("The minimum push", "The physics", 1.5,
-     "The physics result. We link our score to the model with h equals alpha X: "
-     "the push is the score times a strength, alpha. We couldn't measure alpha, "
-     "so we asked how big it must be to flip a majority. The model gives h c, "
-     "the smallest push that flips it, which grows with the copying strength "
-     "beta J. Dividing by the spread of our scores, delta X of 0.124, gives the "
-     "curve. At beta J of 2, alpha must be at least 4.29. It is a bar any future "
-     "claim must clear, not a claim that media flips opinion.",
-     ["h = alpha X", "Delta X = 0.124 (-0.070 to +0.054)",
+     "The physics result. We connect our score to the model by saying the "
+     "external field, the media push, equals a coupling constant alpha times "
+     "our observable X, the score. We could not measure alpha, so we asked how "
+     "big it must be to flip a majority. The model gives the critical field, "
+     "h c: the smallest outside push that flips the group's average opinion, "
+     "like the field needed to flip a magnet. It grows with the reduced "
+     "coupling, beta J, which is how strongly people copy each other. Above one, "
+     "a group settles on a majority by itself, like a magnet below its Curie "
+     "temperature. Dividing the critical field by the spread of our scores, "
+     "delta X of 0.124, gives the curve. When beta J is 2, a strongly connected "
+     "group, alpha must be at least 4.29. It is a bar any future claim must "
+     "clear, not a claim that media flips opinion.",
+     ["h = external field = media push = alpha x X",
+      "alpha = coupling constant = push per unit of score",
+      "h_c = critical field = smallest push that flips the majority",
+      "beta J = reduced coupling = how strongly people copy each other",
+      "Delta X = spread of scores = 0.124 (-0.070 to +0.054)",
       "alpha >= 4.29 at beta J = 2"], [9, 10]),
     ("Children's content", "What's next", 1,
      "At my first presentation I was asked whether this could analyse any "
@@ -191,8 +212,9 @@ QUESTIONS = [
      "The opinion model is statistical physics, the maths of magnets lining "
      "up. The contribution is measuring the push and deriving its minimum."),
     ("What does alpha >= 4.29 mean in practice?",
-     "It's a bar. Any claim that such content flips a strongly connected "
-     "group must use alpha of at least 4.29, or the model says it can't."),
+     "It's a bar. Alpha is the coupling constant that turns our score into a "
+     "push. Any claim that such content flips a strongly connected group must "
+     "use an alpha of at least 4.29, or the model says it can't happen."),
     ("Why only 400 articles?",
      "We calculated before scanning that 400 detects an effect of 0.027. Each "
      "article costs about a minute of GPU time, and we ran them twice."),
@@ -351,10 +373,11 @@ def build_deck(with_notes):
                           "Nobody measures h", "waveform")
     math(s, r"m = \tanh(\beta J\, m + h)", M, 1.65, size=36)
     for i, (sym, text, colour) in enumerate([
-            ("m", "average opinion\n−1 all against · +1 all for", BLUE),
-            ("J", "pull toward\nthe people around you", BLUE),
-            (r"\beta", "how firmly people\nfollow that pull", BLUE),
-            ("h", "media's push,\nthe same on everyone", GOLD)]):
+            ("m", "magnetisation\n= average opinion, −1 to +1", BLUE),
+            ("J", "coupling\n= pull toward neighbours", BLUE),
+            (r"\beta", "inverse temperature\n= how firmly people follow",
+             BLUE),
+            ("h", "external field\n= media's push on everyone", GOLD)]):
         x = M + (i % 2) * 3.85
         y = 2.75 + (i // 2) * 1.12
         card(s, x, y, 3.7, 0.98, line=GOLD if sym == "h" else LINE)
@@ -660,15 +683,20 @@ def build_deck(with_notes):
     card(s, M, 1.45, 5.7, 4.75, line=BLUE)
     math(s, r"h = \alpha X \;\Rightarrow\; \alpha \geq "
             r"\frac{h_c(\beta J)}{\Delta X}", M, 1.65, size=28, centre_w=5.7)
-    for i, (sym, text) in enumerate([
-            (r"\alpha", "strength of the push per unit of score"),
-            (r"h_c", "smallest push that flips the majority"),
-            (r"\beta J", "how strongly people copy each other"),
-            (r"\Delta X", "spread of our scores = 0.124")]):
-        y = 2.95 + i * 0.75
-        math(s, sym, M + 0.2, y + 0.05, size=22, colour=GOLD, centre_w=1.0)
-        tf = textbox(s, M + 1.35, y, 4.2, 0.6, anchor=MSO_ANCHOR.MIDDLE)
-        para(tf, text, size=15, colour=TEXT, first=True, space_after=0)
+    for i, (sym, name, text) in enumerate([
+            ("h", "external field", "media's push on everyone"),
+            ("X", "observable", "our score for an article"),
+            (r"\alpha", "coupling constant", "push per unit of score"),
+            (r"h_c", "critical field", "smallest push that flips the "
+                                       "majority"),
+            (r"\beta J", "reduced coupling", "how strongly people copy "
+                                             "each other"),
+            (r"\Delta X", "spread", "range of our scores = 0.124")]):
+        y = 2.72 + i * 0.57
+        math(s, sym, M + 0.15, y + 0.06, size=19, colour=GOLD, centre_w=0.95)
+        tf = textbox(s, M + 1.2, y, 4.4, 0.55, anchor=MSO_ANCHOR.MIDDLE)
+        rich(tf, [(name + "  ", True, BLUE), ("= " + text, False, TEXT)],
+             size=13, first=True, space_after=0)
     alpha_curve(s, 6.75, 1.4, 5.9, 3.7)
     tf = textbox(s, 6.75, 5.0, 5.9, 0.3, align=PP_ALIGN.CENTER)
     para(tf, "copying strength βJ  →", size=12, colour=MUTED, first=True,
