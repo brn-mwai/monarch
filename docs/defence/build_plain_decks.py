@@ -17,14 +17,16 @@ from pptx.oxml.ns import qn
 from pptx.oxml.xmlchemy import OxmlElement
 from pptx.util import Inches, Pt
 
-from deck_theme import (BLUE, EMBER, FIG, GOLD, GREEN, HERE, LINE, M, MIDBLUE,
-                        MUTED, TEXT, W, arrow, bar, card, figure,
+from deck_theme import (BLUE, EMBER, GOLD, GREEN, HERE, LINE, M, MIDBLUE,
+                        MUTED, TEXT, W, arrow, bar, card,
                         footer, header, icon, lattice, math, new_deck,
                         para, plain, rich, scale_bars, slide, textbox)
 
 SECTIONS = ["The idea", "The method", "The results", "The physics",
             "What's next"]
 DELTA_X = 0.1241
+INSTRUMENT_URL = "https://monarch-4iy.pages.dev"
+SCREENSHOT = os.path.join(HERE, "assets", "instrument_article.png")
 
 SLIDES = [
     ("Title", None, 1,
@@ -71,7 +73,9 @@ SLIDES = [
      "standard brain map picks 1,030 points linked to emotion and 851 linked to "
      "reasoning. The score, which we call the observable X, is the emotion "
      "average minus the reasoning average. "
-     "Nobody was scanned: every value is a prediction.",
+     "Nobody was scanned: every value is a prediction. On the left is the live "
+     "tool, at monarch-4iy.pages.dev: this article scores plus 0.054, the "
+     "highest in the corpus. Anyone can open it and check any article.",
      ["20,484 points on the brain surface", "1,030 emotion, 851 reasoning",
       "About 70 seconds per article on a free Kaggle GPU"], [3, 6, 12]),
     ("The articles", "The method", 1,
@@ -81,7 +85,7 @@ SLIDES = [
      "scanning that 400 could detect an effect as small as 0.027, and we scanned "
      "every article twice.",
      ["4 groups x 100", "About 164 words each", "Smallest detectable 0.027",
-      "Scanned twice"], [11]),
+      "Scanned twice"], [11, 13]),
     ("Result 1", "The results", 1,
      "First result: the groups really differ. The measure is eta squared, the "
      "share of the variation explained by group: 0.107. "
@@ -171,7 +175,7 @@ SLIDES = [
      "postgraduate topic, it invites collaboration with neuroscience and media "
      "researchers, and the tool is already public online.",
      ["Kenya 2024 Finance Bill case", "Tool live: monarch-4iy.pages.dev"],
-     [4]),
+     [4, 13]),
     ("Papers and requests", "What's next", 1.5,
      "Three papers come out of this. Paper 1 is pure physics, the minimum-push "
      "rule. Paper 2 is the measuring tool and the 400 articles, including the "
@@ -221,13 +225,127 @@ QUESTIONS = [
     ("Is it okay to use Meta's model?",
      "Yes, for research. It's under a non-commercial licence, cited throughout, "
      "and this project makes no money from it."),
+    ("Why didn't you use Kenyan media?",
+     "Cost. Each article takes about 70 seconds of GPU time and every article "
+     "was scanned twice, so the 400 articles alone used about 16 GPU hours of "
+     "the free Kaggle allowance, which ran out mid-project and had to reset "
+     "on 15 August. A Kenyan set would also have to be collected and labelled "
+     "by hand, because no ready-made labelled set of manipulative and neutral "
+     "Kenyan articles was available to us, and hand-labelling needs paid "
+     "annotators. With no funding, public labelled collections were the only "
+     "affordable choice. The Kenyan case, coverage of the 2024 Finance Bill, "
+     "is the first extension once there is funding."),
 ]
+
+DEFINITIONS = {
+    0: [("Sociophysics", "using the tools of statistical physics to model how "
+                         "groups of people behave")],
+    1: [("Ising model", "a model of magnets where each spin points up or "
+                        "down and prefers to match its neighbours; used here "
+                        "for two-sided opinions"),
+        ("Mean field", "each person feels the average of the whole group, "
+                       "not particular neighbours; it makes the maths "
+                       "solvable"),
+        ("Spin", "the up or down state of one atom; here, one person's "
+                 "opinion"),
+        ("tanh", "a smooth S-shaped function that keeps the magnetisation "
+                 "between -1 and +1")],
+    2: [("Amygdala", "a small structure deep in the brain linked to fear and "
+                     "threat"),
+        ("Cortex", "the brain's outer surface layer, where the model makes "
+                   "its predictions"),
+        ("Amendment", "the approved change to the proposal's scope and "
+                      "title")],
+    3: [("TRIBE v2", "Meta's published brain encoder: it predicts fMRI "
+                     "responses from text, audio and video"),
+        ("fMRI", "brain scanning that tracks blood flow as a stand-in for "
+                 "activity"),
+        ("Encoder", "a model that maps a stimulus to a predicted brain "
+                    "response"),
+        ("Forced alignment", "finding the exact time each word is spoken in "
+                             "the audio"),
+        ("fsaverage5", "a standard brain surface with 20,484 points, 10,242 "
+                       "per hemisphere"),
+        ("HCP atlas (Glasser 2016)", "a standard map dividing the cortex into "
+                                     "named areas"),
+        ("Cortical proxy", "a measure built from predicted surface activity; "
+                           "it rates content, not people")],
+    4: [("Corpus", "the collection of articles studied"),
+        ("Power analysis", "working out in advance how big a study must be "
+                           "to detect an effect of a given size"),
+        ("Length-matched", "groups have the same average word count, so "
+                           "length can't explain a difference")],
+    5: [("η² (eta squared)", "share of the total variation explained by "
+                             "group membership"),
+        ("F-statistic", "the ANOVA test value comparing variation between "
+                        "groups with variation within groups; ours is "
+                        "15.779"),
+        ("p-value", "the chance of a result at least this strong if there "
+                    "were truly no difference")],
+    6: [("Cohen's d", "the difference between two group averages divided "
+                      "by the typical spread; 0.2 small, 0.5 medium, 0.8 "
+                      "large"),
+        ("Welch's t-test", "a test comparing two group averages that does "
+                           "not assume equal spreads")],
+    7: [("ICC (intraclass correlation)", "agreement between repeated "
+                                         "measurements of the same items; 1 "
+                                         "is identical"),
+        ("Test-retest", "measuring the same thing twice to check it "
+                        "repeats"),
+        ("Sign reversal", "a score that is positive on one run and "
+                          "negative on the other")],
+    8: [("AUC", "the chance that a randomly chosen manipulative article "
+                "scores higher than a randomly chosen neutral one; 0.5 is a "
+                "coin toss"),
+        ("TF-IDF", "a word-counting method that weights words by how "
+                   "distinctive they are"),
+        ("Logistic regression", "a simple model that turns word counts into "
+                                "a probability"),
+        ("VADER", "a standard sentiment tool that scores text as positive "
+                  "or negative"),
+        ("Confound", "a second factor, here the source, that moves with the "
+                     "one you study, so the two can't be separated")],
+    9: [("Noise ceiling", "how well real brains predict each other; the best "
+                          "any model can do"),
+        ("r (Pearson correlation)", "how closely two signals rise and fall "
+                                    "together; 0 none, 1 perfect"),
+        ("Algonauts 2025", "a public brain-scan challenge using people "
+                           "watching Friends (the CNeuroMod recordings)"),
+        ("Circular-shift test", "shifting one signal in time many times to "
+                                "see how often chance gives a match this "
+                                "good")],
+    10: [("Critical field", "the smallest outside field that flips the "
+                            "magnetisation, here the majority opinion"),
+         ("Curie temperature", "the temperature below which a magnet lines "
+                               "up by itself; for us, reduced coupling "
+                               "above 1"),
+         ("Lower bound", "a minimum value; the result says alpha can't be "
+                         "smaller than this")],
+    11: [("Ethics approval", "formal permission from a review board before "
+                             "research involving people, required for "
+                             "children")],
+    12: [("Crossed design", "every source contributes every type of "
+                            "article, so source and type can be separated"),
+         ("Subcortical", "structures deep in the brain, below the "
+                         "cortex")],
+    13: [("Preprint", "a paper shared publicly before peer review, for "
+                      "example on arXiv"),
+         ("Physica A", "a peer-reviewed journal for statistical physics, "
+                       "including sociophysics"),
+         ("Imaging Neuroscience", "a peer-reviewed journal for brain "
+                                  "imaging methods")],
+    14: [("Library deposit", "submitting the bound thesis to the university "
+                             "library, needed for graduation clearance")],
+}
 
 
 def notes_for(index):
     title, _, minutes, script, cues, questions = SLIDES[index]
     lines = ["SCRIPT (about %g min)" % minutes, script, "", "NUMBERS TO SAY"]
     lines += ["- " + cue for cue in cues]
+    if index in DEFINITIONS:
+        lines += ["", "DEFINITIONS (if asked)"]
+        lines += ["- %s: %s." % pair for pair in DEFINITIONS[index]]
     if questions:
         lines += ["", "IF ASKED"]
         for q in questions:
@@ -431,38 +549,50 @@ def build_deck(with_notes):
     sw, gap = 2.12, 0.31
     for i, (icon_name, head, tool) in enumerate(steps):
         x = M + i * (sw + gap)
-        card(s, x, 1.45, sw, 1.5, line=BLUE if i == 3 else LINE)
-        icon(s, icon_name, x + sw / 2 - 0.22, 1.6, h=0.44)
-        tf = textbox(s, x, 2.1, sw, 0.8, align=PP_ALIGN.CENTER)
+        card(s, x, 1.45, sw, 1.3, line=BLUE if i == 3 else LINE)
+        icon(s, icon_name, x + sw / 2 - 0.2, 1.55, h=0.4)
+        tf = textbox(s, x, 1.98, sw, 0.75, align=PP_ALIGN.CENTER)
         para(tf, head, size=15, bold=True, colour=TEXT, first=True,
              space_after=0)
         para(tf, tool, size=12, colour=MUTED, space_after=0)
         if i < len(steps) - 1:
-            arrow(s, x + sw + 0.05, 2.12, gap - 0.1, 0.16)
-    figure(s, os.path.join(FIG, "B1_roi_definition.png"), M + 0.12, 3.35,
-           w=5.6)
-    tf = textbox(s, M, 5.95, 6, 0.35)
-    rich(tf, [("orange ", True, EMBER), ("1,030 emotion points   ", False, TEXT),
-              ("blue ", True, BLUE), ("851 reasoning points", False, TEXT)],
-         size=13, first=True, space_after=0)
-    card(s, 7.05, 3.25, 5.53, 2.05, line=BLUE)
-    tf = textbox(s, 7.25, 3.35, 5, 0.3)
-    para(tf, "THE SCORE", size=11, bold=True, colour=MUTED, first=True,
+            arrow(s, x + sw + 0.05, 2.02, gap - 0.1, 0.16)
+    card(s, M, 2.95, 5.3, 3.15, line=BLUE)
+    s.shapes.add_picture(SCREENSHOT, Inches(M + 0.1), Inches(3.03),
+                         width=Inches(5.1))
+    tf = textbox(s, M, 6.13, 5.4, 0.5)
+    rich(tf, [("The live tool, one article: ", True, TEXT),
+              ("emotion +0.109, reasoning +0.055, score +0.054, the highest "
+               "in the corpus.", False, MUTED)], size=11, first=True,
+         space_after=0)
+    card(s, 6.3, 2.95, 6.28, 1.95, line=BLUE)
+    tf = textbox(s, 6.5, 3.03, 5, 0.3)
+    para(tf, "THE SCORE, X", size=11, bold=True, colour=MUTED, first=True,
          space_after=0)
     math(s, r"X = \bar{A}_{\mathrm{emotion}} - \bar{A}_{\mathrm{reasoning}}",
-         7.05, 3.7, size=24, centre_w=5.53)
-    bar(s, 7.35, 4.75, 2.45, 0.1, BLUE)
-    bar(s, 9.83, 4.75, 2.45, 0.1, EMBER)
-    bar(s, 9.8, 4.62, 0.03, 0.36, TEXT)
-    for x, text, colour, al in [(7.35, "reasoning leads", BLUE, PP_ALIGN.LEFT),
-                                (9.83, "emotion leads", EMBER, PP_ALIGN.RIGHT)]:
-        tf = textbox(s, x, 4.9, 2.45, 0.3, align=al)
+         6.3, 3.3, size=22, centre_w=6.28)
+    bar(s, 6.6, 4.12, 2.8, 0.1, BLUE)
+    bar(s, 9.43, 4.12, 2.8, 0.1, EMBER)
+    bar(s, 9.4, 3.99, 0.03, 0.36, TEXT)
+    for x, text, colour, al in [(6.6, "reasoning leads", BLUE, PP_ALIGN.LEFT),
+                                (9.43, "emotion leads", EMBER, PP_ALIGN.RIGHT)]:
+        tf = textbox(s, x, 4.24, 2.8, 0.3, align=al)
         para(tf, text, size=12, bold=True, colour=colour, first=True,
              space_after=0)
-    tf = textbox(s, 9.5, 4.9, 0.6, 0.3, align=PP_ALIGN.CENTER)
-    para(tf, "0", size=12, colour=TEXT, first=True, space_after=0)
-    chip(s, 7.05, 5.5, 5.53, 0.62, "Nobody scanned: every value is predicted",
-         colour=EMBER, line=EMBER, size=14, bold=True, icon_name="warning")
+    tf = textbox(s, 6.5, 4.52, 5.9, 0.3, align=PP_ALIGN.CENTER)
+    para(tf, "emotion areas: 1,030 points  ·  reasoning areas: 851 points  "
+             "·  nobody scanned", size=11, colour=MUTED, first=True,
+         space_after=0)
+    link_card = card(s, 6.3, 5.05, 6.28, 1.05, line=GOLD)
+    link_card.click_action.hyperlink.address = INSTRUMENT_URL
+    icon(s, "target", 6.5, 5.33, h=0.46)
+    tf = textbox(s, 7.15, 5.1, 5.3, 1.0, anchor=MSO_ANCHOR.MIDDLE)
+    para(tf, "TRY THE INSTRUMENT LIVE", size=11, bold=True, colour=GOLD,
+         first=True, space_after=0)
+    para(tf, INSTRUMENT_URL.replace("https://", ""), size=22, bold=True,
+         colour=TEXT, space_after=0)
+    para(tf, "code and data: github.com/brn-mwai/monarch", size=11,
+         colour=MUTED, space_after=0)
     done(s, 3)
 
     # 5 the articles
@@ -765,7 +895,7 @@ def build_deck(with_notes):
              ["Paper 1 → Physica A", "Paper 2 → Physica A",
               "Paper 3 → Imaging Neuroscience", "Preprints first (arXiv)"]),
             ("EXTEND THE SCIENCE", GREEN, "atom",
-             ["Kenya: 2024 Finance Bill coverage", "Video and audio content",
+             ["Kenya: 2024 Finance Bill (funding)", "Video and audio content",
               "Measure α with opinion data", "Children's media, ethically"]),
             ("OPPORTUNITIES", GOLD, "target",
              ["Postgraduate research topic", "Neuroscience + media "
