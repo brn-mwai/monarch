@@ -36,20 +36,14 @@ SLIDES = [
      "end with what I need from you.",
      ["About 15 minutes", "End with the four requests"], []),
     ("The idea", "The idea", 1,
-     "Physicists model a group forming an opinion with the Ising model, the "
-     "same maths as tiny magnets lining up. In a magnet each atom's spin points "
-     "up or down; here each person holds one of two opinions. The equation "
-     "says the magnetisation equals tanh of the reduced coupling times the "
-     "magnetisation, plus the external field. The magnetisation, m, is not "
-     "mass: it is the average direction of all the spins, so here it is the "
-     "group's average opinion, from minus one, everyone against, to plus one, "
-     "everyone for. The coupling, J, is how strongly each person is pulled "
-     "toward the people around them. Beta is the inverse temperature: in a "
-     "magnet, one over the temperature; here, how firmly people follow that "
-     "pull instead of acting at random. The external field, h, is in a magnet "
-     "an outside magnetic field; here it is the push from media, the same on "
-     "everyone. In every study I read, the external field is chosen by hand. "
-     "My question: can we measure it from the content itself?",
+     "This is the Ising model, the maths of magnets lining up, used here for "
+     "opinions. Each person is like a spin, pointing for or against. The "
+     "magnetisation, m, not mass, is the group's average opinion, from minus "
+     "one to plus one. The coupling, J, is how strongly people copy those "
+     "around them. Beta, the inverse temperature, is how firmly they follow "
+     "that pull rather than act at random. The external field, h, is media's "
+     "push on everyone. Every study picks h by hand. My question: can we "
+     "measure it from the content itself?",
      ["m = magnetisation (not mass) = average opinion, -1 to +1",
       "J = coupling = pull toward neighbours",
       "beta = inverse temperature = how firmly people follow the pull",
@@ -134,18 +128,14 @@ SLIDES = [
      ["Ceiling 0.152 (full episode)", "Clip: model 0.028 vs best 0.096",
       "p = 0.048", "3 bugs fixed"], []),
     ("The minimum push", "The physics", 1.5,
-     "The physics result. We connect our score to the model by saying the "
-     "external field, the media push, equals a coupling constant alpha times "
-     "our observable X, the score. We could not measure alpha, so we asked how "
-     "big it must be to flip a majority. The model gives the critical field, "
-     "h c: the smallest outside push that flips the group's average opinion, "
-     "like the field needed to flip a magnet. It grows with the reduced "
-     "coupling, beta J, which is how strongly people copy each other. Above one, "
-     "a group settles on a majority by itself, like a magnet below its Curie "
-     "temperature. Dividing the critical field by the spread of our scores, "
-     "delta X of 0.124, gives the curve. When beta J is 2, a strongly connected "
-     "group, alpha must be at least 4.29. It is a bar any future claim must "
-     "clear, not a claim that media flips opinion.",
+     "We link our score to the model: the external field equals a coupling "
+     "constant, alpha, times our score X. We couldn't measure alpha, so we "
+     "asked how big it must be to flip a majority. The critical field, h c, is "
+     "the smallest push that does that, and it grows with the reduced "
+     "coupling, beta J, how strongly people copy each other. Divide it by the "
+     "spread of our scores, 0.124, and you get this curve. At beta J of 2, "
+     "alpha must be at least 4.29. A bar to clear, not a claim that media "
+     "flips opinion.",
      ["h = external field = media push = alpha x X",
       "alpha = coupling constant = push per unit of score",
       "h_c = critical field = smallest push that flips the majority",
@@ -236,6 +226,49 @@ QUESTIONS = [
      "affordable choice. The Kenyan case, coverage of the 2024 Finance Bill, "
      "is the first extension once there is funding."),
 ]
+
+KEY_POINTS = [
+    "Media's push on opinion is always guessed. This work measures a "
+    "candidate for it and turns its unknown strength into a minimum any claim "
+    "must meet.",
+    "In the opinion model, the external field (media's push) is an input "
+    "nobody measures. That gap is the whole project.",
+    "Testing the tools changed the plan. Every change is documented and "
+    "approved, not hidden.",
+    "Every value is a prediction from a published brain model, not a scan of "
+    "anyone, and anyone can check it on the live tool.",
+    "The article set was designed fairly before scanning: equal groups, equal "
+    "length, big enough to see a small effect.",
+    "The groups really differ, but group explains only about 11%. Most "
+    "variation is between individual articles.",
+    "Fear drives the effect. Outrage stays flat because it lifts emotion and "
+    "reasoning together, not because it has no effect.",
+    "The score is reliable for groups, not for single articles.",
+    "The score is tangled with source, so it is a physics measurement, not a "
+    "manipulation detector.",
+    "The brain model matches real brains weakly but positively: a usable, "
+    "not perfect, instrument.",
+    "Even without measuring alpha, the measured spread sets a floor: alpha at "
+    "least 4.29 at beta J = 2. The source confound does not break it.",
+    "Technically possible, not yet valid for children: the model learned from "
+    "adult brains.",
+    "Every limit is stated openly and points to a specific next study.",
+    "The work opens three paths: publishing, extensions (Kenya, video, "
+    "children), and postgraduate research.",
+    "Three papers follow. Today I need corrections, the signature and library "
+    "clearance.",
+]
+
+SO_WHAT = (
+    "Opinion models treat media as a push, but everyone guesses how big it "
+    "is. I built a way to measure a candidate for that push from the content "
+    "itself. It picks up real, repeatable differences between kinds of "
+    "articles, though it is tangled with where they came from, so I don't "
+    "claim it detects manipulation. But even without knowing the exact "
+    "strength, the measured spread gives a floor: media would need a coupling "
+    "of at least 4.29 to flip a strongly connected group. That turns a "
+    "guessed number into a testable one.")
+SO_WHAT_SLIDES = {0, 10, 14}
 
 DEFINITIONS = {
     0: [("Sociophysics", "using the tools of statistical physics to model how "
@@ -341,11 +374,14 @@ DEFINITIONS = {
 
 def notes_for(index):
     title, _, minutes, script, cues, questions = SLIDES[index]
-    lines = ["SCRIPT (about %g min)" % minutes, script, "", "NUMBERS TO SAY"]
+    lines = ["KEY POINT: " + KEY_POINTS[index], "",
+             "SCRIPT (about %g min)" % minutes, script, "", "NUMBERS TO SAY"]
     lines += ["- " + cue for cue in cues]
     if index in DEFINITIONS:
         lines += ["", "DEFINITIONS (if asked)"]
         lines += ["- %s: %s." % pair for pair in DEFINITIONS[index]]
+    if index in SO_WHAT_SLIDES:
+        lines += ["", "IF ASKED \"SO WHAT?\"", SO_WHAT]
     if questions:
         lines += ["", "IF ASKED"]
         for q in questions:
