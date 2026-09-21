@@ -50,11 +50,11 @@ def recolour_icons():
         solid.save(os.path.join(ICONS, name))
 
 
-def new_deck():
+def new_deck(height=H):
     recolour_icons()
     prs = Presentation()
     prs.slide_width = Inches(W)
-    prs.slide_height = Inches(H)
+    prs.slide_height = Inches(height)
     return prs
 
 
@@ -126,7 +126,7 @@ def slide(prs, notes=None):
     s.background.fill.solid()
     s.background.fill.fore_color.rgb = BG
     glow(s, W - 0.6, -0.4, 7.5, MIDBLUE, 0.28)
-    glow(s, -0.8, H + 0.6, 6.0, EMBER, 0.10)
+    glow(s, -0.8, prs.slide_height / 914400 + 0.6, 6.0, EMBER, 0.10)
     if notes:
         s.notes_slide.notes_text_frame.text = notes
     return s
@@ -235,6 +235,40 @@ def footer(s, sections, section, number):
     tf = textbox(s, W - M - 1.0, H - 0.55, 1.0, 0.35, align=PP_ALIGN.RIGHT)
     para(tf, "%02d" % number, size=11, bold=True, colour=MUTED, first=True,
          space_after=0)
+
+
+MATH_DIR = os.path.join(HERE, "assets", "math")
+MATH_PT, MATH_DPI = 40, 200
+
+
+def math(s, latex, x, y, size=24, colour=TEXT, centre_w=None):
+    """Typeset a LaTeX expression (matplotlib mathtext, Computer Modern) and
+    place it with its glyphs at `size` points. With centre_w, centre it in a
+    box of that width starting at x. Returns the placed width and height."""
+    import hashlib
+
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    os.makedirs(MATH_DIR, exist_ok=True)
+    key = hashlib.sha1((latex + "|" + str(colour)).encode()).hexdigest()[:16]
+    path = os.path.join(MATH_DIR, key + ".png")
+    if not os.path.exists(path):
+        plt.rcParams["mathtext.fontset"] = "cm"
+        fig = plt.figure(figsize=(0.01, 0.01))
+        fig.text(0, 0, "$%s$" % latex, fontsize=MATH_PT, color="#" + str(colour))
+        fig.savefig(path, dpi=MATH_DPI, transparent=True, bbox_inches="tight",
+                    pad_inches=0.02)
+        plt.close(fig)
+    pw, ph = Image.open(path).size
+    scale = size / MATH_PT / MATH_DPI
+    w, h = pw * scale, ph * scale
+    if centre_w is not None:
+        x = x + (centre_w - w) / 2
+    s.shapes.add_picture(path, Inches(x), Inches(y), width=Inches(w),
+                         height=Inches(h))
+    return w, h
 
 
 def figure(s, path, x, y, w=None, h=None, pad=0.12):

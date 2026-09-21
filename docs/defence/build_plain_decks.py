@@ -1,8 +1,10 @@
 """Build two plain-language decks for the supervisor meeting.
 
-Monarch_Supervisor_Deck.pptx  the 15 slides shown to Dr. Songa, script in notes.
-Monarch_Presenter_Script.pptx a script card per slide, likely questions with
-                              answers, and a plain-words sheet for every number.
+Monarch_Supervisor_Deck.pptx         the 15 slides shown to Dr. Songa, no script.
+Monarch_Supervisor_Deck_Script.pptx  the same 15 slides on taller pages with the
+                                     script written under each, then likely
+                                     questions with answers and a plain-words
+                                     sheet for every number.
 """
 
 import os
@@ -11,12 +13,15 @@ from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.util import Inches
 
-from deck_theme import (BLUE, EMBER, FIG, GOLD, GREEN, HERE, LINE, M,
+from deck_theme import (BLUE, EMBER, FIG, GOLD, GREEN, H, HERE, LINE, M,
                         MIDBLUE, MUTED, TEXT, W, arrow, bar, card,
-                        figure, footer, glow, header, icon, lattice, new_deck,
+                        figure, footer, glow, header, icon, lattice, math,
+                        new_deck,
                         number_card, para, plain, rich, scale_bars, slide,
                         textbox)
 
+SCRIPT_PAGE_H = 10.7
+MINUTES = [1, 1, 1.5, 1, 1, 1, 1, 1, 1, 1.5, 1, 1, 1, 0.5, 1.5]
 SECTIONS = ["The idea", "The method", "The results", "The physics",
             "What's next"]
 
@@ -29,13 +34,16 @@ SCRIPT = [
      "end with what I need from you.",
      ["About 15 minutes in total", "End with the four requests"]),
     ("The question", "The idea",
-     "Here is the idea in one picture. Physicists model a group forming an "
-     "opinion the same way they model tiny magnets lining up. Each arrow is a "
-     "person, and people tend to copy those around them. Media is an outside push "
-     "on everyone at once. In every study I read, the size of that push is simply "
-     "chosen by the researcher. My question was: can we measure it from the "
-     "content itself?",
-     ["h = the push from media", "J = how much people copy each other"]),
+     "Physicists model a group forming an opinion the same way they model tiny "
+     "magnets lining up. The equation is m equals tanh of beta J m plus h. m is "
+     "the group's average opinion, from minus one, everyone against, to plus one, "
+     "everyone for. J is how strongly each person is pulled toward the people "
+     "around them, and beta is how firmly they follow that pull instead of "
+     "acting at random. h is the outside push from media, the same on everyone. "
+     "In every study I read, h is chosen by hand. My question: can we measure h "
+     "from the content itself?",
+     ["m: average opinion, −1 to +1", "J: pull toward neighbours",
+      "β: how firmly people follow the pull", "h: the push from media"]),
     ("Plan vs reality", "The idea",
      "Before the results, I want to be upfront about what changed from the "
      "proposal. Five assumptions turned out differently once we tested the tools. "
@@ -115,14 +123,17 @@ SCRIPT = [
       "Model 0.028 vs 0.096 on the 2-minute clip", "p = 0.048",
       "3 bugs found and fixed"]),
     ("The minimum push", "The physics",
-     "Here is the physics result. Media's push equals our score times a strength "
-     "called alpha. We couldn't measure alpha from the data, so we don't quote "
-     "one. Instead we asked: how big must alpha be for media alone to flip a "
-     "majority? With our scores spread over 0.124, the answer is at least 4.29 "
-     "when people copy each other strongly. Any future claim that content like "
-     "this flips opinion has to clear that bar.",
-     ["Spread of scores 0.124 (-0.070 to +0.054)", "Alpha at least 4.29 at "
-      "copying strength 2", "No value of alpha is claimed"]),
+     "Here is the physics result. We link our score to the model by h equals "
+     "alpha X: the media push h is our score X times a strength, alpha. We "
+     "couldn't measure alpha from the data, so we don't quote one. Instead we "
+     "asked how big alpha must be to flip a majority. The model gives h c, the "
+     "critical field: the smallest push that flips the majority, which grows "
+     "with the copying strength beta J. Our scores spread over delta X, 0.124. "
+     "Dividing gives alpha at least 4.29 when beta J is 2. Any future claim that "
+     "content like this flips opinion has to clear that bar.",
+     ["h = αX: push = strength × score", "h_c: smallest push that flips it",
+      "ΔX = 0.124 (−0.070 to +0.054)", "α ≥ 4.29 at βJ = 2",
+      "No value of α is claimed"]),
     ("Children's content", "What's next",
      "At my first presentation I was asked whether this could analyse any "
      "content, even what children watch. Technically, yes: the pipeline takes "
@@ -202,6 +213,15 @@ QUESTIONS = [
 ]
 
 GLOSSARY = [
+    ("m", "Average opinion of the group, from −1 (all against) to +1 (all "
+          "for)."),
+    ("J, coupling", "How strongly each person is pulled toward those around "
+                    "them."),
+    ("β, beta", "How firmly people follow that pull instead of acting at "
+                "random."),
+    ("h, field", "The push from media, the same on everyone. h = αX."),
+    ("X, our score", "Emotion-area activity minus reasoning-area activity, "
+                     "predicted."),
     ("η², eta squared", "Share of the differences explained by group. "
                         "0.107 is about 11%."),
     ("p-value", "Chance a result this strong appears by luck. "
@@ -228,11 +248,11 @@ def body(s, index):
     footer(s, SECTIONS, section, index + 1)
 
 
-def build_supervisor():
-    prs = new_deck()
+def build_deck(with_script):
+    prs = new_deck(SCRIPT_PAGE_H if with_script else H)
 
-    def page(i):
-        return slide(prs, notes=SCRIPT[i][2])
+    def page(_):
+        return slide(prs)
 
     # 1 title
     s = page(0)
@@ -260,8 +280,8 @@ def build_supervisor():
 
     # 2 the question
     s = page(1)
-    header(s, "The idea", "Physics treats media as a push on opinion. Nobody "
-                          "measures how big that push is", "waveform")
+    header(s, "The idea", "Physics treats media as a push, h, on opinion. "
+                          "Nobody measures h", "waveform")
     lattice(s, 8.9, 1.75, 6, 6, 0.55, seed=3, bias=0.66)
     arrow_up = s.shapes.add_shape(MSO_SHAPE.UP_ARROW, Inches(12.45),
                                   Inches(2.3), Inches(0.35), Inches(2.2))
@@ -270,28 +290,30 @@ def build_supervisor():
     para(tf, "Arrows are people. Gold arrow is media, pushing everyone the "
              "same way.", size=13, colour=MUTED, first=True,
          align=PP_ALIGN.CENTER, space_after=0)
-    tf = textbox(s, M, 1.65, 7.4, 2.4)
-    for i, (lead, rest) in enumerate([
-            ("Each person holds one of two opinions. ",
-             "Like a magnet pointing up or down."),
-            ("People copy those around them. ",
-             "Physicists call this the coupling, J."),
-            ("Media pushes everyone the same way. ",
-             "This is the field, h. Same maths as magnets lining up.")]):
-        rich(tf, [("%d   " % (i + 1), True, EMBER), (lead, True, TEXT),
-                  (rest, False, MUTED)], size=17, first=(i == 0),
-             space_after=12)
-    shp = card(s, M, 4.15, 7.4, 0.85)
+    math(s, r"m = \tanh(\beta J\, m + h)", M, 1.6, size=30)
+    tf = textbox(s, M, 2.3, 7.6, 0.4)
+    para(tf, "The mean-field opinion model: the same maths as magnets lining up.",
+         size=13, colour=MUTED, first=True, space_after=0)
+    for i, (sym, text) in enumerate([
+            ("m", "average opinion of the group: −1 everyone against, "
+                  "+1 everyone for."),
+            ("J", "coupling: how strongly each person is pulled toward the "
+                  "people around them."),
+            (r"\beta", "how firmly people follow that pull instead of acting "
+                        "at random (one over the noise)."),
+            ("h", "external field: the push from media, the same on "
+                  "everyone.")]):
+        y = 2.8 + i * 0.58
+        math(s, sym, M, y, size=24, colour=GOLD if sym == "h" else BLUE,
+             centre_w=0.5)
+        tf = textbox(s, M + 0.7, y - 0.02, 6.9, 0.55)
+        para(tf, text, size=15, colour=TEXT, first=True, space_after=0)
+    shp = card(s, M, 5.25, 7.6, 0.95, line=EMBER)
     tf = shp.text_frame
     tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-    para(tf, "Every study we found picks the size of h by hand.", size=17,
-         colour=TEXT, first=True, space_after=0)
-    shp = card(s, M, 5.2, 7.4, 0.95, line=EMBER)
-    tf = shp.text_frame
-    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-    rich(tf, [("Our question: ", True, EMBER),
-              ("can h be measured from the content itself?", True, TEXT)],
-         size=19, first=True, space_after=0)
+    rich(tf, [("Every study we found picks h by hand. ", False, TEXT),
+              ("Our question: can h be measured from the content itself?",
+               True, EMBER)], size=16, first=True, space_after=0)
     body(s, 1)
 
     # 3 plan vs reality
@@ -315,9 +337,9 @@ def build_supervisor():
         ("Outrage articles would stand out the most.",
          "Outrage raised both areas by the same amount.",
          "Reported it; fear is what stands out."),
-        ("We would measure alpha, the strength of media's push.",
+        ("We would measure α (alpha), the strength of media's push.",
          "The data could not pin it down.",
-         "Worked out the minimum alpha instead."),
+         "Worked out the minimum α instead."),
         ("The score would detect manipulative articles.",
          "Simple word counting did better.",
          "Presented it as a measurement, not a detector."),
@@ -402,14 +424,16 @@ def build_supervisor():
     tf = textbox(s, M, 5.8, 6.2, 0.5)
     para(tf, "Orange: 1,030 emotion-linked points. Blue: 851 reasoning-linked "
              "points.", size=13, colour=MUTED, first=True, space_after=0)
-    shp = card(s, 7.35, 2.95, 5.23, 3.2, line=BLUE)
-    tf = shp.text_frame
-    tf.margin_top = Inches(0.18)
+    card(s, 7.35, 2.95, 5.23, 3.2, line=BLUE)
+    tf = textbox(s, 7.57, 3.07, 4.8, 0.35)
     para(tf, "THE SCORE, X", size=12, bold=True, colour=MUTED, first=True,
-         space_after=6)
-    rich(tf, [("X = ", True, TEXT), ("emotion", True, EMBER),
-              (" − ", True, TEXT), ("reasoning", True, BLUE)], size=28,
-         space_after=10)
+         space_after=0)
+    math(s, r"X = \bar{A}_{\mathrm{emotion}} - \bar{A}_{\mathrm{reasoning}}",
+         7.57, 3.42, size=24)
+    tf = textbox(s, 7.57, 4.05, 4.8, 2.0)
+    rich(tf, [("Ā ", True, BLUE),
+              ("= average predicted activity over that set of points.", False,
+               TEXT)], size=14, first=True, space_after=6)
     rich(tf, [("Above 0: ", True, EMBER),
               ("emotion areas predicted more active.", False, TEXT)], size=15,
          space_after=4)
@@ -465,14 +489,16 @@ def build_supervisor():
     tf = textbox(s, M, 1.5, 5.8, 0.35)
     para(tf, "HOW MUCH THE GROUPS DIFFER (η²)", size=12, bold=True,
          colour=MUTED, first=True, space_after=0)
-    tf = textbox(s, M, 1.85, 5.8, 1.4)
-    para(tf, "0.107", size=80, bold=True, colour=TEXT, first=True,
+    tf = textbox(s, M, 1.75, 5.8, 1.3)
+    para(tf, "0.107", size=72, bold=True, colour=TEXT, first=True,
          space_after=0)
+    math(s, r"\eta^2 = \frac{\mathrm{variation\ between\ groups}}"
+            r"{\mathrm{total\ variation}}", M, 3.05, size=17)
     scale_bars(s, [("first run", 0.1068, "0.107", BLUE),
                    ("second run", 0.0888, "0.089", MIDBLUE),
                    ("smallest we could see", 0.0268, "0.027", MUTED)],
-               top=3.75, maximum=0.12, left=2.85, length=2.9, label_w=2.1,
-               step=0.6, size=14)
+               top=4.0, maximum=0.12, left=2.85, length=2.9, label_w=2.1,
+               step=0.55, size=14)
     tf = textbox(s, M, 5.65, 6.0, 0.5)
     para(tf, "The second run repeats the result. Both are far above what we "
              "could detect.", size=13, colour=MUTED, first=True, space_after=0)
@@ -508,13 +534,18 @@ def build_supervisor():
                    ("clickbait", 0.319, "0.32  small", MIDBLUE),
                    ("outrage", 0.030, "0.03  none", GOLD)],
                top=2.2, maximum=1.0, left=left, length=length, label_w=2.3)
-    number_card(s, M, 4.2, 5.75, 1.95, "d",
-                "Cohen's d: how big a difference is",
-                "Measured in units of the normal spread of scores. 0.2 is small, "
-                "0.5 medium, 0.8 large.",
-                "Fear articles sit almost one full spread away from neutral.",
-                value_size=24)
-    shp = card(s, 6.83, 4.2, 5.75, 1.95, line=GOLD)
+    card(s, M, 4.1, 5.75, 2.1, line=BLUE)
+    math(s, r"d = \frac{\bar{X}_{\mathrm{group}} - \bar{X}_{\mathrm{neutral}}}"
+            r"{s}", M + 0.22, 4.22, size=19)
+    tf = textbox(s, M + 0.12, 4.95, 5.5, 1.25)
+    rich(tf, [("X̄ ", True, BLUE), ("= average score of a group.  ", False, TEXT),
+              ("s ", True, BLUE), ("= normal spread of scores.", False, TEXT)],
+         size=13, first=True, space_after=4)
+    rich(tf, [("What it means: ", True, MUTED),
+              ("0.2 is small, 0.5 medium, 0.8 large. Fear articles sit almost "
+               "one full spread away from neutral.", False, TEXT)], size=13,
+         space_after=0)
+    shp = card(s, 6.83, 4.1, 5.75, 2.1, line=GOLD)
     tf = shp.text_frame
     tf.margin_top = Inches(0.16)
     para(tf, "WHY OUTRAGE STAYS FLAT", size=12, bold=True, colour=GOLD,
@@ -656,28 +687,25 @@ def build_supervisor():
     s = page(11)
     header(s, "The physics", "The physics result: the minimum push media "
                              "would need", "ruler")
-    tf = textbox(s, M, 1.5, 6.0, 1.6)
-    for i, text in enumerate([
-            "Media's push  =  α  ×  our score.",
-            "The data can't pin down α, so no value is quoted.",
-            "So we asked: how big must α be for media alone to flip a "
-            "majority?"]):
-        rich(tf, [("%d   " % (i + 1), True, EMBER), (text, False, TEXT)],
-             size=16, first=(i == 0), space_after=8)
-    shp = card(s, M, 3.25, 6.0, 2.9, line=BLUE)
-    tf = shp.text_frame
-    tf.margin_top = Inches(0.16)
-    rich(tf, [("α  ≥  h", True, TEXT), ("c", True, TEXT),
-              ("  ÷  ΔX", True, TEXT)], size=30, first=True,
-         align=PP_ALIGN.CENTER, space_after=10)
-    tf.paragraphs[0].runs[1].font._rPr.set("baseline", "-25000")
-    for sym, text in [
-            ("h, small c", "the push needed to flip a majority, from the physics model"),
-            ("ΔX = 0.124", "spread of our scores, from −0.070 to +0.054"),
-            ("βJ", "how strongly people copy each other. Above 1, a group "
-                   "settles on a majority by itself; 2 is strongly connected")]:
-        rich(tf, [(sym + "   ", True, BLUE), (text, False, TEXT)], size=13,
-             space_after=6)
+    card(s, M, 1.5, 6.0, 4.7, line=BLUE)
+    math(s, r"h = \alpha X \quad\Rightarrow\quad "
+            r"\alpha \geq \frac{h_c(\beta J)}{\Delta X}", M, 1.68, size=26,
+         centre_w=6.0)
+    for i, (sym, text) in enumerate([
+            ("h", "the push from media on everyone (the field)."),
+            ("X", "our score for an article, emotion minus reasoning."),
+            (r"\alpha", "strength: how hard one unit of score pushes. "
+                        "Not measured, so no value is quoted."),
+            (r"h_c(\beta J)", "critical field: the smallest push that flips "
+                              "the majority. It grows with copying strength."),
+            (r"\beta J", "copying strength. Above 1 a group settles on a "
+                         "majority by itself; 2 means strongly connected."),
+            (r"\Delta X", "spread of our scores: from −0.070 to +0.054, "
+                          "so 0.124.")]):
+        y = 2.72 + i * 0.57
+        math(s, sym, M + 0.15, y + 0.02, size=17, colour=GOLD, centre_w=1.35)
+        tf = textbox(s, M + 1.6, y, 4.3, 0.55)
+        para(tf, text, size=13, colour=TEXT, first=True, space_after=0)
     number_card(s, 7.0, 1.5, 5.58, 2.55, "α ≥ 4.29",
                 "Minimum strength when copying is strong (βJ = 2)",
                 "Any study saying content like this flips opinion must use an α "
@@ -805,87 +833,68 @@ def build_supervisor():
              size=15, space_after=3)
     body(s, 14)
 
-    out = os.path.join(HERE, "Monarch_Supervisor_Deck.pptx")
+    if not with_script:
+        out = os.path.join(HERE, "Monarch_Supervisor_Deck.pptx")
+        prs.save(out)
+        return out, len(prs.slides)
+
+    for i, s in enumerate(prs.slides):
+        add_script_panel(s, i)
+    add_questions(prs)
+    add_glossary(prs)
+    out = os.path.join(HERE, "Monarch_Supervisor_Deck_Script.pptx")
     prs.save(out)
     return out, len(prs.slides)
 
 
-def build_presenter():
-    prs = new_deck()
+def add_script_panel(s, index):
+    _, _, script, cues = SCRIPT[index]
+    bar(s, M, H + 0.12, W - 2 * M, 0.02, LINE)
+    tf = textbox(s, M, H + 0.22, W - 2 * M, 0.35)
+    rich(tf, [("SCRIPT", True, EMBER),
+              ("   ·   slide %02d   ·   about %g min" % (index + 1,
+                                                         MINUTES[index]),
+               False, MUTED)], size=12, first=True, space_after=0)
+    shp = card(s, M, H + 0.6, 8.55, SCRIPT_PAGE_H - H - 0.8, line=BLUE)
+    tf = shp.text_frame
+    tf.margin_left = tf.margin_right = Inches(0.3)
+    tf.margin_top = Inches(0.18)
+    para(tf, script, size=15, colour=TEXT, first=True, space_after=0)
+    shp = card(s, 9.45, H + 0.6, W - M - 9.45, SCRIPT_PAGE_H - H - 0.8,
+               line=GOLD)
+    tf = shp.text_frame
+    tf.margin_top = Inches(0.18)
+    para(tf, "NUMBERS TO SAY", size=11, bold=True, colour=GOLD, first=True,
+         space_after=6)
+    for cue in cues:
+        para(tf, "•  " + cue, size=13, colour=TEXT, space_after=5)
 
-    s = slide(prs)
-    tf = textbox(s, M, 0.5, W - 2 * M, 0.4)
-    para(tf, "PRESENTER SCRIPT  ·  FOR BRIAN ONLY", size=13, bold=True,
-         colour=EMBER, first=True, space_after=0)
-    tf = textbox(s, M, 0.9, W - 2 * M, 0.9)
-    para(tf, "Meeting with Dr. Songa, 21 September 2026", size=30, bold=True,
-         colour=BLUE, first=True, space_after=0)
-    tf = textbox(s, M, 1.65, W - 2 * M, 0.5)
-    para(tf, "One card per slide. Read the script in your own words; the right "
-             "column is the numbers to say out loud. Likely questions and a "
-             "plain-words sheet follow.", size=15, colour=MUTED, first=True,
-         space_after=0)
-    minutes = [1, 1, 1.5, 1, 1, 1, 1, 1, 1, 1.5, 1, 1, 1, 0.5, 1.5]
-    for i, ((title, section, _, _), mins) in enumerate(zip(SCRIPT, minutes)):
-        col, row = divmod(i, 8)
-        x = M + col * 6.0
-        y = 2.4 + row * 0.5
-        shp = card(s, x, y, 5.7, 0.42)
-        tf = shp.text_frame
-        tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-        rich(tf, [("%02d   " % (i + 1), True, EMBER), (title, True, TEXT),
-                  ("   %s min" % ("%g" % mins), False, MUTED)], size=13,
-             first=True, space_after=0)
-    tf = textbox(s, 6.75, 6.05, 5.8, 0.4)
-    para(tf, "Total about %g minutes" % sum(minutes), size=14, bold=True,
-         colour=GOLD, first=True, space_after=0)
 
-    for i, (title, section, script, cues) in enumerate(SCRIPT):
+def add_questions(prs):
+    per_page = 3
+    pages = (len(QUESTIONS) + per_page - 1) // per_page
+    for start in range(0, len(QUESTIONS), per_page):
         s = slide(prs)
         tf = textbox(s, M, 0.3, W - 2 * M, 0.35)
-        para(tf, "SLIDE %02d%s" % (i + 1, "  ·  " + section.upper()
-                                   if section else ""),
-             size=12, bold=True, colour=EMBER, first=True, space_after=0)
-        tf = textbox(s, M, 0.62, W - 2 * M, 0.7)
-        para(tf, title, size=28, bold=True, colour=BLUE, first=True,
-             space_after=0)
-        shp = card(s, M, 1.45, 8.1, 5.1, line=BLUE)
-        tf = shp.text_frame
-        tf.margin_left = tf.margin_right = Inches(0.35)
-        tf.margin_top = Inches(0.3)
-        para(tf, "SAY", size=11, bold=True, colour=MUTED, first=True,
-             space_after=8)
-        para(tf, script, size=19, colour=TEXT, space_after=0)
-        shp = card(s, 9.1, 1.45, 3.48, 5.1, line=GOLD)
-        tf = shp.text_frame
-        tf.margin_top = Inches(0.3)
-        para(tf, "NUMBERS TO SAY", size=11, bold=True, colour=GOLD, first=True,
-             space_after=10)
-        for cue in cues:
-            para(tf, "•  " + cue, size=15, colour=TEXT, space_after=10)
-        s.notes_slide.notes_text_frame.text = script
-
-    for start in range(0, len(QUESTIONS), 2):
-        s = slide(prs)
-        tf = textbox(s, M, 0.3, W - 2 * M, 0.35)
-        para(tf, "LIKELY QUESTIONS  %d of %d" % (start // 2 + 1,
-                                                (len(QUESTIONS) + 1) // 2),
+        para(tf, "LIKELY QUESTIONS  %d of %d" % (start // per_page + 1, pages),
              size=12, bold=True, colour=EMBER, first=True, space_after=0)
         tf = textbox(s, M, 0.62, W - 2 * M, 0.7)
         para(tf, "Many of these grow out of the first presentation's question "
                  "about children's content", size=22, bold=True, colour=BLUE,
              first=True, space_after=0)
-        for j, (q, a) in enumerate(QUESTIONS[start:start + 2]):
-            y = 1.55 + j * 2.55
-            shp = card(s, M, y, W - 2 * M, 2.35, line=GOLD if j == 0 else BLUE)
+        for j, (q, a) in enumerate(QUESTIONS[start:start + per_page]):
+            shp = card(s, M, 1.55 + j * 3.0, W - 2 * M, 2.8,
+                       line=GOLD if j == 0 else BLUE)
             tf = shp.text_frame
             tf.margin_left = tf.margin_right = Inches(0.35)
-            tf.margin_top = Inches(0.22)
+            tf.margin_top = Inches(0.25)
             rich(tf, [("Q%d   " % (start + j + 1), True, EMBER),
-                      (q, True, TEXT)], size=20, first=True, space_after=10)
-            rich(tf, [("A   ", True, GREEN), (a, False, TEXT)], size=17,
+                      (q, True, TEXT)], size=21, first=True, space_after=12)
+            rich(tf, [("A   ", True, GREEN), (a, False, TEXT)], size=18,
                  space_after=0)
 
+
+def add_glossary(prs):
     s = slide(prs)
     tf = textbox(s, M, 0.3, W - 2 * M, 0.35)
     para(tf, "PLAIN WORDS FOR EVERY NUMBER", size=12, bold=True, colour=EMBER,
@@ -893,21 +902,16 @@ def build_presenter():
     tf = textbox(s, M, 0.62, W - 2 * M, 0.7)
     para(tf, "If a symbol comes up, say it like this", size=26, bold=True,
          colour=BLUE, first=True, space_after=0)
+    rows = (len(GLOSSARY) + 1) // 2
     for i, (term, meaning) in enumerate(GLOSSARY):
-        col, row = divmod(i, 6)
-        x = M + col * 6.0
-        y = 1.45 + row * 0.85
-        shp = card(s, x, y, 5.8, 0.75)
+        col, row = divmod(i, rows)
+        shp = card(s, M + col * 6.0, 1.5 + row * 1.05, 5.83, 0.92)
         tf = shp.text_frame
         tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-        rich(tf, [(term + "   ", True, GOLD), (meaning, False, TEXT)], size=13,
+        rich(tf, [(term + "   ", True, GOLD), (meaning, False, TEXT)], size=16,
              first=True, space_after=0)
-
-    out = os.path.join(HERE, "Monarch_Presenter_Script.pptx")
-    prs.save(out)
-    return out, len(prs.slides)
 
 
 if __name__ == "__main__":
-    for path, count in (build_supervisor(), build_presenter()):
+    for path, count in (build_deck(False), build_deck(True)):
         print("wrote", path, count, "slides")
