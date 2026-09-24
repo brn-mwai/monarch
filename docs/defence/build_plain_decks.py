@@ -1,9 +1,9 @@
-"""Build the supervisor deck twice from one source.
+"""Build the defence deck twice from one source.
 
-Monarch_Supervisor_Deck.pptx         15 slides, no speaker notes.
-Monarch_Supervisor_Deck_Script.pptx  the same 15 slides; each slide's speaker
-                                     notes hold the script, the numbers to say
-                                     and the questions likely on that slide.
+Monarch_Defence_Deck.pptx         16 slides, no speaker notes.
+Monarch_Defence_Deck_Script.pptx  the same 16 slides; each slide's speaker
+                                  notes hold the script, every number on the
+                                  slide with its meaning, and likely questions.
 """
 
 import math as pymath
@@ -26,179 +26,244 @@ SECTIONS = ["The idea", "The method", "The results", "The physics",
             "What's next"]
 DELTA_X = 0.1241
 INSTRUMENT_URL = "https://monarch-4iy.pages.dev"
+CORPUS_URL = INSTRUMENT_URL + "/corpus"
 SCREENSHOT = os.path.join(HERE, "assets", "instrument_article.png")
 
+GROUP_MEANS = [("Fear-activating", -0.0018, EMBER),
+               ("Reward hook", -0.0128, MIDBLUE),
+               ("High outrage", -0.0185, GOLD),
+               ("Neutral", -0.0191, MUTED)]
+
 SLIDES = [
-    ("Title", None, 1,
-     "Good morning, Dr. Songa, and thank you for the time. I'll go through what "
-     "I set out to do, how I did it, what I found, what the work cannot claim, "
-     "where it can go next, and the three papers. About fifteen minutes, and I'll "
-     "end with what I need from you.",
-     ["About 15 minutes", "End with the four requests"], []),
+    ("Title", None, 0.5,
+     "Good morning. I'm Brian Mwai, and my dissertation is called Measuring "
+     "the External Field. The question behind it is simple: can we measure "
+     "how hard a news article pushes on what people think? I'll start with "
+     "the physics idea behind that question.",
+     [], []),
     ("The idea", "The idea", 1,
-     "This is the Ising model, the maths of magnets lining up, used here for "
-     "opinions. Each person is like a spin, pointing for or against. The "
-     "magnetisation, m, not mass, is the group's average opinion, from minus "
-     "one to plus one. The coupling, J, is how strongly people copy those "
-     "around them. Beta, the inverse temperature, is how firmly they follow "
-     "that pull rather than act at random. The external field, h, is media's "
-     "push on everyone. Every study picks h by hand. My question: can we "
-     "measure it from the content itself?",
-     ["m = magnetisation (not mass) = average opinion, -1 to +1",
-      "J = coupling = pull toward neighbours",
-      "beta = inverse temperature = how firmly people follow the pull",
-      "h = external field = media's push on everyone"], []),
-    ("Plan vs reality", "The idea", 1.5,
-     "Before the results, here is what changed from the proposal once we tested "
-     "the tools. Five things. We planned to measure the amygdala, but the model "
-     "only sees the brain's surface. The ratio score broke, so we used a "
-     "difference. Outrage didn't stand out; fear did. We couldn't measure the "
-     "coupling constant alpha, which turns our score into a push, so we derived "
-     "its minimum instead. And the score turned out to be a "
-     "measurement, not a detector. All of this is in the amendment you approved.",
-     ["5 changes, all in the approved amendment", "Ratio broke on 69 of 400"],
-     [7]),
+     "Physics can model opinion the way it models a magnet. Each person is a "
+     "spin, pointing for or against. m, the magnetisation, is the group's "
+     "average opinion, from minus one to plus one. J, the coupling, is how "
+     "much people copy those around them. Beta, the inverse temperature, is "
+     "how firmly they follow that pull instead of acting at random. And h, "
+     "the external field, is media's push on everyone at once. In the studies "
+     "I read, h is always chosen by hand. Nobody measures it. So my question "
+     "was: can h be measured from the content itself? Testing the tools to "
+     "answer that changed the plan, so that comes next.",
+     ["m: average opinion, -1 (all against) to +1 (all for)",
+      "h: a general external field, media's push; not magnetic or electric"],
+     [16]),
+    ("Plan vs reality", "The idea", 1,
+     "Five things changed once I tested the tools. I planned to measure the "
+     "amygdala, but the model only predicts the brain's surface. I planned a "
+     "ratio score, but it was undefined for 69 of the 400 articles, so I used "
+     "a difference, which works for all 400. I expected outrage to stand out, "
+     "and fear did instead. I planned to measure alpha, media's strength, but "
+     "the data can't pin it down, so I derived its minimum. And word counting "
+     "sorted the articles better than my score, 0.98 against 0.63, so the "
+     "score is a measurement, not a detector. All five are in the approved "
+     "amendment. Here is how the measurement works.",
+     ["69 of 400: articles where the ratio was undefined (say 69, not 49)",
+      "0.98 vs 0.63: word counting vs our score, AUC, 0.5 = coin toss"],
+     [7, 17]),
     ("Tools and process", "The method", 1.5,
-     "This is how one article becomes one number. The article is read aloud by "
-     "a text-to-speech voice, because the brain model was built on people "
-     "listening. A timing tool marks when each word is said. Then TRIBE v2, a "
-     "model from Meta's research lab trained on brain scans of adult volunteers "
-     "watching TV, predicts activity at 20,484 points on the brain's surface. A "
-     "standard brain map picks 1,030 points linked to emotion and 851 linked to "
-     "reasoning. The score, which we call the observable X, is the emotion "
-     "average minus the reasoning average. "
-     "Nobody was scanned: every value is a prediction. On the left is the live "
-     "tool, at monarch-4iy.pages.dev: this article scores plus 0.054, the "
-     "highest in the corpus. Anyone can open it and check any article.",
-     ["20,484 points on the brain surface", "1,030 emotion, 851 reasoning",
-      "About 70 seconds per article on a free Kaggle GPU"], [3, 6, 12]),
+     "One article becomes one number in five steps. A text-to-speech voice "
+     "reads it aloud, because the brain model was trained on people watching "
+     "and listening. A timing tool marks when each word is spoken. TRIBE v2, "
+     "a published model from Meta, predicts activity at 20,484 points on the "
+     "brain's surface. A standard brain map picks 1,030 points in emotional "
+     "areas and 851 in deliberate, reasoning areas. The score, X, is the "
+     "emotional average minus the deliberate average. Above zero, emotion "
+     "leads. Below zero, reasoning leads. The numbers have no physical unit: "
+     "they are the model's standardised activity. Nobody was scanned; every "
+     "value is a prediction. The article on the left scores plus 0.054, the "
+     "highest of all 400. So which 400 articles?",
+     ["20,484: points on the brain surface the model predicts",
+      "1,030: points in emotional areas; 851: points in deliberate areas",
+      "+0.109 emotional, +0.055 deliberate, score +0.054 (0.109 - 0.055)",
+      "Units: standardised activity, no physical unit"],
+     [3, 6, 12]),
     ("The articles", "The method", 1,
-     "We scored 400 articles from four public collections, 100 each: fear-driven "
-     "fake news, outrage-style partisan news, clickbait, and neutral writing. "
-     "Lengths are matched so no group wins by being longer. We worked out before "
-     "scanning that 400 could detect an effect as small as 0.027, and we scanned "
-     "every article twice.",
-     ["4 groups x 100", "About 164 words each", "Smallest detectable 0.027",
-      "Scanned twice"], [11, 13]),
+     "I used four public collections, 100 articles each: fear-activating fake "
+     "news, high-outrage partisan news, reward-hook clickbait, and neutral "
+     "writing from medical abstracts and real news. The group averages sit "
+     "between 162 and 167 words, so length can't explain a difference. "
+     "Before scanning, I calculated that 400 articles can detect an eta "
+     "squared of 0.027 or more, and I scanned every article twice. All 400 "
+     "are on the corpus page, so here is how to read it.",
+     ["4 x 100 = 400 articles",
+      "162 to 167: range of the four group averages, in words",
+      "0.027: smallest eta squared 400 articles detect (80% power, p < 0.05)",
+      "x 2: every article scanned twice"],
+     [11, 13]),
+    ("Reading the corpus", "The method", 1.5,
+     "This is what each column on the corpus page means. Emotional is the "
+     "average predicted activity across the 1,030 emotional points. "
+     "Deliberate is the same across the 851 reasoning points. Score is "
+     "emotional minus deliberate: that's X. Pre-scan label is the label the "
+     "article already had in its source collection. Across all 400, scores "
+     "run from minus 0.070 to plus 0.054, a spread of 0.124. On the right are "
+     "the four group averages. All four are below zero, so the reasoning "
+     "areas respond more in every group. The groups differ in how far below "
+     "zero they sit: fear is closest, at minus 0.002, and neutral is "
+     "furthest, at minus 0.019. I'll show you the page now. [SHOW CORPUS] "
+     "The question is whether those differences are real.",
+     ["-0.070 to +0.054: lowest and highest score of the 400",
+      "0.124: spread = highest minus lowest; used in the physics later",
+      "-0.002 fear, -0.013 reward hook, -0.018 outrage, -0.019 neutral",
+      "Below zero = deliberate areas respond more than emotional areas"],
+     [18]),
     ("Result 1", "The results", 1,
-     "First result: the groups really differ. The measure is eta squared, the "
-     "share of the variation explained by group: 0.107. "
-     "The ring shows what that means: about 11 percent of the differences "
-     "between articles come from which group they are in, and the rest is "
-     "article to article. The chance this is luck is about one in a billion, and "
-     "the second run gave 0.089, both far above the 0.027 we could detect.",
-     ["0.107 = 11% explained by group", "p about 1 in a billion",
-      "Second run 0.089"], []),
+     "To test that, I used a one-way ANOVA. It compares the spread between "
+     "the four group averages with the spread inside each group. F is "
+     "15.779. Eta squared is the share of all the variation in the score "
+     "that the group accounts for: 0.107, so 10.7 percent. The other 89 "
+     "percent is article to article. The p-value is 1 times 10 to the minus "
+     "9: the probability of an F this large if all four groups had the same "
+     "average. The second run gave 0.089. Both are above the 0.027 the study "
+     "could detect. So the groups differ. Which group drives it?",
+     ["F = 15.779: between-group spread over within-group spread",
+      "eta squared 0.107 = 10.7% of the variation is due to group",
+      "p = 1.0 x 10^-9 first run; second run 0.089, p = 4.9 x 10^-8",
+      "0.027: smallest eta squared the design could detect"],
+     [14, 15]),
     ("Result 2", "The results", 1,
-     "Which group drives it? Fear. Measured against neutral articles, fear sits "
-     "0.94 spreads away, which is large. Clickbait is small and outrage is almost "
-     "zero. The two small charts show why. Fear raises the emotion areas and "
-     "leaves reasoning flat, so the gap, our score, moves. Outrage raises both "
-     "by the same amount, so the gap stays flat. The proposal expected outrage to "
-     "be strongest, and this is why it isn't.",
-     ["Fear 0.94 large, clickbait 0.32 small, outrage 0.03",
-      "Outrage: emotion +0.51, reasoning +0.49",
-      "Fear: emotion +0.61, reasoning -0.10"], []),
-    ("Result 3", "The results", 1,
-     "Can we trust the score? Running all 400 articles twice gives agreement of "
-     "0.87, where 1 means identical. That is high. 51 articles flipped sign "
-     "between runs, but noise alone predicts about 55, and they all sit near "
-     "zero where a tiny wobble tips them. So group averages are trustworthy, and "
-     "we never judge a single article.",
-     ["Agreement 0.87 (1 = identical)", "51 flipped, 55 expected (44 to 67)"],
+     "Fear does. Cohen's d measures how far a group's average sits from "
+     "neutral, in standard deviations. Fear is 0.94, clickbait 0.32, outrage "
+     "0.03. For scale, 0.2, 0.5 and 0.8 are the usual reference marks. So why "
+     "is outrage near zero? Split the score into its two parts. Fear raises "
+     "the emotional areas by 0.61 and the deliberate areas by minus 0.10, so "
+     "the score moves. Outrage raises both, by 0.51 and 0.49, so the "
+     "difference stays near zero. Outrage has an effect, on both sides "
+     "equally. Next: can we trust these scores?",
+     ["d: distance from neutral in standard deviations",
+      "Fear 0.94, reward hook 0.32, outrage 0.03 (p = 0.832)",
+      "Fear: emotional +0.61, deliberate -0.10",
+      "Outrage: emotional +0.51, deliberate +0.49"],
      []),
-    ("Honest check", "The results", 1.5,
-     "The most important honest check. Plain word counting sorts manipulative "
-     "from neutral articles far better than our score: 0.98 against 0.63, where "
-     "0.5 is a coin toss. That's because each group came from a different "
-     "source, and the words give the source away. So we cannot say the "
-     "difference comes from writing style alone. Our score is a measurement for "
-     "the physics, not a manipulation detector.",
-     ["Word counting 0.98, ours 0.63, sentiment tool 0.54",
-      "Words guess the source 66% vs 25% chance"], [5]),
+    ("Result 3", "The results", 1,
+     "I ran all 400 articles twice on the GPU. The ICC, the agreement "
+     "between the two runs, is 0.8725, where 1 means identical and 0 means "
+     "no agreement. 51 of the 400 changed sign between runs. Measurement "
+     "noise alone predicts 55, with a 95 percent range of 44 to 67, so 51 is "
+     "what noise predicts. Those articles sit near zero: their average size "
+     "is 0.003, against 0.022 for the rest. So I report group averages and "
+     "never a verdict on one article. Now the most important check.",
+     ["ICC 0.8725: agreement of two runs, 1 = identical, 0 = none",
+      "51 of 400 = 12.8% changed sign between runs",
+      "55.3 expected from noise, 95% range 44 to 67",
+      "Flipped items: average size 0.003 vs 0.022 for the rest"],
+     []),
+    ("Honest check", "The results", 1,
+     "Does the score detect manipulation? AUC is the probability that a "
+     "randomly chosen manipulative article scores above a randomly chosen "
+     "neutral one. 0.5 is a coin toss, and 1 is perfect. A sentiment tool "
+     "gets 0.54. My score gets 0.63. Plain word counting gets 0.98. Why so "
+     "high? Each group came from one source, and the words identify the "
+     "source for 66 percent of articles, against 25 percent by chance. So "
+     "the difference can't be put down to writing style alone, because "
+     "source is mixed in. My score is a measurement for the physics, not a "
+     "manipulation detector. That raises the next question: does the brain "
+     "model match real brains?",
+     ["AUC: chance a manipulative article outscores a neutral one",
+      "0.54 sentiment (VADER), 0.63 our score, 0.98 word counting (TF-IDF)",
+      "66%: articles whose source the words identify; chance 25%"],
+     [5]),
     ("Real brains", "The results", 1,
-     "Does the brain model match real brains? A company audit claimed it was "
-     "the opposite, so we tested it on public brain scans of people watching "
-     "Friends. Real people agree with each other at 0.152 over the episode; "
-     "that's the ceiling. On a two-minute clip, the best possible is 0.096 and "
-     "the model reaches 0.028, about 30 percent of the way. The p-value, the "
-     "chance this match is luck, is 0.048. "
-     "Weak but positive. We also found and fixed three hidden bugs. This is "
-     "Paper 3.",
-     ["Ceiling 0.152 (full episode)", "Clip: model 0.028 vs best 0.096",
-      "p = 0.048", "3 bugs fixed"], []),
+     "I tested it on public brain scans of four people watching Friends. The "
+     "correlation, r, measures how closely two signals rise and fall "
+     "together. Real people match each other at 0.152 over the full episode; "
+     "that's the ceiling. On the 2-minute clip I ran, the ceiling is 0.096 "
+     "and the model reaches 0.028, which is 30 percent of the ceiling. The "
+     "p-value is 0.048, under the 0.05 cut-off. The sign is positive, so it "
+     "does not reproduce the negative value a published audit reported. I "
+     "also found and fixed three bugs in the pipeline. The full-episode run "
+     "is the next step, in Paper 3. Now to the physics.",
+     ["r: correlation, 0 = no match, 1 = perfect",
+      "0.152: people vs each other, full episode (ceiling)",
+      "0.096: ceiling on the 2-minute clip; 0.028: the model",
+      "30% = 0.028 / 0.096; p = 0.048 against 61 time-shifted copies"],
+     []),
     ("The minimum push", "The physics", 1.5,
-     "We link our score to the model: the external field equals a coupling "
-     "constant, alpha, times our score X. We couldn't measure alpha, so we "
-     "asked how big it must be to flip a majority. The critical field, h c, is "
-     "the smallest push that does that, and it grows with the reduced "
-     "coupling, beta J, how strongly people copy each other. Divide it by the "
-     "spread of our scores, 0.124, and you get this curve. At beta J of 2, "
-     "alpha must be at least 4.29. A bar to clear, not a claim that media "
-     "flips opinion.",
-     ["h = external field = media push = alpha x X",
-      "alpha = coupling constant = push per unit of score",
-      "h_c = critical field = smallest push that flips the majority",
-      "beta J = reduced coupling = how strongly people copy each other",
-      "Delta X = spread of scores = 0.124 (-0.070 to +0.054)",
-      "alpha >= 4.29 at beta J = 2"], [9, 10]),
+     "Here is how the score connects to the model. The field h equals alpha "
+     "times X. Alpha is the coupling constant: how much push per unit of "
+     "score. I can't measure alpha, so I asked how big it must be to flip a "
+     "majority. The critical field, h c, is the smallest push that does "
+     "that, and it depends on beta J, the reduced coupling: how strongly "
+     "people copy each other. At beta J of 2, h c is 0.533. Divide by the "
+     "spread of scores, 0.124, and alpha must be at least 4.29. The curve "
+     "shows that minimum for every beta J. It is a bar any claim must clear, "
+     "not a claim that media flips opinion, and it holds within the "
+     "mean-field model. So what could this be used for?",
+     ["h = alpha x X: field = coupling constant x score",
+      "beta J = 2: say 'beta J', not 'beta'",
+      "h_c(2) = 0.533: smallest push that flips the majority at beta J = 2",
+      "0.533 / 0.124 = 4.29: minimum alpha"],
+     [9, 10, 16]),
     ("Children's content", "What's next", 1,
-     "At my first presentation I was asked whether this could analyse any "
-     "content, even what children watch. Technically yes: it takes video and "
-     "audio, so it could score a cartoon. But the model learned from adult "
-     "brains, so it can't say how a child reacts. We only tested news text, and "
-     "one show on its own isn't reliable. For children we'd need child brain "
-     "data and ethics approval first.",
-     ["Adult-trained model", "1 in 8 items flip between runs"], [1, 2, 8]),
+     "At my proposal I was asked whether this could analyse any content, "
+     "even what children watch. It takes video and audio, so it could score "
+     "a cartoon. But the model learned from adult brains, so it can't say how "
+     "a child reacts. I only tested news text, and 1 in 8 single scores flip "
+     "between runs. Children would need child brain data and ethics approval "
+     "first. Each of these limits points to a next study.",
+     ["1 in 8: 51 of 400 single scores flip between runs"],
+     [1, 2, 8, 19]),
     ("Limits", "What's next", 0.5,
-     "Every limit here points to the next study. Predictions need checking "
-     "against more real brain data. Group and source need separating with a new "
-     "set of articles. Deep brain areas need a model that predicts them. Alpha "
-     "needs real opinion data. And the brain check needs longer clips.",
+     "Five limits, each with the study that fixes it. Predictions need "
+     "checking against more real brain data. Group and source need "
+     "separating with a new article set. Deep brain areas need a model that "
+     "predicts them. Alpha needs real opinion data. And the brain check needs "
+     "the full episode. That leads to where the work goes next.",
      ["5 limits, each stated in the thesis"], []),
-    ("Taking it further", "What's next", 1,
-     "Where this can go. First, publishing the three papers, with preprints "
-     "first. Second, extending the science: the Kenyan case study from the "
-     "proposal, coverage of the 2024 Finance Bill; video and audio content; "
-     "measuring alpha against real opinion data; and children's media once the "
-     "data and ethics allow. Third, opportunities: this is a natural "
-     "postgraduate topic, it invites collaboration with neuroscience and media "
-     "researchers, and the tool is already public online.",
-     ["Kenya 2024 Finance Bill case", "Tool live: monarch-4iy.pages.dev"],
+    ("Taking it further", "What's next", 0.75,
+     "Three directions. Publishing: three papers, with preprints first. "
+     "Extending the science: the Kenyan case from the proposal, coverage of "
+     "the 2024 Finance Bill, plus video and audio, and measuring alpha "
+     "against opinion data. And opportunities: a postgraduate topic, "
+     "collaboration with neuroscience and media researchers, and a tool that "
+     "is already online. To close, four conclusions.",
+     ["Kenya: 2024 Finance Bill coverage, needs GPU funding"],
      [4, 13]),
-    ("Papers and requests", "What's next", 1.5,
-     "Three papers come out of this. Paper 1 is pure physics, the minimum-push "
-     "rule. Paper 2 is the measuring tool and the 400 articles, including the "
-     "word-counting comparison. Paper 3 is the check against real brains. The "
-     "dissertation comes first. I'm asking for any corrections, your signature "
-     "on the declaration page, clearance for the library by Thursday, and your "
-     "view on co-authorship.",
-     ["Bound copy by Thu 24 Sep", "Clearance by Mon 28 Sep"], []),
+    ("Conclusions", "What's next", 1,
+     "One: a field observable can be measured from content, and it repeats, "
+     "with agreement of 0.8725 between runs. Two: it separates the four "
+     "groups at eta squared 0.107, with source mixed in, so I report it as a "
+     "measurement, not a detector. Three: alpha can't be measured from this "
+     "data, so the thesis gives a minimum, 4.29 at beta J of 2. Four: the "
+     "brain model correlates positively with real brains, at 0.028, 30 "
+     "percent of the ceiling. Three papers follow from this. Thank you. I'm "
+     "happy to take your questions.",
+     ["0.8725 ICC", "0.107 eta squared", "4.29 minimum alpha at beta J = 2",
+      "0.028 = 30% of the 0.096 ceiling"],
+     [3, 5, 19]),
 ]
 
 QUESTIONS = [
     ("Can this analyse any content, even what children watch?",
-     "Technically it can score video and audio. But the model learned from "
-     "adult brains, so it can't say how a child reacts, and we only tested news "
-     "text. It would need child brain data and ethics approval first."),
+     "It can score video and audio. But the model learned from adult brains, "
+     "so it can't say how a child reacts, and I only tested news text. It "
+     "would need child brain data and ethics approval first."),
     ("Could a parent or a regulator use it to rate one show?",
-     "Not yet. About 1 in 8 items flip between runs, so single scores aren't "
-     "reliable. It is only trustworthy for comparing groups of content."),
+     "Not yet. 51 of 400 single scores flip between runs, so one score isn't "
+     "reliable. It is for comparing groups of content."),
     ("Was anyone scanned? Is it reading minds?",
-     "No. Nobody was scanned. The scores are predictions of a typical adult "
+     "No. Nobody was scanned. The scores are predictions for a typical adult "
      "brain. The tool rates content, not people."),
     ("Could someone use it to make content more manipulative?",
      "It's a real risk for any content measure. That's why it reports group "
      "results only, for research, and the model's licence is non-commercial."),
     ("If word counting does better, why not use that?",
-     "Word counting mostly learns the source. Our score is meant to be the "
-     "push h in the opinion model. The comparison is there to be honest."),
+     "Word counting mostly learns the source: 66% against 25% chance. My "
+     "score is meant to be the push h in the opinion model. The comparison is "
+     "there to be honest about what the score is."),
     ("Why read the articles aloud?",
      "The model was trained on people watching and listening, so it expects "
      "speech with word timings."),
     ("Why no amygdala?",
      "The released model only predicts the brain's surface. The amygdala is "
-     "deep inside, so we make no claim about it."),
+     "deep inside, so I make no claim about it."),
     ("What would it take for children's media?",
      "Child brain scans with ethics approval and consent, a children's video "
      "test set, and content where source and type are mixed."),
@@ -206,69 +271,89 @@ QUESTIONS = [
      "The opinion model is statistical physics, the maths of magnets lining "
      "up. The contribution is measuring the push and deriving its minimum."),
     ("What does alpha >= 4.29 mean in practice?",
-     "It's a bar. Alpha is the coupling constant that turns our score into a "
-     "push. Any claim that such content flips a strongly connected group must "
-     "use an alpha of at least 4.29, or the model says it can't happen."),
+     "It's a bar. Alpha turns the score into a push. Any claim that such "
+     "content flips a group with beta J = 2 must use an alpha of at least "
+     "4.29, or the model says it can't happen."),
     ("Why only 400 articles?",
-     "We calculated before scanning that 400 detects an effect of 0.027. Each "
-     "article costs about a minute of GPU time, and we ran them twice."),
+     "I calculated before scanning that 400 detects an eta squared of 0.027. "
+     "Each article takes about 70 seconds of GPU time, and I ran them twice."),
     ("Is it okay to use Meta's model?",
-     "Yes, for research. It's under a non-commercial licence, cited throughout, "
-     "and this project makes no money from it."),
+     "Yes, for research. It's under a non-commercial licence, cited "
+     "throughout, and this project makes no money from it."),
     ("Why didn't you use Kenyan media?",
-     "Cost. Each article takes about 70 seconds of GPU time and every article "
-     "was scanned twice, so the 400 articles alone used about 16 GPU hours of "
-     "the free Kaggle allowance, which ran out mid-project and had to reset "
-     "on 15 August. A Kenyan set would also have to be collected and labelled "
-     "by hand, because no ready-made labelled set of manipulative and neutral "
-     "Kenyan articles was available to us, and hand-labelling needs paid "
-     "annotators. With no funding, public labelled collections were the only "
-     "affordable choice. The Kenyan case, coverage of the 2024 Finance Bill, "
+     "Cost. 400 articles scanned twice used about 16 GPU hours of the free "
+     "Kaggle allowance. A Kenyan set would also need hand-labelling by paid "
+     "annotators, because no labelled set exists. The 2024 Finance Bill case "
      "is the first extension once there is funding."),
+    ("What is eta squared, physically?",
+     "It is not a physical quantity. It is a dimensionless share, between 0 "
+     "and 1: the between-group sum of squares divided by the total sum of "
+     "squares. 0.107 means the group accounts for 10.7% of the variation in "
+     "the score."),
+    ("Why a one-way ANOVA?",
+     "One factor, the group, with four levels, and one measured value per "
+     "article. That is the one-way design. I also checked each group against "
+     "neutral with Welch's t-test, which doesn't assume equal spreads."),
+    ("What does beta J mean, and why must a be negative?",
+     "Beta J is the reduced coupling: how strongly people copy each other "
+     "compared with acting at random. In the free energy, a = (1 - beta J)/2. "
+     "When beta J is above 1, a is negative and two stable opinions exist, "
+     "so a push is needed to flip from one to the other. Alpha itself is "
+     "positive."),
+    ("Why a difference, not a ratio?",
+     "The model outputs standardised activity, so a region's average is "
+     "negative about as often as positive. Dividing by it breaks: the ratio "
+     "was undefined for 69 of 400 articles. The difference works for all 400."),
+    ("Is the difference between groups just writing style?",
+     "It can't be put down to style alone, because each group came from one "
+     "source. The words identify the source for 66% of articles. A crossed "
+     "set, every source with every type, would separate them."),
+    ("What about ethics?",
+     "No new data was collected from any person. The brain model was trained "
+     "by Meta on public, consented scans, and I use only public articles and "
+     "public scans. The tool rates content, never a viewer."),
 ]
 
 KEY_POINTS = [
     "Media's push on opinion is always guessed. This work measures a "
-    "candidate for it and turns its unknown strength into a minimum any claim "
-    "must meet.",
-    "In the opinion model, the external field (media's push) is an input "
-    "nobody measures. That gap is the whole project.",
-    "Testing the tools changed the plan. Every change is documented and "
-    "approved, not hidden.",
-    "Every value is a prediction from a published brain model, not a scan of "
-    "anyone, and anyone can check it on the live tool.",
-    "The article set was designed fairly before scanning: equal groups, equal "
-    "length, big enough to see a small effect.",
-    "The groups really differ, but group explains only about 11%. Most "
-    "variation is between individual articles.",
-    "Fear drives the effect. Outrage stays flat because it lifts emotion and "
-    "reasoning together, not because it has no effect.",
-    "The score is reliable for groups, not for single articles.",
-    "The score is tangled with source, so it is a physics measurement, not a "
-    "manipulation detector.",
-    "The brain model matches real brains weakly but positively: a usable, "
-    "not perfect, instrument.",
-    "Even without measuring alpha, the measured spread sets a floor: alpha at "
-    "least 4.29 at beta J = 2. The source confound does not break it.",
-    "Technically possible, not yet valid for children: the model learned from "
-    "adult brains.",
-    "Every limit is stated openly and points to a specific next study.",
-    "The work opens three paths: publishing, extensions (Kenya, video, "
-    "children), and postgraduate research.",
-    "Three papers follow. Today I need corrections, the signature and library "
-    "clearance.",
+    "candidate for it and derives the minimum strength any claim must use.",
+    "In the opinion model, the external field h is an input nobody measures. "
+    "That gap is the project.",
+    "Testing the tools changed the plan. All five changes are in the approved "
+    "amendment.",
+    "One article becomes one number, X = emotional minus deliberate. Every "
+    "value is a prediction; nobody was scanned.",
+    "The article set was fixed before scanning: 4 x 100, length-matched, "
+    "powered to detect 0.027.",
+    "Each corpus column is defined. All four group averages are below zero.",
+    "The groups differ: eta squared 0.107 (10.7%), p = 1.0 x 10^-9, repeated "
+    "at 0.089.",
+    "Fear drives it at d = 0.94. Outrage lifts both regions equally, so its "
+    "score stays at d = 0.03.",
+    "Agreement between runs is 0.8725. 51 flips match the 55 noise predicts, "
+    "so only group averages are reported.",
+    "Word counting scores 0.98 against our 0.63 because source is mixed in. "
+    "The score is a measurement, not a detector.",
+    "The brain model correlates positively with real brains: r = 0.028, 30% "
+    "of the 0.096 ceiling, p = 0.048.",
+    "The measured spread sets a minimum: alpha >= 4.29 at beta J = 2.",
+    "It can score any video, audio or text, but it is not valid for children "
+    "without child brain data.",
+    "Every limit points to a specific next study.",
+    "Three directions: publishing, extending the science, and further "
+    "research.",
+    "Four conclusions, each with its number, then questions.",
 ]
 
 SO_WHAT = (
     "Opinion models treat media as a push, but everyone guesses how big it "
     "is. I built a way to measure a candidate for that push from the content "
-    "itself. It picks up real, repeatable differences between kinds of "
-    "articles, though it is tangled with where they came from, so I don't "
-    "claim it detects manipulation. But even without knowing the exact "
-    "strength, the measured spread gives a floor: media would need a coupling "
-    "of at least 4.29 to flip a strongly connected group. That turns a "
+    "itself. It separates the four groups at 10.7%, with source mixed in, so "
+    "I don't claim it detects manipulation. And even without knowing the "
+    "exact strength, the measured spread gives a floor: media would need a "
+    "coupling of at least 4.29 to flip a group with beta J = 2. That turns a "
     "guessed number into a testable one.")
-SO_WHAT_SLIDES = {0, 10, 14}
+SO_WHAT_SLIDES = {0, 11, 15}
 
 DEFINITIONS = {
     0: [("Sociophysics", "using the tools of statistical physics to model how "
@@ -279,104 +364,70 @@ DEFINITIONS = {
         ("Mean field", "each person feels the average of the whole group, "
                        "not particular neighbours; it makes the maths "
                        "solvable"),
-        ("Spin", "the up or down state of one atom; here, one person's "
-                 "opinion"),
-        ("tanh", "a smooth S-shaped function that keeps the magnetisation "
-                 "between -1 and +1")],
-    2: [("Amygdala", "a small structure deep in the brain linked to fear and "
-                     "threat"),
-        ("Cortex", "the brain's outer surface layer, where the model makes "
-                   "its predictions"),
+        ("tanh", "a smooth S-shaped function that keeps m between -1 and "
+                 "+1")],
+    2: [("Amygdala", "a small structure deep in the brain linked to fear"),
+        ("Cortex", "the brain's outer surface, where the model predicts"),
         ("Amendment", "the approved change to the proposal's scope and "
                       "title")],
-    3: [("TRIBE v2", "Meta's published brain encoder: it predicts fMRI "
+    3: [("TRIBE v2", "Meta's published brain model: it predicts fMRI "
                      "responses from text, audio and video"),
         ("fMRI", "brain scanning that tracks blood flow as a stand-in for "
                  "activity"),
-        ("Encoder", "a model that maps a stimulus to a predicted brain "
-                    "response"),
-        ("Forced alignment", "finding the exact time each word is spoken in "
-                             "the audio"),
-        ("fsaverage5", "a standard brain surface with 20,484 points, 10,242 "
-                       "per hemisphere"),
-        ("HCP atlas (Glasser 2016)", "a standard map dividing the cortex into "
-                                     "named areas"),
-        ("Cortical proxy", "a measure built from predicted surface activity; "
-                           "it rates content, not people")],
-    4: [("Corpus", "the collection of articles studied"),
-        ("Power analysis", "working out in advance how big a study must be "
-                           "to detect an effect of a given size"),
-        ("Length-matched", "groups have the same average word count, so "
-                           "length can't explain a difference")],
-    5: [("η² (eta squared)", "share of the total variation explained by "
-                             "group membership"),
-        ("F-statistic", "the ANOVA test value comparing variation between "
-                        "groups with variation within groups; ours is "
-                        "15.779"),
-        ("p-value", "the chance of a result at least this strong if there "
-                    "were truly no difference")],
-    6: [("Cohen's d", "the difference between two group averages divided "
-                      "by the typical spread; 0.2 small, 0.5 medium, 0.8 "
-                      "large"),
-        ("Welch's t-test", "a test comparing two group averages that does "
-                           "not assume equal spreads")],
-    7: [("ICC (intraclass correlation)", "agreement between repeated "
-                                         "measurements of the same items; 1 "
-                                         "is identical"),
-        ("Test-retest", "measuring the same thing twice to check it "
-                        "repeats"),
-        ("Sign reversal", "a score that is positive on one run and "
-                          "negative on the other")],
-    8: [("AUC", "the chance that a randomly chosen manipulative article "
-                "scores higher than a randomly chosen neutral one; 0.5 is a "
-                "coin toss"),
-        ("TF-IDF", "a word-counting method that weights words by how "
-                   "distinctive they are"),
-        ("Logistic regression", "a simple model that turns word counts into "
-                                "a probability"),
-        ("VADER", "a standard sentiment tool that scores text as positive "
-                  "or negative"),
-        ("Confound", "a second factor, here the source, that moves with the "
-                     "one you study, so the two can't be separated")],
-    9: [("Noise ceiling", "how well real brains predict each other; the best "
-                          "any model can do"),
-        ("r (Pearson correlation)", "how closely two signals rise and fall "
-                                    "together; 0 none, 1 perfect"),
-        ("Algonauts 2025", "a public brain-scan challenge using people "
-                           "watching Friends (the CNeuroMod recordings)"),
-        ("Circular-shift test", "shifting one signal in time many times to "
-                                "see how often chance gives a match this "
-                                "good")],
-    10: [("Critical field", "the smallest outside field that flips the "
-                            "magnetisation, here the majority opinion"),
-         ("Curie temperature", "the temperature below which a magnet lines "
-                               "up by itself; for us, reduced coupling "
-                               "above 1"),
-         ("Lower bound", "a minimum value; the result says alpha can't be "
-                         "smaller than this")],
-    11: [("Ethics approval", "formal permission from a review board before "
-                             "research involving people, required for "
-                             "children")],
-    12: [("Crossed design", "every source contributes every type of "
-                            "article, so source and type can be separated"),
-         ("Subcortical", "structures deep in the brain, below the "
-                         "cortex")],
-    13: [("Preprint", "a paper shared publicly before peer review, for "
-                      "example on arXiv"),
-         ("Physica A", "a peer-reviewed journal for statistical physics, "
-                       "including sociophysics"),
-         ("Imaging Neuroscience", "a peer-reviewed journal for brain "
-                                  "imaging methods")],
-    14: [("Library deposit", "submitting the bound thesis to the university "
-                             "library, needed for graduation clearance")],
+        ("fsaverage5", "a standard brain surface with 20,484 points"),
+        ("Glasser 2016 atlas", "a standard map dividing the cortex into "
+                               "named areas"),
+        ("Standardised activity", "the model's output, scaled so it has no "
+                                  "physical unit")],
+    4: [("Power analysis", "working out in advance how big a study must be "
+                           "to detect an effect of a given size")],
+    5: [("Pre-scan label", "the label an article carried in its source "
+                           "collection before anything was scanned")],
+    6: [("One-way ANOVA", "compares the averages of several groups defined "
+                          "by one factor"),
+        ("F", "spread between group averages divided by spread within "
+              "groups"),
+        ("eta squared", "between-group sum of squares over total sum of "
+                        "squares; a share from 0 to 1"),
+        ("p-value", "the probability of a result at least this large if "
+                    "there were no real difference")],
+    7: [("Cohen's d", "difference between two group averages divided by the "
+                      "typical spread (standard deviation)")],
+    8: [("ICC", "intraclass correlation: agreement between repeated "
+                "measurements of the same items; 1 is identical"),
+        ("Sign reversal", "a score positive on one run and negative on the "
+                          "other")],
+    9: [("AUC", "area under the ROC curve: chance a random manipulative "
+                "article outscores a random neutral one"),
+        ("TF-IDF", "word counting that weights words by how distinctive "
+                   "they are"),
+        ("VADER", "a standard sentiment tool"),
+        ("Confound", "a second factor, here source, that moves with the one "
+                     "studied")],
+    10: [("Noise ceiling", "how well real brains predict each other; the "
+                           "best any model can do"),
+         ("r", "Pearson correlation: how closely two signals rise and fall "
+               "together"),
+         ("Circular-shift test", "shift one signal in time 61 times to see "
+                                 "how often chance gives a match this good")],
+    11: [("Critical field", "the smallest field that flips the majority"),
+         ("Lower bound", "a minimum: alpha can't be smaller than this")],
+    12: [("Ethics approval", "formal permission from a review board, "
+                             "required for research with children")],
+    13: [("Crossed design", "every source contributes every type of "
+                            "article")],
+    14: [("Preprint", "a paper shared publicly before peer review, e.g. on "
+                      "arXiv")],
 }
 
 
 def notes_for(index):
     title, _, minutes, script, cues, questions = SLIDES[index]
     lines = ["KEY POINT: " + KEY_POINTS[index], "",
-             "SCRIPT (about %g min)" % minutes, script, "", "NUMBERS TO SAY"]
-    lines += ["- " + cue for cue in cues]
+             "SCRIPT (about %g min)" % minutes, script]
+    if cues:
+        lines += ["", "NUMBERS ON THIS SLIDE"]
+        lines += ["- " + cue for cue in cues]
     if index in DEFINITIONS:
         lines += ["", "DEFINITIONS (if asked)"]
         lines += ["- %s: %s." % pair for pair in DEFINITIONS[index]]
@@ -390,11 +441,11 @@ def notes_for(index):
     return "\n".join(lines).rstrip()
 
 
-def banner(s, y, lead, text, colour=GOLD, h=0.62):
+def banner(s, y, lead, text, colour=GOLD, h=0.62, size=16):
     shp = card(s, M, y, W - 2 * M, h, line=colour)
     tf = shp.text_frame
     tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-    rich(tf, [(lead + "  ", True, colour), (text, False, TEXT)], size=16,
+    rich(tf, [(lead + "  ", True, colour), (text, False, TEXT)], size=size,
          first=True, space_after=0)
 
 
@@ -411,13 +462,14 @@ def chip(s, x, y, w, h, text, colour=TEXT, line=LINE, size=15, bold=False,
     return shp
 
 
-def stat(s, x, y, w, h, value, label, colour=BLUE, size=36, line=None):
+def stat(s, x, y, w, h, value, label, colour=BLUE, size=36, line=None,
+         label_size=13):
     shp = card(s, x, y, w, h, line=line or colour)
     tf = shp.text_frame
     tf.vertical_anchor = MSO_ANCHOR.MIDDLE
     para(tf, value, size=size, bold=True, colour=colour, first=True,
          align=PP_ALIGN.CENTER, space_after=0)
-    para(tf, label, size=13, colour=TEXT, align=PP_ALIGN.CENTER,
+    para(tf, label, size=label_size, colour=TEXT, align=PP_ALIGN.CENTER,
          space_after=0)
 
 
@@ -488,6 +540,12 @@ def alpha_curve(s, x, y, w, h):
     chart.value_axis.major_gridlines.format.line.color.rgb = LINE
 
 
+def next_line(s, text):
+    tf = textbox(s, W - M - 6.0, 6.62, 6.0, 0.3, align=PP_ALIGN.RIGHT)
+    para(tf, "Next: " + text + "  →", size=12, bold=True, colour=GOLD,
+         first=True, align=PP_ALIGN.RIGHT, space_after=0)
+
+
 def build_deck(with_notes):
     prs = new_deck()
 
@@ -504,7 +562,7 @@ def build_deck(with_notes):
     para(tf, "each arrow is one person's opinion", size=13, colour=MUTED,
          first=True, align=PP_ALIGN.CENTER, space_after=0)
     tf = textbox(s, M + 0.15, 1.15, 7.6, 0.4)
-    para(tf, "B.Sc. PHYSICS   ·   CUEA   ·   SUPERVISOR MEETING", size=13,
+    para(tf, "B.Sc. PHYSICS   ·   CUEA   ·   DISSERTATION DEFENCE", size=13,
          bold=True, colour=BLUE, first=True, space_after=0)
     tf = textbox(s, M + 0.15, 1.65, 7.6, 1.9)
     para(tf, "Measuring the", size=50, bold=True, colour=TEXT, first=True,
@@ -519,7 +577,7 @@ def build_deck(with_notes):
          size=20, first=True, space_after=4)
     para(tf, "Supervisor: Dr. Songa Mutambi", size=15, colour=MUTED,
          space_after=2)
-    para(tf, "21 September 2026", size=15, colour=MUTED, space_after=0)
+    para(tf, "25 September 2026", size=15, colour=MUTED, space_after=0)
 
     # 2 the idea
     s = page(1)
@@ -544,6 +602,7 @@ def build_deck(with_notes):
     math(s, "h", 12.4, 4.6, size=28, colour=GOLD, centre_w=0.4)
     banner(s, 5.2, "Question:", "can h be measured from the content itself?",
            colour=EMBER, h=0.75)
+    next_line(s, "what testing the tools changed")
     done(s, 1)
 
     # 3 plan vs reality
@@ -555,23 +614,24 @@ def build_deck(with_notes):
         para(tf, label, size=11, bold=True, colour=colour, first=True,
              space_after=0)
     for i, (planned, found) in enumerate([
-            ("Measure the amygdala", "Model sees brain surface only, so we "
-                                     "used surface areas"),
-            ("Score as a ratio", "Ratio broke on 69 of 400, so we used a "
-                                 "difference"),
+            ("Measure the amygdala", "Model predicts the brain surface only, "
+                                     "so we used surface areas"),
+            ("Score as a ratio", "Ratio undefined for 69 of 400, so we used "
+                                 "a difference"),
             ("Outrage stands out most", "Fear stands out; outrage lifts both "
                                         "areas equally"),
             ("Measure α, media's strength", "Data can't pin α, so we derived "
                                             "its minimum"),
-            ("A manipulation detector", "Word counting wins, so it's a "
-                                        "measurement")]):
+            ("A manipulation detector", "Word counting 0.98 vs our 0.63, so "
+                                        "it's a measurement")]):
         y = 1.8 + i * 0.86
         chip(s, M, y, 4.1, 0.72, planned, colour=MUTED, icon_name="x-circle")
         arrow(s, 4.95, y + 0.29, 0.5, 0.16, EMBER)
         chip(s, 5.55, y, 7.03, 0.72, found, line=BLUE, icon_name="check-circle")
-    tf = textbox(s, M, 6.15, W - 2 * M, 0.35)
+    tf = textbox(s, M, 6.15, 6.0, 0.35)
     para(tf, "All five are in the approved amendment.", size=13, colour=MUTED,
          first=True, space_after=0)
+    next_line(s, "how the measurement works")
     done(s, 2)
 
     # 4 tools and process
@@ -580,8 +640,8 @@ def build_deck(with_notes):
     steps = [("newspaper", "Article", "400 news texts"),
              ("waveform", "Read aloud", "text-to-speech"),
              ("text-aa", "Word timings", "timing tool"),
-             ("brain", "TRIBE v2", "Meta, 2025"),
-             ("target", "Brain map", "Glasser, 2016")]
+             ("brain", "TRIBE v2", "20,484 surface points"),
+             ("target", "Brain map", "1,030 + 851 points")]
     sw, gap = 2.12, 0.31
     for i, (icon_name, head, tool) in enumerate(steps):
         x = M + i * (sw + gap)
@@ -597,27 +657,29 @@ def build_deck(with_notes):
     s.shapes.add_picture(SCREENSHOT, Inches(M + 0.1), Inches(3.03),
                          width=Inches(5.1))
     tf = textbox(s, M, 6.13, 5.4, 0.5)
-    rich(tf, [("The live tool, one article: ", True, TEXT),
-              ("emotion +0.109, reasoning +0.055, score +0.054, the highest "
-               "in the corpus.", False, MUTED)], size=11, first=True,
+    rich(tf, [("One article: ", True, TEXT),
+              ("emotional +0.109 − deliberate +0.055 = score +0.054, "
+               "highest of 400", False, MUTED)], size=11, first=True,
          space_after=0)
     card(s, 6.3, 2.95, 6.28, 1.95, line=BLUE)
     tf = textbox(s, 6.5, 3.03, 5, 0.3)
     para(tf, "THE SCORE, X", size=11, bold=True, colour=MUTED, first=True,
          space_after=0)
-    math(s, r"X = \bar{A}_{\mathrm{emotion}} - \bar{A}_{\mathrm{reasoning}}",
+    math(s, r"X = \bar{A}_{\mathrm{emotional}} - \bar{A}_{\mathrm{deliberate}}",
          6.3, 3.3, size=22, centre_w=6.28)
     bar(s, 6.6, 4.12, 2.8, 0.1, BLUE)
     bar(s, 9.43, 4.12, 2.8, 0.1, EMBER)
     bar(s, 9.4, 3.99, 0.03, 0.36, TEXT)
-    for x, text, colour, al in [(6.6, "reasoning leads", BLUE, PP_ALIGN.LEFT),
-                                (9.43, "emotion leads", EMBER, PP_ALIGN.RIGHT)]:
+    for x, text, colour, al in [(6.6, "X < 0: reasoning leads", BLUE,
+                                 PP_ALIGN.LEFT),
+                                (9.43, "X > 0: emotion leads", EMBER,
+                                 PP_ALIGN.RIGHT)]:
         tf = textbox(s, x, 4.24, 2.8, 0.3, align=al)
         para(tf, text, size=12, bold=True, colour=colour, first=True,
              space_after=0)
     tf = textbox(s, 6.5, 4.52, 5.9, 0.3, align=PP_ALIGN.CENTER)
-    para(tf, "emotion areas: 1,030 points  ·  reasoning areas: 851 points  "
-             "·  nobody scanned", size=11, colour=MUTED, first=True,
+    para(tf, "Ā = average predicted activity; standardised, no unit  ·  "
+             "nobody scanned", size=11, colour=MUTED, first=True,
          space_after=0)
     link_card = card(s, 6.3, 5.05, 6.28, 1.05, line=GOLD)
     link_card.click_action.hyperlink.address = INSTRUMENT_URL
@@ -629,6 +691,7 @@ def build_deck(with_notes):
          colour=TEXT, space_after=0)
     para(tf, "code and data: github.com/brn-mwai/monarch", size=11,
          colour=MUTED, space_after=0)
+    next_line(s, "the 400 articles")
     done(s, 3)
 
     # 5 the articles
@@ -636,9 +699,9 @@ def build_deck(with_notes):
     header(s, "The method", "400 articles, four groups, matched in length",
            "newspaper")
     for i, (name, src, colour) in enumerate([
-            ("Fear-driven", "fake news (ISOT)", EMBER),
-            ("Outrage", "partisan news (SemEval)", GOLD),
-            ("Clickbait", "headlines (Webis)", MIDBLUE),
+            ("Fear-activating", "fake news (ISOT)", EMBER),
+            ("High outrage", "partisan news (SemEval)", GOLD),
+            ("Reward hook", "clickbait (Webis)", MIDBLUE),
             ("Neutral", "medical + real news", MUTED)]):
         x = M + i * (2.72 + 0.317)
         card(s, x, 1.55, 2.72, 1.9)
@@ -649,74 +712,145 @@ def build_deck(with_notes):
         para(tf, name, size=17, bold=True, colour=TEXT, space_after=0)
         para(tf, src, size=12, colour=MUTED, space_after=0)
     for i, (value, label, colour) in enumerate([
-            ("≈ 164", "words per article,\nall groups within 5 words", BLUE),
-            ("0.027", "smallest effect we\ncould detect, set in advance", GREEN),
+            ("162–167", "average words per article,\nlowest to highest group",
+             BLUE),
+            ("0.027", "smallest η² 400 articles can\ndetect, set before "
+                      "scanning", GREEN),
             ("× 2", "every article\nscanned twice", GOLD)]):
         stat(s, M + i * (3.75 + 0.29), 3.8, 3.75, 1.75, value, label,
              colour=colour, size=40)
+    tf = textbox(s, M, 5.8, W - 2 * M, 0.35)
+    rich(tf, [("All 400, with scores:  ", True, TEXT),
+              (CORPUS_URL.replace("https://", ""), True, GOLD)], size=14,
+         first=True, space_after=0)
+    next_line(s, "reading the corpus page")
     done(s, 4)
 
-    # 6 result 1
+    # 6 reading the corpus
     s = page(5)
-    header(s, "The results", "Result 1: the four groups really differ",
+    header(s, "The method", "Reading the corpus page: what each number means",
+           "newspaper")
+    card(s, M, 1.45, 6.2, 4.6, line=BLUE)
+    tf = textbox(s, M + 0.25, 1.55, 5.8, 0.3)
+    para(tf, "COLUMN   →   MEANING", size=11, bold=True, colour=MUTED,
+         first=True, space_after=0)
+    for i, (column, meaning) in enumerate([
+            ("Emotional", "average predicted activity, 1,030 emotional "
+                          "points"),
+            ("Deliberate", "average predicted activity, 851 reasoning "
+                           "points"),
+            ("Score", "Emotional − Deliberate = X"),
+            ("Pre-scan label", "label from its source, given before any "
+                               "scan"),
+            ("Words", "article length")]):
+        y = 1.95 + i * 0.66
+        chip(s, M + 0.2, y, 1.9, 0.54, column, colour=GOLD, size=14,
+             bold=True, align=PP_ALIGN.CENTER)
+        tf = textbox(s, M + 2.25, y, 3.8, 0.54, anchor=MSO_ANCHOR.MIDDLE)
+        para(tf, meaning, size=13, colour=TEXT, first=True, space_after=0)
+    tf = textbox(s, M + 0.25, 5.3, 5.8, 0.7)
+    rich(tf, [("All 400 scores: ", True, TEXT),
+              ("−0.070 to +0.054, spread ΔX = 0.124", False, TEXT)], size=13,
+         first=True, space_after=2)
+    para(tf, "Units: standardised activity, no physical unit", size=11,
+         colour=MUTED, space_after=0)
+    card(s, 7.2, 1.45, 5.38, 4.6, line=LINE)
+    tf = textbox(s, 7.4, 1.55, 5.0, 0.3)
+    para(tf, "AVERAGE SCORE X PER GROUP", size=11, bold=True, colour=MUTED,
+         first=True, space_after=0)
+    zero, scale = 12.1, 0.02 / 3.2
+    bar(s, zero, 1.95, 0.02, 3.1, TEXT)
+    tf = textbox(s, zero - 0.5, 5.05, 1.0, 0.3, align=PP_ALIGN.CENTER)
+    para(tf, "0", size=12, bold=True, colour=TEXT, first=True,
+         align=PP_ALIGN.CENTER, space_after=0)
+    for i, (name, mean, colour) in enumerate(GROUP_MEANS):
+        y = 2.05 + i * 0.75
+        length = abs(mean) / scale
+        bar(s, zero - length, y + 0.3, length, 0.3, colour)
+        tf = textbox(s, 7.4, y - 0.02, 3.2, 0.3)
+        para(tf, name, size=13, bold=True, colour=TEXT, first=True,
+             space_after=0)
+        tf = textbox(s, zero - length - 1.25, y + 0.26, 1.2, 0.35,
+                     align=PP_ALIGN.RIGHT)
+        para(tf, "%+.3f" % mean, size=13, bold=True, colour=colour,
+             first=True, align=PP_ALIGN.RIGHT, space_after=0)
+    tf = textbox(s, 7.4, 5.35, 5.0, 0.6)
+    para(tf, "All four below 0: the deliberate areas respond more in every "
+             "group.", size=12, colour=MUTED, first=True, space_after=0)
+    tf = textbox(s, M, 6.2, 6.5, 0.35)
+    rich(tf, [("Live: ", True, TEXT),
+              (CORPUS_URL.replace("https://", ""), True, GOLD)], size=13,
+         first=True, space_after=0)
+    next_line(s, "are these differences real?")
+    done(s, 5)
+
+    # 7 result 1
+    s = page(6)
+    header(s, "The results", "Result 1: the four groups differ, η² = 0.107",
            "chart-bar")
     donut(s, M, 1.45, 3.7, 0.1068, BLUE)
     tf = textbox(s, M, 2.8, 3.7, 1.0, align=PP_ALIGN.CENTER)
-    para(tf, "11%", size=44, bold=True, colour=TEXT, first=True,
+    para(tf, "10.7%", size=40, bold=True, colour=TEXT, first=True,
          space_after=0)
     tf = textbox(s, M, 5.15, 3.7, 0.9, align=PP_ALIGN.CENTER)
-    rich(tf, [("11% ", True, BLUE),
-              ("of the differences between articles comes from their group",
+    rich(tf, [("10.7% ", True, BLUE),
+              ("of the variation in the score is due to the group",
                False, TEXT)], size=14, first=True, space_after=0)
-    math(s, r"\eta^2 = \frac{\mathrm{between\ groups}}{\mathrm{total}} "
-            r"= 0.107", 4.75, 1.6, size=22)
+    math(s, r"\eta^2 = \frac{SS_{\mathrm{between\ groups}}}"
+            r"{SS_{\mathrm{total}}} = 0.107", 4.75, 1.5, size=22)
     tf = textbox(s, 4.75, 2.55, 7.8, 0.3)
-    para(tf, "η² ON EACH RUN, AGAINST THE SMALLEST WE COULD DETECT", size=11,
-         bold=True, colour=MUTED, first=True, space_after=0)
+    para(tf, "η² ON EACH RUN (one-way ANOVA), AGAINST THE SMALLEST WE COULD "
+             "DETECT", size=11, bold=True, colour=MUTED, first=True,
+         space_after=0)
     scale_bars(s, [("first run", 0.1068, "0.107", BLUE),
                    ("second run", 0.0888, "0.089", MIDBLUE),
                    ("detectable", 0.0268, "0.027", MUTED)],
                top=3.0, maximum=0.12, left=6.35, length=4.6, label_w=1.45,
                step=0.55, size=14)
-    stat(s, 4.75, 4.75, 3.8, 1.3, "1 in a billion", "chance it is luck "
-         "(p = 1×10⁻⁹)", colour=GREEN, size=26)
-    stat(s, 8.78, 4.75, 3.8, 1.3, "Repeats", "second run agrees (0.089)",
-         colour=MIDBLUE, size=26)
-    banner(s, 6.25, "Meaning:", "the groups differ for real, but most "
-           "variation is from one article to the next.", h=0.5)
-    done(s, 5)
+    stat(s, 4.75, 4.75, 3.8, 1.3, "F = 15.779", "between-group spread ÷ "
+         "within-group spread", colour=MIDBLUE, size=24, label_size=12)
+    stat(s, 8.78, 4.75, 3.8, 1.3, "p = 1.0 × 10⁻⁹", "probability of F this "
+         "large if all 4 groups were equal", colour=GREEN, size=24,
+         label_size=12)
+    tf = textbox(s, M, 6.15, 6.0, 0.35)
+    para(tf, "SS = sum of squares. The other 89.3% is article to article.",
+         size=12, colour=MUTED, first=True, space_after=0)
+    next_line(s, "which group drives it?")
+    done(s, 6)
 
-    # 7 result 2
-    s = page(6)
-    header(s, "The results", "Result 2: fear drives it; outrage lifts both "
-                             "sides equally", "chart-bar")
+    # 8 result 2
+    s = page(7)
+    header(s, "The results", "Result 2: fear drives it, d = 0.94; outrage "
+                             "lifts both sides equally", "chart-bar")
     math(s, r"d = \frac{\bar{X}_{\mathrm{group}} - \bar{X}_{\mathrm{neutral}}}"
             r"{s}", M, 1.45, size=20)
-    tf = textbox(s, 3.9, 1.55, 5, 0.5)
-    para(tf, "distance from neutral, in spreads (s)", size=12, colour=MUTED,
+    tf = textbox(s, 3.9, 1.55, 8.5, 0.5)
+    para(tf, "d = distance from neutral in standard deviations (s). "
+             "Reference marks 0.2, 0.5, 0.8.", size=12, colour=MUTED,
          first=True, space_after=0)
     left, length = 2.9, 6.6
-    for mark, label in [(0.2, "small"), (0.5, "medium"), (0.8, "large")]:
+    for mark in (0.2, 0.5, 0.8):
         xm = left + length * mark
         bar(s, xm, 2.3, 0.015, 1.7, LINE)
         tf = textbox(s, xm - 0.6, 2.08, 1.2, 0.25, align=PP_ALIGN.CENTER)
-        para(tf, label, size=11, colour=MUTED, first=True, space_after=0)
-    scale_bars(s, [("fear-driven", 0.939, "0.94", EMBER),
-                   ("clickbait", 0.319, "0.32", MIDBLUE),
-                   ("outrage", 0.030, "0.03", GOLD)],
+        para(tf, "%.1f" % mark, size=11, colour=MUTED, first=True,
+             space_after=0)
+    scale_bars(s, [("fear-activating", 0.939, "0.94", EMBER),
+                   ("reward hook", 0.319, "0.32", MIDBLUE),
+                   ("high outrage", 0.030, "0.03", GOLD)],
                top=2.45, maximum=1.0, left=left, length=length, label_w=2.0,
                step=0.55)
     for x, name, emo, rea, verdict, colour in [
-            (M, "FEAR", 0.613, -0.098, "big gap: score moves", EMBER),
-            (6.83, "OUTRAGE", 0.507, 0.491, "no gap: score stays flat", GOLD)]:
+            (M, "FEAR", 0.613, -0.098, "score moves:\nd = 0.94", EMBER),
+            (6.83, "OUTRAGE", 0.507, 0.491, "score flat:\nd = 0.03", GOLD)]:
         card(s, x, 4.2, 5.75, 2.0, line=colour)
-        tf = textbox(s, x + 3.0, 4.45, 2.6, 0.3)
-        para(tf, name, size=13, bold=True, colour=colour, first=True,
-             space_after=0)
+        tf = textbox(s, x + 3.0, 4.35, 2.6, 0.3)
+        para(tf, name + ", d per region", size=12, bold=True, colour=colour,
+             first=True, space_after=0)
         base = 5.55
         bar(s, x + 0.3, base, 2.4, 0.02, MUTED)
-        for j, (val, c, lab) in enumerate([(emo, EMBER, "emotion"),
-                                           (rea, BLUE, "reasoning")]):
+        for j, (val, c, lab) in enumerate([(emo, EMBER, "emotional"),
+                                           (rea, BLUE, "deliberate")]):
             bx = x + 0.5 + j * 1.05
             hgt = abs(val) * 1.6
             bar(s, bx, base - hgt if val > 0 else base, 0.7, max(hgt, 0.03), c)
@@ -727,32 +861,33 @@ def build_deck(with_notes):
             tf = textbox(s, bx - 0.2, base + 0.2, 1.1, 0.3,
                          align=PP_ALIGN.CENTER)
             para(tf, lab, size=11, colour=MUTED, first=True, space_after=0)
-        tf = textbox(s, x + 3.0, 4.85, 2.6, 1.1, anchor=MSO_ANCHOR.MIDDLE)
+        tf = textbox(s, x + 3.0, 4.75, 2.6, 1.2, anchor=MSO_ANCHOR.MIDDLE)
         para(tf, verdict, size=17, bold=True, colour=colour, first=True,
              space_after=0)
-    done(s, 6)
+    next_line(s, "can we trust the scores?")
+    done(s, 7)
 
-    # 8 result 3
-    s = page(7)
+    # 9 result 3
+    s = page(8)
     header(s, "The results", "Result 3: scores repeat for groups, not single "
                              "articles", "arrows-clockwise")
     card(s, M, 1.5, 5.75, 3.4, line=BLUE)
     tf = textbox(s, M, 1.65, 5.75, 1.2, align=PP_ALIGN.CENTER)
-    para(tf, "0.87", size=54, bold=True, colour=BLUE, first=True,
+    para(tf, "0.8725", size=54, bold=True, colour=BLUE, first=True,
          space_after=0)
-    para(tf, "agreement between two runs (ICC)", size=14, colour=TEXT,
+    para(tf, "ICC: agreement between two runs", size=14, colour=TEXT,
          space_after=0)
     bar(s, M + 0.4, 3.5, 4.95, 0.3, LINE)
     bar(s, M + 0.4, 3.5, 4.95 * 0.8725, 0.3, BLUE)
-    for v, label in [(0, "0 none"), (1, "1 identical")]:
-        tf = textbox(s, M + 0.4 + 4.95 * v - 0.7, 3.9, 1.4, 0.3,
+    for v, label in [(0, "0 = none"), (1, "1 = identical")]:
+        tf = textbox(s, M + 0.4 + 4.95 * v - 0.2 - 1.0 * v, 3.9, 1.4, 0.3,
                      align=PP_ALIGN.CENTER)
         para(tf, label, size=12, colour=MUTED, first=True, space_after=0)
     card(s, 6.83, 1.5, 5.75, 3.4, line=EMBER)
     tf = textbox(s, 6.83, 1.65, 5.75, 1.2, align=PP_ALIGN.CENTER)
     para(tf, "51 of 400", size=54, bold=True, colour=EMBER, first=True,
          space_after=0)
-    para(tf, "flipped sign between runs", size=14, colour=TEXT,
+    para(tf, "changed sign between runs (12.8%)", size=14, colour=TEXT,
          space_after=0)
     lo, hi, ax0, axw, ay = 40, 70, 7.2, 5.0, 3.65
 
@@ -766,20 +901,21 @@ def build_deck(with_notes):
                              Inches(ay - 0.11), Inches(0.24), Inches(0.24)),
           EMBER)
     tf = textbox(s, 6.83, 4.1, 5.75, 0.6, align=PP_ALIGN.CENTER)
-    rich(tf, [("● saw 51   ", True, EMBER),
-              ("▌noise predicts 55 (shaded 44 to 67)", True, BLUE)], size=12,
+    rich(tf, [("● observed 51   ", True, EMBER),
+              ("▌noise predicts 55 (95%: 44 to 67)", True, BLUE)], size=12,
          first=True, space_after=0)
-    banner(s, 5.2, "Meaning:", "trust group averages. Never judge one "
-           "article: its score sits near zero and noise can tip it.")
-    done(s, 7)
+    banner(s, 5.2, "Meaning:", "flipped articles average |X| = 0.003 against "
+           "0.022 for the rest, so we report group averages only.", size=15)
+    next_line(s, "does the score detect manipulation?")
+    done(s, 8)
 
-    # 9 honest check
-    s = page(8)
-    header(s, "The results", "Honest check: word counting beats our score",
-           "warning")
+    # 10 honest check
+    s = page(9)
+    header(s, "The results", "Honest check: word counting beats our score, "
+                             "0.98 vs 0.63", "warning")
     tf = textbox(s, M, 1.45, W - 2 * M, 0.35)
-    rich(tf, [("How well each method sorts manipulative from neutral "
-               "articles (AUC)", False, MUTED)], size=13, first=True,
+    para(tf, "AUC = chance a random manipulative article scores above a "
+             "random neutral one", size=13, colour=MUTED, first=True,
          space_after=0)
     lo, hi, ax0, axw, ay = 0.5, 1.0, 1.3, 10.7, 2.75
 
@@ -787,7 +923,7 @@ def build_deck(with_notes):
         return ax0 + (v - lo) / (hi - lo) * axw
 
     bar(s, ax0, ay, axw, 0.06, LINE)
-    for v, label in [(0.5, "0.5 coin toss"), (1.0, "1.0 perfect")]:
+    for v, label in [(0.5, "0.5 = coin toss"), (1.0, "1.0 = perfect")]:
         tf = textbox(s, au(v) - 0.9, ay + 0.2, 1.8, 0.3, align=PP_ALIGN.CENTER)
         para(tf, label, size=12, colour=MUTED, first=True, space_after=0)
     for v, label, colour, above in [(0.5392, "sentiment 0.54", MUTED, False),
@@ -805,47 +941,50 @@ def build_deck(with_notes):
          colour=MUTED, first=True, space_after=0)
     for i, (grp, src) in enumerate([("fear", "ISOT fake"),
                                     ("outrage", "SemEval"),
-                                    ("clickbait", "Webis"),
+                                    ("reward hook", "Webis"),
                                     ("neutral", "PubMed + ISOT")]):
         y = 4.0 + i * 0.5
         chip(s, M, y, 2.1, 0.42, grp, size=13, align=PP_ALIGN.CENTER)
         arrow(s, 2.95, y + 0.14, 0.5, 0.14, EMBER)
         chip(s, 3.55, y, 2.5, 0.42, src, size=13, align=PP_ALIGN.CENTER)
-    stat(s, 6.6, 3.7, 2.8, 1.85, "66%", "words guess the source\n(chance: 25%)",
-         colour=EMBER, size=36)
+    stat(s, 6.6, 3.7, 2.8, 1.85, "66%", "of articles: words identify\n"
+         "the source (chance 25%)", colour=EMBER, size=36)
     card(s, 9.6, 3.7, 2.98, 1.85, line=BLUE)
     tf = textbox(s, 9.75, 3.8, 2.7, 1.7, anchor=MSO_ANCHOR.MIDDLE)
     para(tf, "So our score is a measurement for the physics, not a detector.",
          size=15, bold=True, colour=BLUE, first=True, space_after=0)
-    done(s, 8)
+    next_line(s, "does the brain model match real brains?")
+    done(s, 9)
 
-    # 10 real brains
-    s = page(9)
+    # 11 real brains
+    s = page(10)
     header(s, "The results", "Does the brain model match real brains? "
-                             "Weakly, yes", "target")
+                             "r = +0.028, p = 0.048", "target")
     tf = textbox(s, M, 1.45, W - 2 * M, 0.35)
-    para(tf, "Tested on public brain scans of people watching Friends "
-             "(Algonauts 2025). Higher = closer match (r).", size=13,
+    para(tf, "Public brain scans of 4 people watching Friends (Algonauts "
+             "2025).  r = correlation: 0 = no match, 1 = perfect.", size=13,
          colour=MUTED, first=True, space_after=0)
     scale_bars(s, [("people vs each other,\nfull episode", 0.1517, "0.152",
                     MUTED),
-                   ("best possible,\n2-minute clip", 0.0959, "0.096", BLUE),
+                   ("ceiling,\n2-minute clip", 0.0959, "0.096", BLUE),
                    ("our model,\n2-minute clip", 0.0283, "0.028", GREEN)],
                top=2.1, maximum=0.17, left=3.6, length=6.8, label_w=2.6,
                step=0.8, size=14)
-    stat(s, M, 4.65, 3.75, 1.35, "≈ 30%", "of the best possible on the clip",
-         colour=GREEN, size=30)
-    stat(s, 4.79, 4.65, 3.75, 1.35, "p = 0.048", "just under the 5% cut-off",
-         colour=GOLD, size=30)
-    stat(s, 8.83, 4.65, 3.75, 1.35, "3 bugs", "found and fixed along the way",
-         colour=EMBER, size=30)
-    banner(s, 6.2, "Meaning:", "weak but positive, not the opposite of real "
-           "brains. A longer run will settle it (Paper 3).", h=0.5)
-    done(s, 9)
+    stat(s, M, 4.65, 3.75, 1.35, "30%", "of the clip ceiling\n"
+         "(0.028 ÷ 0.096)", colour=GREEN, size=30)
+    stat(s, 4.79, 4.65, 3.75, 1.35, "p = 0.048", "against 61 time-shifted "
+         "copies;\ncut-off 0.05", colour=GOLD, size=30)
+    stat(s, 8.83, 4.65, 3.75, 1.35, "3 bugs", "found and fixed along the "
+         "way", colour=EMBER, size=30)
+    banner(s, 6.1, "Meaning:", "the sign is positive (+0.028). The "
+           "full-episode run is next, in Paper 3.", h=0.5, size=15)
+    next_line(s, "the physics")
+    done(s, 10)
 
-    # 11 the minimum push
-    s = page(10)
-    header(s, "The physics", "The minimum push media would need", "ruler")
+    # 12 the minimum push
+    s = page(11)
+    header(s, "The physics", "The minimum push media would need: "
+                             "α ≥ 4.29", "ruler")
     card(s, M, 1.45, 5.7, 4.75, line=BLUE)
     math(s, r"h = \alpha X \;\Rightarrow\; \alpha \geq "
             r"\frac{h_c(\beta J)}{\Delta X}", M, 1.65, size=28, centre_w=5.7)
@@ -857,7 +996,7 @@ def build_deck(with_notes):
                                        "majority"),
             (r"\beta J", "reduced coupling", "how strongly people copy "
                                              "each other"),
-            (r"\Delta X", "spread", "range of our scores = 0.124")]):
+            (r"\Delta X", "spread", "highest − lowest score = 0.124")]):
         y = 2.72 + i * 0.57
         math(s, sym, M + 0.15, y + 0.06, size=19, colour=GOLD, centre_w=0.95)
         tf = textbox(s, M + 1.2, y, 4.4, 0.55, anchor=MSO_ANCHOR.MIDDLE)
@@ -865,16 +1004,17 @@ def build_deck(with_notes):
              size=13, first=True, space_after=0)
     alpha_curve(s, 6.75, 1.4, 5.9, 3.7)
     tf = textbox(s, 6.75, 5.0, 5.9, 0.3, align=PP_ALIGN.CENTER)
-    para(tf, "copying strength βJ  →", size=12, colour=MUTED, first=True,
+    para(tf, "reduced coupling βJ  →", size=12, colour=MUTED, first=True,
          space_after=0)
     tf = textbox(s, 6.95, 1.35, 3, 0.3)
-    para(tf, "α required", size=12, colour=MUTED, first=True, space_after=0)
-    stat(s, 6.75, 5.35, 5.83, 0.85, "α ≥ 4.29 at βJ = 2",
-         "a bar any claim must clear", colour=EMBER, size=22)
-    done(s, 10)
+    para(tf, "minimum α", size=12, colour=MUTED, first=True, space_after=0)
+    stat(s, 6.75, 5.35, 5.83, 0.85, "α ≥ 0.533 ÷ 0.124 = 4.29",
+         "at βJ = 2, where the critical field is 0.533", colour=EMBER, size=22)
+    next_line(s, "what it could be used for")
+    done(s, 11)
 
-    # 12 children's content
-    s = page(11)
+    # 13 children's content
+    s = page(12)
     header(s, "What's next", "Can it analyse any content, even what children "
                              "watch?", "target")
     for i, (head, colour, icon_name, items) in enumerate([
@@ -883,7 +1023,7 @@ def build_deck(with_notes):
               "Rate content, never the viewer"]),
             ("NOT YET", EMBER, "x-circle",
              ["Model learned from adult brains", "Only news text was tested",
-              "One show alone is unreliable"]),
+              "1 in 8 single scores flip"]),
             ("WOULD TAKE", BLUE, "flag-banner",
              ["Child brain data, with ethics approval",
               "A children's video test set",
@@ -899,10 +1039,11 @@ def build_deck(with_notes):
                  align=PP_ALIGN.CENTER)
     banner(s, 5.6, "Short answer:", "technically possible, but not yet valid "
            "for children.", h=0.6)
-    done(s, 11)
+    next_line(s, "the limits, and what fixes each")
+    done(s, 12)
 
-    # 13 limits
-    s = page(12)
+    # 14 limits
+    s = page(13)
     header(s, "What's next", "Each limit points to the next study", "x-circle")
     for x, label, colour in [(M, "LIMIT", EMBER), (6.2, "NEXT STUDY", GREEN)]:
         tf = textbox(s, x, 1.45, 4, 0.3)
@@ -915,15 +1056,16 @@ def build_deck(with_notes):
                                            "type"),
             ("Brain surface only", "A model that predicts deep areas"),
             ("α not measured", "Link scores to real opinion data (polls)"),
-            ("Brain check is 2 minutes", "Longer clips, one run each")]):
+            ("Brain check is 2 minutes", "The full episode")]):
         y = 1.8 + i * 0.86
         chip(s, M, y, 4.85, 0.72, limit, line=EMBER, bold=True)
         arrow(s, 5.65, y + 0.29, 0.45, 0.16, GREEN)
         chip(s, 6.2, y, 6.38, 0.72, nxt, line=GREEN)
-    done(s, 12)
+    next_line(s, "where the work goes")
+    done(s, 13)
 
-    # 14 taking it further
-    s = page(13)
+    # 15 taking it further
+    s = page(14)
     header(s, "What's next", "Taking it further: where this research can go",
            "flag-banner")
     for i, (head, colour, icon_name, items) in enumerate([
@@ -945,52 +1087,59 @@ def build_deck(with_notes):
              space_after=0)
         for j, text in enumerate(items):
             chip(s, x + 0.2, 2.45 + j * 0.88, 3.35, 0.74, text, size=14)
-    tf = textbox(s, M, 6.15, W - 2 * M, 0.35)
-    para(tf, "Live instrument: monarch-4iy.pages.dev   ·   Code and data: "
-             "github.com/brn-mwai/monarch", size=12, colour=MUTED, first=True,
-         space_after=0)
-    done(s, 13)
-
-    # 15 papers and requests
-    s = page(14)
-    header(s, "What's next", "Three papers, and what I need from you today",
-           "books")
-    for i, (tag, name, status, colour) in enumerate([
-            ("PAPER 1 · Physica A", "The minimum push", "12 pp · ready", BLUE),
-            ("PAPER 2 · Physica A", "The measuring tool", "16 pp · ready",
-             BLUE),
-            ("PAPER 3 · Imaging Neurosci.", "Matching real brains",
-             "8 pp · one longer run", GOLD)]):
-        x = M + i * (3.75 + 0.29)
-        card(s, x, 1.5, 3.75, 1.7, line=colour)
-        tf = textbox(s, x + 0.2, 1.62, 3.4, 1.5)
-        para(tf, tag, size=11, bold=True, colour=colour, first=True,
-             space_after=4)
-        para(tf, name, size=19, bold=True, colour=TEXT, space_after=4)
-        para(tf, status, size=13, colour=MUTED, space_after=0)
-    tf = textbox(s, M, 3.5, 6, 0.3)
-    para(tf, "TODAY I AM ASKING FOR", size=12, bold=True, colour=EMBER,
-         first=True, space_after=0)
-    for i, (icon_name, text) in enumerate([
-            ("magnifying-glass", "Any corrections"),
-            ("check-circle", "Signature, page iii"),
-            ("books", "Library clearance by Thu 24"),
-            ("flag-banner", "Co-authorship view")]):
-        x = M + i * (2.72 + 0.317)
-        card(s, x, 3.9, 2.72, 1.7, line=EMBER)
-        icon(s, icon_name, x + 2.72 / 2 - 0.25, 4.1, h=0.5)
-        tf = textbox(s, x + 0.1, 4.75, 2.52, 0.8, align=PP_ALIGN.CENTER)
-        rich(tf, [("%d  " % (i + 1), True, EMBER), (text, True, TEXT)],
-             size=15, first=True, space_after=0)
+    next_line(s, "conclusions")
     done(s, 14)
 
-    name = "Monarch_Supervisor_Deck_Script.pptx" if with_notes \
-        else "Monarch_Supervisor_Deck.pptx"
+    # 16 conclusions
+    s = page(15)
+    header(s, "What's next", "Conclusions", "check-circle")
+    for i, (value, colour, claim, meaning) in enumerate([
+            ("0.8725", BLUE, "A field observable can be measured",
+             "ICC: agreement between two runs"),
+            ("0.107", GREEN, "It separates the four groups",
+             "η²: 10.7% of variation due to group; source mixed in"),
+            ("α ≥ 4.29", EMBER, "Media strength has a minimum",
+             "at βJ = 2, within the mean-field model"),
+            ("r = 0.028", GOLD, "The brain model matches real brains",
+             "positive; 30% of the 0.096 ceiling")]):
+        x = M + (i % 2) * 6.08
+        y = 1.5 + (i // 2) * 1.85
+        card(s, x, y, 5.75, 1.65, line=colour)
+        tf = textbox(s, x + 0.2, y + 0.1, 0.5, 0.5)
+        para(tf, str(i + 1), size=20, bold=True, colour=colour, first=True,
+             space_after=0)
+        tf = textbox(s, x + 0.7, y + 0.12, 4.9, 1.45)
+        para(tf, value, size=30, bold=True, colour=colour, first=True,
+             space_after=2)
+        para(tf, claim, size=15, bold=True, colour=TEXT, space_after=0)
+        para(tf, meaning, size=12, colour=MUTED, space_after=0)
+    banner(s, 5.35, "Three papers follow.", "Paper 1 and Paper 2 → Physica A,  "
+           "Paper 3 → Imaging Neuroscience.", colour=BLUE, h=0.55, size=14)
+    tf = textbox(s, M, 6.05, W - 2 * M, 0.5, align=PP_ALIGN.CENTER)
+    para(tf, "Thank you.  Questions welcome.", size=22, bold=True,
+         colour=GOLD, first=True, align=PP_ALIGN.CENTER, space_after=0)
+    done(s, 15)
+
+    name = "Monarch_Defence_Deck_Script.pptx" if with_notes \
+        else "Monarch_Defence_Deck.pptx"
     out = os.path.join(HERE, name)
     prs.save(out)
     return out, len(prs.slides)
 
 
+def write_script():
+    total = sum(entry[2] for entry in SLIDES)
+    blocks = ["MONARCH DEFENCE SCRIPT  (about %g min)" % total]
+    for i, entry in enumerate(SLIDES):
+        blocks.append("=" * 72 + "\nSLIDE %d  %s\n" % (i + 1, entry[0])
+                      + notes_for(i))
+    out = os.path.join(HERE, "Monarch_Defence_Script.txt")
+    with open(out, "w", encoding="utf-8") as handle:
+        handle.write("\n\n".join(blocks) + "\n")
+    return out
+
+
 if __name__ == "__main__":
     for path, count in (build_deck(False), build_deck(True)):
         print("wrote", path, count, "slides")
+    print("wrote", write_script())
