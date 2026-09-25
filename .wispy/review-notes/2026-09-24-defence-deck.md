@@ -50,3 +50,11 @@ pairs ranked correctly, 50 = coin toss", "a coin balanced on its edge" for the s
 full of people" for the Ising model. The notes heading is now "WHAT THE NUMBERS MEAN". Slides are
 unchanged, and every number is identical to before. The script is about 1,730 words, roughly 12
 minutes at 140 words per minute.
+
+## PROJECT.md (2026-09-25)
+A new plain-language overview of the dissertation at the repo root. It covers the question, the
+Ising idea with a symbol table, the five-step pipeline, the corpus and how to read the corpus page,
+the five results with a plain meaning for every number, the α ≥ 4.29 bound, what is supported and
+what is not, the amendment, the limits, next steps, ethics, a repo map and references. The numbers
+are the same ones used in the defence deck and the thesis. It exists because README.md still
+describes the hackathon-era ratio score and a calibrated α, which contradict the dissertation.
