@@ -2,10 +2,10 @@ MONARCH DEFENCE SCRIPT  (about 16.25 min)
 
 ========================================================================
 SLIDE 1  Title
-KEY POINT: Media's push on opinion is always guessed. This work measures a candidate for it and derives the minimum strength any claim must use.
+KEY POINT: An article pushes on what people think. Physics guesses that push; this work measures it and finds its minimum size.
 
 SCRIPT (about 0.5 min)
-Good morning. I'm Brian Mwai, and my dissertation is called Measuring the External Field. The question behind it is simple: can we measure how hard a news article pushes on what people think? I'll start with the physics idea behind that question.
+Good morning. My name is Brian Mwai, and my dissertation is called Measuring the External Field. In simple words: when you read a news article, it pushes a little on what you think. My question is, can we measure how hard that push is, using only the article itself? Let me start with the idea behind it.
 
 DEFINITIONS (if asked)
 - Sociophysics: using the tools of statistical physics to model how groups of people behave.
@@ -15,14 +15,14 @@ Opinion models treat media as a push, but everyone guesses how big it is. I buil
 
 ========================================================================
 SLIDE 2  The idea
-KEY POINT: In the opinion model, the external field h is an input nobody measures. That gap is the project.
+KEY POINT: Physics models opinion like magnets. The media's push, h, is always guessed. Can we measure it?
 
 SCRIPT (about 1 min)
-Physics can model opinion the way it models a magnet. Each person is a spin, pointing for or against. m, the magnetisation, is the group's average opinion, from minus one to plus one. J, the coupling, is how much people copy those around them. Beta, the inverse temperature, is how firmly they follow that pull instead of acting at random. And h, the external field, is media's push on everyone at once. In the studies I read, h is always chosen by hand. Nobody measures it. So my question was: can h be measured from the content itself? Testing the tools to answer that changed the plan, so that comes next.
+Picture a room full of people, each for or against something. Physics has a model for this. It was built for magnets, where tiny arrows line up with their neighbours; here each arrow is a person. m is the mood of the room: minus one means everyone is against, plus one means everyone is for, zero means evenly split. J is how much people copy those around them. Beta is how seriously they take that pressure instead of deciding at random. And h is the outside push, the media, pushing everyone the same way at once. In every study I found, researchers guess h. Nobody measures it. So I asked: can we measure h from the article itself? When I tested my tools, five parts of my plan had to change.
 
-NUMBERS ON THIS SLIDE
-- m: average opinion, -1 (all against) to +1 (all for)
-- h: a general external field, media's push; not magnetic or electric
+WHAT THE NUMBERS MEAN
+- m = the mood of the room: -1 all against, 0 split, +1 all for
+- h = the media's push; 'field' here is general, not magnetic or electric
 
 DEFINITIONS (if asked)
 - Ising model: a model of magnets where each spin points up or down and prefers to match its neighbours; used here for two-sided opinions.
@@ -31,18 +31,18 @@ DEFINITIONS (if asked)
 
 IF ASKED
 Q: What does beta J mean, and why must a be negative?
-A: Beta J is the reduced coupling: how strongly people copy each other compared with acting at random. In the free energy, a = (1 - beta J)/2. When beta J is above 1, a is negative and two stable opinions exist, so a push is needed to flip from one to the other. Alpha itself is positive.
+A: Beta J is how strongly people copy each other. When it's above 1, the room settles into two stable opinions, for or against; in the maths that shows up as a negative coefficient, a. Then a push is needed to flip from one to the other. Alpha itself is positive.
 
 ========================================================================
 SLIDE 3  Plan vs reality
-KEY POINT: Testing the tools changed the plan. All five changes are in the approved amendment.
+KEY POINT: Testing the tools changed five parts of the plan, all approved.
 
 SCRIPT (about 1 min)
-Five things changed once I tested the tools. I planned to measure the amygdala, but the model only predicts the brain's surface. I planned a ratio score, but it was undefined for 69 of the 400 articles, so I used a difference, which works for all 400. I expected outrage to stand out, and fear did instead. I planned to measure alpha, media's strength, but the data can't pin it down, so I derived its minimum. And word counting sorted the articles better than my score, 0.98 against 0.63, so the score is a measurement, not a detector. All five are in the approved amendment. Here is how the measurement works.
+One: I planned to look at the amygdala, a fear centre deep in the brain, but the model only sees the brain's outer surface. Two: I planned to divide one brain area by another, but that broke on 69 of the 400 articles, a bit like dividing by zero, so I subtracted instead, which works on all 400. Three: I expected outrage to stand out, and fear did instead. Four: I planned to measure how strong the media's push is; the data couldn't, so I worked out the smallest it could be. Five: plain word counting sorted the articles better than my score, 98 against 63 out of 100, so my score is a measuring tool, not a fake-news detector. My supervisor approved all five. Now, how the measuring works.
 
-NUMBERS ON THIS SLIDE
-- 69 of 400: articles where the ratio was undefined (say 69, not 49)
-- 0.98 vs 0.63: word counting vs our score, AUC, 0.5 = coin toss
+WHAT THE NUMBERS MEAN
+- 69 of 400: articles where dividing failed (say 69, not 49)
+- 98 vs 63 out of 100: how often word counting vs my score ranks a manipulative article above a neutral one; 50 = coin toss
 
 DEFINITIONS (if asked)
 - Amygdala: a small structure deep in the brain linked to fear.
@@ -51,23 +51,23 @@ DEFINITIONS (if asked)
 
 IF ASKED
 Q: Why no amygdala?
-A: The released model only predicts the brain's surface. The amygdala is deep inside, so I make no claim about it.
+A: The model only predicts the brain's outer surface. The amygdala is deep inside, so I make no claim about it.
 
 Q: Why a difference, not a ratio?
-A: The model outputs standardised activity, so a region's average is negative about as often as positive. Dividing by it breaks: the ratio was undefined for 69 of 400 articles. The difference works for all 400.
+A: The model's numbers are often near zero or negative, so dividing by them breaks, like dividing by zero. It failed on 69 of 400 articles. Subtracting works for all 400.
 
 ========================================================================
 SLIDE 4  Tools and process
-KEY POINT: One article becomes one number, X = emotional minus deliberate. Every value is a prediction; nobody was scanned.
+KEY POINT: Score = emotion reaction minus thinking reaction, predicted by a brain model. Nobody was scanned.
 
 SCRIPT (about 1.5 min)
-One article becomes one number in five steps. A text-to-speech voice reads it aloud, because the brain model was trained on people watching and listening. A timing tool marks when each word is spoken. TRIBE v2, a published model from Meta, predicts activity at 20,484 points on the brain's surface. A standard brain map picks 1,030 points in emotional areas and 851 in deliberate, reasoning areas. The score, X, is the emotional average minus the deliberate average. Above zero, emotion leads. Below zero, reasoning leads. The numbers have no physical unit: they are the model's standardised activity. Nobody was scanned; every value is a prediction. The article on the left scores plus 0.054, the highest of all 400. So which 400 articles?
+Here is how one article becomes one number. A computer voice reads it aloud, because the brain model learned from people watching and listening. A tool notes when each word is spoken. Then a brain model from Meta, called TRIBE, predicts how a typical adult brain would react at 20,484 spots on the brain's surface. From a standard brain map I take 1,030 spots linked to emotion and 851 linked to careful thinking. My score is simple: the emotion reaction minus the thinking reaction. Above zero, emotion reacts more. Below zero, thinking reacts more. Nobody was put in a scanner; these are predictions. This article gets 0.109 for emotion and 0.055 for thinking, so its score is plus 0.054, the highest of all 400. So which 400 articles?
 
-NUMBERS ON THIS SLIDE
-- 20,484: points on the brain surface the model predicts
-- 1,030: points in emotional areas; 851: points in deliberate areas
-- +0.109 emotional, +0.055 deliberate, score +0.054 (0.109 - 0.055)
-- Units: standardised activity, no physical unit
+WHAT THE NUMBERS MEAN
+- 20,484 = spots on the brain's surface the model predicts
+- 1,030 emotion spots, 851 thinking spots
+- 0.109 - 0.055 = +0.054: emotion reacts a bit more than thinking
+- No unit: like marks on a ruler without cm; only comparisons matter
 
 DEFINITIONS (if asked)
 - TRIBE v2: Meta's published brain model: it predicts fMRI responses from text, audio and video.
@@ -78,69 +78,68 @@ DEFINITIONS (if asked)
 
 IF ASKED
 Q: Was anyone scanned? Is it reading minds?
-A: No. Nobody was scanned. The scores are predictions for a typical adult brain. The tool rates content, not people.
+A: No. Nobody was scanned. The scores are predictions of how a typical adult brain reacts. It rates the content, never a person.
 
 Q: Why read the articles aloud?
-A: The model was trained on people watching and listening, so it expects speech with word timings.
+A: The brain model learned from people watching and listening, so it needs speech and the timing of each word.
 
 Q: Is it okay to use Meta's model?
-A: Yes, for research. It's under a non-commercial licence, cited throughout, and this project makes no money from it.
+A: Yes, for research. Its licence allows non-commercial use, I cite it throughout, and this project makes no money.
 
 ========================================================================
 SLIDE 5  The articles
-KEY POINT: The article set was fixed before scanning: 4 x 100, length-matched, powered to detect 0.027.
+KEY POINT: 400 articles, 4 groups of 100, same length, each run twice.
 
 SCRIPT (about 1 min)
-I used four public collections, 100 articles each: fear-activating fake news, high-outrage partisan news, reward-hook clickbait, and neutral writing from medical abstracts and real news. The group averages sit between 162 and 167 words, so length can't explain a difference. Before scanning, I calculated that 400 articles can detect an eta squared of 0.027 or more, and I scanned every article twice. All 400 are on the corpus page, so here is how to read it.
+I took 400 articles from four public collections, 100 each: fake news written to scare, angry political news, clickbait like 'you won't believe what happened next', and calm neutral writing, medical summaries and real news. All four groups average between 162 and 167 words, so no group wins just by being longer. Before starting, I worked out that 400 articles is enough to spot a difference as small as 0.027. And I ran every article twice, to check the results repeat. All 400 are online, so here is how to read that page.
 
-NUMBERS ON THIS SLIDE
-- 4 x 100 = 400 articles
-- 162 to 167: range of the four group averages, in words
-- 0.027: smallest eta squared 400 articles detect (80% power, p < 0.05)
-- x 2: every article scanned twice
+WHAT THE NUMBERS MEAN
+- 162 to 167 = average words per group: same length
+- 0.027 = the smallest difference 400 articles can reliably spot (2.7% explained by group)
+- x 2 = every article run twice
 
 DEFINITIONS (if asked)
 - Power analysis: working out in advance how big a study must be to detect an effect of a given size.
 
 IF ASKED
 Q: Why only 400 articles?
-A: I calculated before scanning that 400 detects an eta squared of 0.027. Each article takes about 70 seconds of GPU time, and I ran them twice.
+A: I worked out beforehand that 400 is enough to spot a difference as small as 2.7 percent. Each article takes about 70 seconds on the computer, and I ran them all twice.
 
 Q: Why didn't you use Kenyan media?
-A: Cost. 400 articles scanned twice used about 16 GPU hours of the free Kaggle allowance. A Kenyan set would also need hand-labelling by paid annotators, because no labelled set exists. The 2024 Finance Bill case is the first extension once there is funding.
+A: Cost. The 400 articles, run twice, used about 16 hours of free computer time. Kenyan articles would also have to be labelled by hand, by paid people, because no labelled set exists. It is the first extension once there is funding.
 
 ========================================================================
 SLIDE 6  Reading the corpus
-KEY POINT: Each corpus column is defined. All four group averages are below zero.
+KEY POINT: Every column explained. All four groups sit below zero: thinking reacts more than emotion.
 
 SCRIPT (about 1.5 min)
-This is what each column on the corpus page means. Emotional is the average predicted activity across the 1,030 emotional points. Deliberate is the same across the 851 reasoning points. Score is emotional minus deliberate: that's X. Pre-scan label is the label the article already had in its source collection. Across all 400, scores run from minus 0.070 to plus 0.054, a spread of 0.124. On the right are the four group averages. All four are below zero, so the reasoning areas respond more in every group. The groups differ in how far below zero they sit: fear is closest, at minus 0.002, and neutral is furthest, at minus 0.019. I'll show you the page now. [SHOW CORPUS] The question is whether those differences are real.
+On the corpus page, every article is a row. Emotional is how strongly the emotion areas react. Deliberate is how strongly the thinking areas react. Score is emotional minus deliberate. Pre-scan label is what the original collection already called the article, before I touched it. Scores run from minus 0.070 to plus 0.054, so the gap from lowest to highest is 0.124. Remember that number; it comes back in the physics. On the right are the group averages. All four are below zero, so for every kind of article the thinking areas react more than the emotion areas. What differs is how far below zero. Fear is closest to zero, and neutral is furthest. Let me show you the live page. [SHOW CORPUS] So, are these differences real, or just chance?
 
-NUMBERS ON THIS SLIDE
-- -0.070 to +0.054: lowest and highest score of the 400
-- 0.124: spread = highest minus lowest; used in the physics later
-- -0.002 fear, -0.013 reward hook, -0.018 outrage, -0.019 neutral
-- Below zero = deliberate areas respond more than emotional areas
+WHAT THE NUMBERS MEAN
+- -0.070 to +0.054 = lowest and highest score of the 400
+- 0.124 = gap from lowest to highest; used in the physics
+- Group averages: fear -0.002, clickbait -0.013, outrage -0.018, neutral -0.019
+- Below zero = thinking areas react more than emotion areas
 
 DEFINITIONS (if asked)
 - Pre-scan label: the label an article carried in its source collection before anything was scanned.
 
 IF ASKED
 Q: Is the difference between groups just writing style?
-A: It can't be put down to style alone, because each group came from one source. The words identify the source for 66% of articles. A crossed set, every source with every type, would separate them.
+A: It can't be put down to style alone, because each group came from one source, and the words reveal the source 66 times out of 100. A new set where every source has every type would separate the two.
 
 ========================================================================
 SLIDE 7  Result 1
-KEY POINT: The groups differ: eta squared 0.107 (10.7%), p = 1.0 x 10^-9, repeated at 0.089.
+KEY POINT: The groups really differ: group explains 10.7%, and chance is about 1 in a billion.
 
 SCRIPT (about 1 min)
-To test that, I used a one-way ANOVA. It compares the spread between the four group averages with the spread inside each group. F is 15.779. Eta squared is the share of all the variation in the score that the group accounts for: 0.107, so 10.7 percent. The other 89 percent is article to article. The p-value is 1 times 10 to the minus 9: the probability of an F this large if all four groups had the same average. The second run gave 0.089. Both are above the 0.027 the study could detect. So the groups differ. Which group drives it?
+To check, I used a standard test that compares groups, called a one-way ANOVA. It answers two plain questions. First: how much of the difference between articles comes from which group they are in? 10.7 percent. So the group matters, but about 89 percent comes from each individual article. Second: could this be pure chance? If the four groups were really the same, a result this strong would turn up about once in a billion tries. So chance is very unlikely. And running everything a second time gave 8.9 percent, close to the first. So the groups really differ. Which group makes the difference?
 
-NUMBERS ON THIS SLIDE
-- F = 15.779: between-group spread over within-group spread
-- eta squared 0.107 = 10.7% of the variation is due to group
-- p = 1.0 x 10^-9 first run; second run 0.089, p = 4.9 x 10^-8
-- 0.027: smallest eta squared the design could detect
+WHAT THE NUMBERS MEAN
+- 0.107 = 10.7% of the differences between articles come from their group; 89.3% from the article itself
+- p = 1.0 x 10^-9 = if the groups were the same, this result would happen about once in a billion tries
+- 0.089 = the second run: 8.9%
+- F = 15.779 = gap between groups is about 16 times the gap you'd expect from chance
 
 DEFINITIONS (if asked)
 - One-way ANOVA: compares the averages of several groups defined by one factor.
@@ -150,39 +149,39 @@ DEFINITIONS (if asked)
 
 IF ASKED
 Q: What is eta squared, physically?
-A: It is not a physical quantity. It is a dimensionless share, between 0 and 1: the between-group sum of squares divided by the total sum of squares. 0.107 means the group accounts for 10.7% of the variation in the score.
+A: It isn't a physical quantity. It's a share between 0 and 1: how much of the total difference between articles is explained by their group. 0.107 means 10.7 percent.
 
 Q: Why a one-way ANOVA?
-A: One factor, the group, with four levels, and one measured value per article. That is the one-way design. I also checked each group against neutral with Welch's t-test, which doesn't assume equal spreads.
+A: Because there is one thing sorting the articles, the group, and one number per article, the score. That's exactly what a one-way ANOVA tests. I also compared each group with neutral separately.
 
 ========================================================================
 SLIDE 8  Result 2
-KEY POINT: Fear drives it at d = 0.94. Outrage lifts both regions equally, so its score stays at d = 0.03.
+KEY POINT: Fear moves the score (0.94). Outrage raises emotion and thinking equally, so its score stays flat (0.03).
 
 SCRIPT (about 1 min)
-Fear does. Cohen's d measures how far a group's average sits from neutral, in standard deviations. Fear is 0.94, clickbait 0.32, outrage 0.03. For scale, 0.2, 0.5 and 0.8 are the usual reference marks. So why is outrage near zero? Split the score into its two parts. Fear raises the emotional areas by 0.61 and the deliberate areas by minus 0.10, so the score moves. Outrage raises both, by 0.51 and 0.49, so the difference stays near zero. Outrage has an effect, on both sides equally. Next: can we trust these scores?
+Fear does. Here I measure how far each group sits from the neutral articles, counted in typical spreads. The usual guide marks are 0.2, 0.5 and 0.8. Fear sits 0.94 away, past the highest mark. Clickbait sits 0.32 away. Outrage only 0.03, almost on top of neutral. Why is outrage so close? Look at the two small charts. Fear switches on the emotion areas, plus 0.61, and not the thinking areas, minus 0.10, so the gap grows and the score moves. Outrage switches on both, plus 0.51 and plus 0.49. Both rise together, so the gap, and the score, stay flat. Outrage does affect the brain, just on both sides equally. Next: can we trust these scores?
 
-NUMBERS ON THIS SLIDE
-- d: distance from neutral in standard deviations
-- Fear 0.94, reward hook 0.32, outrage 0.03 (p = 0.832)
-- Fear: emotional +0.61, deliberate -0.10
-- Outrage: emotional +0.51, deliberate +0.49
+WHAT THE NUMBERS MEAN
+- d = distance from neutral, in typical spreads (standard deviations)
+- Fear 0.94, clickbait 0.32, outrage 0.03; guide marks 0.2, 0.5, 0.8
+- Fear: emotion +0.61, thinking -0.10, so the gap grows
+- Outrage: emotion +0.51, thinking +0.49, so the gap stays near 0
 
 DEFINITIONS (if asked)
 - Cohen's d: difference between two group averages divided by the typical spread (standard deviation).
 
 ========================================================================
 SLIDE 9  Result 3
-KEY POINT: Agreement between runs is 0.8725. 51 flips match the 55 noise predicts, so only group averages are reported.
+KEY POINT: Two runs agree at 0.87 out of 1. The 51 flips are what noise predicts, so judge groups, never one article.
 
 SCRIPT (about 1 min)
-I ran all 400 articles twice on the GPU. The ICC, the agreement between the two runs, is 0.8725, where 1 means identical and 0 means no agreement. 51 of the 400 changed sign between runs. Measurement noise alone predicts 55, with a 95 percent range of 44 to 67, so 51 is what noise predicts. Those articles sit near zero: their average size is 0.003, against 0.022 for the rest. So I report group averages and never a verdict on one article. Now the most important check.
+I ran all 400 articles twice. The two runs agree at 0.87, on a scale where 1 means identical and 0 means no agreement at all. But 51 articles flipped: positive one time, negative the other. Is that a problem? If only small random noise were at work, we'd expect about 55 flips, anywhere from 44 to 67. We saw 51, inside that range. And the flipped articles all sit very close to zero, like a coin balanced on its edge, where a tiny wobble tips it. So I trust group averages, and I never judge a single article. Now the most important honest check.
 
-NUMBERS ON THIS SLIDE
-- ICC 0.8725: agreement of two runs, 1 = identical, 0 = none
-- 51 of 400 = 12.8% changed sign between runs
-- 55.3 expected from noise, 95% range 44 to 67
-- Flipped items: average size 0.003 vs 0.022 for the rest
+WHAT THE NUMBERS MEAN
+- 0.8725 = agreement between the two runs; 1 = identical, 0 = none
+- 51 of 400 = 1 in 8 articles flipped sign
+- 55 (44 to 67) = flips that random noise alone would cause
+- Flipped articles average 0.003 from zero; the rest 0.022
 
 DEFINITIONS (if asked)
 - ICC: intraclass correlation: agreement between repeated measurements of the same items; 1 is identical.
@@ -190,15 +189,15 @@ DEFINITIONS (if asked)
 
 ========================================================================
 SLIDE 10  Honest check
-KEY POINT: Word counting scores 0.98 against our 0.63 because source is mixed in. The score is a measurement, not a detector.
+KEY POINT: Word counting wins, 98 vs 63 out of 100, because source is mixed in. The score measures, it doesn't detect.
 
 SCRIPT (about 1 min)
-Does the score detect manipulation? AUC is the probability that a randomly chosen manipulative article scores above a randomly chosen neutral one. 0.5 is a coin toss, and 1 is perfect. A sentiment tool gets 0.54. My score gets 0.63. Plain word counting gets 0.98. Why so high? Each group came from one source, and the words identify the source for 66 percent of articles, against 25 percent by chance. So the difference can't be put down to writing style alone, because source is mixed in. My score is a measurement for the physics, not a manipulation detector. That raises the next question: does the brain model match real brains?
+Can my score tell manipulative articles from neutral ones? The test is simple: pick one manipulative and one neutral article at random. How often does the method rank the manipulative one higher? 50 out of 100 is a coin toss, and 100 is perfect. A standard sentiment tool gets 54. My score gets 63. Plain word counting gets 98. Why is word counting so good? Each group came from a different source, and the words give the source away: from the words alone you can tell the source 66 times out of 100, where guessing gets 25. So the difference between groups can't be put down to writing style alone, because the source is mixed in. That's why my score is a measurement for the physics, not a fake-news detector. Next: does the brain model match real brains?
 
-NUMBERS ON THIS SLIDE
-- AUC: chance a manipulative article outscores a neutral one
-- 0.54 sentiment (VADER), 0.63 our score, 0.98 word counting (TF-IDF)
-- 66%: articles whose source the words identify; chance 25%
+WHAT THE NUMBERS MEAN
+- AUC = out of 100 random pairs, how often the manipulative article ranks higher
+- 54 sentiment tool, 63 my score, 98 word counting; 50 = coin toss
+- 66% = words reveal the source; guessing = 25%
 
 DEFINITIONS (if asked)
 - AUC: area under the ROC curve: chance a random manipulative article outscores a random neutral one.
@@ -208,20 +207,20 @@ DEFINITIONS (if asked)
 
 IF ASKED
 Q: If word counting does better, why not use that?
-A: Word counting mostly learns the source: 66% against 25% chance. My score is meant to be the push h in the opinion model. The comparison is there to be honest about what the score is.
+A: Word counting mostly learns where an article came from: it names the source 66 times out of 100. My score is meant to be the media push in the physics model, not a detector. I include the comparison to be honest.
 
 ========================================================================
 SLIDE 11  Real brains
-KEY POINT: The brain model correlates positively with real brains: r = 0.028, 30% of the 0.096 ceiling, p = 0.048.
+KEY POINT: The brain model moves with real brains: 30% of the best possible.
 
 SCRIPT (about 1 min)
-I tested it on public brain scans of four people watching Friends. The correlation, r, measures how closely two signals rise and fall together. Real people match each other at 0.152 over the full episode; that's the ceiling. On the 2-minute clip I ran, the ceiling is 0.096 and the model reaches 0.028, which is 30 percent of the ceiling. The p-value is 0.048, under the 0.05 cut-off. The sign is positive, so it does not reproduce the negative value a published audit reported. I also found and fixed three bugs in the pipeline. The full-episode run is the next step, in Paper 3. Now to the physics.
+I tested the model on real brain scans of four people watching the TV show Friends. r measures how closely two signals move together: 0 is no match, 1 is perfect. Even real people don't match each other perfectly: over the full episode they match at 0.152, so that's the best any model could hope for. On the 2-minute clip I tested, the best possible is 0.096, and the model reaches 0.028, about 30 percent of the best possible. The p-value is 0.048, just under the usual 5 percent line. And it's positive: the model moves in the same direction as real brains, not the opposite, as an outside audit had claimed. I also found and fixed three bugs along the way. The full-episode test is next. Now the physics.
 
-NUMBERS ON THIS SLIDE
-- r: correlation, 0 = no match, 1 = perfect
-- 0.152: people vs each other, full episode (ceiling)
-- 0.096: ceiling on the 2-minute clip; 0.028: the model
-- 30% = 0.028 / 0.096; p = 0.048 against 61 time-shifted copies
+WHAT THE NUMBERS MEAN
+- r = how closely two signals move together; 0 none, 1 perfect
+- 0.152 = real people vs each other: the best possible
+- 0.096 best possible on the clip; the model 0.028 = 30% of it
+- p = 0.048 = about 5 in 100 chance of a match this good by luck alone
 
 DEFINITIONS (if asked)
 - Noise ceiling: how well real brains predict each other; the best any model can do.
@@ -230,16 +229,16 @@ DEFINITIONS (if asked)
 
 ========================================================================
 SLIDE 12  The minimum push
-KEY POINT: The measured spread sets a minimum: alpha >= 4.29 at beta J = 2.
+KEY POINT: Media would need a strength of at least 4.29 to flip the room.
 
 SCRIPT (about 1.5 min)
-Here is how the score connects to the model. The field h equals alpha times X. Alpha is the coupling constant: how much push per unit of score. I can't measure alpha, so I asked how big it must be to flip a majority. The critical field, h c, is the smallest push that does that, and it depends on beta J, the reduced coupling: how strongly people copy each other. At beta J of 2, h c is 0.533. Divide by the spread of scores, 0.124, and alpha must be at least 4.29. The curve shows that minimum for every beta J. It is a bar any claim must clear, not a claim that media flips opinion, and it holds within the mean-field model. So what could this be used for?
+Back to the room of people. The media's push, h, equals my score times a number called alpha: how much push you get per unit of score. I can't measure alpha, so I asked a different question: how big would alpha have to be for the media to flip the majority of the room? That depends on how much people copy each other, beta J. The more they copy each other, the more stubborn the room, and the bigger the push needed. At beta J of 2, the push needed is 0.533. My scores only span 0.124. So alpha must be at least 0.533 divided by 0.124, which is 4.29. In plain words: anyone claiming these articles flip opinion must assume a media strength of at least 4.29, or the model says it can't happen. It's a minimum bar, not a claim that media does flip opinion. So what could this be used for?
 
-NUMBERS ON THIS SLIDE
-- h = alpha x X: field = coupling constant x score
-- beta J = 2: say 'beta J', not 'beta'
-- h_c(2) = 0.533: smallest push that flips the majority at beta J = 2
-- 0.533 / 0.124 = 4.29: minimum alpha
+WHAT THE NUMBERS MEAN
+- alpha = how much push per unit of score
+- beta J = 2: how much people copy each other; say 'beta J', not 'beta'
+- 0.533 = push needed to flip the room at beta J = 2
+- 0.533 / 0.124 = 4.29 = the minimum alpha
 
 DEFINITIONS (if asked)
 - Critical field: the smallest field that flips the majority.
@@ -250,48 +249,48 @@ Opinion models treat media as a push, but everyone guesses how big it is. I buil
 
 IF ASKED
 Q: Why is this physics?
-A: The opinion model is statistical physics, the maths of magnets lining up. The contribution is measuring the push and deriving its minimum.
+A: The opinion model is the same maths physics uses for magnets lining up. My part is measuring the push and working out its minimum size.
 
 Q: What does alpha >= 4.29 mean in practice?
-A: It's a bar. Alpha turns the score into a push. Any claim that such content flips a group with beta J = 2 must use an alpha of at least 4.29, or the model says it can't happen.
+A: It's a minimum bar. Anyone who claims these articles flip a group's opinion, where people copy each other at strength 2, must use a media strength of at least 4.29, or the model says it can't happen.
 
 Q: What does beta J mean, and why must a be negative?
-A: Beta J is the reduced coupling: how strongly people copy each other compared with acting at random. In the free energy, a = (1 - beta J)/2. When beta J is above 1, a is negative and two stable opinions exist, so a push is needed to flip from one to the other. Alpha itself is positive.
+A: Beta J is how strongly people copy each other. When it's above 1, the room settles into two stable opinions, for or against; in the maths that shows up as a negative coefficient, a. Then a push is needed to flip from one to the other. Alpha itself is positive.
 
 ========================================================================
 SLIDE 13  Children's content
-KEY POINT: It can score any video, audio or text, but it is not valid for children without child brain data.
+KEY POINT: It could score children's TV, but it isn't valid for children yet.
 
 SCRIPT (about 1 min)
-At my proposal I was asked whether this could analyse any content, even what children watch. It takes video and audio, so it could score a cartoon. But the model learned from adult brains, so it can't say how a child reacts. I only tested news text, and 1 in 8 single scores flip between runs. Children would need child brain data and ethics approval first. Each of these limits points to a next study.
+When I presented my proposal, I was asked: could this analyse anything, even children's TV? The tool takes video and audio, so it could score a cartoon. But the brain model learned from adults, so it can't tell us how a child reacts. I only tested news text. And about 1 in 8 single scores flip between runs, so one show on its own isn't reliable. For children we'd first need children's brain data, with ethics approval. Each limit like this points to a next study.
 
-NUMBERS ON THIS SLIDE
-- 1 in 8: 51 of 400 single scores flip between runs
+WHAT THE NUMBERS MEAN
+- 1 in 8 = 51 of 400 single scores flip between runs
 
 DEFINITIONS (if asked)
 - Ethics approval: formal permission from a review board, required for research with children.
 
 IF ASKED
 Q: Can this analyse any content, even what children watch?
-A: It can score video and audio. But the model learned from adult brains, so it can't say how a child reacts, and I only tested news text. It would need child brain data and ethics approval first.
+A: It can score video and audio. But the model learned from adult brains, so it can't say how a child reacts, and I only tested news. It would need children's brain data and ethics approval first.
 
 Q: Could a parent or a regulator use it to rate one show?
-A: Not yet. 51 of 400 single scores flip between runs, so one score isn't reliable. It is for comparing groups of content.
+A: Not yet. About 1 in 8 single scores flip between runs, so one score isn't reliable. It is for comparing groups of content.
 
 Q: What would it take for children's media?
-A: Child brain scans with ethics approval and consent, a children's video test set, and content where source and type are mixed.
+A: Children's brain scans with ethics approval and parental consent, a set of children's videos, and content where source and type are mixed.
 
 Q: What about ethics?
-A: No new data was collected from any person. The brain model was trained by Meta on public, consented scans, and I use only public articles and public scans. The tool rates content, never a viewer.
+A: I collected no data from any person. The brain model was built by Meta from public scans of volunteers who consented, and I used only public articles and public scans. The tool rates content, never a viewer.
 
 ========================================================================
 SLIDE 14  Limits
-KEY POINT: Every limit points to a specific next study.
+KEY POINT: Every limit has a fix.
 
 SCRIPT (about 0.5 min)
-Five limits, each with the study that fixes it. Predictions need checking against more real brain data. Group and source need separating with a new article set. Deep brain areas need a model that predicts them. Alpha needs real opinion data. And the brain check needs the full episode. That leads to where the work goes next.
+Five limits, each with its fix. These are predictions, so check them against more real brain scans. Group and source are mixed, so build a new set where every source has every type. The model misses deep brain areas, so use a model that sees them. Alpha isn't measured, so compare scores with real opinion polls. And the brain test was 2 minutes, so run the full episode. That leads to where the work goes next.
 
-NUMBERS ON THIS SLIDE
+WHAT THE NUMBERS MEAN
 - 5 limits, each stated in the thesis
 
 DEFINITIONS (if asked)
@@ -299,46 +298,46 @@ DEFINITIONS (if asked)
 
 ========================================================================
 SLIDE 15  Taking it further
-KEY POINT: Three directions: publishing, extending the science, and further research.
+KEY POINT: Publish, extend to Kenya and video, and further study.
 
 SCRIPT (about 0.75 min)
-Three directions. Publishing: three papers, with preprints first. Extending the science: the Kenyan case from the proposal, coverage of the 2024 Finance Bill, plus video and audio, and measuring alpha against opinion data. And opportunities: a postgraduate topic, collaboration with neuroscience and media researchers, and a tool that is already online. To close, four conclusions.
+Three directions. Publish: three papers, shared publicly first. Extend: a Kenyan case, news coverage of the 2024 Finance Bill, plus video and audio, and measuring alpha against opinion polls. And opportunities: further study, work with brain and media researchers, and a tool that is already online. To close, four conclusions.
 
-NUMBERS ON THIS SLIDE
-- Kenya: 2024 Finance Bill coverage, needs GPU funding
+WHAT THE NUMBERS MEAN
+- Kenya case needs GPU funding
 
 DEFINITIONS (if asked)
 - Preprint: a paper shared publicly before peer review, e.g. on arXiv.
 
 IF ASKED
 Q: Could someone use it to make content more manipulative?
-A: It's a real risk for any content measure. That's why it reports group results only, for research, and the model's licence is non-commercial.
+A: That's a real risk for any measure like this. That's why it only reports group results, for research, and the model's licence forbids commercial use.
 
 Q: Why didn't you use Kenyan media?
-A: Cost. 400 articles scanned twice used about 16 GPU hours of the free Kaggle allowance. A Kenyan set would also need hand-labelling by paid annotators, because no labelled set exists. The 2024 Finance Bill case is the first extension once there is funding.
+A: Cost. The 400 articles, run twice, used about 16 hours of free computer time. Kenyan articles would also have to be labelled by hand, by paid people, because no labelled set exists. It is the first extension once there is funding.
 
 ========================================================================
 SLIDE 16  Conclusions
-KEY POINT: Four conclusions, each with its number, then questions.
+KEY POINT: Four take-aways, then questions.
 
 SCRIPT (about 1 min)
-One: a field observable can be measured from content, and it repeats, with agreement of 0.8725 between runs. Two: it separates the four groups at eta squared 0.107, with source mixed in, so I report it as a measurement, not a detector. Three: alpha can't be measured from this data, so the thesis gives a minimum, 4.29 at beta J of 2. Four: the brain model correlates positively with real brains, at 0.028, 30 percent of the ceiling. Three papers follow from this. Thank you. I'm happy to take your questions.
+Four things to take away. One: you can measure a push from an article's content, and it repeats: the two runs agree at 0.87 out of 1. Two: it tells the four kinds of articles apart; the group explains 10.7 percent of the differences, with the source mixed in. Three: we can't yet measure media's strength, but we know its minimum: 4.29 when people copy each other at strength 2. Four: the brain model moves with real brains, at 30 percent of the best possible. Three papers come from this work. Thank you, and I'm happy to take questions.
 
-NUMBERS ON THIS SLIDE
-- 0.8725 ICC
-- 0.107 eta squared
-- 4.29 minimum alpha at beta J = 2
-- 0.028 = 30% of the 0.096 ceiling
+WHAT THE NUMBERS MEAN
+- 0.87 = the two runs agree
+- 10.7% = explained by group
+- 4.29 = minimum media strength at beta J = 2
+- 30% = the model's match vs the best possible
 
 IF ASKED "SO WHAT?"
 Opinion models treat media as a push, but everyone guesses how big it is. I built a way to measure a candidate for that push from the content itself. It separates the four groups at 10.7%, with source mixed in, so I don't claim it detects manipulation. And even without knowing the exact strength, the measured spread gives a floor: media would need a coupling of at least 4.29 to flip a group with beta J = 2. That turns a guessed number into a testable one.
 
 IF ASKED
 Q: Was anyone scanned? Is it reading minds?
-A: No. Nobody was scanned. The scores are predictions for a typical adult brain. The tool rates content, not people.
+A: No. Nobody was scanned. The scores are predictions of how a typical adult brain reacts. It rates the content, never a person.
 
 Q: If word counting does better, why not use that?
-A: Word counting mostly learns the source: 66% against 25% chance. My score is meant to be the push h in the opinion model. The comparison is there to be honest about what the score is.
+A: Word counting mostly learns where an article came from: it names the source 66 times out of 100. My score is meant to be the media push in the physics model, not a detector. I include the comparison to be honest.
 
 Q: What about ethics?
-A: No new data was collected from any person. The brain model was trained by Meta on public, consented scans, and I use only public articles and public scans. The tool rates content, never a viewer.
+A: I collected no data from any person. The brain model was built by Meta from public scans of volunteers who consented, and I used only public articles and public scans. The tool rates content, never a viewer.

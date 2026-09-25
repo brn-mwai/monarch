@@ -41,3 +41,12 @@ printout cannot disagree.
 - Built 16 slides, rendered through PowerPoint, and checked every slide visually.
 - h_c(2) recomputed as 0.5328, and 0.5328 / 0.1241 = 4.29.
 - The group means match `corpus.json` summary.
+
+## Update 2026-09-25: plain-language script
+`SLIDES`, `QUESTIONS` and `KEY_POINTS` in `docs/defence/build_plain_decks.py` were rewritten for a
+non-specialist audience. Each number is explained in everyday terms: "10.7% of the differences come
+from the group", "about once in a billion tries if the groups were the same", "63 out of 100 random
+pairs ranked correctly, 50 = coin toss", "a coin balanced on its edge" for the sign flips, and "a room
+full of people" for the Ising model. The notes heading is now "WHAT THE NUMBERS MEAN". Slides are
+unchanged, and every number is identical to before. The script is about 1,730 words, roughly 12
+minutes at 140 words per minute.
