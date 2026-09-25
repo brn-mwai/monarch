@@ -340,6 +340,49 @@ QUESTIONS = [
      "viewer."),
 ]
 
+EQUATIONS = {
+    1: [("Ising energy", "E = -J sum(s_i s_j) - h sum(s_i). Each person s_i is +1 or "
+         "-1; agreeing with neighbours lowers the energy, and h rewards "
+         "pointing the media's way"),
+        ("Mean-field equation", "m = tanh(beta J m + h). Each person feels "
+         "the room's average m instead of each neighbour; solving it gives "
+         "the room's mood")],
+    3: [("The score", "X = A_emotional - A_deliberate, each A the average "
+         "over its spots. A difference, not a ratio, because A is often near "
+         "zero or negative")],
+    4: [("Power analysis", "the smallest effect a study can catch: with 4 "
+         "groups of 100, p < 0.05 and 80% power, that is eta squared = "
+         "0.027")],
+    5: [("Spread", "Delta X = X_max - X_min = 0.054 - (-0.070) = 0.124. It "
+         "is the biggest push difference the articles can give")],
+    6: [("Eta squared", "eta^2 = SS_between / SS_total: the share of all "
+         "variation explained by group"),
+        ("F-test", "F = (between-group variance) / (within-group variance) "
+         "= 15.779; p is the chance of an F this big if the groups were the "
+         "same")],
+    7: [("Cohen's d", "d = (group mean - neutral mean) / pooled standard "
+         "deviation: the gap in units of typical spread")],
+    8: [("ICC", "ICC = (variance between articles) / (between + run-to-run "
+         "variance) = 0.8725"),
+        ("Noise model", "run-to-run noise sigma = sd(run1 - run2) / "
+         "sqrt(2) = 0.0073; simulating that noise gives 55 expected flips")],
+    9: [("AUC", "AUC = P(X_manipulative > X_neutral) for a random pair; "
+         "0.5 is chance")],
+    10: [("Pearson r", "r = cov(prediction, brain) / (sd_prediction x "
+          "sd_brain): how closely they move together"),
+          ("Noise ceiling", "how well one person's brain predicts the "
+           "others'; no model can beat it")],
+    11: [("Landau free energy", "F(m) = a m^2 + b m^4 - h m, with a = (1 - "
+          "beta J)/2 and b = 1/12. When beta J > 1, a < 0 and two stable "
+          "opinions (two valleys) appear"),
+         ("Critical field", "from m = tanh(beta J m + h), h = atanh(m) - "
+          "beta J m. The valley vanishes where dh/dm = 0, at m*^2 = 1 - 1/beta "
+          "J; h_c = |atanh(m*) - beta J m*| = 0.533 at beta J = 2"),
+         ("The bound", "the strongest push the articles give is h = alpha x "
+          "Delta X. To flip the room it must reach h_c, so alpha >= h_c / "
+          "Delta X = 0.533 / 0.124 = 4.29")],
+}
+
 KEY_POINTS = [
     "An article pushes on what people think. Physics guesses that push; this "
     "work measures it and finds its minimum size.",
@@ -450,6 +493,9 @@ def notes_for(index):
     if cues:
         lines += ["", "WHAT THE NUMBERS MEAN"]
         lines += ["- " + cue for cue in cues]
+    if index in EQUATIONS:
+        lines += ["", "EQUATION SIDE NOTE"]
+        lines += ["- %s: %s." % pair for pair in EQUATIONS[index]]
     if index in DEFINITIONS:
         lines += ["", "DEFINITIONS (if asked)"]
         lines += ["- %s: %s." % pair for pair in DEFINITIONS[index]]

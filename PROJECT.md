@@ -195,6 +195,24 @@ any claim has to clear, not a claim that media flips opinion. It holds within th
 model. When βJ > 1, the model's quadratic coefficient a = (1 − βJ)/2 is negative, and two stable
 opinions exist. That is why a push of a certain size is needed to flip between them.
 
+## Equations used, and how
+
+| Law or equation | How it is used here |
+|---|---|
+| Ising energy: E = −J Σ sᵢsⱼ − h Σ sᵢ | Each person sᵢ is +1 or −1. Agreeing with neighbours lowers the energy, and h rewards pointing the media's way |
+| Mean-field equation: m = tanh(βJ·m + h) | Each person feels the room's average m instead of each neighbour. Solving it gives the room's mood |
+| Landau free energy: F(m) = a m² + b m⁴ − h m, a = (1 − βJ)/2, b = 1/12 | When βJ > 1, a < 0 and two stable opinions (two valleys) appear. These coefficients correct the proposal's version |
+| Critical field: h = atanh(m) − βJ·m, turning point where dh/dm = 0 | The valley vanishes at m*² = 1 − 1/βJ, giving h_c = \|atanh(m*) − βJ·m*\| = 0.533 at βJ = 2 |
+| The bound: α·ΔX ≥ h_c | The strongest push the articles give is α·ΔX. To flip the room it must reach h_c, so α ≥ 0.533 / 0.124 = 4.29 |
+| Score: X = A_emotional − A_deliberate | A difference, not a ratio, because A is often near zero or negative |
+| η² = SS_between / SS_total | Share of all variation explained by group (0.107) |
+| F = between-group variance / within-group variance | One-way ANOVA test statistic (15.779) |
+| Cohen's d = (group mean − neutral mean) / pooled SD | The gap from neutral in units of typical spread |
+| ICC = between-article variance / (between + run-to-run variance) | Agreement between the two runs (0.8725) |
+| Noise σ = sd(run1 − run2) / √2 = 0.0073 | Simulating this noise predicts 55 sign flips (44 to 67) |
+| AUC = P(X_manipulative > X_neutral) | Chance a random manipulative article outscores a random neutral one |
+| Pearson r = cov(prediction, brain) / (sd · sd) | How closely the model's prediction and real brain activity move together |
+
 ## What the work supports, and what it does not
 
 | Supported | Not supported |

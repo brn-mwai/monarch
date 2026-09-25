@@ -58,3 +58,12 @@ the five results with a plain meaning for every number, the α ≥ 4.29 bound, w
 what is not, the amendment, the limits, next steps, ethics, a repo map and references. The numbers
 are the same ones used in the defence deck and the thesis. It exists because README.md still
 describes the hackathon-era ratio score and a calibrated α, which contradict the dissertation.
+
+## Equation side notes (2026-09-25)
+`docs/defence/build_plain_decks.py`: a new `EQUATIONS` dict maps each slide index to (law, how it is
+used) pairs. `notes_for` prints them under "EQUATION SIDE NOTE", between the numbers and the
+definitions. They cover the Ising energy and the mean-field equation (slide 2), the score (4), power
+(5), the spread (6), η² and F (7), Cohen's d (8), ICC and the noise model (9), AUC (10), Pearson r
+and the noise ceiling (11), and the Landau free energy, critical-field derivation and bound (12).
+h_c(2) = 0.5328 was re-derived, and 0.5328 / 0.1241 = 4.293. `PROJECT.md` gained a matching
+"Equations used, and how" table. The slides are unchanged.

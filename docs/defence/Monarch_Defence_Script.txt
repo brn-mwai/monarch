@@ -24,6 +24,10 @@ WHAT THE NUMBERS MEAN
 - m = the mood of the room: -1 all against, 0 split, +1 all for
 - h = the media's push; 'field' here is general, not magnetic or electric
 
+EQUATION SIDE NOTE
+- Ising energy: E = -J sum(s_i s_j) - h sum(s_i). Each person s_i is +1 or -1; agreeing with neighbours lowers the energy, and h rewards pointing the media's way.
+- Mean-field equation: m = tanh(beta J m + h). Each person feels the room's average m instead of each neighbour; solving it gives the room's mood.
+
 DEFINITIONS (if asked)
 - Ising model: a model of magnets where each spin points up or down and prefers to match its neighbours; used here for two-sided opinions.
 - Mean field: each person feels the average of the whole group, not particular neighbours; it makes the maths solvable.
@@ -69,6 +73,9 @@ WHAT THE NUMBERS MEAN
 - 0.109 - 0.055 = +0.054: emotion reacts a bit more than thinking
 - No unit: like marks on a ruler without cm; only comparisons matter
 
+EQUATION SIDE NOTE
+- The score: X = A_emotional - A_deliberate, each A the average over its spots. A difference, not a ratio, because A is often near zero or negative.
+
 DEFINITIONS (if asked)
 - TRIBE v2: Meta's published brain model: it predicts fMRI responses from text, audio and video.
 - fMRI: brain scanning that tracks blood flow as a stand-in for activity.
@@ -98,6 +105,9 @@ WHAT THE NUMBERS MEAN
 - 0.027 = the smallest difference 400 articles can reliably spot (2.7% explained by group)
 - x 2 = every article run twice
 
+EQUATION SIDE NOTE
+- Power analysis: the smallest effect a study can catch: with 4 groups of 100, p < 0.05 and 80% power, that is eta squared = 0.027.
+
 DEFINITIONS (if asked)
 - Power analysis: working out in advance how big a study must be to detect an effect of a given size.
 
@@ -121,6 +131,9 @@ WHAT THE NUMBERS MEAN
 - Group averages: fear -0.002, clickbait -0.013, outrage -0.018, neutral -0.019
 - Below zero = thinking areas react more than emotion areas
 
+EQUATION SIDE NOTE
+- Spread: Delta X = X_max - X_min = 0.054 - (-0.070) = 0.124. It is the biggest push difference the articles can give.
+
 DEFINITIONS (if asked)
 - Pre-scan label: the label an article carried in its source collection before anything was scanned.
 
@@ -140,6 +153,10 @@ WHAT THE NUMBERS MEAN
 - p = 1.0 x 10^-9 = if the groups were the same, this result would happen about once in a billion tries
 - 0.089 = the second run: 8.9%
 - F = 15.779 = gap between groups is about 16 times the gap you'd expect from chance
+
+EQUATION SIDE NOTE
+- Eta squared: eta^2 = SS_between / SS_total: the share of all variation explained by group.
+- F-test: F = (between-group variance) / (within-group variance) = 15.779; p is the chance of an F this big if the groups were the same.
 
 DEFINITIONS (if asked)
 - One-way ANOVA: compares the averages of several groups defined by one factor.
@@ -167,6 +184,9 @@ WHAT THE NUMBERS MEAN
 - Fear: emotion +0.61, thinking -0.10, so the gap grows
 - Outrage: emotion +0.51, thinking +0.49, so the gap stays near 0
 
+EQUATION SIDE NOTE
+- Cohen's d: d = (group mean - neutral mean) / pooled standard deviation: the gap in units of typical spread.
+
 DEFINITIONS (if asked)
 - Cohen's d: difference between two group averages divided by the typical spread (standard deviation).
 
@@ -183,6 +203,10 @@ WHAT THE NUMBERS MEAN
 - 55 (44 to 67) = flips that random noise alone would cause
 - Flipped articles average 0.003 from zero; the rest 0.022
 
+EQUATION SIDE NOTE
+- ICC: ICC = (variance between articles) / (between + run-to-run variance) = 0.8725.
+- Noise model: run-to-run noise sigma = sd(run1 - run2) / sqrt(2) = 0.0073; simulating that noise gives 55 expected flips.
+
 DEFINITIONS (if asked)
 - ICC: intraclass correlation: agreement between repeated measurements of the same items; 1 is identical.
 - Sign reversal: a score positive on one run and negative on the other.
@@ -198,6 +222,9 @@ WHAT THE NUMBERS MEAN
 - AUC = out of 100 random pairs, how often the manipulative article ranks higher
 - 54 sentiment tool, 63 my score, 98 word counting; 50 = coin toss
 - 66% = words reveal the source; guessing = 25%
+
+EQUATION SIDE NOTE
+- AUC: AUC = P(X_manipulative > X_neutral) for a random pair; 0.5 is chance.
 
 DEFINITIONS (if asked)
 - AUC: area under the ROC curve: chance a random manipulative article outscores a random neutral one.
@@ -222,6 +249,10 @@ WHAT THE NUMBERS MEAN
 - 0.096 best possible on the clip; the model 0.028 = 30% of it
 - p = 0.048 = about 5 in 100 chance of a match this good by luck alone
 
+EQUATION SIDE NOTE
+- Pearson r: r = cov(prediction, brain) / (sd_prediction x sd_brain): how closely they move together.
+- Noise ceiling: how well one person's brain predicts the others'; no model can beat it.
+
 DEFINITIONS (if asked)
 - Noise ceiling: how well real brains predict each other; the best any model can do.
 - r: Pearson correlation: how closely two signals rise and fall together.
@@ -239,6 +270,11 @@ WHAT THE NUMBERS MEAN
 - beta J = 2: how much people copy each other; say 'beta J', not 'beta'
 - 0.533 = push needed to flip the room at beta J = 2
 - 0.533 / 0.124 = 4.29 = the minimum alpha
+
+EQUATION SIDE NOTE
+- Landau free energy: F(m) = a m^2 + b m^4 - h m, with a = (1 - beta J)/2 and b = 1/12. When beta J > 1, a < 0 and two stable opinions (two valleys) appear.
+- Critical field: from m = tanh(beta J m + h), h = atanh(m) - beta J m. The valley vanishes where dh/dm = 0, at m*^2 = 1 - 1/beta J; h_c = |atanh(m*) - beta J m*| = 0.533 at beta J = 2.
+- The bound: the strongest push the articles give is h = alpha x Delta X. To flip the room it must reach h_c, so alpha >= h_c / Delta X = 0.533 / 0.124 = 4.29.
 
 DEFINITIONS (if asked)
 - Critical field: the smallest field that flips the majority.
