@@ -12,7 +12,7 @@
 % \coauthorfalse to \coauthortrue; the author list, CRediT statement, declarations and
 % acknowledgements all follow from this one line.
 \newif\ifcoauthor
-\coauthorfalse
+\coauthortrue
 \newcommand{\Theauthors}{\ifcoauthor The authors\else The author\fi}
 \newcommand{\theauthors}{\ifcoauthor the authors\else the author\fi}
 \newcommand{\declare}{\ifcoauthor declare\else declares\fi}
@@ -30,8 +30,8 @@
 400-item corpus, and the field bound it yields}
 
 \author[cuea]{Brian Mwai\corref{cor1}}
-\ifcoauthor\author[cuea]{Songa Mutambi}\fi
 \ead{mwaibryn@gmail.com}
+\ifcoauthor\author[cuea]{Songa Mutambi}\ead{cmutambi@cuea.edu}\fi
 \cortext[cor1]{Corresponding author.}
 \affiliation[cuea]{organization={Department of Natural Sciences, Faculty of Science, The
 Catholic University of Eastern Africa},
@@ -689,11 +689,10 @@ threshold. The source datasets are available from their original providers
 
 \section*{Declaration of generative AI and AI-assisted technologies in the writing process}
 
-% Brian to confirm wording.
-\textbf{} During the preparation of this work \theauthors{} used an AI
-assistant (Claude, Anthropic) for editing text and for support in writing and checking
-analysis code. After using this tool, \theauthors{} reviewed and edited all content and
-\take{} full responsibility for the content of the publication.
+During the preparation of this work the first author (B.M.) used Claude (Anthropic), an AI
+assistant, for editing the manuscript and for support in writing and checking analysis code.
+After using this tool, the authors reviewed and edited the content as needed and take full
+responsibility for the content of the publication.
 
 \section*{Acknowledgements}
 
