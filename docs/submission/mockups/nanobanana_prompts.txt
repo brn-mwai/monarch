@@ -1,0 +1,140 @@
+NANO BANANA PROMPTS: MAROON HARDCOVER DISSERTATION BOOK
+Upload the reference photo (open book on black) with every prompt.
+Set aspect ratio to 4:3 (or 3:2). Each prompt below is complete; copy one whole block.
+
+=====================================================================
+1. OPEN BOOK, BLANK PAGES, BLACK BACKGROUND (base)
+=====================================================================
+Edit this image. Keep the exact same camera angle, framing, book size and position, and the pure black background.
+Change the hardcover to a deep maroon bookcloth (colour around #6B1C2A): fine woven buckram texture, subtle fibres, slightly worn corners, soft sheen, no pattern and no text on the cover.
+Make both pages completely blank. Remove the "Chapter 5. The Yellow Mantle" text entirely.
+Keep the pages natural off-white uncoated paper (around #F4F1EA) with a faint visible paper grain, a soft gutter shadow at the spine, gentle page curvature near the binding, and a visible stack of page edges on the right.
+Flat top-down view, soft even studio lighting, no glare, no reflections, no hands, no props.
+Photorealistic, sharp focus, ultra-detailed, 4K resolution, high dynamic range, no blur, no noise, no watermark, no text anywhere.
+
+=====================================================================
+2. OPEN BOOK, BLANK PAGES, FLATBED SCAN ON WHITE
+=====================================================================
+Edit this image. Keep the exact same camera angle, framing, and book size and position.
+Replace the black background with seamless pure white (#FFFFFF), like a flatbed scanner, with a very faint soft shadow under the book.
+Change the hardcover to a deep maroon bookcloth (colour around #6B1C2A): fine woven buckram texture, subtle fibres, slightly worn corners, soft sheen, no pattern and no text on the cover.
+Make both pages completely blank. Remove the "Chapter 5. The Yellow Mantle" text entirely.
+Keep the pages natural off-white uncoated paper (around #F4F1EA) with a faint visible paper grain, a soft gutter shadow at the spine, gentle page curvature near the binding, and a visible stack of page edges on the right.
+Flat top-down view, bright even scanner lighting, no glare, no reflections, no hands, no props.
+Photorealistic, sharp focus, ultra-detailed, 4K resolution, no blur, no noise, no watermark, no text anywhere.
+
+=====================================================================
+3. OPEN BOOK, BLANK PAGES, ON A WOODEN DESK
+=====================================================================
+Edit this image. Keep the book the same size and fully in frame, shown flat from a top-down view.
+Place the open book on a warm oak wooden desk with visible natural wood grain, soft window light from the left, and a gentle natural shadow to the right of the book.
+Change the hardcover to a deep maroon bookcloth (colour around #6B1C2A): fine woven buckram texture, subtle fibres, slightly worn corners, soft sheen, no pattern and no text on the cover.
+Make both pages completely blank. Remove the "Chapter 5. The Yellow Mantle" text entirely.
+Keep the pages natural off-white uncoated paper (around #F4F1EA) with a faint visible paper grain, a soft gutter shadow at the spine, gentle page curvature near the binding, and a visible stack of page edges on the right. The pages must stay flat and evenly lit.
+No hands, no pens, no coffee cups, no other props.
+Photorealistic, sharp focus, ultra-detailed, 4K resolution, natural colour, no blur, no noise, no watermark, no text anywhere.
+
+=====================================================================
+4. OPEN BOOK, ANGLED HERO SHOT
+=====================================================================
+Using this image as reference for the book, show the same open hardcover book at a 30 degree three-quarter angle, lying on a dark charcoal grey linen surface.
+The hardcover is deep maroon bookcloth (colour around #6B1C2A): fine woven buckram texture, subtle fibres, slightly worn corners, soft sheen, no text on the cover.
+Both pages are completely blank, natural off-white uncoated paper (around #F4F1EA) with a faint paper grain, a soft gutter shadow and gentle curvature near the binding, and a visible stack of page edges.
+Soft directional studio light from the upper left, a natural contact shadow, and a shallow depth of field with the pages in sharp focus and the background softly blurred.
+No hands, no props.
+Photorealistic, editorial product photography, ultra-detailed, 4K resolution, no noise, no watermark, no text anywhere.
+
+=====================================================================
+5. CLOSED BOOK, FRONT COVER WITH GOLD FOIL TITLE
+=====================================================================
+Using this image as reference for the book's size and proportions, show the book closed, front cover facing the camera, flat top-down on a pure black background.
+The hardcover is deep maroon bookcloth (colour around #6B1C2A): fine woven buckram texture, subtle fibres, slightly worn corners, soft sheen.
+Stamp crisp, flat gold foil lettering on the front cover in the standard CUEA dissertation cover layout: every line centred, a plain Times New Roman style serif, all lines the same small size (no large title), generous blank space between the blocks, and no logos, crests, borders or decoration.
+Spell the text exactly as below, keeping the line breaks, capitals and blank lines:
+
+THE CATHOLIC UNIVERSITY OF EASTERN AFRICA
+
+FACULTY OF SCIENCE
+
+DEPARTMENT OF NATURAL SCIENCES
+
+
+MEASURING THE EXTERNAL FIELD: A CORTICAL-PROXY CONTENT
+OBSERVABLE AND THE MEAN-FIELD BOUND ON
+MEDIA-DRIVEN OPINION CHANGE
+
+
+BY
+
+BRIAN MWAI
+
+REG. NO. 1050555
+
+
+A Research Project Submitted in Partial Fulfilment of the
+Requirements for the Award of Bachelor of Science Degree
+in Physics (B.Sc. Physics)
+
+
+SEPTEMBER, 2026
+
+Placement: the three institution lines start near the top edge, the title block sits in the upper middle, "BY" with the name and registration number sits in the centre, the submission statement sits in the lower middle in normal sentence case, and the date sits alone near the bottom edge. Add no other text.
+Soft even studio lighting that catches the gold foil with a subtle metallic highlight, no glare.
+Photorealistic, sharp focus, ultra-detailed, 4K resolution, no blur, no noise, no watermark.
+
+=====================================================================
+6. CLOSED BOOK, SPINE CLOSE-UP
+=====================================================================
+Using this image as reference for the book's size and proportions, show the same book closed and standing upright, with its spine facing the camera, on a pure black background.
+The hardcover is deep maroon bookcloth (colour around #6B1C2A): fine woven buckram texture, subtle fibres, slightly rounded spine, soft sheen.
+Stamp crisp gold foil lettering running down the spine, top to bottom, in a classic serif font, spelled exactly:
+B. MWAI    MEASURING THE EXTERNAL FIELD    B.Sc. PHYSICS 2026
+Add no other text.
+Soft studio lighting from the front left with a subtle metallic highlight on the gold, and a gentle reflection on a black glossy floor.
+Photorealistic, sharp focus, ultra-detailed, 4K resolution, no noise, no watermark.
+
+=====================================================================
+7. STACK OF THREE CLOSED COPIES
+=====================================================================
+Using this image as reference for the book, show three identical closed hardcover copies stacked slightly offset on a seamless white surface.
+Each hardcover is deep maroon bookcloth (colour around #6B1C2A): fine woven buckram texture, subtle fibres, soft sheen.
+The top copy shows flat gold foil lettering on its front cover in the standard CUEA dissertation cover layout: every line centred, a plain Times New Roman style serif, all lines the same small size, blank space between the blocks, and no logos or decoration. Spell it exactly, keeping the line breaks:
+
+THE CATHOLIC UNIVERSITY OF EASTERN AFRICA
+FACULTY OF SCIENCE
+DEPARTMENT OF NATURAL SCIENCES
+
+MEASURING THE EXTERNAL FIELD: A CORTICAL-PROXY CONTENT
+OBSERVABLE AND THE MEAN-FIELD BOUND ON
+MEDIA-DRIVEN OPINION CHANGE
+
+BY
+BRIAN MWAI
+REG. NO. 1050555
+
+A Research Project Submitted in Partial Fulfilment of the
+Requirements for the Award of Bachelor of Science Degree
+in Physics (B.Sc. Physics)
+
+SEPTEMBER, 2026
+The spines of the lower copies show gold foil text: B. MWAI    MEASURING THE EXTERNAL FIELD    B.Sc. PHYSICS 2026
+Soft diffused studio light from above, with natural soft shadows between the books.
+Photorealistic, product photography, ultra-detailed, 4K resolution, no noise, no watermark, no other text.
+
+=====================================================================
+8. OPEN BOOK HELD IN HANDS (library / graduation feel)
+=====================================================================
+Using this image as reference for the book, show the same open hardcover book held from below by two hands, at chest height, seen from a slightly high angle; the hands are only partly visible at the lower edges.
+The hardcover is deep maroon bookcloth (colour around #6B1C2A): fine woven buckram texture, slightly worn corners, soft sheen, no text on the cover.
+Both pages are completely blank, natural off-white uncoated paper (around #F4F1EA) with a faint paper grain, a soft gutter shadow and gentle curvature near the binding.
+The background is a softly blurred university library with wooden shelves of books, in warm ambient light.
+Photorealistic, shallow depth of field with the pages in sharp focus, ultra-detailed, 4K resolution, no watermark, no text anywhere.
+
+=====================================================================
+TIPS
+=====================================================================
+- Prompts 1 to 4 keep the pages blank so the real dissertation pages can be placed in afterwards.
+  Send the result back and it will be added as a new background.
+- Prompts 5 to 7 contain text. Check every letter and regenerate if a word is misspelled.
+- If the maroon looks too red or too brown, add to the prompt: "darker, more wine-toned maroon".
+- If the pages come out curved or tilted in prompts 1 to 3, add: "pages lie perfectly flat, camera exactly overhead".
