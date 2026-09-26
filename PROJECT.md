@@ -43,7 +43,7 @@ measures a candidate for h from the content itself.
 1. **Read aloud.** A computer voice reads the article, because the brain model learned from people
    watching and listening.
 2. **Word timings.** A tool marks when each word is spoken.
-3. **Brain prediction.** TRIBE v2, a published brain model from Meta (d'Ascoli et al., 2025),
+3. **Brain prediction.** TRIBE v2, a published brain model from Meta (d'Ascoli et al., 2026),
    predicts how a typical adult brain would react at **20,484** spots on the brain's surface.
 4. **Two regions.** A standard brain map (Glasser et al., 2016) picks **1,030** spots linked to
    emotion and **851** linked to careful thinking.
@@ -271,7 +271,8 @@ the project makes no money.
 
 ## Key references
 
-- d'Ascoli et al. (2025). TRIBE v2, Meta FAIR. arXiv:2507.22229.
+- d'Ascoli et al. (2026). A foundation model of vision, audition, and language for in-silico neuroscience (TRIBE v2). arXiv:2605.04326.
+- d'Ascoli et al. (2025). TRIBE: TRImodal Brain Encoder (v1). arXiv:2507.22229.
 - Glasser et al. (2016). A multi-modal parcellation of human cerebral cortex. *Nature*.
 - Ahmed et al. (2017), ISOT; Kiesel et al. (2019), SemEval-2019 Task 4; Potthast et al. (2018),
   Webis-Clickbait-17.
