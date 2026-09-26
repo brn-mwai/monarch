@@ -1,7 +1,8 @@
 """Place facing dissertation pages into an open-book photo so it reads as a flatbed scan.
 
-Spreads follow the bound book: an even printed page on the left, the next odd page on
-the right. Each page keeps its A4 aspect ratio (scaled to the paper width, centred
+Spreads follow the bound book: a verso on the left, the next recto on the right. Each
+spread is named by the PDF page number of its left page; 0 leaves the left page blank,
+as the inside cover faces the title page. Each page keeps its A4 aspect ratio (scaled to the paper width, centred
 vertically) and is multiplied onto the paper so the photo's shading shows through.
 The scan look comes from flattened, slightly cool light, a darker spine shadow,
 fine sensor grain, a small skew, and a final unsharp mask for crisp text.
@@ -18,7 +19,6 @@ PHOTO = os.path.join(HERE, "mockups", "book_blank.png")
 THESIS = os.path.join(HERE, "..", "thesis", "dissertation.pdf")
 OUT_DIR = os.path.join(HERE, "mockups")
 SCALE = 4
-PRINTED_OFFSET = 20
 SPINE_X = 367
 BOOK_TOP, BOOK_BOTTOM = 97, 640
 SKEW_DEGREES = 0.3
@@ -29,14 +29,17 @@ LEFT_PAGE = (30, 104, 362, 632)
 RIGHT_PAGE = (373, 104, 706, 632)
 
 SPREADS = {
-    "spread_p14_p15_physics": 14,
-    "spread_p20_p21_instrument": 20,
-    "spread_p32_p33_results": 32,
+    "spread_title": 0,
+    "spread_piv_pv_abstract": 4,
+    "spread_pvi_pvii_publications": 6,
+    "spread_p14_p15_physics": 34,
+    "spread_p20_p21_instrument": 40,
+    "spread_p32_p33_results": 52,
 }
 
 
-def page_image(doc, printed, width):
-    page = doc[printed + PRINTED_OFFSET - 1]
+def page_image(doc, pdf_page, width):
+    page = doc[pdf_page - 1]
     zoom = 2 * width / page.rect.width
     pix = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom))
     image = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
@@ -44,9 +47,9 @@ def page_image(doc, printed, width):
     return image.resize((width, height), Image.Resampling.LANCZOS)
 
 
-def place(book, doc, printed, box):
+def place(book, doc, pdf_page, box):
     x0, y0, x1, y1 = (value * SCALE for value in box)
-    page = page_image(doc, printed, x1 - x0)
+    page = page_image(doc, pdf_page, x1 - x0)
     top = y0 + ((y1 - y0) - page.height) // 2
     region = (x0, top, x0 + page.width, top + page.height)
     book.paste(ImageChops.multiply(book.crop(region), page), region[:2])
@@ -85,11 +88,12 @@ def main():
             os.remove(os.path.join(OUT_DIR, old))
     for name, left in SPREADS.items():
         book = photo.copy()
-        place(book, doc, left, LEFT_PAGE)
+        if left:
+            place(book, doc, left, LEFT_PAGE)
         place(book, doc, left + 1, RIGHT_PAGE)
         out = os.path.join(OUT_DIR, name + ".png")
         finish(scan_light(book)).save(out)
-        print("wrote", out, "pages", left, left + 1)
+        print("wrote", out, "pdf pages", left, left + 1)
 
 
 if __name__ == "__main__":
