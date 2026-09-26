@@ -67,3 +67,9 @@ definitions. They cover the Ising energy and the mean-field equation (slide 2), 
 and the noise ceiling (11), and the Landau free energy, critical-field derivation and bound (12).
 h_c(2) = 0.5328 was re-derived, and 0.5328 / 0.1241 = 4.293. `PROJECT.md` gained a matching
 "Equations used, and how" table. The slides are unchanged.
+
+## Papers 1-3 made submission-ready (2026-09-26)
+- `docs/paper1/paper1.tex`: restructured for a journal, with highlights, declarations and a data statement. The bound now states its assumptions (no background field; the range of X contains 0) and uses |α|. It adds the closed-form spinodal h_c = βJ·m_s − artanh(m_s), fixes a doubled β in the field and χ, and corrects the stated reason for the error in the fitted β. All 11 references were checked. `figures/`, `numbers.tex` and `highlights.txt` were copied in so the folder builds on its own.
+- `docs/paper2/paper2.tex`: rewritten, now with 34 references, all checked. It uses one thirds split for the scan-order χ² (2.773, p = 0.837), states that the SemEval label is per publisher, and states that α̂ is proportional to (1 − βJ). It adds a paired bootstrap of Δη² and run B's ΔX (α ≥ 4.530). Dr. Songa is credited for the signed-difference form, and a one-line `\coauthortrue` switch adds her as co-author. The new `verify_numbers.py` re-checks 58 numbers against the data files, with 0 mismatches.
+- `docs/paper3/paper3.tex`: retargeted to the Journal of Neuroscience Methods with a structured abstract. It now cites TRIBE v2 (arXiv:2605.04326) and TRIBE v1 correctly. The noise ceiling is worded as a reference level, and withdrawn numbers with no saved output are removed. Limits are added, and 6 verified references are added.
+All three are built with `\journal{Preprint}` so they can go to any journal. The per-journal format is pending Brian's choice.

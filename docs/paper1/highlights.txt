@@ -1,0 +1,5 @@
+Media fields in Ising opinion models are usually assigned, not measured.
+For h = αX, a spinodal crossing needs |α| ≥ h_c(βJ)/ΔX.
+Closed-form spinodal field, h_c = 0.5328 at βJ = 2.
+Landau coefficients derived; mean-field exponents recovered numerically.
+A necessary-condition screen for content observables, run before data.

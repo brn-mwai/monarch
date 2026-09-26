@@ -8,7 +8,19 @@
 
 \graphicspath{{../../services/inference/data/final/report/}{../../services/inference/data/figures/}}
 
-\journal{Physica A}
+% CO-AUTHORSHIP SWITCH. Co-authorship for Dr. Songa Mutambi is open. If she accepts, change
+% \coauthorfalse to \coauthortrue; the author list, CRediT statement, declarations and
+% acknowledgements all follow from this one line.
+\newif\ifcoauthor
+\coauthorfalse
+\newcommand{\Theauthors}{\ifcoauthor The authors\else The author\fi}
+\newcommand{\theauthors}{\ifcoauthor the authors\else the author\fi}
+\newcommand{\declare}{\ifcoauthor declare\else declares\fi}
+\newcommand{\take}{\ifcoauthor take\else takes\fi}
+
+% Target journal not yet chosen; the source is kept journal-agnostic.
+\journal{Preprint}
+\myfooter[left]{Preprint, \today}
 
 \begin{document}
 
@@ -17,61 +29,71 @@
 \title{A cortical-proxy observable for emotionally manipulative media: an instrument, a
 400-item corpus, and the field bound it yields}
 
-\author[cuea]{Brian Mwai}
+\author[cuea]{Brian Mwai\corref{cor1}}
+\ifcoauthor\author[cuea]{Songa Mutambi}\fi
 \ead{mwaibryn@gmail.com}
-\address[cuea]{Department of Natural Sciences, Faculty of Science, The Catholic University of
-Eastern Africa, P.O. Box 62157-00200, Nairobi, Kenya}
+\cortext[cor1]{Corresponding author.}
+\affiliation[cuea]{organization={Department of Natural Sciences, Faculty of Science, The
+Catholic University of Eastern Africa},
+addressline={P.O. Box 62157-00200},
+city={Nairobi},
+country={Kenya}}
 
 \begin{abstract}
-Mean-field opinion models treat media as an external field on a population of coupled
-states, and that field is almost never measured. A companion paper \cite{mwai_bound} states what any candidate
-observable must satisfy for the mechanism to operate: $\alpha \ge h_c(\beta J)/\Delta X$.
-This paper supplies the missing half, an observable computed from content and the spread it
-attains on a real corpus. Text is spoken, transcribed, embedded and passed to a released
-trimodal encoder that predicts cortical response; two networks are averaged from that
-prediction, one associated with affective salience and one with deliberative control, and the
-observable is their signed difference. The ratio form is undefined for $17.25\%$ of items and
-is replaced by that difference. On 400 items across four categories, matched on length, the
-categories separate at $\eta^2 = 0.1068$, $F = 15.779$, $p = 1.035\times10^{-9}$, against a
-design powered to detect $\eta^2 = 0.0268$. The separation is carried by fear-activating
-content, $d = 0.9389$ against neutral, while high-outrage content does not separate,
-$d = 0.0300$, because it raises both networks by nearly equal amounts. Each category is drawn
-from one source dataset, so the separation is between corpora and cannot be attributed to
-framing; we state this before the result rather than in limitations. Against the pre-scan
-manipulative label the observable reaches $\mathrm{AUC} = 0.6274$, and a TF-IDF baseline on
-the same rows reaches $0.9758$, so the observable is offered as a field quantity and not as a
-classifier. A second scanning session gives test-retest $\mathrm{ICC} = 0.8725$ and
-replicates the separation at $\eta^2 = 0.0888$, while $12.8\%$ of individual items reverse
-direction, a count that additive noise at the measured session error predicts, so the
-instrument supports category-level statements and no per-item verdict.
-Calibrating the coupling does not identify it: the fit performs worse than the sample mean
-out of sample and scales with an unmeasured $\beta J$, so no value is quoted. What the
-measurement does yield is the spread, $\Delta X = 0.1241$, which converts the companion
-paper's inequality into a concrete requirement, $\alpha \ge 4.2938$ at $\beta J = 2$, on any
-study proposing this mechanism.
+Mean-field opinion models represent media as an external field acting on coupled binary
+opinions, and that field is almost never measured. A companion paper shows that a
+media-driven transition requires a coupling $\alpha \ge h_c(\beta J)/\Delta X$, where
+$\Delta X$ is the attainable range of a content observable. Here we measure one. Text is
+converted to speech, aligned at word level and passed to a released encoder that predicts
+average-subject fMRI responses on $20{,}484$ cortical vertices; the observable is the mean
+predicted activation over an affective-salience parcel set ($1{,}030$ vertices) minus that
+over a deliberative-control set ($851$ vertices). No person was scanned. On 400
+length-matched items in four categories, each drawn from a single source dataset, the
+categories separate at $\eta^2 = 0.1068$ ($F = 15.779$, $p = 1.0\times10^{-9}$) against a
+smallest detectable $\eta^2 = 0.0268$. The separation is carried by fear-activating items
+(Cohen's $d = 0.94$ against neutral); high-outrage items do not separate ($d = 0.03$)
+because they raise both networks almost equally. Because category and source coincide,
+the separation is between corpora and cannot be attributed to framing. Against the
+source-derived manipulative label the observable reaches $\mathrm{AUC} = 0.627$ while a
+TF-IDF baseline reaches $0.976$, so it is offered as a field observable, not a detector. A
+second run gives $\mathrm{ICC}(2,1) = 0.8725$ and replicates the separation
+($\eta^2 = 0.0888$), but 51 of 400 items change sign, as the session noise predicts, so no
+per-item statement is supported. The measured spread $\Delta X = 0.1241$ implies
+$\alpha \ge 4.29$ at $\beta J = 2$.
 \end{abstract}
 
+\begin{highlights}
+\item A released cortical encoder turns text into a signed affective-deliberative index
+\item Four length-matched corpora separate at eta-squared 0.107 and replicate in a rerun
+\item The separation is between source datasets; a TF-IDF baseline far outperforms it
+\item High-outrage text raises both networks equally and does not separate from neutral
+\item The measured spread 0.124 requires a coupling of at least 4.29 at beta J = 2
+\end{highlights}
+
 \begin{keyword}
-sociophysics \sep opinion dynamics \sep external field \sep media measurement \sep
-encoding models \sep reproducibility
+sociophysics \sep opinion dynamics \sep external field \sep mean-field Ising model \sep
+brain encoding model \sep test-retest reliability
 \end{keyword}
 
 \end{frontmatter}
 
 \section{Introduction}
+\label{sec:intro}
 
 Statistical-physics treatments of opinion formation routinely include a term representing
-media. In the mean-field Ising formulation and its relatives \cite{castellano2009,galam2008}, that term is an external field
-$h$ acting on every agent, and the modelling result is that beyond a critical magnitude
-$h_c(\beta J)$ the population is driven from one consensus to another. The literature on this
-mechanism is large \cite{crokidakis2012,azhari2023,freitas2020,sirbu2016} and the qualitative
-conclusion is robust within the models.
+media. In the mean-field Ising formulation and its relatives \cite{castellano2009,galam2008},
+that term is an external field $h$ acting on every agent, and the modelling result is that
+beyond a critical magnitude $h_c(\beta J)$ the population is driven from one consensus to
+another. The literature on this mechanism is large
+\cite{crokidakis2012,azhari2023,freitas2020,sirbu2016} and the qualitative conclusion is
+robust within the models.
 
 The field itself is almost never measured. It is assigned, swept, or fitted to an outcome
-that the model was built to reproduce. A companion paper \cite{mwai_bound} makes the consequence precise:
-writing $h = \alpha X$ for a content observable $X$ with attainable range $\Delta X$, no
-media-driven transition across the spinodal of the all-to-all mean-field model is possible
-unless
+that the model was built to reproduce, and a recent review of Ising-inspired sociophysics
+lists calibration against data among the field's open problems \cite{mullick2025}. A
+companion paper \cite{mwai_bound} makes the consequence precise: writing $h = \alpha X$ for
+a content observable $X$ with attainable range $\Delta X$, no media-driven transition across
+the spinodal of the all-to-all mean-field model is possible unless
 \begin{equation}
 \label{eq:bound}
 \alpha \ \ge\ \frac{h_c(\beta J)}{\Delta X},
@@ -83,69 +105,95 @@ This paper supplies one. We build an instrument that computes a candidate observ
 content, apply it to a corpus assembled for the purpose, and report the spread it attains
 together with what the measurement does and does not support. Three commitments run through
 the work and are stated here so the reader can hold us to them: the physics stays in front
-and the encoder is treated as a thermometer rather than a subject; every number is written by
-a named script into an artifact and read from there rather than transcribed; and the design's
-confound is stated before each result it touches, not deferred.
+and the encoder is treated as a thermometer rather than a subject; every number is produced
+by a released script from released data; and the design's confound is stated before each
+result it touches, not deferred.
 
-\section{The observable}
-\label{sec:observable}
+\section{Methods}
+\label{sec:methods}
 
-\subsection{Definition}
+\subsection{Instrument}
+\label{sec:instrument}
 
-Let $A_{\text{aff}}$ be the mean predicted activation over a union of regions associated with
-affective salience, and $A_{\text{del}}$ the corresponding mean over regions associated with
-deliberative control. The proposal for this work specified a ratio,
+Each item is converted to speech, transcribed with word-level timings, embedded as text and
+as audio, and passed to TRIBE v2 \cite{tribev2}, a released multimodal encoder, developed
+from the TRIBE architecture \cite{tribe2025}, that predicts fMRI responses over
+$20{,}484$ vertices of the fsaverage5 cortical surface \cite{fischl2012}. Speech is
+synthesised with gTTS \cite{gtts}; when that service is unreachable the encoder's own loader
+falls back to the MMS-TTS English model \cite{pratap2024}, so two runs of the pipeline need not
+use the same synthesiser. Word timings come from WhisperX \cite{bain2023}, which aligns the
+output of Whisper \cite{radford2023}. The encoder embeds text with Llama~3.2-3B
+\cite{llama3} and audio with Wav2Vec-BERT~2.0 \cite{seamless2023}. The released checkpoint is
+loaded in the average-subject configuration that its loader sets, so every prediction is for
+a group-average subject rather than for any individual. The prediction, an array of shape
+$(T, 20{,}484)$ over the item's duration, is mean-pooled over time to one value per vertex.
+We use the word \emph{scan} for one pass of the encoder over an item or over the corpus;
+no person was scanned at any point.
+
+Two parcel sets are taken from the HCP multimodal parcellation (HCP-MMP1.0)
+\cite{glasser2016}, bilaterally, and resolved once into fsaverage5 vertex index sets using the
+encoder's own atlas utility. The affective-salience set is OFC, pOFC, p24, a24, TGd, TE1a,
+TE1p, IFSa, IFSp and AAIC ($1{,}030$ vertices); the deliberative-control set is 46, a9-46v,
+p9-46v, 11l, 13l, d32, p32, a10p, p10p and 10pp ($851$ vertices). The sets do not overlap
+(Fig.~\ref{fig:roi}). Their assignment to the two labels is the study's specification, made
+before the data existed, and is not an independently validated functional division.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{B1_roi_definition.pdf}
+\caption{The two parcel sets the observable is reduced over, on the cortical surface. The
+affective-salience set covers 1030 vertices and the deliberative-control set 851. Both are
+resolved once into vertex index sets, so every item is averaged over identical regions. The
+figure is a definition and carries no data.}
+\label{fig:roi}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{B3_per_vertex_fear_activating-0000.pdf}
+\caption{Example of the encoder's output: the time-averaged predicted response for one
+fear-activating item at every one of the 20{,}484 cortical vertices, on the pial surface.
+Vertices below the map's 70th percentile are left unpainted so the anatomy remains readable,
+and the threshold is stated in the figure. The map is shown to illustrate the instrument, not
+as a statement about this item (Section~\ref{sec:reliability}).}
+\label{fig:pervertex}
+\end{figure}
+
+\subsubsection{The observable}
+
+Let $A_{\text{aff}}$ and $A_{\text{del}}$ be the mean time-averaged predicted activation over
+the affective-salience and deliberative-control vertex sets. The original specification of
+this project used a ratio,
 \begin{equation}
 \mathrm{NAA}_{\text{ratio}} \;=\; \frac{A_{\text{aff}}}{A_{\text{del}} + \delta},
+\qquad \delta = 10^{-3},
 \end{equation}
 which is a magnitude asymmetry only when both means sit at or above baseline. The encoder's
-outputs are standardised and unconstrained in sign, and a negative denominator makes the
-ratio change sign for reasons that have nothing to do with the content. Across the corpus
-reported below the ratio is undefined for 69 of 400 items, $17.25\%$. This is not an edge
-case to be dropped, so the analysis is carried by the signed difference
+outputs are unconstrained in sign, and a negative denominator makes the ratio change sign
+for reasons that have nothing to do with the content. Across the corpus reported below the
+ratio is undefined for 69 of 400 items, $17.25\%$. This is not an edge case to be dropped, so
+the analysis is carried by the signed difference
 \begin{equation}
 \label{eq:naa}
 X \;\equiv\; \mathrm{NAA}_{\text{signed}} \;=\; A_{\text{aff}} - A_{\text{del}},
 \end{equation}
 which is defined everywhere. Positive means affective activation is predicted to lead,
 negative means deliberative activation leads. The reformulation changes what the index means:
-it reports which system leads, not by what proportion.
-
-\subsection{What the observable is not}
+it reports which set leads, and by how much in the encoder's units, not by what proportion.
 
 The observable is a \emph{cortical proxy}. The released checkpoint predicts activity on the
-cortical surface only, so no subcortical structure is measured and none is named. No
-participant was scanned at any point in this work: every value is a prediction produced by an
-encoder from content, and the phrase ``predicted activation'' is used throughout in place of
-any claim about measured brain activity.
+cortical surface only, so no subcortical structure is measured and none is named. Every value
+is a prediction produced by an encoder from content, and the phrase ``predicted activation''
+is used throughout in place of any claim about measured brain activity.
 
-\section{Instrument and corpus}
+\subsection{Corpus}
+\label{sec:corpus}
 
-\subsection{The cascade}
-
-Each item is converted to speech, transcribed with word-level timings, embedded as text and
-as audio, and passed to TRIBE v2, a released trimodal encoder that predicts fMRI response
-over $20{,}484$ fsaverage5 vertices \cite{tribe2025}. The checkpoint is loaded in the
-average-subject configuration its own loader forces. Regions of interest are resolved once
-into vertex index sets and cached, so every item is reduced over identical regions: 1030
-vertices for the affective union and 851 for the deliberative union.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.9\textwidth]{B1_roi_definition.pdf}
-\caption{The two regions the observable is reduced over, on the cortical surface. The
-affective-salience union covers 1030 vertices and the deliberative-control union 851. Both
-are resolved once into vertex index sets and cached, so every item is averaged over identical
-regions.}
-\label{fig:roi}
-\end{figure}
-
-\subsection{Corpus design}
-
-The corpus is 400 items in four categories of 100, matched on length. Mean word counts are
-$167.4$, $163.5$, $163.7$ and $162.2$ for fear-activating, high-outrage, neutral and
-reward-hook items respectively, with standard deviations between $10.2$ and $12.8$, so length
-is not a confound.
+The corpus is 400 English text items in four categories of 100
+(Table~\ref{tab:corpus}). Each item is a passage of whole sentences between 150 and 200
+words, so that category is not confounded with the length of the encoder's input. Mean word
+counts are $167.4$, $163.5$, $163.7$ and $162.2$ for fear-activating, high-outrage, neutral
+and reward-hook items respectively, with standard deviations between $10.2$ and $12.8$.
 
 \begin{table}[htbp]
 \centering
@@ -153,18 +201,35 @@ is not a confound.
 \toprule
 \textbf{Category} & \textbf{Source} & \textbf{n} \\
 \midrule
-Fear activating       & ISOT-fake             & 100 \\
-High outrage          & SemEval-2019 Task 4   & 100 \\
-Reward hook           & Webis-Clickbait-17    & 100 \\
-Neutral informational & PubMed, ISOT-true     & 50 + 50 \\
+Fear activating       & ISOT fake news \cite{ahmed2017}         & 100 \\
+High outrage          & SemEval-2019 Task~4 \cite{kiesel2019}   & 100 \\
+Reward hook           & Webis-Clickbait-17 \cite{potthast2018}  & 100 \\
+Neutral informational & PubMed \cite{pubmed}, ISOT true news \cite{ahmed2017} & 50 + 50 \\
 \bottomrule
 \end{tabular}
-\caption{Corpus composition. Each category is drawn from exactly one source dataset, which is
-the study's dominant limitation and is stated before every result it affects. Sources:
-ISOT \cite{ahmed2017}, SemEval-2019 Task~4 \cite{kiesel2019}, Webis-Clickbait-17
-\cite{potthast2018}, PubMed \cite{pubmed}.}
+\caption{Corpus composition. Each category is drawn from exactly one source dataset (two
+for neutral), which is the study's dominant limitation and is stated before every result it
+affects.}
 \label{tab:corpus}
 \end{table}
+
+The category names state the construct each source was chosen to represent; they are not
+per-item annotations. Fear-activating items are articles from the ISOT fake-news collection
+\cite{ahmed2017} whose title or body contains at least one of 24 threat keywords (for example
+``outbreak'', ``attack'', ``toxic''). High-outrage items are articles labelled hyperpartisan in
+the SemEval-2019 Task~4 by-publisher collection \cite{kiesel2019}, whose labels are inherited
+from the publisher rather than assigned per article. Reward-hook items are the linked-article
+bodies of Webis-Clickbait-17 posts judged clickbait \cite{potthast2018}; the teaser itself is
+about ten words and too short to be length-matched. Neutral items are a seeded random sample
+of English journal-article abstracts from PubMed published 2019--2021 \cite{pubmed}, retrieved
+without subject terms, and Reuters wire articles from the ISOT true-news collection. The ISOT
+true articles open with a Reuters dateline that the fake articles lack, and a classifier can
+separate the two on that string alone; datelines and residual mentions of the agency were
+therefore removed before passages were built. The binary \texttt{manipulative} label used in
+Section~\ref{sec:auc} is derived from the category (1 for the three non-neutral categories,
+0 for neutral), not annotated per item. The working hypothesis, fixed before scanning, was
+that the three non-neutral categories would sit above neutral content on $X$, high outrage
+most of all.
 
 \textbf{The corpus is not source-balanced, and this is the central caveat of the paper.}
 Category and provenance coincide by construction, so any separation the instrument reports is
@@ -172,25 +237,81 @@ a separation between corpora and cannot be attributed to framing. Section~\ref{s
 states this alongside the result rather than after it, and Section~\ref{sec:whatsurvives}
 identifies which conclusions survive it.
 
-Items were scanned interleaved rather than one category at a time. This turns out to matter,
-for the reason given in Section~\ref{sec:reliability}.
+\subsection{Execution and the second run}
+
+The corpus was shuffled with a fixed seed before scanning, so items were scanned
+interleaved rather than one category at a time, and each result was appended to the output
+as it completed. The first run (A) took four GPU sessions on a Tesla P100. Every row was
+checked against the source corpus on text, category and identifier before analysis. A second
+run (B) rescanned all 400 items with identical text, identical code and identical parcel
+sets. Run A is the primary measurement; run B is used only for reliability and replication.
+Neither run is corrected toward the other and the two are not averaged, since an average of
+two runs would carry a precision that neither has.
+
+\subsection{Statistical analysis}
+\label{sec:stats}
+
+Separation across the four categories is tested by one-way analysis of variance on $X$,
+reporting $F$, its $p$-value and $\eta^2 = SS_{\text{between}}/SS_{\text{total}}$. Each
+non-neutral category is compared with neutral content by Welch's unequal-variance $t$-test
+\cite{welch1947}, with effect size Cohen's $d = (\bar{X}_1 - \bar{X}_0)/s_p$, where $s_p$ is
+the pooled standard deviation \cite{cohen1988}; with 100 items per group, $s_p^2$ is the mean
+of the two sample variances. The same contrasts are repeated on $A_{\text{aff}}$ and
+$A_{\text{del}}$ separately. Every $p$-value is the probability, computed under the null
+hypothesis of equal means (or no discrimination), of a test statistic at least as extreme as
+the one observed; it is not the probability that the null hypothesis is true.
+
+Discrimination against the \texttt{manipulative} label is summarised by the area under the
+ROC curve, $\mathrm{AUC} = P(X_+ > X_-) + \tfrac12 P(X_+ = X_-)$ for a randomly chosen
+labelled-positive item $X_+$ and labelled-negative item $X_-$, which equals the Mann--Whitney
+$U$ statistic divided by $n_+ n_-$ \cite{hanley1982,mann1947}. No parameter is fitted for
+the observable. Two baselines are scored on the same rows and label: the VADER compound
+sentiment score \cite{hutto2014}, as implemented in NLTK \cite{bird2009}, used directly; and
+TF-IDF features over unigrams and bigrams (sublinear term frequency, minimum document
+frequency 2) with logistic regression, implemented in scikit-learn \cite{pedregosa2011} and
+scored out of fold under five-fold stratified cross-validation. Confidence intervals on AUC
+are percentile intervals from $2{,}000$ bootstrap resamples of items \cite{efron1993}. A
+source-identity probe fits the same TF-IDF pipeline to predict the source dataset, scored
+out of fold.
+
+Test--retest agreement between runs A and B is reported as Pearson $r$ and as the
+intraclass correlation ICC(2,1): two-way random effects, absolute agreement, single
+measurement \cite{shrout1979,mcgraw1996}. ICC is reported because a run that shifted every
+score by a constant would still correlate perfectly. The number of items whose sign of $X$
+differs between runs is compared with the number expected under additive, independent
+per-run error, estimated from the paired differences (Section~\ref{sec:reliability}).
+
+Sensitivity was computed from the design alone. For the ANOVA, the smallest $\eta^2$
+detectable at $\alpha = 0.05$ with power $0.80$ follows from the noncentral $F$
+distribution with noncentrality $\lambda = N\eta^2/(1-\eta^2)$ \cite{cohen1988}; for the AUC,
+from a seeded simulation of a two-sided Mann--Whitney test under a binormal alternative with
+300 positives and 100 negatives. Computations used SciPy \cite{virtanen2020}.
+
+\subsection{Field model}
+\label{sec:model}
+
+The field enters the all-to-all mean-field model through the self-consistency condition
+$m = \tanh(\beta J m + h)$, with $h$ in units of $k_B T$. For $\beta J > 1$ the spinodal field
+at which the metastable branch disappears is
+\begin{equation}
+\label{eq:hc}
+h_c(\beta J) \;=\; \sqrt{\beta J(\beta J - 1)} \;-\; \operatorname{artanh}\!\sqrt{1 - 1/\beta J},
+\end{equation}
+which reproduces the values located numerically in the companion paper \cite{mwai_bound} to
+the precision quoted here. The spread entering Eq.~\eqref{eq:bound} is the sample range
+$\Delta X = \max X - \min X$ over the corpus in run A.
 
 \section{Results}
 \label{sec:results}
-
-All values below are read from \texttt{data/final/rq\_answers.json}, written by
-\texttt{scripts/analyze\_corpus.py} from the scan output, which was itself verified
-row-for-row against the source corpus on text, category and identifier.
 
 \subsection{Separation across categories}
 
 The four categories differ at
 \begin{equation}
-F = 15.779, \qquad p = 1.035\times10^{-9}, \qquad \eta^2 = 0.1068,
+F(3, 396) = 15.779, \qquad p = 1.035\times10^{-9}, \qquad \eta^2 = 0.1068,
 \end{equation}
-on $n = 400$. The design was fixed before the scan and can detect $\eta^2 = 0.0268$ at
-$\alpha = 0.05$ and power $0.80$, so the observed effect is roughly four times the smallest
-the study could have found.
+on $n = 400$. The design can detect $\eta^2 = 0.0268$ at $\alpha = 0.05$ and power $0.80$, so
+the observed effect is roughly four times the smallest the study could have found.
 
 \emph{Read this with Table~\ref{tab:corpus} in view.} The categories are corpora. The
 measurement establishes that the instrument assigns systematically different values to four
@@ -207,26 +328,27 @@ Reward hook     & $+2.254$ & $2.539\times 10^{-2}$  & $+0.319$ \\
 High outrage    & $+0.212$ & $8.320\times 10^{-1}$  & $+0.030$ \\
 \bottomrule
 \end{tabular}
-\caption{Welch comparisons against neutral informational content. The separation is carried
-by fear-activating items. High-outrage items do not separate, and that is the category the
-study's hypothesis expected to separate most.}
+\caption{Welch comparisons of the observable $X$ against neutral informational content,
+$n = 100$ per group. The separation is carried by fear-activating items. High-outrage items do
+not separate, and that is the category the study's hypothesis expected to separate most.}
 \label{tab:welch}
 \end{table}
 
-Two features of Table~\ref{tab:welch} deserve emphasis. First, the effect is one category:
-remove fear-activating items and little remains. Second, high outrage does not separate on
+Two features of Table~\ref{tab:welch} deserve emphasis. First, the effect is largely one
+category: fear-activating items carry most of it. Second, high outrage does not separate on
 the observable despite being drawn from its own distinct source. Section~\ref{sec:components}
 shows why, and the answer is not that outrage content leaves the encoder unmoved.
 
-Every category mean is negative, so deliberative activation is predicted to lead throughout.
-The instrument finds no affective dominance anywhere in this corpus.
+Every category mean is negative, so deliberative activation is predicted to lead on average
+in every category (Fig.~\ref{fig:violin}). The instrument finds no affective dominance at
+category level anywhere in this corpus.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{fig_violin.png}
-\caption{Distribution of the signed observable within each category, all 400 items. Every
-category mean is negative, so deliberative activation is predicted to lead throughout, and
-the separation is a shift between overlapping distributions rather than a clean split.}
+\caption{Distribution of the signed observable $X$ within each category, all 400 items of
+run A; bars mark category means. Every category mean is negative, and the separation is a
+shift between overlapping distributions rather than a clean split.}
 \label{fig:violin}
 \end{figure}
 
@@ -235,7 +357,7 @@ the separation is a shift between overlapping distributions rather than a clean 
 
 The observable is a difference, and a difference cannot tell a large symmetric response from
 no response. Both components are recorded per item, so each can be compared against neutral
-content on its own.
+content on its own (Table~\ref{tab:component-welch}, Fig.~\ref{fig:components}).
 
 \begin{table}[htbp]
 \centering
@@ -267,31 +389,27 @@ $F = 7.451$ for $A_{\text{aff}}$ and $F = 6.399$ for $A_{\text{del}}$, both $p <
 
 This weakens an argument we would otherwise make. If outrage had moved neither component, its
 failure to separate would count against the instrument simply detecting provenance. It moves
-both, so every category drawn from a distinct source does move away from the baseline on at
-least one component, which is what source detection predicts. The components do not resolve
-the confound in either direction.
+both, so every category drawn from a distinct source moves away from the neutral baseline on
+at least one component, which is what source detection predicts. The components do not
+resolve the confound in either direction.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.95\textwidth]{fig_components.png}
 \caption{$A_{\text{aff}}$, $A_{\text{del}}$ and their signed difference by category over all
-400 items. High outrage is elevated on both components and flat on the difference.}
+400 items of run A. High outrage is elevated on both components and flat on the difference.}
 \label{fig:components}
 \end{figure}
 
-\subsection{Discrimination against the pre-scan label}
+\subsection{Discrimination against the label, and baselines}
+\label{sec:auc}
 
-Against the \texttt{manipulative} label carried by each item before it was scanned, the
-observable discriminates at $\mathrm{AUC} = 0.6274$, above the smallest detectable
-$0.5916$. AUC is the headline because it is threshold-free. An $F_1$ of $0.6680$ is
-obtainable, but its threshold was chosen on the same data it is evaluated on, and it is
-labelled as fitted in sample wherever it appears.
-
-An AUC has no meaning without a baseline, so two were run on the same rows and label by
-\texttt{scripts/baselines.py}: TF-IDF over unigrams and bigrams with logistic regression,
-scored out of fold under five-fold stratified cross-validation, and the VADER \cite{hutto2014} compound
-sentiment score used directly with nothing fitted. Intervals are $2{,}000$-draw bootstrap
-percentiles.
+Against the source-derived \texttt{manipulative} label (300 positive, 100 negative), the
+observable discriminates at $\mathrm{AUC} = 0.6274$, above the smallest detectable $0.5916$.
+Because the label is the category, this is a second view of the separation above rather than
+evidence about manipulation in individual items. AUC is the headline because it is
+threshold-free. An $F_1$ of $0.6680$ is obtainable, but its threshold was chosen on the same
+data it is evaluated on, and it is labelled as fitted in sample wherever it appears.
 
 \begin{table}[htbp]
 \centering
@@ -308,133 +426,123 @@ VADER compound     & ISOT only         & 150 & $0.4019$ & $[0.3098, 0.4943]$ \\
 TF-IDF + logistic  & ISOT only, 5-fold & 150 & $0.9724$ & $[0.9483, 0.9901]$ \\
 \bottomrule
 \end{tabular}
-\caption{Baselines against the same label. The lower block keeps only the 150 items from the
-ISOT collection, the one origin corpus contributing both classes.}
+\caption{Baselines against the same label. Intervals are $2{,}000$-draw bootstrap
+percentiles. The lower block keeps only the 150 items from the ISOT collection, the one
+origin corpus contributing both classes.}
 \label{tab:baselines}
 \end{table}
 
-\textbf{The lexical baseline wins by a wide margin.} Sentiment does not clear chance. The
-observable is not a better detector of manipulative content than counting words, and no such
-claim is made. Leave-one-source-out, the natural correction for the confound, is unavailable
-because every source contributes exactly one class, so a held-out source leaves a single-class
-test fold. The ISOT-only block is the substitute, and TF-IDF holds at $0.9724$ there. Both
-TF-IDF figures nonetheless sit above $0.95$, where near-ceiling lexical performance on a small
-split points to residual stylistic markers, and a probe on the same features recovers the
-source dataset at $66.25\%$ against $25\%$ chance. Much of what the lexical model separates is
-provenance. The observable is carried forward as the field quantity Eq.~\eqref{eq:bound}
-consumes, not as a competing classifier.
+\textbf{The lexical baseline wins by a wide margin} (Table~\ref{tab:baselines}). Sentiment
+does not clear chance. The observable is not a better detector of manipulative content than
+counting words, and no such claim is made. Leave-one-source-out, the natural correction for
+the confound, is unavailable because every source contributes exactly one class, so a
+held-out source leaves a single-class test fold. The ISOT-only block is the substitute, and
+TF-IDF holds at $0.9724$ there. Both TF-IDF figures sit above $0.95$, where near-ceiling
+lexical performance on a small corpus points to residual stylistic markers, and a probe on
+the same features recovers the source dataset for $66.25\%$ of items against a
+majority-class rate of $25\%$. Much of what the lexical model separates is provenance. The
+observable is carried forward as the field quantity Eq.~\eqref{eq:bound} consumes, not as a
+competing classifier.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.95\textwidth]{B3_per_vertex_fear_activating-0000.pdf}
-\caption{Predicted response for one fear-activating item at every one of the 20{,}484
-cortical vertices, on the pial surface. Vertices below the map's 70th percentile are left
-unpainted so the anatomy remains readable, and the threshold is stated in the figure. This is
-the encoder's own output, not a smoothed or interpolated field.}
-\label{fig:pervertex}
-\end{figure}
-
-\subsection{Session reliability}
+\subsection{Run-to-run reliability}
 \label{sec:reliability}
 
-A second GPU session rescanned all 400 items with identical text, identical code and
-identical region definitions. That pair is a test-retest measurement, and without it every
-effect above would rest on a single session with no statement of how much of an item's score
-is the item and how much is the session.
+Without a second run every effect above would rest on a single pass with no statement of how
+much of an item's score is the item and how much is the run. Table~\ref{tab:retest} gives the
+agreement between runs A and B.
 
 \begin{table}[htbp]
 \centering
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
-& $r$ & ICC(2,1) & $\mathrm{sd}(\Delta)$ & $\mathrm{sd}(\Delta)/\mathrm{sd}_{\text{between}}$ \\
+& $r$ & ICC(2,1) & $\mathrm{sd}(\Delta)$ & $\mathrm{sd}(\Delta)/\mathrm{sd}_{\text{A}}$ \\
 \midrule
-$\mathrm{NAA}_{\text{signed}}$ & $0.8763$ & $0.8725$ & $0.01029$ & $0.484$ \\
+$X = \mathrm{NAA}_{\text{signed}}$ & $0.8763$ & $0.8725$ & $0.01029$ & $0.484$ \\
 $A_{\text{aff}}$ & $0.8759$ & $0.8713$ & $0.01213$ & $0.489$ \\
 $A_{\text{del}}$ & $0.8576$ & $0.8550$ & $0.01271$ & $0.521$ \\
 \bottomrule
 \end{tabular}
-\caption{Agreement between two scanning sessions over all 400 items. ICC is
-reported beside $r$ because a session that shifted every score by a constant would still
+\caption{Agreement between two runs over all 400 items. $\Delta$ is the paired difference
+B$-$A and $\mathrm{sd}_{\text{A}}$ the between-item standard deviation in run A. ICC is
+reported beside $r$ because a run that shifted every score by a constant would still
 correlate perfectly.}
 \label{tab:retest}
 \end{table}
 
 Three consequences follow, and they cut in different directions.
 
-\textbf{The separation replicates.} On the second session the four-category ANOVA gives
+\textbf{The separation replicates.} On run B the four-category ANOVA gives
 $\eta^2 = 0.0888$, $F = 12.861$, $p = 4.918\times10^{-8}$, against $\eta^2 = 0.1068$,
-$F = 15.779$ for the first session over the same items. Both clear the detectable
-floor. The result is not an artifact of one session. The second session's effect is roughly
-a fifth smaller; both sessions carry the same error, so the difference is within what sampling
-variation between two noisy runs produces.
+$F = 15.779$ for run A over the same items. Both clear the detectable floor. The difference
+in $\eta^2$ between runs is $0.018$, with a paired bootstrap $95\%$ interval of
+$[-0.014, 0.052]$ ($5{,}000$ resamples of items within category), so the two runs are
+consistent with one underlying effect measured twice with error.
 
-\textbf{Per-item direction is not reliable.} Of 400 paired items, 51, or $12.8\%$, reverse
-sign between sessions. A statement that a particular item is affective-leading is therefore
-not supportable at this precision, and no per-item verdict appears anywhere in this paper or
-in the public interface described in Section~\ref{sec:availability}. Group means over 100
-items average this scatter down by an order of magnitude, which is why the category-level
-result survives.
+\textbf{Per-item direction is not reliable.} Of 400 paired items, 51, or $12.75\%$, reverse
+sign between runs. A statement that a particular item is affective-leading is therefore not
+supportable at this precision, and no per-item verdict appears anywhere in this paper or
+in the public interface described under Data availability. Group means over 100 items average
+this scatter down by a factor of ten, which is why the category-level result survives.
 
 \textbf{The reversal count is the measured noise, not an extra defect.} The paired differences
-give a per-session error $\sigma = \mathrm{sd}(\Delta)/\sqrt{2} = 0.00728$, against a
+give a per-run error $\sigma = \mathrm{sd}(\Delta)/\sqrt{2} = 0.00728$, against a
 between-item standard deviation of $0.01913$ once that error is removed. Under additive error
 at that $\sigma$, with each item's value shrunk toward the grand mean so that no item's own
 noise predicts its own reversal, $20{,}000$ simulations give $55.3$ expected reversals, $95\%$
 interval $[44, 67]$. The observed $51$ sits inside it. Reversing items sit near zero, mean
-$|X| = 0.00320$ against $0.02159$ ($p = 1.4\times10^{-25}$), and spread evenly across
-categories ($\chi^2 = 2.764$, $p = 0.429$). Per-item direction is therefore out of reach at
-this $\sigma$, rather than awaiting a fix.
+$|X| = 0.00320$ against $0.02159$ for stable items (Mann--Whitney $p = 1.4\times10^{-25}$),
+and spread evenly across categories ($\chi^2 = 2.764$, 3 df, $p = 0.429$). Per-item
+direction is therefore out of reach at this $\sigma$, rather than awaiting a fix. Three
+sources could contribute to $\sigma$: speech synthesis, which is redone on every run and may
+fall back to a different synthesiser; forced alignment; and GPU nondeterminism. Separating
+them requires a controlled rerun.
 
-\textbf{Scan order does not carry the separation.} Because the corpus took more than one
-session, position in the scan is a candidate explanation for the category effect. It is not
-one. Items were scanned interleaved, so the four categories are balanced across thirds of the
-scan order, $\chi^2 = 3.139$, $p = 0.7913$. The drift is real, $\eta^2 = 0.0167$ at
-$p = 0.0353$, but it is orthogonal to category by construction: removing scan-third means
-before the category ANOVA moves the effect only from $\eta^2 = 0.1068$ to $0.1048$,
-$p = 1.588\times10^{-9}$. Had the corpus been scanned one category at a time, this drift
-would have been indistinguishable from the finding.
+\textbf{Scan order does not carry the separation.} Because run A took more than one GPU
+session, position in the scan is a candidate explanation for the category effect. The
+interleaved order balances the four categories across thirds of the scan
+($\chi^2 = 2.773$, 6 df, $p = 0.837$). A drift across thirds is present, $\eta^2 = 0.0167$
+at $p = 0.0353$, but because it is nearly orthogonal to category it adds scatter rather than
+bias: removing scan-third means before the category ANOVA moves the effect only from
+$\eta^2 = 0.1068$ to $0.1048$, $p = 1.588\times10^{-9}$. Had the corpus been scanned one
+category at a time, this drift would have been indistinguishable from the finding.
 
-Neither session is corrected toward the other and the two are not averaged. An average of two
-sessions would carry a precision that neither run has.
-
-\section{The physics}
-
-\subsection{Calibration does not identify the coupling}
+\subsection{The field: calibration and bound}
+\label{sec:physics}
 
 With the observable in hand, the natural step is to estimate $\alpha$ in $h = \alpha X$ by
-fitting the model's predicted outcome against the corpus. On partial runs the bootstrap
-interval for $\hat{\alpha}$ comfortably included zero. On the completed corpus it no longer
-does. That is not a result, for two reasons.
-
-The fit performs worse than the sample mean on held-out data, so it has no out-of-sample
-predictive value: a negative held-out $R^2$ means the relationship it encodes does not
-generalise beyond the points used to estimate it. And the estimate scales inversely with
-$\beta J$, which nothing in this study measures, so any single value reported would be a
-statement about a chosen $\beta J$ rather than about media.
+fitting. We regressed the \texttt{manipulative} label on $X$ (320 items for fitting, 80 held
+out) and converted the slope $s$ with the linear-response relation
+$m \approx h/(1 - \beta J)$, valid for $\beta J < 1$, into $\hat\alpha = s(1-\beta J)$. The
+bootstrap interval for $\hat\alpha$ excludes zero. That is not a result, for three reasons.
+The outcome is a source-derived label, not a measured opinion. The fit performs worse than the
+sample mean on held-out data, $R^2_{\text{held-out}} = -0.031$, so the relationship does not
+generalise beyond the points used to estimate it. And $\hat\alpha$ is proportional to
+$1-\beta J$, which nothing in this study measures, so any single value would be a statement
+about a chosen $\beta J$ rather than about media.
 
 The coupling is therefore \emph{unidentified}, which is a weaker claim than either a
-detection or a null. \textbf{No value of $\hat{\alpha}$ is quoted in this paper}, in text,
-table or caption.
+detection or a null, and \textbf{no value of $\hat{\alpha}$ is quoted in this paper}.
+Fig.~\ref{fig:freeenergy} shows instead how the free energy would respond at each category's
+measured mean for a range of assumed couplings.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.9\textwidth]{fig_free_energy_atlas.png}
-\caption{Free energy swept across a range of couplings, evaluated at each category's measured
-mean. The sweep is not a fit: no value of $\alpha$ is estimated from the data anywhere in
-this paper, and the panels show how the physics would behave for each coupling rather than
-which coupling holds.}
+\includegraphics[width=\textwidth]{fig_free_energy_atlas.png}
+\caption{Landau free energy $F(m)$ at $\beta J = 0.7$, evaluated at each category's measured
+mean $X$ for assumed couplings $\alpha \in \{-1, -0.5, 0, 0.5, 1\}$. At this coupling the
+model is below its critical point and each curve has a single minimum; the panels show how
+little the category means tilt it. The sweep is not a fit: no value of $\alpha$ is estimated
+from the data.}
 \label{fig:freeenergy}
 \end{figure}
-
-\subsection{What the spread does yield}
 
 The measurement does deliver the quantity Eq.~\eqref{eq:bound} consumes. Across the corpus
 the observable attains
 \begin{equation}
-\Delta X = 0.1241,
+\Delta X = 0.1241 \qquad (\min X = -0.0698,\ \max X = +0.0543),
 \end{equation}
-and substituting into the companion paper's inequality converts a general statement into a
-concrete requirement.
+and substituting into the companion paper's inequality with Eq.~\eqref{eq:hc} converts a
+general statement into a concrete requirement (Table~\ref{tab:bound}).
 
 \begin{table}[htbp]
 \centering
@@ -447,173 +555,352 @@ $1.496$ & $0.20541$ & $1.6553$ \\
 $2.000$ & $0.53284$ & $4.2938$ \\
 \bottomrule
 \end{tabular}
-\caption{The field bound evaluated at three reduced couplings, using the measured spread
-$\Delta X = 0.1241$. Each row states the coupling any proposal of this mechanism would need
-in order for media to drive a transition through this observable.}
+\caption{The field bound evaluated at three reduced couplings (grid points of the companion
+paper's solver nearest $1.1$, $1.5$ and $2$), using the measured spread $\Delta X = 0.1241$
+of run A. Each row states the coupling any proposal of this mechanism would need in order for
+media to drive a transition through this observable.}
 \label{tab:bound}
 \end{table}
 
 This is a necessary condition and not a sufficient one. Clearing it does not establish that
-media moves populations; falling below it excludes the mechanism within the model.
+media moves populations; falling below it excludes the mechanism within the model. Run B
+gives a smaller spread, $\Delta X = 0.1176$, and hence $\alpha \ge 4.530$ at $\beta J = 2$.
+Because a sample range is inflated by measurement error, the noise-free spread is no larger
+than the measured one and the requirement it implies is no smaller, so the quoted values are
+the lenient end.
 
-\section{What survives the confound}
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{What survives the confound}
 \label{sec:whatsurvives}
 
 It is worth separating the claims this study can defend from those it cannot, because the two
 are easy to conflate.
 
 \emph{Not supported.} That the instrument detects manipulation, or does so better than a
-lexical model. That framing rather than provenance drives the separation. Any value for the coupling. Any statement about an
-individual item. Any claim about subcortical structures, or about measured rather than
-predicted activity.
+lexical model. That framing rather than provenance drives the separation. Any value for the
+coupling. Any statement about an individual item. Any claim about subcortical structures, or
+about measured rather than predicted activity.
 
-\emph{Supported.} That the observable attains a measured spread of $0.1241$ on real content,
-which is what the bound consumes and which does not depend on why the spread arises. That the
-categories separate at an effect four times the detectable floor, and that the separation
-replicates in an independent session. That high-outrage content, the category the
+\emph{Supported.} That the observable attains a measured spread of about $0.12$ on real
+content, which is what the bound consumes and which does not depend on why the spread arises.
+That the categories separate at an effect four times the detectable floor, and that the
+separation replicates in an independent run. That high-outrage content, the category the
 hypothesis favoured most, raises both networks together and so leaves the observable where
-neutral content puts it. And that the coupling is unidentified on this data, which constrains what a
-successor may assume.
+neutral content puts it. And that the coupling is unidentified on this data, which constrains
+what a successor may assume.
 
 The confound is removable by design rather than by analysis. Drawing all four categories from
 a single source, so that provenance is held constant while framing varies, or crossing
 sources with categories so that the two are statistically separable, would convert the
 present result into an interpretable one. Neither requires new instrumentation.
 
-\section{Limitations}
+\subsection{Limitations}
+\label{sec:limitations}
 
 \begin{enumerate}
-\item Category is confounded with source dataset. The dominant limitation, stated in
-Section~\ref{sec:results} as well as here.
-\item Single-session scores are noisy: $\mathrm{ICC} = 0.8725$, with session-to-session
-standard deviation $48.4\%$ of the between-item standard deviation. Category-level
-conclusions survive this; per-item ones do not.
-\item Predicted activation is not measured activation. Whether the encoder tracks real cortex
-is unresolved and contested; a published audit reports the released average-subject
-checkpoint anti-correlated with cortex \cite{sapient2026}, and a parcel-level replication on
-public data \cite{mwai_encoder} does not find that sign but is not yet decisive.
+\item Category is confounded with source dataset, and the \texttt{manipulative} label is
+derived from category. This is the dominant limitation, stated in Section~\ref{sec:results}
+as well as here. Category membership is also partly defined by selection rules (threat
+keywords for fear-activating items, publisher-level labels for high-outrage items) rather
+than by per-item annotation.
+\item Single-run scores are noisy: $\mathrm{ICC}(2,1) = 0.8725$, with run-to-run standard
+deviation $48.4\%$ of the between-item standard deviation. Category-level conclusions survive
+this; per-item ones do not.
+\item Predicted activation is not measured activation. Whether the released average-subject
+checkpoint tracks measured cortical responses to synthesised speech of written text is not
+tested here and is not established.
 \item Cortical proxy only. The checkpoint cannot speak to subcortical structure.
-\item Average-subject configuration, forced by the loader.
+\item Average-subject configuration, set by the loader; no individual differences are
+represented.
 \item Out-of-distribution stimuli: the encoder was trained on naturalistic audiovisual
-material and is given synthesised speech from written text.
+material and is given synthesised speech from written text, with a synthesiser that may differ
+between runs.
+\item The parcel sets are the study's specification. The affective-salience set contains
+orbitofrontal parcels and the deliberative-control set lateral orbitofrontal ones, and other
+defensible choices would give a different observable.
+\item $\Delta X$ is the range of one run on this corpus. It depends on corpus size and
+composition, and differs between runs ($0.1241$ and $0.1176$).
 \item The corpus is English-language from five specific sources, none of them African. A
 search for openly licensed African news data carrying usable labels returned nothing
 suitable, so the spread is a property of American and European publishing and the bound
 inherits that limitation.
+\item The field model is mean-field, single-population, static and binary.
 \end{enumerate}
 
 \section{Conclusion}
+\label{sec:conclusion}
 
 Media enters mean-field opinion models as a field that is almost never measured. This paper
 measured a candidate: an observable computed from content through a released cortical
 encoder, applied to 400 items, with its spread, its reliability and its failure modes
 reported rather than assumed. The instrument separates four corpora at an effect it was
-powered to find, the separation replicates across sessions, and it is confounded with
-provenance in a way no analysis of this corpus can undo. The coupling it was built to
-calibrate is unidentified. What survives is the spread, and through the companion paper's
-inequality a requirement, $\alpha \ge 4.2938$ at $\beta J = 2$, that any future proposal of
-this mechanism must meet within all-to-all mean-field theory.
-
-\section*{Code and data availability}
-\label{sec:availability}
-
-The pipeline, corpus builder, analysis and figure scripts, and the JSON and CSV artifacts
-every number above is read from, are public at \url{https://github.com/brn-mwai/monarch}. The
-instrument runs at \url{https://monarch-4iy.pages.dev}, carrying the full corpus with each
-item's text, its pre-scan labels and its measured values, and reporting no per-item verdict
-for the reason given in Section~\ref{sec:reliability}. Figures showing predicted responses
-are generated by \texttt{scripts/render\_brain\_figures.py} from the saved per-vertex maps,
-each stating its threshold, rather than captured from the interface.
-
+powered to find, the separation replicates across runs, and it is confounded with provenance
+in a way no analysis of this corpus can undo. A lexical baseline separates the same corpora
+far better. The coupling the observable was built to calibrate is unidentified. What survives
+is the spread, and through the companion paper's inequality a requirement,
+$\alpha \ge 4.29$ at $\beta J = 2$, that any future proposal of this mechanism must meet
+within all-to-all mean-field theory.
 
 \section*{CRediT authorship contribution statement}
 
 \textbf{Brian Mwai:} Conceptualization, Methodology, Software, Validation, Formal analysis,
 Investigation, Data curation, Writing -- original draft, Writing -- review and editing,
-Visualization. The author is the sole contributor to this work.
+Visualization.
+\ifcoauthor
+\textbf{Songa Mutambi:} Conceptualization (form of the observable), Supervision, Writing --
+review and editing.
+\fi
 
 \section*{Declaration of competing interest}
 
-The author declares no competing financial interests or personal relationships that could
+\Theauthors{} \declare{} no competing financial interests or personal relationships that could
 have appeared to influence the work reported in this paper.
 
 \section*{Funding}
 
 This research received no specific grant from any funding agency in the public, commercial or
-not-for-profit sectors. Computation was carried out on publicly available free-tier resources.
+not-for-profit sectors. Computation used free-tier GPU resources.
+
+\section*{Ethics statement}
+
+This study involved no human participants, no animal subjects and no personal data. Every
+activation value is a model prediction. The corpus consists of publicly released datasets and
+public PubMed abstracts, used under their respective terms. TRIBE v2 is released under the
+CC-BY-NC-4.0 licence and was used for non-commercial research only.
+
+\section*{Data availability}
+\label{sec:availability}
+
+The pipeline, corpus builder, analysis and figure scripts, and the JSON and CSV files every
+number in this paper is read from are public at \url{https://github.com/brn-mwai/monarch}.
+The analyses are produced by \texttt{analyze\_corpus.py} (separation, effect sizes, AUC),
+\texttt{outrage\_split.py} (components), \texttt{baselines.py} (baselines and source probe),
+\texttt{test\_retest.py} and \texttt{reversal\_diagnosis.py} (reliability),
+\texttt{power\_statement.py} (sensitivity), \texttt{calibrate\_alpha.py} (calibration) and
+\texttt{field\_bound.py} (bound), and \texttt{verify\_numbers.py} checks every quoted value
+against those outputs. The full corpus, with each item's text, its pre-scan labels and its
+measured values, is browsable at \url{https://monarch-4iy.pages.dev/corpus}; the interface
+reports no per-item verdict, for the reason given in Section~\ref{sec:reliability}. Figures
+of predicted responses are rendered from the saved per-vertex maps, each stating its
+threshold. The source datasets are available from their original providers
+\cite{ahmed2017,kiesel2019,potthast2018,pubmed}.
+
+\section*{Declaration of generative AI and AI-assisted technologies in the writing process}
+
+% Brian to confirm wording.
+\textbf{[Brian to confirm wording.]} During the preparation of this work \theauthors{} used an AI
+assistant (Claude, Anthropic) for editing text and for support in writing and checking
+analysis code. After using this tool, \theauthors{} reviewed and edited all content and
+\take{} full responsibility for the content of the publication.
 
 \section*{Acknowledgements}
 
-The author thanks Dr.\ Songa Mutambi of the Department of Natural Sciences, The Catholic University of
-Eastern Africa, for supervising the project of which this work forms part. The supervision was
-academic guidance and approval; the author is solely responsible for the content.
+\ifcoauthor
+The authors thank the Department of Natural Sciences, The Catholic University of Eastern
+Africa, for supporting the project of which this work forms part.
+\else
+The author thanks Dr.\ Songa Mutambi, Department of Natural Sciences, The Catholic University
+of Eastern Africa, who supervised the project of which this work forms part and suggested the
+signed-difference form of the observable used throughout this paper.
+\fi
 
-\begin{thebibliography}{9}
-
-\bibitem{tribe2025}
-S.~d'Ascoli, J.~Rapin, Y.~Benchetrit, H.~Banville, J.-R.~King,
-TRIBE: TRImodal Brain Encoder for whole-brain fMRI response prediction, \href{https://arxiv.org/abs/2507.22229}{arXiv:2507.22229}
-(2025).
+\begin{thebibliography}{99}
 
 \bibitem{castellano2009}
 C.~Castellano, S.~Fortunato, V.~Loreto,
 Statistical physics of social dynamics,
-Rev. Mod. Phys. 81 (2009) 591--646. \href{https://doi.org/10.1103/RevModPhys.81.591}{doi:10.1103/RevModPhys.81.591}.
+Rev. Mod. Phys. 81 (2009) 591--646.
+\href{https://doi.org/10.1103/RevModPhys.81.591}{doi:10.1103/RevModPhys.81.591}.
+
 \bibitem{galam2008}
 S.~Galam,
-Sociophysics: A review of Galam models,
-Int. J. Mod. Phys. C 19 (2008) 409--440. \href{https://doi.org/10.1142/S0129183108012297}{doi:10.1142/S0129183108012297}.
+Sociophysics: a review of Galam models,
+Int. J. Mod. Phys. C 19 (2008) 409--440.
+\href{https://doi.org/10.1142/S0129183108012297}{doi:10.1142/S0129183108012297}.
+
 \bibitem{crokidakis2012}
 N.~Crokidakis,
 Effects of mass media on opinion spreading in the Sznajd sociophysics model,
-Physica A 391 (2012) 1729. \href{https://doi.org/10.1016/j.physa.2011.11.038}{doi:10.1016/j.physa.2011.11.038}.
+Physica A 391 (2012) 1729--1734.
+\href{https://doi.org/10.1016/j.physa.2011.11.038}{doi:10.1016/j.physa.2011.11.038}.
+
 \bibitem{azhari2023}
 Azhari, R.~Muslim,
-The external field effect on opinion formation based on the majority rule and the $q$-voter
-models on the complete graph,
-Int. J. Mod. Phys. C (2023) 2350088. \href{https://doi.org/10.1142/S0129183123500882}{doi:10.1142/S0129183123500882}.
+The external field effect on the opinion formation based on the majority rule and the
+$q$-voter models on the complete graph,
+Int. J. Mod. Phys. C 34 (2023) 2350088.
+\href{https://doi.org/10.1142/S0129183123500882}{doi:10.1142/S0129183123500882}.
+
 \bibitem{freitas2020}
 F.~Freitas, A.~R.~Vieira, C.~Anteneodo,
 Imperfect bifurcations in opinion dynamics under external fields,
-J. Stat. Mech. (2020) 024002. \href{https://doi.org/10.1088/1742-5468/ab6848}{doi:10.1088/1742-5468/ab6848}.
+J. Stat. Mech. (2020) 024002.
+\href{https://doi.org/10.1088/1742-5468/ab6848}{doi:10.1088/1742-5468/ab6848}.
+
 \bibitem{sirbu2016}
 A.~S\^{i}rbu, V.~Loreto, V.~D.~P.~Servedio, F.~Tria,
 Opinion dynamics: models, extensions and external effects,
-in: Participatory Sensing, Opinions and Collective Awareness, Springer, 2016, pp. 363--401. \href{https://doi.org/10.1007/978-3-319-25658-0_17}{doi:10.1007/978-3-319-25658-0\_17}.
+in: V.~Loreto et al. (Eds.), Participatory Sensing, Opinions and Collective Awareness,
+Understanding Complex Systems, Springer, Cham, 2017, pp. 363--401.
+\href{https://doi.org/10.1007/978-3-319-25658-0_17}{doi:10.1007/978-3-319-25658-0\_17}.
+
+\bibitem{mullick2025}
+P.~Mullick, P.~Sen,
+Sociophysics models inspired by the Ising model,
+Eur. Phys. J. B 98 (2025) 206.
+\href{https://doi.org/10.1140/epjb/s10051-025-01053-7}{doi:10.1140/epjb/s10051-025-01053-7}.
+
 \bibitem{mwai_bound}
 B.~Mwai,
 Bounding the external field in mean-field opinion dynamics: what any content observable must
-satisfy to drive a transition, manuscript in preparation (2026).
+satisfy to drive a transition, submitted (2026).
 
-\bibitem{mwai_encoder}
-B.~Mwai,
-What does a released average-subject brain encoder actually predict? A noise ceiling, a
-parcel-level replication, and three silent failures, manuscript in preparation (2026).
+\bibitem{tribev2}
+S.~d'Ascoli, J.~Rapin, Y.~Benchetrit, T.~Brooks, K.~Begany, J.~Raugel, H.~Banville,
+J.-R.~King,
+A foundation model of vision, audition, and language for in-silico neuroscience,
+arXiv:2605.04326 (2026). \url{https://arxiv.org/abs/2605.04326}.
+
+\bibitem{tribe2025}
+S.~d'Ascoli, J.~Rapin, Y.~Benchetrit, H.~Banville, J.-R.~King,
+TRIBE: TRImodal Brain Encoder for whole-brain fMRI response prediction,
+arXiv:2507.22229 (2025). \url{https://arxiv.org/abs/2507.22229}.
+
+\bibitem{fischl2012}
+B.~Fischl,
+FreeSurfer,
+NeuroImage 62 (2012) 774--781.
+\href{https://doi.org/10.1016/j.neuroimage.2012.01.021}{doi:10.1016/j.neuroimage.2012.01.021}.
+
+\bibitem{gtts}
+P.~N.~Durette,
+gTTS: Python library and CLI tool to interface with Google Translate's text-to-speech API,
+software, \url{https://github.com/pndurette/gTTS}.
+
+\bibitem{pratap2024}
+V.~Pratap, A.~Tjandra, B.~Shi, P.~Tomasello, A.~Babu, S.~Kundu, et al.,
+Scaling speech technology to 1,000+ languages,
+J. Mach. Learn. Res. 25 (97) (2024) 1--52.
+
+\bibitem{bain2023}
+M.~Bain, J.~Huh, T.~Han, A.~Zisserman,
+WhisperX: time-accurate speech transcription of long-form audio,
+in: Proc. Interspeech 2023, pp. 4489--4493.
+\href{https://doi.org/10.21437/Interspeech.2023-78}{doi:10.21437/Interspeech.2023-78}.
+
+\bibitem{radford2023}
+A.~Radford, J.~W.~Kim, T.~Xu, G.~Brockman, C.~McLeavey, I.~Sutskever,
+Robust speech recognition via large-scale weak supervision,
+in: Proc. 40th Int. Conf. Machine Learning, PMLR 202 (2023) 28492--28518.
+
+\bibitem{llama3}
+A.~Grattafiori, A.~Dubey, A.~Jauhri, A.~Pandey, A.~Kadian, A.~Al-Dahle, et al.,
+The Llama 3 herd of models,
+arXiv:2407.21783 (2024). \url{https://arxiv.org/abs/2407.21783}.
+
+\bibitem{seamless2023}
+Seamless Communication, L.~Barrault, Y.-A.~Chung, M.~Coria Meglioli, D.~Dale, N.~Dong,
+et al.,
+Seamless: multilingual expressive and streaming speech translation,
+arXiv:2312.05187 (2023). \url{https://arxiv.org/abs/2312.05187}.
+
+\bibitem{glasser2016}
+M.~F.~Glasser, T.~S.~Coalson, E.~C.~Robinson, C.~D.~Hacker, J.~Harwell, E.~Yacoub,
+K.~Ugurbil, J.~Andersson, et al.,
+A multi-modal parcellation of human cerebral cortex,
+Nature 536 (2016) 171--178.
+\href{https://doi.org/10.1038/nature18933}{doi:10.1038/nature18933}.
 
 \bibitem{ahmed2017}
 H.~Ahmed, I.~Traore, S.~Saad,
 Detection of online fake news using n-gram analysis and machine learning techniques,
-in: ISDDC 2017, Lecture Notes in Computer Science 10618, Springer, 2017, pp. 127--138. \href{https://doi.org/10.1007/978-3-319-69155-8_9}{doi:10.1007/978-3-319-69155-8\_9}.
+in: Intelligent, Secure, and Dependable Systems in Distributed and Cloud Environments
+(ISDDC 2017), Lecture Notes in Computer Science 10618, Springer, Cham, 2017, pp. 127--138.
+\href{https://doi.org/10.1007/978-3-319-69155-8_9}{doi:10.1007/978-3-319-69155-8\_9}.
+
 \bibitem{kiesel2019}
 J.~Kiesel, M.~Mestre, R.~Shukla, E.~Vincent, P.~Adineh, D.~Corney, B.~Stein, M.~Potthast,
-SemEval-2019 Task 4: Hyperpartisan news detection,
-in: Proceedings of the 13th International Workshop on Semantic Evaluation, 2019, pp. 829--839. \href{https://doi.org/10.18653/v1/S19-2145}{doi:10.18653/v1/S19-2145}.
+SemEval-2019 Task 4: hyperpartisan news detection,
+in: Proc. 13th Int. Workshop on Semantic Evaluation, 2019, pp. 829--839.
+\href{https://doi.org/10.18653/v1/S19-2145}{doi:10.18653/v1/S19-2145}.
+
 \bibitem{potthast2018}
 M.~Potthast, T.~Gollub, K.~Komlossy, S.~Schuster, M.~Wiegmann, E.~P.~Garces Fernandez,
 M.~Hagen, B.~Stein,
 Crowdsourcing a large corpus of clickbait on Twitter,
-in: Proceedings of COLING 2018, pp. 1498--1507. \url{https://aclanthology.org/C18-1127/}.
+in: Proc. 27th Int. Conf. Computational Linguistics (COLING 2018), pp. 1498--1507.
+\url{https://aclanthology.org/C18-1127/}.
+
 \bibitem{pubmed}
 National Center for Biotechnology Information, PubMed, accessed through the Entrez
 Programming Utilities, \url{https://pubmed.ncbi.nlm.nih.gov}.
 
+\bibitem{welch1947}
+B.~L.~Welch,
+The generalization of `Student's' problem when several different population variances are
+involved,
+Biometrika 34 (1947) 28--35.
+\href{https://doi.org/10.1093/biomet/34.1-2.28}{doi:10.1093/biomet/34.1-2.28}.
+
+\bibitem{cohen1988}
+J.~Cohen,
+Statistical Power Analysis for the Behavioral Sciences, 2nd ed.,
+Lawrence Erlbaum Associates, Hillsdale, NJ, 1988.
+\href{https://doi.org/10.4324/9780203771587}{doi:10.4324/9780203771587}.
+
+\bibitem{hanley1982}
+J.~A.~Hanley, B.~J.~McNeil,
+The meaning and use of the area under a receiver operating characteristic (ROC) curve,
+Radiology 143 (1982) 29--36.
+\href{https://doi.org/10.1148/radiology.143.1.7063747}{doi:10.1148/radiology.143.1.7063747}.
+
+\bibitem{mann1947}
+H.~B.~Mann, D.~R.~Whitney,
+On a test of whether one of two random variables is stochastically larger than the other,
+Ann. Math. Stat. 18 (1947) 50--60.
+\href{https://doi.org/10.1214/aoms/1177730491}{doi:10.1214/aoms/1177730491}.
+
 \bibitem{hutto2014}
 C.~J.~Hutto, E.~Gilbert,
-VADER: A parsimonious rule-based model for sentiment analysis of social media text,
-in: Proceedings of ICWSM 2014, pp. 216--225. \href{https://doi.org/10.1609/icwsm.v8i1.14550}{doi:10.1609/icwsm.v8i1.14550}.
-\bibitem{sapient2026}
-The Sapient Company, The Faceless Brain, self-published technical report, 2026,
-\url{https://thesapientcompany.com/research}.
+VADER: a parsimonious rule-based model for sentiment analysis of social media text,
+in: Proc. Int. AAAI Conf. Web and Social Media 8 (2014) 216--225.
+\href{https://doi.org/10.1609/icwsm.v8i1.14550}{doi:10.1609/icwsm.v8i1.14550}.
+
+\bibitem{bird2009}
+S.~Bird, E.~Klein, E.~Loper,
+Natural Language Processing with Python,
+O'Reilly Media, Sebastopol, CA, 2009.
+
+\bibitem{pedregosa2011}
+F.~Pedregosa, G.~Varoquaux, A.~Gramfort, V.~Michel, B.~Thirion, O.~Grisel, et al.,
+Scikit-learn: machine learning in Python,
+J. Mach. Learn. Res. 12 (2011) 2825--2830.
+
+\bibitem{efron1993}
+B.~Efron, R.~J.~Tibshirani,
+An Introduction to the Bootstrap,
+Chapman \& Hall, New York, 1993.
+\href{https://doi.org/10.1007/978-1-4899-4541-9}{doi:10.1007/978-1-4899-4541-9}.
+
+\bibitem{shrout1979}
+P.~E.~Shrout, J.~L.~Fleiss,
+Intraclass correlations: uses in assessing rater reliability,
+Psychol. Bull. 86 (1979) 420--428.
+\href{https://doi.org/10.1037/0033-2909.86.2.420}{doi:10.1037/0033-2909.86.2.420}.
+
+\bibitem{mcgraw1996}
+K.~O.~McGraw, S.~P.~Wong,
+Forming inferences about some intraclass correlation coefficients,
+Psychol. Methods 1 (1996) 30--46.
+\href{https://doi.org/10.1037/1082-989X.1.1.30}{doi:10.1037/1082-989X.1.1.30}.
+
+\bibitem{virtanen2020}
+P.~Virtanen, R.~Gommers, T.~E.~Oliphant, M.~Haberland, T.~Reddy, D.~Cournapeau, et al.,
+SciPy 1.0: fundamental algorithms for scientific computing in Python,
+Nat. Methods 17 (2020) 261--272.
+\href{https://doi.org/10.1038/s41592-019-0686-2}{doi:10.1038/s41592-019-0686-2}.
 
 \end{thebibliography}
 

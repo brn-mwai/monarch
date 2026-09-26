@@ -6,10 +6,12 @@
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
 
-\graphicspath{{../../services/inference/data/paper1/}}
-\input{../../services/inference/data/paper1/numbers.tex}
+% Figures and numerical macros are copies of the outputs of the analysis scripts in the
+% public repository (see Data availability), so this folder compiles on its own.
+\graphicspath{{figures/}}
+\input{numbers.tex}
 
-\journal{Physica A}
+\journal{Preprint}
 
 \begin{document}
 
@@ -18,32 +20,48 @@
 \title{Bounding the external field in mean-field opinion dynamics: what any content
 observable must satisfy to drive a transition}
 
-\author[cuea]{Brian Mwai}
+\author[cuea]{Brian Mwai\corref{cor1}}
 \ead{mwaibryn@gmail.com}
-\address[cuea]{Department of Natural Sciences, Faculty of Science, The Catholic University of
-Eastern Africa, P.O. Box 62157-00200, Nairobi, Kenya}
+\cortext[cor1]{Corresponding author.}
+% Co-author line, to be enabled only if co-authorship is agreed:
+% \author[cuea]{Songa Mutambi}
+\affiliation[cuea]{organization={Department of Natural Sciences, Faculty of Science, The Catholic
+University of Eastern Africa},
+            addressline={P.O. Box 62157-00200},
+            city={Nairobi},
+            country={Kenya}}
 
 \begin{abstract}
-Mean-field opinion models borrowed from the Ising universality class are routinely used to
-argue that media content can tip a population between competing consensus states. In almost
-every case the external field representing that content is assigned by hand. The models
-therefore demonstrate that \emph{a} field of sufficient magnitude tips the population, while
-saying nothing about whether any real content observable reaches that magnitude. We close
-that gap from the theory side. Writing the field as $h = \alpha X$ for an arbitrary content
-observable $X$ with attainable range $\Delta X$, we show that in all-to-all mean-field theory no
-media-driven transition across the spinodal is possible unless the coupling satisfies $\alpha \ge h_c(\beta J)/\Delta X$, where
-$h_c(\beta J)$ is the spinodal field at which the metastable minimum disappears. The bound
-inverts the usual procedure: instead of fitting $\alpha$ and hoping the estimate clears zero,
-it states what $\alpha$ would have to be for the mechanism to operate at all, and it can be
-evaluated before any data are collected. We derive the Landau coefficients from the
-self-consistency condition rather than asserting them, recover the mean-field exponents
-$\beta = 1/2$, $\gamma = 1$ and $\delta = 3$ numerically as a check on the solver, and give a
-screening criterion that any proposed field observable must pass.
+Mean-field opinion models from the Ising universality class are routinely used to argue that
+media content can tip a population between competing consensus states. In almost every case
+the external field representing that content is assigned by hand, so the models show that
+\emph{a} field of sufficient magnitude tips the population while saying nothing about whether
+any real content observable reaches that magnitude. We address that gap from the theory side.
+Writing the field as $h = \alpha X$ for a content observable $X$ whose attainable range
+$\Delta X$ contains its neutral value, we show that in all-to-all mean-field theory, starting
+from the symmetric zero-field state, no media-driven transition across the spinodal is
+possible unless $|\alpha| \ge h_c(\beta J)/\Delta X$, where $h_c(\beta J)$ is the spinodal field
+at which the metastable state disappears. The spinodal field has the closed form
+$h_c = \beta J m_s - \operatorname{artanh}(m_s)$ with $m_s^2 = 1 - 1/(\beta J)$, giving
+$h_c = 0.5328$ at $\beta J = 2$. The condition is necessary, not sufficient, and it does not
+measure $\alpha$: it states how large the coupling would have to be for the mechanism to
+operate at all, and it can be evaluated before any outcome data are collected. We derive the
+Landau coefficients from the self-consistency condition rather than asserting them, recover
+the mean-field exponents $\beta = 1/2$, $\gamma = 1$ and $\delta = 3$ numerically as a check
+on the solver, and state a screening criterion that any proposed field observable must pass.
 \end{abstract}
 
+\begin{highlights}
+\item Media fields in Ising opinion models are usually assigned, not measured.
+\item For $h = \alpha X$, a spinodal crossing needs $|\alpha| \ge h_c(\beta J)/\Delta X$.
+\item Closed-form spinodal field, $h_c = 0.5328$ at $\beta J = 2$.
+\item Landau coefficients derived; mean-field exponents recovered numerically.
+\item A necessary-condition screen for content observables, run before data.
+\end{highlights}
+
 \begin{keyword}
-sociophysics \sep opinion dynamics \sep mean-field Ising \sep Landau theory \sep
-phase transition
+sociophysics \sep opinion dynamics \sep mean-field Ising model \sep Landau theory \sep
+spinodal \sep external field
 \end{keyword}
 
 \end{frontmatter}
@@ -62,93 +80,97 @@ opinion near a critical point.
 
 It also has a weakness that is rarely stated. The field $h$ enters as a free parameter. A
 study fixes $h$ at whatever value makes the phenomenon visible, sweeps it, and reports that
-the population tips at some $h^\ast$. The pattern is consistent across the literature that
+the population tips at some $h^\ast$. The pattern is common in the literature that
 models media explicitly: Crokidakis \cite{crokidakis2012} introduces mass media into the
 two-dimensional Sznajd model as a probability $p$ of following the media opinion and sweeps
-it, finding the phase transition absent above $p \approx 0.18$; Azhari and
-Muslim \cite{azhari2023} apply an external field to majority-rule and $q$-voter dynamics and
-sweep its magnitude; Freitas, Vieira and Anteneodo \cite{freitas2020} show that a
-field turns the transition into an imperfect bifurcation; the review by S\^{i}rbu et al. \cite{sirbu2016} surveys models combining
-peer interaction with external information without any of them measuring the external term.
-In each case the swept parameter is the quantity whose real-world magnitude is at issue.
+it, finding the usual phase transition absent for $p \gtrsim 0.18$; Azhari and
+Muslim \cite{azhari2023} apply an external field to majority-rule and $q$-voter dynamics on
+the complete graph and sweep its strength; Freitas, Vieira and Anteneodo \cite{freitas2020}
+show in a kinetic-exchange model that an external bias gives rise to imperfect bifurcations
+and hysteresis as its strength is varied; and the review by S\^{i}rbu et al.\ \cite{sirbu2016}
+surveys models that combine peer interaction with external information, in which the external
+term is specified as a model parameter. In each of these studies the swept parameter is the
+quantity whose real-world magnitude is at issue.
 
 Nothing in such an exercise establishes that real media content produces a field anywhere
 near $h^\ast$, because nothing in it connects $h$ to a measurable property of content. The
-conclusion "a sufficiently strong field tips the population" is then a statement about the
-model, not about media. The 2025 review of Ising-inspired sociophysics by Mullick and
-Sen \cite{mullick2025} makes the same point from the other side, listing data-driven
-calibration against large-scale social datasets among the field's open directions rather than
-among its accomplishments.
+conclusion ``a sufficiently strong field tips the population'' is then a statement about the
+model, not about media. The recent review of Ising-inspired sociophysics by Mullick and
+Sen \cite{mullick2025} points the same way, listing data-driven calibration against
+large-scale social datasets among the promising directions for future work.
 
 One recent study breaks the pattern and is worth stating precisely, because it bounds what
-this paper can claim. Korbel, Dahdoul and Thurner \cite{korbel2026} calibrate a double
-random-field Ising model of elections directly to campaign expenditure and extract a critical
-spending threshold from historical results, reporting it as the first time thermodynamic
-parameters and a critical threshold have been taken from election data in this way. Their
-field is measured, not assigned, which is exactly the move this paper argues for.
+this paper can claim. Korbel, Dahdoul and Thurner \cite{korbel2026} model elections as a random
+field Ising model with a bimodal field representing two campaigns, calibrate it to historical
+US House election data, and extract a critical campaign spending. Their field is measured, not
+assigned, which is the move this paper argues for.
 
-Two things nonetheless remain open, and they are what follows below. Their calibration is
-fitted from outcome data after the fact, so it cannot screen a proposed mechanism before the
-data exist; and it is specific to expenditure, whereas the observables proposed for media
-\emph{content} remain uncalibrated. What is missing in both cases is a necessary condition
-stated on the coupling itself.
+Two things nonetheless remain open. Their calibration is fitted from outcome data after the
+fact, so it cannot screen a proposed mechanism before the data exist; and it is specific to
+expenditure, whereas observables proposed for media \emph{content} remain uncalibrated. What
+is missing in both cases is a necessary condition stated on the coupling itself.
 
-This paper takes the missing step in the direction that does not require data. Suppose an
+This paper takes that step in the direction that does not require outcome data. Suppose an
 observable $X$ is proposed as the content-side quantity driving the field, through a linear
 map $h = \alpha X$ with an unknown coupling $\alpha$. Suppose further, as is true of any real
 observable, that $X$ has a bounded attainable range $\Delta X$ across the content a
-population actually encounters. Then the requirement that the field be able to reach the
-spinodal imposes a lower bound on $\alpha$ that involves no fitting:
+population actually encounters. Then, within all-to-all mean-field theory and for a
+population starting from the symmetric zero-field state, the requirement that the field be
+able to reach the spinodal imposes a lower bound on the coupling that involves no fitting:
 \begin{equation}
-\alpha \;\ge\; \frac{h_c(\beta J)}{\Delta X}.
+|\alpha| \;\ge\; \frac{h_c(\beta J)}{\Delta X}.
 \label{eq:bound-intro}
 \end{equation}
 Everything on the right is either a property of the model ($h_c$ as a function of the
-coupling $\beta J$) or a property of the observable that can be measured cheaply
-($\Delta X$). The bound is therefore a screening test: it can reject a proposed mechanism
-before any expensive measurement of $\alpha$ is attempted, and it converts a failure to
-detect a coupling into a quantitative statement about how large the coupling would have had
-to be.
+coupling $\beta J$) or a property of the observable that can be measured without outcome data
+($\Delta X$). The bound is therefore a screening test: it can reject a proposed mechanism,
+within the model, before any expensive measurement of $\alpha$ is attempted, and it converts a
+failure to detect a coupling into a quantitative statement about how large the coupling would
+have had to be. It is a necessary condition only; it is not a prediction that media content
+moves opinion, and it does not measure $\alpha$.
 
-Section~\ref{sec:model} fixes the model. Section~\ref{sec:landau} derives the Landau
-coefficients from the self-consistency condition, correcting a form that does not follow from
-it. Section~\ref{sec:numerics} validates the solver against the three exact mean-field
-exponents. Section~\ref{sec:bound} derives the bound and Section~\ref{sec:screening} states
-the screening criterion.
+Section~\ref{sec:model} fixes the model and derives the Landau coefficients from the
+self-consistency condition. Section~\ref{sec:results} validates the solver against the exact
+mean-field exponents, gives the spinodal field in closed form and derives the bound.
+Section~\ref{sec:discussion} states the screening criterion and the scope of the result, and
+Section~\ref{sec:conclusion} concludes.
 
-\section{Mean-field model}
+\section{Model}
 \label{sec:model}
 
+\subsection{Mean-field Ising model of opinion}
+
 Take $N$ agents carrying binary opinions $s_i = \pm 1$, coupled all-to-all with strength
-$J/N$, in an external field $h$:
+$J/N$, in an external field $H$:
 \begin{equation}
-\mathcal{H} = -\frac{J}{N}\sum_{i<j} s_i s_j - h \sum_i s_i .
+\mathcal{H} = -\frac{J}{N}\sum_{i<j} s_i s_j - H \sum_i s_i .
 \end{equation}
-The magnetisation $m = N^{-1}\sum_i s_i$ is the collective opinion polarisation, and in the
-thermodynamic limit it obeys the self-consistency condition
+The magnetisation $m = N^{-1}\sum_i s_i$ is the collective opinion polarisation. With
+$\beta = 1/k_B T$, $k_B = 1$, and the reduced field $h \equiv \beta H$, it obeys in the limit
+$N \to \infty$ the self-consistency condition
 \begin{equation}
-m = \tanh\!\left(\beta J m + h\right),
+m = \tanh\!\left(\beta J m + h\right).
 \label{eq:selfcons}
 \end{equation}
-with $\beta = 1/k_B T$ and $k_B = 1$ throughout. We follow the convention that $h$ absorbs
-the factor $\beta$, so $h$ is dimensionless and directly comparable to $\beta J$. The social
-reading of $\beta$ is the inverse of a noise level: large $\beta$ describes a population that
-copies its neighbours reliably, small $\beta$ one that decides close to at random.
+The reduced field $h$ is dimensionless and directly comparable to $\beta J$; it is the field
+used in the rest of the paper. The social reading of $\beta$ is the inverse of a noise level:
+large $\beta$ describes a population that copies others reliably, small $\beta$ one that
+decides close to at random.
 
-Equation~\eqref{eq:selfcons} has a single root for $\beta J < 1$ at zero field and three for
-$\beta J > 1$, of which the outer two are stable. The transition at $\beta J = 1$ is
-continuous.
+At zero field, Eq.~\eqref{eq:selfcons} has the single root $m = 0$ for $\beta J \le 1$ and
+three roots for $\beta J > 1$, of which the outer two are stable. The transition at
+$\beta J = 1$ is continuous.
 
-\section{Landau expansion with derived coefficients}
+\subsection{Landau expansion with derived coefficients}
 \label{sec:landau}
 
-Write the free energy as a quartic in the order parameter,
+Write the free energy per agent, in units of $k_B T$, as a quartic in the order parameter,
 \begin{equation}
 F(m) = a\,m^2 + b\,m^4 - h\,m .
 \label{eq:landau}
 \end{equation}
 The coefficients are not free. Requiring that $\partial F/\partial m = 0$ reproduce
-\eqref{eq:selfcons} to cubic order fixes them. Inverting \eqref{eq:selfcons} gives
+Eq.~\eqref{eq:selfcons} to cubic order fixes them. Inverting Eq.~\eqref{eq:selfcons} gives
 $\operatorname{artanh}(m) = \beta J m + h$, and expanding
 $\operatorname{artanh}(m) = m + m^3/3 + O(m^5)$ yields
 \begin{equation}
@@ -160,65 +182,82 @@ Matching term by term against $\partial F/\partial m = 2a m + 4b m^3 - h$ gives
 a = \frac{1 - \beta J}{2}, \qquad b = \frac{1}{12}.
 \label{eq:coefficients}
 \end{equation}
-Both follow from \eqref{eq:selfcons}; neither is chosen. This is worth stating explicitly
-because coefficient forms that do \emph{not} follow from the accompanying self-consistency
-condition appear in the applied literature, and the symptom is subtle: the free-energy curve
-still has the right qualitative double well, so the figure looks correct, while its minimum
-sits away from the $m^\ast$ that the same paper's root-finder reports. The double well opens
-when $a < 0$, that is when $\beta J > 1$, recovering the transition already implied by
-\eqref{eq:selfcons}.
-
-Figure~\ref{fig:free-energy} shows \eqref{eq:landau} at zero field on both sides of the
+The same coefficients follow from expanding the mean-field (Bragg--Williams) free energy
+$-\tfrac{1}{2}\beta J m^2 - h m + \tfrac{1+m}{2}\ln\tfrac{1+m}{2} + \tfrac{1-m}{2}\ln\tfrac{1-m}{2}$
+to fourth order, which equals $-\ln 2 + F(m) + O(m^6)$, so the two routes are consistent. We
+state the derivation because a quartic with coefficients that do not follow from the
+accompanying self-consistency condition still has a qualitatively correct double well while
+its minimum sits away from the root $m^\ast$ of Eq.~\eqref{eq:selfcons}; the error is easy to
+miss in a figure. The double well opens when $a < 0$, that is when $\beta J > 1$, recovering
+the transition already implied by Eq.~\eqref{eq:selfcons}.
+Figure~\ref{fig:free-energy} shows Eq.~\eqref{eq:landau} at zero field on both sides of the
 critical coupling.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{F1_free_energy.pdf}
-\caption{Free energy \eqref{eq:landau} at zero field for $\beta J = 0.8$, $1.0$ and $1.4$
-with the coefficients \eqref{eq:coefficients}. The second minimum appears only above
+\caption{Free energy, Eq.~\eqref{eq:landau}, at zero field for $\beta J = 0.8$, $1.0$ and
+$1.4$ with the coefficients of Eq.~\eqref{eq:coefficients}. The double well appears only above
 $\beta J = 1$.}
 \label{fig:free-energy}
 \end{figure}
 
-The linear response to the field is
+The quartic is used here for the qualitative structure and the exponents. The spinodal field
+of Section~\ref{sec:spinodal} is computed from the full Eq.~\eqref{eq:selfcons}, not from the
+truncated quartic, which reproduces it only as $\beta J \to 1^+$.
+
+The linear response to the reduced field is
 \begin{equation}
-\chi = \frac{\beta \operatorname{sech}^2(\beta J m^\ast + h)}
+\chi \equiv \frac{\partial m}{\partial h}
+     = \frac{\operatorname{sech}^2(\beta J m^\ast + h)}
             {1 - \beta J \operatorname{sech}^2(\beta J m^\ast + h)},
 \label{eq:chi}
 \end{equation}
-which diverges where the denominator vanishes and is undefined beyond it; we report $\chi$
-only where the denominator is positive.
+so that the response to the unreduced field is $\partial m/\partial H = \beta\chi$. It
+diverges where the denominator vanishes; we report $\chi$ only on stable roots, where the
+denominator is positive.
 
-\section{Numerical validation against the exact exponents}
+\section{Results}
+\label{sec:results}
+
+\subsection{Numerical validation against the exact exponents}
 \label{sec:numerics}
 
 Every later figure is drawn with the same solver, so the solver is checked first against
-results that are known exactly. Mean-field theory fixes \cite{goldenfeld1992}
+results that are known exactly. Mean-field theory gives \cite{goldenfeld1992}
 \begin{equation}
 \beta = \tfrac{1}{2}, \qquad \gamma = 1, \qquad \delta = 3,
 \end{equation}
 for $m^\ast \sim (\beta J - 1)^{\beta}$ at zero field, $\chi \sim |1 - \beta J|^{-\gamma}$,
-and $m \sim h^{1/\delta}$ on the critical isotherm.
+and $m \sim h^{1/\delta}$ on the critical isotherm $\beta J = 1$. (The exponent $\beta$ is not
+to be confused with the inverse temperature; context distinguishes them.) All three follow
+directly from Eq.~\eqref{eq:stationarity}: $m^{\ast 2} = 3(\beta J - 1)$ at zero field,
+$\chi = 1/(1 - \beta J)$ at $m^\ast = 0$, and $m^3 = 3h$ at $\beta J = 1$.
 
-One methodological point matters here. Solving \eqref{eq:selfcons} by direct iteration of
+One methodological point matters. Solving Eq.~\eqref{eq:selfcons} by direct iteration of
 $m_{k+1} = \tanh(\beta J m_k + h)$ is the natural implementation and is adequate away from
-criticality, but its convergence degrades precisely at $\beta J = 1$, where the map's
-derivative reaches unity. The exponents are defined in that limit, so fitting them to
-iterated values measures truncation error rather than physics: doing so returns
-$\delta \approx 1.35$ against an exact $3$. We therefore fit the exponents to roots obtained
-by bracketing, and check the iterative solver against the bracketed one away from
-criticality, where the largest absolute discrepancy over the sampled grid is
-$\pbSolverAgreement$.
+criticality, but its convergence degrades at $\beta J = 1$, where the map's derivative
+reaches unity. The exponents are defined in that limit, so fitting them to iterated values
+measures truncation error rather than physics: with $10^3$ iterations and tolerance
+$10^{-10}$, doing so returns $\delta \approx 1.35$ against an exact $3$. We therefore fit the
+exponents to roots obtained by bracketing, and check the iterative solver against the
+bracketed one away from criticality ($|\beta J - 1| \ge 0.02$), where the largest absolute
+discrepancy over the sampled grid is $\pbSolverAgreement$.
 
-Fitting inside a window of width $\pbFitWindow$ in $|\beta J - 1|$ at $\pbFitPoints$ points
-recovers
+Fitting $\beta$ and $\gamma$ at $\pbFitPoints$ points in a window of width $\pbFitWindow$ in
+$|\beta J - 1|$, and $\delta$ at $\pbFitPoints$ log-spaced fields $10^{-6} \le h \le
+10^{-3}$, recovers
 \begin{equation}
 \beta = \pbBetaFitted, \qquad \gamma = \pbGammaFitted, \qquad \delta = \pbDeltaFitted,
 \end{equation}
-with absolute errors $\pbBetaError$, $\pbGammaError$ and $\pbDeltaError$ respectively. The
-residual error in $\beta$ is the largest of the three and is a finite-window effect: the
-power law is asymptotic, and the quartic term contaminates the slope as the window widens.
-Figures~\ref{fig:order}, \ref{fig:chi} and \ref{fig:isotherm} show the three fits.
+with absolute errors $\pbBetaError$, $<10^{-14}$ and $\pbDeltaError$ respectively. The $\gamma$
+fit is exact by construction, since $m^\ast = 0$ below the transition at zero field and
+$\chi = 1/(1-\beta J)$ identically; it checks the susceptibility expression and the fitting
+procedure rather than the root finder. The residual error in $\beta$ is a correction to
+scaling: keeping the next term of the expansion, $m^5/5$, gives
+$m^{\ast 2} = 3t\,(1 - \tfrac{9}{5}t + O(t^2))$ with $t = \beta J - 1$, which lowers the
+effective log-log slope across a finite window. Figures~\ref{fig:order}, \ref{fig:chi} and
+\ref{fig:isotherm} show the three fits.
 
 \begin{figure}[htbp]
 \centering
@@ -231,8 +270,8 @@ against an exact $1/2$.}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{F3_susceptibility.pdf}
-\caption{Susceptibility \eqref{eq:chi} approaching criticality from below, fitted exponent
-$\pbGammaFitted$ against an exact $1$.}
+\caption{Susceptibility, Eq.~\eqref{eq:chi}, approaching criticality from below at zero
+field; fitted exponent $\pbGammaFitted$ against an exact $1$.}
 \label{fig:chi}
 \end{figure}
 
@@ -244,25 +283,47 @@ $\pbDeltaFitted$ against an exact $3$.}
 \label{fig:isotherm}
 \end{figure}
 
-\section{The spinodal field and the bound}
-\label{sec:bound}
+\subsection{The spinodal field}
+\label{sec:spinodal}
 
-Above $\beta J = 1$ the free energy has two minima at zero field. Raising the field deepens
-one and shallows the other; at a finite field the shallower minimum disappears entirely. That
-value is the spinodal field $h_c(\beta J)$, and it is the field a population in the
-metastable state must experience before it is obliged to move. We locate it by bisection on
-the presence of a second stationary point, which keeps it consistent with the solver used
-elsewhere rather than introducing a closed form derived under different approximations.
-Figure~\ref{fig:phase} shows the resulting boundary; $h_c$ vanishes as $\beta J \to 1^+$ and
-grows monotonically, reaching $\pbHcAtMax$ at $\beta J = \pbBetaJMax$.
+Above $\beta J = 1$ the free energy has two minima at zero field. A field deepens one and
+shallows the other; at a finite field the shallower minimum disappears. That value is the
+spinodal field $h_c(\beta J)$: the field a population in the metastable state must experience
+before, within mean-field theory, it is obliged to move.
+
+It follows in closed form from Eq.~\eqref{eq:selfcons}. Write the roots as solutions of
+$h = g(m) \equiv \operatorname{artanh}(m) - \beta J m$. A pair of roots merges and disappears
+where $g'(m) = 1/(1-m^2) - \beta J = 0$, that is at
+\begin{equation}
+m_s^2 = 1 - \frac{1}{\beta J},
+\label{eq:ms}
+\end{equation}
+and the corresponding field is
+\begin{equation}
+h_c(\beta J) = \big|\operatorname{artanh}(m_s) - \beta J m_s\big|
+             = \beta J m_s - \operatorname{artanh}(m_s).
+\label{eq:hc}
+\end{equation}
+At $\beta J = 2$, $m_s = 1/\sqrt{2}$ and $h_c = \sqrt{2} - \operatorname{artanh}(1/\sqrt{2})
+= \pbHcAtMax$. As $\beta J \to 1^+$, Eq.~\eqref{eq:hc} gives
+$h_c \simeq \tfrac{2}{3}(\beta J - 1)^{3/2}$, the value the quartic of
+Eq.~\eqref{eq:landau} predicts; away from the transition the quartic overestimates it
+($2/3$ against $\pbHcAtMax$ at $\beta J = 2$). The figures are drawn from a bisection on the
+number of stable roots of Eq.~\eqref{eq:selfcons}, which agrees with Eq.~\eqref{eq:hc} to
+better than $10^{-6}$ over the plotted range. Figure~\ref{fig:phase} shows the boundary;
+$h_c$ vanishes as $\beta J \to 1^+$ and increases monotonically with $\beta J$.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{F5_phase_diagram.pdf}
-\caption{Phase diagram in $(\beta J, h)$. The shaded region is where two opinion states
-coexist; its upper boundary is the spinodal $h_c(\beta J)$.}
+\caption{Phase diagram in $(\beta J, h)$ for $h \ge 0$; the diagram is symmetric under
+$h \to -h$. The shaded region is where two stable opinion states coexist; its upper boundary
+is the spinodal $h_c(\beta J)$ of Eq.~\eqref{eq:hc}.}
 \label{fig:phase}
 \end{figure}
+
+\subsection{The bound}
+\label{sec:bound}
 
 Now let the field be generated by a content observable. Any such proposal has the form
 \begin{equation}
@@ -270,15 +331,26 @@ h = \alpha X,
 \end{equation}
 where $X$ is measurable on a piece of content and $\alpha$ is an unknown coupling carrying
 the units. Real observables are bounded: across the content a population plausibly
-encounters, $X$ spans some finite range $\Delta X$, which is an empirical property of the
-observable and of the corpus, not of the model. The largest field the mechanism can deliver
-is therefore $\alpha \Delta X$. Demanding that this reach the spinodal gives
+encounters, $X$ lies in some interval $[X_{\min}, X_{\max}]$ of width
+$\Delta X = X_{\max} - X_{\min}$, which is an empirical property of the observable and of the
+corpus, not of the model.
+
+Two further assumptions fix the reference point. First, the field is measured from the
+content-free reference $h = 0$, at which the population sits in one of the two symmetric
+states $\pm m^\ast$. Second, $X$ is signed about a neutral value $X = 0$ that lies inside the
+attainable range, $X_{\min} \le 0 \le X_{\max}$, as for an observable defined as a difference
+between two opposing components. Then every attainable field satisfies
+$|h| \le |\alpha| \max(|X_{\min}|, |X_{\max}|) \le |\alpha|\,\Delta X$. Moving a population
+from either state into the other through a spinodal crossing requires a field of magnitude at
+least $h_c(\beta J)$ opposing that state, so a necessary condition is
 \begin{equation}
-\alpha \Delta X \;\ge\; h_c(\beta J)
+|\alpha|\, \Delta X \;\ge\; h_c(\beta J)
 \qquad \Longleftrightarrow \qquad
-\alpha \;\ge\; \frac{h_c(\beta J)}{\Delta X}.
+|\alpha| \;\ge\; \frac{h_c(\beta J)}{\Delta X}.
 \label{eq:bound}
 \end{equation}
+Replacing $\Delta X$ by $\max(|X_{\min}|, |X_{\max}|)$ gives a tighter condition; the form in
+Eq.~\eqref{eq:bound} is the weaker one and so remains necessary under the stated assumptions.
 Figure~\ref{fig:alpha} plots the right-hand side against $\beta J$ for several values of
 $\Delta X$. At $\beta J = \pbBetaJMax$ the required coupling is $\pbAlphaRequiredOneTenth$ for
 an observable of spread $0.1$, $\pbAlphaRequiredHalf$ for spread $0.5$,
@@ -287,40 +359,50 @@ $\pbAlphaRequiredUnity$ for unit spread and $\pbAlphaRequiredDouble$ for spread 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{F6_alpha_required.pdf}
-\caption{Coupling required before a content observable of spread $\Delta X$ can drive the
-population across the spinodal.}
+\caption{Coupling $h_c(\beta J)/\Delta X$ required before a content observable of spread
+$\Delta X$ can drive the population across the spinodal, Eq.~\eqref{eq:bound}.}
 \label{fig:alpha}
 \end{figure}
 
-Three properties of \eqref{eq:bound} are worth drawing out.
+Three properties of Eq.~\eqref{eq:bound} are worth drawing out.
 
 First, it is a necessary condition, not a sufficient one. Clearing the bound does not
-establish that content tips populations; it only fails to rule it out. Falling below it,
-however, excludes the mechanism within the model's assumptions, for a population that must
-cross the spinodal.
+establish that content moves populations; it only fails to rule it out. Falling below it
+excludes the mechanism within the model's assumptions, for a population that must cross the
+spinodal.
 
-Second, it does not require the field to be estimated. $\Delta X$ is obtained by measuring
-the observable across a corpus, which is ordinarily far cheaper than estimating a coupling to
-collective behaviour, and $h_c$ comes from the model.
+Second, it does not require the coupling to be estimated. $\Delta X$ is obtained by measuring
+the observable across a corpus, which does not need the outcome variable and is ordinarily far
+cheaper than estimating a coupling to collective behaviour, and $h_c$ comes from the model.
 
-Third, it turns a null result into a quantitative constraint. A study that measures $\alpha$
+Third, it turns a null result into a quantitative constraint. A study that estimates $\alpha$
 and obtains an interval containing zero has, on its own, only the statement that no coupling
-was detected. Combined with \eqref{eq:bound}, the same interval says that the coupling would
-have to exceed $h_c(\beta J)/\Delta X$ for the mechanism to work, and that the measurement
-excludes that range at the stated confidence. This is a stronger and more useful claim, and
-it is available to any study that reports a spread alongside its null.
+was detected. Combined with Eq.~\eqref{eq:bound}, the same interval states that the coupling
+would have to exceed $h_c(\beta J)/\Delta X$ for the mechanism to operate, and whether the
+measurement excludes that range at the stated confidence. This is available to any study that
+reports a spread alongside its estimate.
 
-\section{A screening criterion}
+As an illustration, a companion study by the author (manuscript in preparation) measures a
+signed neural-response observable on a 400-article corpus and finds a range that contains
+zero, with spread $\Delta X = 0.1241$. Equation~\eqref{eq:bound} then requires
+$|\alpha| \ge \pbHcAtMax/0.1241 \approx 4.29$ at $\beta J = 2$. This is a statement about
+what the coupling would have to be, not a measurement of it.
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{A screening criterion}
 \label{sec:screening}
 
-The bound supports a procedure that can be run before data collection.
+The bound supports a procedure that can be run before outcome data are collected.
 
 \begin{enumerate}
-\item State the observable $X$ and the map $h = \alpha X$ explicitly, including units.
-\item Measure or bound $\Delta X$ on a modest sample of the content of interest. This does
-not require the outcome variable and is usually cheap.
-\item Choose the range of $\beta J$ the population plausibly occupies and read
-$h_c(\beta J)$ from Figure~\ref{fig:phase}.
+\item State the observable $X$ and the map $h = \alpha X$ explicitly, including units, and
+the neutral value $X = 0$.
+\item Measure or bound $\Delta X$ on a sample of the content of interest, and check that the
+range contains the neutral value. This does not require the outcome variable.
+\item Choose the range of $\beta J$ the population plausibly occupies and evaluate
+$h_c(\beta J)$ from Eq.~\eqref{eq:hc}.
 \item Evaluate $\alpha_{\min} = h_c(\beta J)/\Delta X$ and ask whether a coupling of that
 size is defensible on independent grounds.
 \item If it is not, the mechanism is excluded within the model and the expensive measurement
@@ -328,119 +410,147 @@ is unnecessary. If it is, proceed, and report $\Delta X$ alongside the estimate 
 so that the bound can be applied to the result.
 \end{enumerate}
 
-The weakest link is step 4, since $\alpha$ has no independent scale in most applications. We
-note that the criterion is still informative in relative terms: two candidate observables can
-be ranked by $\alpha_{\min}$, and an observable whose spread is small enough to demand an
-implausibly large coupling is a poor choice of field regardless of how well it correlates
-with anything.
+The weakest link is step 4, since $\alpha$ has no independent scale in most applications. The
+criterion is still informative in relative terms: candidate observables can be ranked by
+$\alpha_{\min}$, provided they are first expressed on a common scale (for example, each
+standardised by its own standard deviation across the corpus), since rescaling an observable
+by a constant rescales $\alpha_{\min}$ by its inverse. An observable whose spread demands an
+implausibly large coupling is a poor choice of field regardless of how well it correlates with
+anything.
 
-\section{Limitations}
+\subsection{Scope and limitations}
 \label{sec:limitations}
 
-The result inherits every assumption of the mean-field model: all-to-all coupling, a single
-homogeneous population, a static field, and a binary opinion. Network structure, heterogeneous
-susceptibility and temporal dynamics all change $h_c$, and in general lower it, so
-\eqref{eq:bound} should be read as a bound within this model rather than a universal one.
-The linear map $h = \alpha X$ is the simplest possible coupling and is an assumption in its
-own right; a saturating map would change the relationship between $\Delta X$ and the maximum
-attainable field. Finally, the spinodal is the relevant threshold for a population trapped in
-a metastable state; a population at the coexistence field can be moved by a smaller field
-given enough time, so \eqref{eq:bound} demands more of $\alpha$ than a nucleation argument
-would, and on a real network it can overstate the coupling required.
+The result inherits every assumption of the all-to-all mean-field model: a single homogeneous
+population, a static field, binary opinions, and the thermodynamic limit. On sparse or
+finite-dimensional networks, with heterogeneous susceptibility, or with temporal dynamics,
+the switching field differs from Eq.~\eqref{eq:hc}, so Eq.~\eqref{eq:bound} is a bound within
+this model rather than a universal one. The linear map $h = \alpha X$ is the simplest possible
+coupling and is an assumption in its own right; a saturating map would change the relation
+between $\Delta X$ and the maximum attainable field. The reference-point assumptions matter
+too: if the content-free field is not zero but already favours the target state by $h_0 > 0$,
+the requirement relaxes to $|\alpha|\Delta X \ge h_c - h_0$, and if the attainable range of
+$X$ does not contain its neutral value the maximum field is no longer bounded by
+$|\alpha|\Delta X$. Finally, the spinodal is the relevant threshold for a population trapped
+in a metastable state. In the all-to-all model at $N \to \infty$ the metastable state does not
+decay below $h_c$, but a finite population, or one on a network, can escape by activated
+nucleation at smaller fields given enough time; Eq.~\eqref{eq:bound} then demands more of
+$\alpha$ than a nucleation argument would, and can overstate the coupling required. The bound
+does not measure $\alpha$ and does not predict that media content moves opinion.
 
-\section{Reproducibility}
-\label{sec:repro}
+\section{Conclusion}
+\label{sec:conclusion}
 
-All figures and every number quoted in this paper are produced by a single script,
-\texttt{scripts/phase\_boundary.py}, which writes both the figures and a JSON record of the
-values; the numbers in the text are generated from that record rather than transcribed. The
-exponent check is enforced: the script exits non-zero if any fitted exponent departs from its
-exact value by more than a stated tolerance, so a solver regression fails the run instead of
-producing plausible curves.
+In all-to-all mean-field Ising opinion dynamics with a content-driven field $h = \alpha X$,
+a population starting from the symmetric zero-field state cannot be carried across the
+spinodal by content unless $|\alpha| \ge h_c(\beta J)/\Delta X$, with $h_c$ given in closed
+form by Eq.~\eqref{eq:hc}. The condition is necessary, not sufficient; it needs only the
+measured spread of the observable and the model's spinodal, so it can screen a proposed
+mechanism before outcome data exist, and it turns a null estimate of the coupling into a
+statement about the range that estimate excludes. Extending the bound to networked,
+heterogeneous and finite populations, where nucleation replaces the sharp spinodal, is the
+natural next step.
 
-\section*{Code and data availability}
+\section*{Data availability}
 
-No data were used. The paper is analytic and numerical throughout.
-
-Every script named above, together with the solver, the exponent check and the JSON records
-the reported numbers are generated from, is public at
-\url{https://github.com/brn-mwai/monarch}. The companion instrument, which supplies the
-measured observable this paper's bound consumes, runs at
-\url{https://monarch-4iy.pages.dev}, where the corpus and its per-item values can be read
-directly.
-
+No empirical data were used; the paper is analytic and numerical. All figures and every
+number quoted are produced by
+\nolinkurl{services/inference/scripts/phase_boundary.py}, which also enforces the exponent check (it exits non-zero if any fitted exponent departs from
+its exact value by more than a stated tolerance), and are written into the manuscript by
+\nolinkurl{services/inference/scripts/paper1_numbers.py} rather than transcribed. The code and
+the generated records are public at \url{https://github.com/brn-mwai/monarch}.
 
 \section*{CRediT authorship contribution statement}
 
 \textbf{Brian Mwai:} Conceptualization, Methodology, Software, Validation, Formal analysis,
-Investigation, Data curation, Writing -- original draft, Writing -- review and editing,
-Visualization. The author is the sole contributor to this work.
+Investigation, Visualization, Writing -- original draft, Writing -- review \& editing.
+% If co-authorship is agreed, add:
+% \textbf{Songa Mutambi:} Supervision, Writing -- review \& editing.
 
 \section*{Declaration of competing interest}
 
-The author declares no competing financial interests or personal relationships that could
-have appeared to influence the work reported in this paper.
+The author declares no known competing financial interests or personal relationships that
+could have appeared to influence the work reported in this paper.
 
 \section*{Funding}
 
-This research received no specific grant from any funding agency in the public, commercial or
-not-for-profit sectors. Computation was carried out on publicly available free-tier resources.
+This research did not receive any specific grant from funding agencies in the public,
+commercial, or not-for-profit sectors.
+
+\section*{Declaration of generative AI and AI-assisted technologies in the writing process}
+
+During the preparation of this work the author used Claude (Anthropic), an AI assistant, for
+editing the manuscript and for support in writing and checking analysis code. After using
+this tool, the author reviewed and edited the content as needed and takes full responsibility
+for the content of the publication.
 
 \section*{Acknowledgements}
 
-The author thanks Dr.\ Songa Mutambi of the Department of Natural Sciences, The Catholic University of
-Eastern Africa, for supervising the project of which this work forms part. The supervision was
-academic guidance and approval; the author is solely responsible for the content.
+The author thanks Dr.\ Songa Mutambi, Department of Natural Sciences, The Catholic University
+of Eastern Africa, for supervising the project of which this work forms part, and for
+suggesting the signed-difference form of the observable used in the companion study.
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{11}
 
 \bibitem{castellano2009}
 C.~Castellano, S.~Fortunato, V.~Loreto,
 Statistical physics of social dynamics,
-Rev. Mod. Phys. 81 (2009) 591--646. \href{https://doi.org/10.1103/RevModPhys.81.591}{doi:10.1103/RevModPhys.81.591}.
+Rev. Mod. Phys. 81 (2009) 591--646. \href{https://doi.org/10.1103/RevModPhys.81.591}{https://doi.org/10.1103/RevModPhys.81.591}.
+
 \bibitem{galam2008}
 S.~Galam,
-Sociophysics: A review of Galam models,
-Int. J. Mod. Phys. C 19 (2008) 409--440. \href{https://doi.org/10.1142/S0129183108012297}{doi:10.1142/S0129183108012297}.
+Sociophysics: a review of Galam models,
+Int. J. Mod. Phys. C 19 (2008) 409--440. \href{https://doi.org/10.1142/S0129183108012297}{https://doi.org/10.1142/S0129183108012297}.
+
+\bibitem{sznajd2000}
+K.~Sznajd-Weron, J.~Sznajd,
+Opinion evolution in closed community,
+Int. J. Mod. Phys. C 11 (2000) 1157--1165. \href{https://doi.org/10.1142/S0129183100000936}{https://doi.org/10.1142/S0129183100000936}.
+
+\bibitem{stauffer2008}
+D.~Stauffer,
+Social applications of two-dimensional Ising models,
+Am. J. Phys. 76 (2008) 470--473. \href{https://doi.org/10.1119/1.2779882}{https://doi.org/10.1119/1.2779882}.
+
 \bibitem{crokidakis2012}
 N.~Crokidakis,
 Effects of mass media on opinion spreading in the Sznajd sociophysics model,
-Physica A 391 (2012) 1729. arXiv:1111.5750. \href{https://doi.org/10.1016/j.physa.2011.11.038}{doi:10.1016/j.physa.2011.11.038}.
+Physica A 391 (2012) 1729--1734. \href{https://doi.org/10.1016/j.physa.2011.11.038}{https://doi.org/10.1016/j.physa.2011.11.038}.
+
 \bibitem{azhari2023}
 Azhari, R.~Muslim,
 The external field effect on the opinion formation based on the majority rule and the
 $q$-voter models on the complete graph,
-Int. J. Mod. Phys. C (2023) 2350088. arXiv:2305.06051. \href{https://doi.org/10.1142/S0129183123500882}{doi:10.1142/S0129183123500882}.
+Int. J. Mod. Phys. C 34 (2023) 2350088. \href{https://doi.org/10.1142/S0129183123500882}{https://doi.org/10.1142/S0129183123500882}.
+
+\bibitem{freitas2020}
+F.~Freitas, A.~R. Vieira, C.~Anteneodo,
+Imperfect bifurcations in opinion dynamics under external fields,
+J. Stat. Mech. Theory Exp. 2020 (2020) 024002. \href{https://doi.org/10.1088/1742-5468/ab6848}{https://doi.org/10.1088/1742-5468/ab6848}.
+
+\bibitem{sirbu2016}
+A.~S\^{i}rbu, V.~Loreto, V.~D.~P. Servedio, F.~Tria,
+Opinion dynamics: models, extensions and external effects,
+in: V.~Loreto, et al. (Eds.), Participatory Sensing, Opinions and Collective Awareness,
+Understanding Complex Systems, Springer, Cham, 2017, pp. 363--401.
+\href{https://doi.org/10.1007/978-3-319-25658-0_17}{https://doi.org/10.1007/978-3-319-25658-0\_17}.
+
 \bibitem{mullick2025}
 P.~Mullick, P.~Sen,
 Sociophysics models inspired by the Ising model,
-Eur. Phys. J. B 98 (2025) 206. arXiv:2506.23837. \href{https://doi.org/10.1140/epjb/s10051-025-01053-7}{doi:10.1140/epjb/s10051-025-01053-7}.
+Eur. Phys. J. B 98 (2025) 206. \href{https://doi.org/10.1140/epjb/s10051-025-01053-7}{https://doi.org/10.1140/epjb/s10051-025-01053-7}.
+
 \bibitem{korbel2026}
 J.~Korbel, R.~Dahdoul, S.~Thurner,
 Empirical validation of the polarization transition in a double-random field model of
 elections,
-Phys. Rev. Lett. 136 (2026) 127402. arXiv:2510.00612. \href{https://doi.org/10.1103/9gjj-1df6}{doi:10.1103/9gjj-1df6}.
-\bibitem{freitas2020}
-F.~Freitas, A.~R. Vieira, C.~Anteneodo,
-Imperfect bifurcations in opinion dynamics under external fields,
-J. Stat. Mech. (2020) 024002. \href{https://doi.org/10.1088/1742-5468/ab6848}{doi:10.1088/1742-5468/ab6848}.
-\bibitem{sirbu2016}
-A.~S\^{i}rbu, V.~Loreto, V.~D.~P. Servedio, F.~Tria,
-Opinion dynamics: models, extensions and external effects,
-in: Participatory Sensing, Opinions and Collective Awareness, Understanding Complex Systems,
-Springer, 2016, pp. 363--401. arXiv:1605.06326. \href{https://doi.org/10.1007/978-3-319-25658-0_17}{doi:10.1007/978-3-319-25658-0\_17}.
-\bibitem{sznajd2000}
-K.~Sznajd-Weron, J.~Sznajd,
-Opinion evolution in closed community,
-Int. J. Mod. Phys. C 11 (2000) 1157--1165. \href{https://doi.org/10.1142/S0129183100000936}{doi:10.1142/S0129183100000936}.
-\bibitem{stauffer2008}
-D.~Stauffer,
-Social applications of two-dimensional Ising models,
-Am. J. Phys. 76 (2008) 470--473. \href{https://doi.org/10.1119/1.2779882}{doi:10.1119/1.2779882}.
+Phys. Rev. Lett. 136 (2026) 127402. \href{https://doi.org/10.1103/9gjj-1df6}{https://doi.org/10.1103/9gjj-1df6}.
+
 \bibitem{goldenfeld1992}
 N.~Goldenfeld,
 Lectures on Phase Transitions and the Renormalization Group,
-Addison-Wesley, 1992; reprinted CRC Press, 2018. \href{https://doi.org/10.1201/9780429493492}{doi:10.1201/9780429493492}.
+Addison-Wesley, Reading, MA, 1992.
+
 \end{thebibliography}
 
 \end{document}
