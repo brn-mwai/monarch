@@ -151,10 +151,11 @@ export function AffectiveVsDeliberative({ items }: { items: CorpusItem[] }) {
       opts={{ renderer: 'canvas' }}
       option={{
         grid: narrow
-          ? { left: 8, right: 16, top: 32, bottom: 72, containLabel: true }
+          ? { left: 8, right: 16, top: 32, bottom: 92, containLabel: true }
           : { left: 66, right: 20, top: 20, bottom: 52 },
         legend: {
           bottom: 0,
+          ...(narrow ? { data: categories.map(categoryLabel) } : {}),
           textStyle: { color: 'rgba(255,255,255,0.55)', fontSize: narrow ? 11 : 10 },
           icon: 'circle',
           itemGap: narrow ? 12 : 10,
@@ -217,6 +218,10 @@ export function AffectiveVsDeliberative({ items }: { items: CorpusItem[] }) {
 export function CategoryMeans({ categories }: { categories: CategorySummary[] }) {
   const narrow = useNarrow();
   const axis = axisFor(narrow);
+  // Whisker ends, so the value axis extends far enough to draw them inside the plot.
+  const whiskerEnds = categories.flatMap((c) =>
+    c.sd === null ? [] : [c.mean - c.sd, c.mean + c.sd],
+  );
 
   return (
     <ReactECharts
@@ -304,6 +309,13 @@ export function CategoryMeans({ categories }: { categories: CategorySummary[] })
               };
             },
             data: categories.map((_, index) => [index]),
+          },
+          {
+            type: 'scatter',
+            silent: true,
+            symbolSize: 0,
+            tooltip: { show: false },
+            data: whiskerEnds.map((v) => [0, v]),
           },
         ],
       }}
