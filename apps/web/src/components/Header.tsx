@@ -15,7 +15,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Corpus', href: '/corpus' },
-  { label: 'Research', href: 'https://cuea.edu', external: true },
+  { label: 'Research', href: '/research' },
 ];
 
 /**
