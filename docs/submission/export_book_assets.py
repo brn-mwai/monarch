@@ -115,6 +115,13 @@ def outline(doc):
     for level, title, page in doc.get_toc(simple=True):
         if level <= 2 and page > 0:
             entries.append({"level": level, "title": title.strip(), "page": page})
+    contents_page = next(
+        (index for index, page in enumerate(doc, start=1) if page.get_text().lstrip().startswith("Contents")),
+        None,
+    )
+    if contents_page and not any(entry["title"] == "Contents" for entry in entries):
+        entries.append({"level": 1, "title": "Contents", "page": contents_page})
+        entries.sort(key=lambda entry: entry["page"])
     return entries
 
 
