@@ -28,7 +28,7 @@ function TogglePair<T extends string>({ value, options, onChange }: PairProps<T>
             type="button"
             onClick={() => onChange(opt.value)}
             className={
-              'rounded-full px-5 py-1.5 text-sm font-medium outline-none transition-colors duration-150 ' +
+              'rounded-full px-3 py-2 text-xs font-medium outline-none transition-colors duration-150 sm:px-5 sm:py-1.5 sm:text-sm ' +
               (active
                 ? 'bg-white/15 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]'
                 : 'bg-transparent text-white/60 hover:text-white')
@@ -61,7 +61,7 @@ export function ControlToggles({
   onHemisphereModeChange,
 }: ControlTogglesProps) {
   return (
-    <div className="pointer-events-auto absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-4">
+    <div className="pointer-events-auto absolute bottom-3 left-1/2 flex w-max max-w-[calc(100%-1rem)] -translate-x-1/2 items-center gap-2 sm:bottom-4 sm:gap-4">
       <TogglePair
         value={surfaceMode}
         options={SURFACE_OPTS}

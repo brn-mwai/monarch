@@ -10,6 +10,8 @@ const isVercel = !!process.env.VERCEL;
 
 const nextConfig = {
   productionBrowserSourceMaps: false,
+  staticPageGenerationTimeout: 900,
+  experimental: { cpus: 2 },
   ...(isStatic ? { output: "export" } : isVercel ? {} : { output: "standalone" }),
   images: { unoptimized: true },
   ...(isStatic

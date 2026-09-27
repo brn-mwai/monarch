@@ -362,7 +362,7 @@ export function BrainViewer({
               The label toggle's side effect (engine.toggleGuide) is OUTSIDE
               the React state updater so it does not double-fire under Strict
               Mode. */}
-          <div className="absolute left-4 top-4 z-30 flex items-center gap-2">
+          <div className="absolute left-3 top-3 z-30 flex items-center gap-1.5 sm:left-4 sm:top-4 sm:gap-2">
             <button
               type="button"
               onClick={() => {
@@ -371,7 +371,7 @@ export function BrainViewer({
                 engineRef.current?.toggleGuide();
                 if (!next) setSelectedROI(null);
               }}
-              className={`rounded-full border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider backdrop-blur-md transition-colors ${
+              className={`rounded-full border px-2.5 py-1.5 text-[10px] font-medium uppercase tracking-wide backdrop-blur-md sm:px-3 sm:text-[11px] sm:tracking-wider transition-colors ${
                 labelsVisible
                   ? 'border-white/60 bg-white/15 text-white'
                   : 'border-white/20 bg-black/40 text-white/65 hover:border-white/40 hover:text-white'
@@ -382,7 +382,7 @@ export function BrainViewer({
             <button
               type="button"
               onClick={() => setControlsOpen((open) => !open)}
-              className={`rounded-full border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider backdrop-blur-md transition-colors ${
+              className={`rounded-full border px-2.5 py-1.5 text-[10px] font-medium uppercase tracking-wide backdrop-blur-md sm:px-3 sm:text-[11px] sm:tracking-wider transition-colors ${
                 controlsOpen
                   ? 'border-white/60 bg-white/15 text-white'
                   : 'border-white/20 bg-black/40 text-white/65 hover:border-white/40 hover:text-white'
@@ -395,7 +395,7 @@ export function BrainViewer({
                 type="button"
                 onClick={() => setExportOpen((open) => !open)}
                 disabled={recording}
-                className={`rounded-full border px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider backdrop-blur-md transition-colors disabled:opacity-50 ${
+                className={`rounded-full border px-2.5 py-1.5 text-[10px] font-medium uppercase tracking-wide backdrop-blur-md sm:px-3 sm:text-[11px] sm:tracking-wider transition-colors disabled:opacity-50 ${
                   exportOpen
                     ? 'border-white/60 bg-white/15 text-white'
                     : 'border-white/20 bg-black/40 text-white/65 hover:border-white/40 hover:text-white'
