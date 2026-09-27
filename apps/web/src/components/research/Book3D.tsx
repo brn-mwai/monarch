@@ -207,7 +207,7 @@ export function Book3D() {
         role="application"
         aria-label="Dissertation book. Use the arrow keys, swipe, or click a page to turn it."
         tabIndex={0}
-        className="relative h-[62vh] min-h-[380px] w-full cursor-pointer touch-none select-none overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(ellipse_at_center,#1c1416_0%,#050505_70%)] outline-none focus-visible:ring-2 focus-visible:ring-white/30 sm:h-[72vh]"
+        className="relative h-[62svh] max-h-[calc(100svh-6rem)] min-h-[300px] w-full cursor-pointer touch-pan-y select-none overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(ellipse_at_center,#1c1416_0%,#050505_70%)] outline-none focus-visible:ring-2 focus-visible:ring-white/30 sm:h-[72svh]"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -219,14 +219,14 @@ export function Book3D() {
         )}
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+      <div className="mt-4 flex items-center justify-center gap-1.5 sm:gap-2">
         <button type="button" className={controlButton} aria-label="Close the book" onClick={() => engineRef.current?.first()} disabled={!state || state.flipped === 0}>
           <CaretDoubleLeft size={16} />
         </button>
         <button type="button" className={controlButton} aria-label="Previous page" onClick={() => engineRef.current?.prev()} disabled={!state || state.flipped === 0}>
           <ArrowLeft size={16} />
         </button>
-        <span className="min-w-[8.5rem] text-center font-mono text-sm tabular-nums text-white/70" aria-live="polite">
+        <span className="min-w-[5.5rem] text-center font-mono text-sm tabular-nums text-white/70 sm:min-w-[8.5rem]" aria-live="polite">
           {meta && state ? spreadLabel(meta, state) : '…'}
         </span>
         <button type="button" className={controlButton} aria-label="Next page" onClick={() => engineRef.current?.next()} disabled={!state || state.flipped === state.total}>

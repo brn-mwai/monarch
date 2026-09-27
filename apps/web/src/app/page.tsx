@@ -31,7 +31,7 @@ const FEATURES = [
   },
   {
     title: 'A measured corpus, not a demo',
-    body: '400 items across four categories, scanned once on a GPU. Every value on this site came from that run.',
+    body: '400 items across four categories, each scanned twice on a GPU. Every value on this site came from those runs.',
     Icon: Stack,
   },
   {
@@ -196,6 +196,13 @@ export default function HomePage() {
             </p>
 
             <div className="mx-auto mt-9 flex max-w-[260px] flex-col gap-3">
+              <Link
+                href="/research"
+                className="inline-flex items-center justify-between rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition-colors hover:bg-white/85"
+              >
+                Read the research
+                <ArrowRight size={13} weight="bold" className="opacity-70" />
+              </Link>
               <Link
                 href="/corpus"
                 className="inline-flex items-center justify-between rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white/70 hover:bg-white/5"
@@ -468,15 +475,16 @@ export default function HomePage() {
 
           <p className="mt-6 text-[15px] leading-relaxed text-white/70">
             The score compares how active the brain&rsquo;s emotion-related
-            regions are against its reasoning-related regions:
+            regions are against its reasoning-related regions. It is a difference,
+            because a ratio of the two was undefined for 69 of the 400 items:
           </p>
           <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.03] px-6 py-5">
-            <Equation tex={String.raw`\mathrm{NAA} \;=\; \dfrac{A_{\mathrm{aff}}}{A_{\mathrm{del}} + \delta}`} />
+            <Equation tex={String.raw`X \;=\; A_{\mathrm{aff}} \;-\; A_{\mathrm{del}}`} />
           </div>
 
           <p className="mt-8 text-[15px] leading-relaxed text-white/70">
             The Landau free energy of an Ising-style population under the
-            NAA-induced field <em className="not-italic font-semibold">h = &alpha;&#770; &middot; NAA</em> is:
+            content field <em className="not-italic font-semibold">h = &alpha; &middot; X</em> is:
           </p>
           <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.03] px-6 py-5">
             <Equation
@@ -493,13 +501,18 @@ export default function HomePage() {
           </div>
 
           <p className="mt-8 text-[15px] leading-relaxed text-white/70">
-            and the population susceptibility is:
+            The coupling &alpha; cannot be measured from this corpus, so the work
+            states the minimum it would need. For content of measured spread
+            &Delta;X to tip a consensus, the field must reach the critical field
+            h<sub>c</sub>:
           </p>
           <div className="mt-4 rounded-lg border border-white/10 bg-white/[0.03] px-6 py-5">
-            <Equation
-              tex={String.raw`\chi \;=\; \dfrac{\beta\,\operatorname{sech}^{2}\!\bigl(\beta J\,m^{*} + h\bigr)}{1 - \beta J\,\operatorname{sech}^{2}\!\bigl(\beta J\,m^{*} + h\bigr)}`}
-            />
+            <Equation tex={String.raw`\alpha \;\geq\; \dfrac{h_{c}(\beta J)}{\Delta X} \;=\; \dfrac{0.533}{0.124} \;=\; 4.29 \quad (\beta J = 2)`} />
           </div>
+          <p className="mt-4 text-[13px] leading-relaxed text-white/50">
+            This is a minimum any claim must meet within the mean-field model, not a claim
+            that media flips opinion.
+          </p>
         </div>
       </section>
 
@@ -510,13 +523,27 @@ export default function HomePage() {
             05 / Research status
           </p>
           <h2 className="mt-3 text-balance text-3xl font-semibold leading-snug text-white sm:text-4xl">
-            What is measured, and what is still open
+            What was measured, and what is still open
           </h2>
           <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/60">
-            The instrument is the deliverable. It is being applied to a 400-item corpus of
-            four content categories, 100 each, and the result of that measurement is reported
-            whichever way it comes out. A null is a result here, not a failure.
+            The dissertation was submitted in September 2026 and is held by the CUEA Library.
+            All 400 items were scanned twice. Three papers, written with Dr. Songa Mutambi,
+            are in review before journal submission.
           </p>
+
+          <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {[
+              { value: '10.7%', label: 'of the variation in the score is explained by the kind of content (η² = 0.107)' },
+              { value: 'd = 0.94', label: 'fear-driven content, the largest gap from neutral' },
+              { value: '0.87', label: 'agreement between the two runs (ICC)' },
+              { value: 'α ≥ 4.29', label: 'minimum media strength to tip opinion at βJ = 2' },
+            ].map((stat) => (
+              <div key={stat.value} className="rounded-lg border border-white/10 p-4">
+                <p className="font-mono text-xl font-semibold tabular-nums text-white sm:text-2xl">{stat.value}</p>
+                <p className="mt-2 text-[12px] leading-relaxed text-white/55">{stat.label}</p>
+              </div>
+            ))}
+          </div>
 
           <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
             <article className="rounded-lg border border-white/10 p-6">
@@ -527,7 +554,7 @@ export default function HomePage() {
                 For any content observable used as a field through h = αX, no media-driven
                 transition is possible unless α ≥ h<sub>c</sub>(βJ) / ΔX. The bound states
                 what the coupling would have to be for the mechanism to work at all, and can
-                be checked before any data are collected.
+                be checked before any data are collected. In review.
               </p>
             </article>
             <article className="rounded-lg border border-white/10 p-6">
@@ -535,10 +562,9 @@ export default function HomePage() {
                 Paper 2 / the corpus
               </h3>
               <p className="text-[13px] leading-relaxed text-white/60">
-                The scan supplies the observable&apos;s measured spread ΔX. Fed into the bound,
-                a null calibration stops being &quot;nothing was detected&quot; and becomes a
-                range the measurement excludes. The design detects an effect down to η² =
-                0.0268, or AUC 0.5916, at 80% power.
+                The four categories separate at η² = 0.107 (p ≈ 10<sup>-9</sup>), carried by
+                fear-driven content. Outrage raises emotion and reasoning equally, so its score
+                stays flat. The measured spread ΔX = 0.124 gives α ≥ 4.29 at βJ = 2. In review.
               </p>
             </article>
             <article className="rounded-lg border border-white/10 p-6">
@@ -546,9 +572,9 @@ export default function HomePage() {
                 Paper 3 / validation
               </h3>
               <p className="text-[13px] leading-relaxed text-white/60">
-                Whether the released average-subject checkpoint predicts real cortex at all is
-                an open question, and a published audit reports it anti-correlated. Held-out
-                validation against public fMRI, with a measured noise ceiling, is the test.
+                Against public brain recordings of people watching Friends, the brain model
+                reaches r = +0.028 on a 2-minute clip, 30% of the best possible (0.096), with a
+                positive sign. The full-episode test is next. In review.
               </p>
             </article>
           </div>
@@ -567,12 +593,17 @@ export default function HomePage() {
                 person, and predicted activation is not measured activation.
               </li>
               <li>
-                The opinion-dynamics layer sweeps the coupling and never fits it. No calibrated
-                coupling value is quoted anywhere on this site.
+                The coupling α is not measured. The site quotes only its minimum, α ≥ 4.29 at
+                βJ = 2, within the mean-field model.
               </li>
               <li>
-                The ratio form of the index is undefined whenever either network mean sits
-                below baseline. Those items are counted, never dropped or filled in.
+                Each content category came from one source collection, so category and source
+                are mixed. A word-counting baseline separates the labels better (AUC 0.98 against
+                0.63), which is why the score is reported as a measurement, not a detector.
+              </li>
+              <li>
+                Group averages are reliable; single-item scores are not, since 51 of 400 items
+                changed sign between runs, as measurement noise predicts.
               </li>
             </ul>
           </div>
@@ -594,12 +625,15 @@ export default function HomePage() {
                 Research project
               </h3>
               <p className="text-base font-semibold text-white">
-                B.Sc. Physics research project
+                B.Sc. Physics dissertation, 2026
               </p>
               <p className="mt-2 text-[13px] leading-relaxed text-white/60">
-                Catholic University of Eastern Africa, Nairobi.
+                Brian Mwai, The Catholic University of Eastern Africa, Nairobi.
                 <br />
-                Supervised by Dr. Songa Mutambi.
+                Supervised by Dr. Songa Mutambi.{' '}
+                <Link href="/research" className="text-white underline-offset-4 hover:underline">
+                  Preview the dissertation
+                </Link>
               </p>
             </article>
             <article className="rounded-lg border border-white/10 p-6">
@@ -613,7 +647,7 @@ export default function HomePage() {
                 Built on Meta&apos;s TRIBE v2, released under the project&apos;s own
                 open-source licence.
                 <br />
-                The 400-item corpus scan runs on a Tesla P100.
+                The 400-item corpus was scanned twice on a Tesla P100.
               </p>
             </article>
           </div>
@@ -632,6 +666,7 @@ export default function HomePage() {
           />
           <nav className="flex flex-wrap gap-5 text-xs font-semibold text-white/55">
             <Link href="/corpus" className="hover:text-white">Corpus</Link>
+            <Link href="/research" className="hover:text-white">Research</Link>
           </nav>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/35">
             (c) 2026 Brian Mwai / CUEA Department of Natural Sciences

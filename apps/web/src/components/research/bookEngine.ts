@@ -137,7 +137,8 @@ export class BookEngine {
     const key = new THREE.DirectionalLight(0xfff3e0, 1.6);
     key.position.set(-1.6, 1.2, 3.2);
     key.castShadow = true;
-    key.shadow.mapSize.set(2048, 2048);
+    const compact = Math.min(window.innerWidth, window.innerHeight) < 700;
+    key.shadow.mapSize.set(compact ? 1024 : 2048, compact ? 1024 : 2048);
     key.shadow.camera.left = -2;
     key.shadow.camera.right = 2;
     key.shadow.camera.top = 1.6;
@@ -505,7 +506,7 @@ export class BookEngine {
     this.renderer.setSize(clientWidth, clientHeight, false);
     this.camera.aspect = clientWidth / clientHeight;
     this.camera.updateProjectionMatrix();
-    const narrow = this.camera.aspect < 0.85;
+    const narrow = this.camera.aspect < 0.85 || clientWidth < 520;
     if (narrow !== this.narrow) {
       this.narrow = narrow;
       this.emit();
