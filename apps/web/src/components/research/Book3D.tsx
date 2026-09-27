@@ -207,7 +207,7 @@ export function Book3D() {
         role="application"
         aria-label="Dissertation book. Use the arrow keys, swipe, or click a page to turn it."
         tabIndex={0}
-        className="relative h-[62svh] max-h-[calc(100svh-6rem)] min-h-[300px] w-full cursor-pointer touch-pan-y select-none overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(ellipse_at_center,#1c1416_0%,#050505_70%)] outline-none focus-visible:ring-2 focus-visible:ring-white/30 sm:h-[72svh]"
+        className="relative h-[62svh] max-h-[calc(100svh-6rem)] min-h-[240px] w-full cursor-pointer touch-pan-y select-none overflow-hidden rounded-2xl border border-white/10 bg-[radial-gradient(ellipse_at_center,#1c1416_0%,#050505_70%)] outline-none focus-visible:ring-2 focus-visible:ring-white/30 sm:h-[72svh]"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
