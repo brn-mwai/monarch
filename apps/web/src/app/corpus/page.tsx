@@ -52,7 +52,7 @@ function SectionHeading({
 
 function Panel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-full flex-1 rounded-xl border border-white/10 bg-white/[0.015] p-5">
+    <div className="w-full min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.015] p-3 sm:p-5">
       {children}
     </div>
   );
@@ -191,11 +191,18 @@ export default function CorpusPage() {
                 : `${signed(summary.min, 3)} to ${signed(summary.max, 3)}`,
           },
         ].map((cell) => (
-          <div key={cell.k} className="rounded-xl border border-white/10 p-4">
+          <div
+            key={cell.k}
+            className={`min-w-0 rounded-xl border border-white/10 p-4 ${
+              cell.k === 'Range' ? 'col-span-2 sm:col-span-1' : ''
+            }`}
+          >
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
               {cell.k}
             </p>
-            <p className="mt-2 font-mono text-lg tabular-nums text-white">{cell.v}</p>
+            <p className="mt-2 break-words font-mono text-base tabular-nums text-white sm:text-lg">
+              {cell.v}
+            </p>
           </div>
         ))}
       </section>
@@ -209,11 +216,11 @@ export default function CorpusPage() {
           those render as flat regions. The panel header says which you are looking at.
         </SectionHeading>
 
-        <div className="mb-5 flex flex-wrap items-center gap-3">
+        <div className="mb-5 flex items-center gap-3">
           <button
             type="button"
             onClick={() => setCompare(false)}
-            className={`rounded-full border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors ${
+            className={`min-h-[44px] flex-1 rounded-full border px-4 py-2 font-mono sm:min-h-0 sm:flex-none text-[10px] uppercase tracking-[0.15em] transition-colors ${
               compare
                 ? 'border-white/15 text-white/50 hover:border-white/35'
                 : 'border-white/60 text-white'
@@ -224,7 +231,7 @@ export default function CorpusPage() {
           <button
             type="button"
             onClick={() => setCompare(true)}
-            className={`rounded-full border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors ${
+            className={`min-h-[44px] flex-1 rounded-full border px-4 py-2 font-mono sm:min-h-0 sm:flex-none text-[10px] uppercase tracking-[0.15em] transition-colors ${
               compare
                 ? 'border-white/60 text-white'
                 : 'border-white/15 text-white/50 hover:border-white/35'
@@ -236,7 +243,7 @@ export default function CorpusPage() {
 
         {compare ? (
           <div className="rounded-xl border border-white/10 bg-white/[0.015]">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-5 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 px-4 py-4 sm:px-5">
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
                 Two items, one colour scale
               </span>
@@ -256,8 +263,8 @@ export default function CorpusPage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 p-4 lg:grid-cols-2">
-              <div className="space-y-3">
+            <div className="grid grid-cols-1 gap-6 p-3 sm:p-4 lg:grid-cols-2 lg:gap-4">
+              <div className="min-w-0 space-y-3">
                 <ItemSelect
                   label="Left item"
                   value={primary}
@@ -278,7 +285,7 @@ export default function CorpusPage() {
                   />
                 )}
               </div>
-              <div className="space-y-3 lg:border-l lg:border-white/10 lg:pl-4">
+              <div className="min-w-0 space-y-3 border-t border-white/10 pt-5 lg:border-l lg:border-t-0 lg:pl-4 lg:pt-0">
                 <ItemSelect
                   label="Right item"
                   value={secondary}
@@ -316,7 +323,7 @@ export default function CorpusPage() {
                 mask={mask}
                 scaleLo={scale.lo}
                 scaleHi={scale.hi}
-                    vectorScale={data.vectorScale ?? null}
+                vectorScale={data.vectorScale ?? null}
                 height={460}
               />
             )}
@@ -365,7 +372,7 @@ export default function CorpusPage() {
           {summary.categories.map((c) => {
             const note = categoryNote(c.category);
             return (
-              <div key={c.category} className="rounded-xl border border-white/10 p-5">
+              <div key={c.category} className="rounded-xl border border-white/10 p-4 sm:p-5">
                 <div className="flex items-center gap-2">
                   <span
                     className="inline-block h-2.5 w-2.5 rounded-full"
@@ -380,15 +387,15 @@ export default function CorpusPage() {
                 </div>
                 {note && (
                   <>
-                    <p className="mt-3 text-[13px] leading-relaxed text-white/65">
+                    <p className="mt-3 text-[14px] leading-relaxed text-white/65 sm:text-[13px]">
                       {note.definition}
                     </p>
-                    <p className="mt-2 text-[13px] leading-relaxed text-white/50">
+                    <p className="mt-2 text-[14px] leading-relaxed text-white/50 sm:text-[13px]">
                       {note.whatItTests}
                     </p>
                   </>
                 )}
-                <dl className="mt-4 grid grid-cols-3 gap-3 border-t border-white/10 pt-4 font-mono text-[11px] tabular-nums">
+                <dl className="mt-4 grid grid-cols-3 gap-3 border-t border-white/10 pt-4 font-mono text-[12px] tabular-nums sm:text-[11px]">
                   <div>
                     <dt className="text-white/40">Average</dt>
                     <dd className="mt-1 text-white">{signed(c.mean)}</dd>
@@ -408,7 +415,7 @@ export default function CorpusPage() {
             );
           })}
         </div>
-        <p className="mt-5 max-w-2xl text-[13px] leading-relaxed text-white/50">
+        <p className="mt-5 max-w-2xl text-[14px] leading-relaxed text-white/50 sm:text-[13px]">
           No claim of a real difference is made here. Whether the categories separate is
           settled by the analysis over the full corpus, and this design can only detect an
           effect above a stated size. Anything smaller would be missed, and that limit is
@@ -418,16 +425,16 @@ export default function CorpusPage() {
 
       <section className="mt-14 sm:mt-20">
         <SectionHeading index="06" title="All items"
-          hint="Every scanned item with its score, its two region values, and the labels it carried before scanning. Click a row to open it in full.">
+          hint="Every scanned item with its score, its two region values, and the labels it carried before scanning. Open any item to read it in full.">
           Sorted from the most emotional-leaning to the least.
         </SectionHeading>
-        <div className="mb-4 flex flex-wrap gap-2">
+        <div className="scroll-slim -mx-4 mb-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
           {['all', 'pervertex', ...summary.categories.map((c) => c.category)].map((option) => (
             <button
               key={option}
               type="button"
               onClick={() => setFilter(option)}
-              className={`rounded-full border px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors ${
+              className={`min-h-[44px] shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors sm:min-h-0 ${
                 filter === option
                   ? 'border-white/60 text-white'
                   : 'border-white/15 text-white/50 hover:border-white/35'
@@ -453,13 +460,13 @@ export default function CorpusPage() {
           scaleHi={summary.max ?? 1}
         />
 
-        <p className="mt-4 max-w-2xl text-[13px] leading-relaxed text-white/50">
-          Click any row to open it in full and load it into the surface view above. {summary.nRatioUndefined} of{' '}
+        <p className="mt-4 max-w-2xl text-[14px] leading-relaxed text-white/50 sm:text-[13px]">
+          Open any item to read it in full and load it into the surface view above. {summary.nRatioUndefined} of{' '}
           {summary.nScanned} items produce no usable ratio, because one region&apos;s average
           falls below its baseline and a ratio then has no meaning. Those items are counted,
           never dropped or filled in.
         </p>
-        <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-white/40">
+        <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-white/40 sm:text-[13px]">
           Where a surface is drawn per vertex it comes from a second scanning session, which
           is the one that kept per-vertex maps; every number on this page comes from the
           primary scan. The two sessions agree at ICC 0.876 over the 375 items both cover,

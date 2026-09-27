@@ -43,11 +43,11 @@ export function ItemSelect({ label, value, options, onChange }: Props) {
 
   useEffect(() => {
     if (!open) return;
-    const onPointerDown = (event: MouseEvent) => {
+    const onPointerDown = (event: PointerEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     };
-    document.addEventListener('mousedown', onPointerDown);
-    return () => document.removeEventListener('mousedown', onPointerDown);
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
   }, [open]);
 
   useEffect(() => {
@@ -92,7 +92,7 @@ export function ItemSelect({ label, value, options, onChange }: Props) {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="mt-2 flex w-full items-center gap-3 rounded-lg border border-white/15 bg-white/[0.02] px-4 py-3 text-left transition-colors hover:border-white/30"
+        className="mt-2 flex min-h-[48px] w-full items-center gap-3 rounded-lg border border-white/15 bg-white/[0.02] px-4 py-3 text-left transition-colors hover:border-white/30"
       >
         {selected && (
           <>
@@ -100,10 +100,10 @@ export function ItemSelect({ label, value, options, onChange }: Props) {
               className="h-2.5 w-2.5 shrink-0 rounded-full"
               style={{ background: CATEGORY_COLORS[selected.item.category] ?? '#888' }}
             />
-            <span className="w-[74px] shrink-0 font-mono text-[12px] tabular-nums text-white">
+            <span className="w-[66px] shrink-0 font-mono text-[12px] tabular-nums text-white sm:w-[74px]">
               {signed(selected.item.naaSigned)}
             </span>
-            <span className="min-w-0 flex-1 truncate text-[13px] text-white/70">
+            <span className="min-w-0 flex-1 truncate text-[14px] text-white/70 sm:text-[13px]">
               {selected.item.preview}
             </span>
           </>
@@ -117,7 +117,7 @@ export function ItemSelect({ label, value, options, onChange }: Props) {
 
       {open && (
         <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-lg border border-white/15 bg-[#0a0a0a] shadow-2xl">
-          <div className="flex items-center gap-2 border-b border-white/10 px-3 py-2.5">
+          <div className="flex min-h-[48px] items-center gap-2 border-b border-white/10 px-3 py-2.5">
             <MagnifyingGlass size={14} className="shrink-0 text-white/35" />
             <input
               autoFocus
@@ -125,14 +125,18 @@ export function ItemSelect({ label, value, options, onChange }: Props) {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={onKeyDown}
               placeholder="Filter by text or category"
-              className="w-full bg-transparent text-[13px] text-white placeholder:text-white/30 focus:outline-none"
+              className="w-full bg-transparent text-[16px] text-white placeholder:text-white/30 focus:outline-none sm:text-[13px]"
             />
             <span className="shrink-0 font-mono text-[10px] tabular-nums text-white/35">
               {filtered.length}
             </span>
           </div>
 
-          <ul ref={listRef} role="listbox" className="scroll-slim max-h-[320px] overflow-y-auto">
+          <ul
+            ref={listRef}
+            role="listbox"
+            className="scroll-slim max-h-[min(320px,55vh)] overflow-y-auto overscroll-contain"
+          >
             {filtered.length === 0 && (
               <li className="px-4 py-6 text-center text-[13px] text-white/40">
                 Nothing matches that
@@ -146,7 +150,7 @@ export function ItemSelect({ label, value, options, onChange }: Props) {
                   aria-selected={o.index === value}
                   onMouseEnter={() => setActive(i)}
                   onClick={() => commit(o.index)}
-                  className={`flex w-full items-start gap-3 px-4 py-2.5 text-left transition-colors ${
+                  className={`flex min-h-[48px] w-full items-start gap-3 px-4 py-3 text-left transition-colors sm:py-2.5 ${
                     i === active ? 'bg-white/[0.06]' : ''
                   } ${o.index === value ? 'border-l-2 border-white/70' : 'border-l-2 border-transparent'}`}
                 >
@@ -154,11 +158,11 @@ export function ItemSelect({ label, value, options, onChange }: Props) {
                     className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
                     style={{ background: CATEGORY_COLORS[o.item.category] ?? '#888' }}
                   />
-                  <span className="w-[70px] shrink-0 font-mono text-[12px] tabular-nums text-white">
+                  <span className="w-[62px] shrink-0 font-mono text-[12px] tabular-nums text-white sm:w-[70px]">
                     {signed(o.item.naaSigned)}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="line-clamp-2 text-[13px] leading-snug text-white/75">
+                    <span className="line-clamp-2 text-[14px] leading-snug text-white/75 sm:text-[13px]">
                       {o.item.preview}
                     </span>
                     <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.15em] text-white/35">
