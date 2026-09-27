@@ -120,7 +120,7 @@ export function drawLockedPage(page: number, label: string, aspect: number) {
   context.fillText('Available in full at the CUEA Library', width / 2, cardY + cardHeight * 0.66);
   context.fillStyle = '#6f675d';
   context.font = `${Math.round(width * 0.024)}px Georgia, 'Times New Roman', serif`;
-  context.fillText('Preview covers the title, abstract and contents', width / 2, cardY + cardHeight * 0.84);
+  context.fillText('This preview shows selected pages only', width / 2, cardY + cardHeight * 0.84);
 
   context.fillStyle = '#4a433b';
   context.font = `${Math.round(width * 0.024)}px Georgia, 'Times New Roman', serif`;

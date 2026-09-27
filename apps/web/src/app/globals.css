@@ -19,6 +19,26 @@ body {
   padding: 0;
 }
 
+/* Page scrollbar: thin and dark so it sits in the black frame, maroon on hover. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) #050505;
+}
+html::-webkit-scrollbar {
+  width: 10px;
+}
+html::-webkit-scrollbar-track {
+  background: #050505;
+}
+html::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border: 3px solid #050505;
+  border-radius: 999px;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background: #8a2a3a;
+}
+
 /* Custom scrollbar for the right content panel and any scrollable surface. */
 .overflow-y-auto::-webkit-scrollbar {
   width: 6px;

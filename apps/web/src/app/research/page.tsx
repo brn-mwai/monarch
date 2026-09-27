@@ -6,8 +6,10 @@ import { Book3D } from '@/components/research/Book3D';
 export const metadata: Metadata = {
   title: 'Research - Monarch',
   description:
-    'Measuring the External Field: the B.Sc. Physics dissertation behind Monarch, with a preview of the title, abstract and contents.',
+    'Measuring the External Field: the B.Sc. Physics dissertation behind Monarch, with a preview of selected pages.',
 };
+
+const LIBRARY_URL = 'https://repository.cuea.edu/';
 
 const PAPERS = [
   {
@@ -42,9 +44,24 @@ export default function ResearchPage() {
       </div>
 
       <p className="mx-auto mt-6 max-w-2xl text-center text-sm leading-relaxed text-white/50">
-        This preview shows the title page, the abstract and the contents. The full dissertation is
-        held at the CUEA Library. Turn pages by clicking, swiping or using the arrow keys.
+        This preview shows selected pages: the title page, the abstract, the contents, the opening
+        of the introduction and the instrument. Turn pages by clicking, swiping or using the arrow
+        keys.
       </p>
+
+      <div className="mx-auto mt-6 flex max-w-2xl flex-col items-center gap-3 rounded-2xl border border-[#6b1c2a]/60 bg-[#6b1c2a]/10 p-5 text-center sm:flex-row sm:justify-between sm:text-left">
+        <p className="text-sm leading-relaxed text-white/75">
+          The full dissertation is held by The Catholic University of Eastern Africa Library.
+        </p>
+        <a
+          href={LIBRARY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex h-11 shrink-0 items-center rounded-full bg-white px-5 text-sm font-medium text-black transition-colors hover:bg-white/85"
+        >
+          CUEA Library repository
+        </a>
+      </div>
 
       <section className="mt-20">
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-white/50">Papers</p>
