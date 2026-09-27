@@ -82,11 +82,11 @@ export function BrainPanel({
 
   const body = (
     <>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 border-b border-white/10 px-4 py-3 sm:px-5">
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
           {categoryLabel(item.category)}
         </span>
-        <span className="flex items-center gap-3">
+        <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span
             className={`font-mono text-[9px] uppercase tracking-[0.18em] ${
               perVertex ? 'text-white/70' : 'text-white/30'
@@ -109,15 +109,15 @@ export function BrainPanel({
         </span>
       </div>
 
-      <div className="px-5 pt-4">
-        <p className="line-clamp-3 text-[13px] leading-relaxed text-white/70">
+      <div className="px-4 pt-4 sm:px-5">
+        <p className="line-clamp-3 text-[14px] leading-relaxed text-white/70 sm:text-[13px]">
           {item.preview}
         </p>
         {(item.text ?? '').length > item.preview.length && (
           <button
             type="button"
             onClick={() => setExpanded(true)}
-            className="mt-2 font-mono text-[10px] uppercase tracking-[0.15em] text-white/45 underline-offset-4 transition-colors hover:text-white hover:underline"
+            className="mt-1 inline-flex min-h-[44px] items-center font-mono text-[10px] uppercase tracking-[0.15em] text-white/45 underline-offset-4 transition-colors hover:text-white hover:underline sm:mt-2 sm:min-h-0"
           >
             See more
           </button>
@@ -126,12 +126,14 @@ export function BrainPanel({
 
       {expanded && (
         <div
-          className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/80 p-4 backdrop-blur-sm sm:p-10"
+          className="fixed inset-0 z-[60] flex items-end justify-center bg-black/80 backdrop-blur-sm sm:items-start sm:overflow-y-auto sm:p-10"
           onClick={() => setExpanded(false)}
         >
           <div
+            role="dialog"
+            aria-modal="true"
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl rounded-xl border border-white/15 bg-[#0a0a0a] p-6 shadow-2xl"
+            className="max-h-[calc(100dvh-24px)] w-full overflow-y-auto overscroll-contain rounded-t-2xl border border-b-0 border-white/15 bg-[#0a0a0a] px-4 pb-[calc(24px+env(safe-area-inset-bottom))] pt-3 shadow-2xl sm:max-h-none sm:max-w-2xl sm:overflow-visible sm:rounded-xl sm:border-b sm:p-6"
           >
             <div className="flex items-center justify-between gap-4">
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/45">
@@ -140,19 +142,22 @@ export function BrainPanel({
               <button
                 type="button"
                 onClick={() => setExpanded(false)}
-                className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 transition-colors hover:text-white"
+                className="-mr-2 inline-flex min-h-[44px] items-center px-2 font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 transition-colors hover:text-white sm:mr-0 sm:min-h-0 sm:px-0"
               >
                 Hide
               </button>
             </div>
-            <p className="mt-4 whitespace-pre-wrap text-[14px] leading-relaxed text-white/80">
+            <p className="mt-4 whitespace-pre-wrap break-words text-[15px] leading-relaxed text-white/80 sm:text-[14px]">
               {item.text ?? item.preview}
             </p>
           </div>
         </div>
       )}
 
-      <div className="px-3 py-3" style={{ height }}>
+      <div
+        className="h-[min(var(--panel-h),88vw)] px-3 py-3 sm:h-[var(--panel-h)]"
+        style={{ '--panel-h': `${height}px` } as React.CSSProperties}
+      >
         {activation ? (
           <BrainViewer
             activation={activation}
@@ -169,7 +174,7 @@ export function BrainPanel({
         )}
       </div>
 
-      <dl className="grid grid-cols-3 gap-3 border-t border-white/10 px-5 py-4 font-mono text-[11px] tabular-nums">
+      <dl className="grid grid-cols-3 gap-3 border-t border-white/10 px-4 py-4 font-mono text-[12px] tabular-nums sm:px-5 sm:text-[11px]">
         <div>
           <dt className="text-white/40">Affective</dt>
           <dd className="mt-1 text-white">{signed(item.aAff)}</dd>
