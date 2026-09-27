@@ -155,7 +155,9 @@ export function BrainPanel({
       )}
 
       <div
-        className="h-[min(var(--panel-h),88vw)] px-3 py-3 sm:h-[var(--panel-h)]"
+        className={`px-0 py-3 sm:h-[var(--panel-h)] sm:px-3 ${
+          compact ? 'h-[min(var(--panel-h),92vw)]' : 'h-[var(--panel-h)]'
+        }`}
         style={{ '--panel-h': `${height}px` } as React.CSSProperties}
       >
         {activation ? (

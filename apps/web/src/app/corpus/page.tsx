@@ -191,12 +191,7 @@ export default function CorpusPage() {
                 : `${signed(summary.min, 3)} to ${signed(summary.max, 3)}`,
           },
         ].map((cell) => (
-          <div
-            key={cell.k}
-            className={`min-w-0 rounded-xl border border-white/10 p-4 ${
-              cell.k === 'Range' ? 'col-span-2 sm:col-span-1' : ''
-            }`}
-          >
+          <div key={cell.k} className="min-w-0 rounded-xl border border-white/10 p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
               {cell.k}
             </p>
