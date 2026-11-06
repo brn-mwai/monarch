@@ -1,0 +1,30 @@
+The same story can be told calmly in one place and written to alarm you in another. Both shape what we believe. Can we measure how much?
+
+That question became my B.Sc. Physics research at The Catholic University of Eastern Africa.
+
+Physics models public opinion like magnets: people influence each other, and media acts as an outside force on everyone at once. In these models, that force is always guessed. My goal was a first step toward measuring it.
+
+This isn't about calling emotional media fake or propaganda. A true story can still lead with fear. I'm looking at framing: whether content leans on emotion or on reasoning.
+
+I used TRIBE v2, Meta's model that predicts how a typical brain responds to what we read, hear and watch, trained on real brain scans. From it I built a score comparing emotion and reasoning responses, and tested it on 400 news articles.
+
+What we learned:
+Fear-driven content stood out most. Outrage stirred emotion and reasoning about equally. The scores held up on a second run.
+In the model, media would need a strength of at least 4.29 to flip a tight-knit group's opinion. That's a high bar: small differences in framing aren't enough on their own.
+
+Why it matters: opinion researchers get a number they can test instead of assume, and journalists, educators and public health teams get a way to compare how sources frame stories across hundreds of pieces at once. It rates content, never people.
+
+Next: more sources, audio and video, and real opinion data.
+
+Thank you, Dr. Songa Mutambi, for your guidance throughout.
+
+#Physics #Research #Neuroscience #CUEA
+
+
+----- PINNED COMMENT -----
+
+Explore all 400 articles, their scores and brain maps here: https://monarch-4iy.pages.dev/corpus/
+
+The scores are brain-model predictions, best read by comparing groups, not single articles.
+
+The brain model, Meta's TRIBE v2: https://arxiv.org/abs/2605.04326

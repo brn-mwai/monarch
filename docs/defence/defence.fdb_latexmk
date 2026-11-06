@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1788346048.76042 "defence.tex" "defence.pdf" "defence" 1788346053.56192 0
+["pdflatex"] 1789721479.02263 "defence.tex" "defence.pdf" "defence" 1789721481.86577 0
   "../../services/inference/data/figures/B1_roi_definition.pdf" 1786897544.45328 917859 c0ef1a9a0290bdc8840dcf512c9a4f3b ""
   "../../services/inference/data/figures/B3_per_vertex_fear_activating-0000.pdf" 1786897656.38644 978792 d2f63bf9ba555b3e9bcdf20c90d2e8a6 ""
   "../../services/inference/data/final/report/fig_violin.png" 1786273274.69172 100275 1fd3fd01517d82c917de623c31541755 ""
@@ -52,9 +52,11 @@
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmsy8.tfm" 1136765053 1120 8b7d695260f3cff42e636090a8002094 ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1247596667 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb" 1247596667 36741 fa121aac0049305630cf160b86157ee4 ""
+  "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb" 1247596666 35469 70d41d2b9ea31d5d813066df7c99281c ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss10.pfb" 1247596666 24457 5cbb7bdf209d5d1ce9892a9b80a307cc ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss12.pfb" 1247596666 24393 3b7eb51a67a0a62aec5849271bdb9c2e ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss17.pfb" 1247596667 24416 36515493f76659302880e2604105b074 ""
+  "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss8.pfb" 1247596667 24420 52dbb8e8aa0069a1b987309557f8d303 ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1247596667 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb" 1247596667 32626 4f5c1b83753b1dd3a97d1b399a005b4b ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb" 1136842548 35941 f27169cc74234d5bd5e4cca5abafaabb ""
@@ -250,10 +252,10 @@
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/tex/latex/translator/translator.sty" 1622471510 8765 56d370785f0143111ff9898b5adfe08e ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/Windows/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1700127522 55487 80a65caedd3722f4c20a14a69e785d8f ""
-  "defence.aux" 1788346052.77686 5420 034c0f8dff7ff2869eeac2c5491e16b6 "pdflatex"
-  "defence.nav" 1788346052.7849 3557 5671c0a4084db43656d5d77be60936b2 "pdflatex"
-  "defence.out" 1788346052.77986 522 299b75a00a5c3c1740ab0ebf0fd7affe "pdflatex"
-  "defence.tex" 1788346036.61969 25256 b586088a2eb25c5789fb669958fa9387 ""
+  "defence.aux" 1789721481.22415 5548 d9fcb0657f1b70ce4b462f37012f92e4 "pdflatex"
+  "defence.nav" 1789721481.23221 3649 ff3427b07422f9b5f177e7ff7b7fc26a "pdflatex"
+  "defence.out" 1789721481.23019 522 299b75a00a5c3c1740ab0ebf0fd7affe "pdflatex"
+  "defence.tex" 1789721464.8363 25394 9a43492b9178ec24dd407c9b4a256cc2 ""
   (generated)
   "defence.aux"
   "defence.log"
